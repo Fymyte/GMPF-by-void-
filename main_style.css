@@ -1,6 +1,11 @@
 
 
+
+
+
+
 /* Gestion du menu */
+
 
 body {
     margin: 0px;
@@ -11,18 +16,29 @@ nav {
     width: 100%;
     background-color: rgb(200, 200, 200);
     font-family: Arial;
-    position: static;
+    margin: 0px;
+    padding: 0px;
+    top: 0px;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    
+    display: block;
 }
 
 nav > ul {
     margin: 0px;
     padding: 0px;
+    position: relative;
 }
 
 nav > ul::after {
     content: "";
     display: block;
     clear: both;
+}
+
+
+.menu-mobile::after {
 }
 
 nav > ul > li {
@@ -35,9 +51,7 @@ nav > ul > li > a {
     color: rgb(0, 0, 0);
 }
 
-nav > ul > li:hover a {
-    padding: 14px 30px 10px 30px;
-}
+
 
 nav li {
     list-style-type: none;
@@ -52,19 +66,9 @@ nav a {
     text-decoration: none;
 }
 
-nav li:hover .menu-subsection {
-    display: inline-block;
-    position: absolute;
-    top: 100%;
-    left: 0px;
-    margin: 4px 0px 0px 0px;
-    padding: 0px;
-    z-index: 1000;
-}
 
-.menu-subsection li {
-    border/*-bottom*/: 1px solid rgb(192, 192, 192);
-}
+
+
 
 .menu-subsection li a {
     padding: 15px 30px;
@@ -73,32 +77,27 @@ nav li:hover .menu-subsection {
     width: 270px;
 }
 
-.menu-section:hover {
-    border-bottom: 4px solid rgb(0, 255, 255);
-    background-color: rgba(255, 255, 255, 0.1);
-}
 
-.menu-section .menu-subsection {
+
+.menu-section li .menu-subsection {
     background-color: rgba(255, 255, 255, 1);
 }
 
-.menu-subsection li:hover a {
-    color: rgb(0, 0, 0);
-    font-weight: bold;
+
+.menu-section {
+    list-style-position: inside;
 }
 
-.menu-section .menu-subsection li:hover{
-    background-color: rgb(255, 255, 255);
-}
 
 
 
 /* menu mobile */
 nav input[type=checkbox] {
     display: none;
+    
 }
 
-nav label {
+.menu-mobile {
     display: none;
 }
 
@@ -106,7 +105,56 @@ nav input[type=checkbox]:checked ~ ul {
     display: block;
 }
 
-@media screen and (max-width: 500px /* taille d'ecran pour changement d'apparence du menu */) {
+
+
+/*.menu-mobile {
+        display: block;
+        color: rgb(255, 255, 255);
+        background-color: rgba(29, 197, 151, 0.97);
+        text-align: center;
+        padding: 14px 0px;
+        font-family: Arial;
+    }*/
+
+
+
+
+@media screen and (min-width: 500px) {
+    nav li:hover .menu-subsection {
+        display: inline-block;
+        position: absolute;
+        top: 100%;
+        left: 0px;
+        margin: 4px 0px 0px 0px;
+        padding: 0px;
+        z-index: 1000;
+    }
+    
+    .menu-section > li:hover {
+        border-bottom: 4px solid rgb(0, 255, 255);
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    .menu-subsection li:hover a {
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+    }
+    nav > ul > li:hover a {
+        padding: 14px 30px 10px 30px;
+    }
+    
+    .menu-section li .menu-subsection li:hover{
+        background-color: rgb(255, 255, 255);
+    }
+    
+    .menu-subsection li {
+        border-bottom: 1px solid rgb(192, 192, 192);
+        border-left: 1px solid rgb(192, 192, 192);
+        border-right: 1px solid rgb(192, 192, 192);
+    }
+}
+
+
+@media screen and (max-width: 500px) {
     .menu-mobile {
         display: block;
         color: rgb(255, 255, 255);
@@ -122,13 +170,20 @@ nav input[type=checkbox]:checked ~ ul {
         width: 100%;
         text-align: center;
     }
-    nav ul li a, nav ul li:hover a {
+    nav ul li a, nav ul li a {
         padding: 10px 0px;
     }
-    nav li:hover .menu-subsection {
+    nav li .menu-subsection {
         display: block;
-        position: static;
+        position: relative;
     }
+    
+    .menu-subsection li {
+        border-left: 1px solid rgb(192, 192, 192);
+        border-right: 1px solid rgb(192, 192, 192);
+    }
+    
+    
 }
 
 
