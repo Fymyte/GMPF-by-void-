@@ -179,7 +179,7 @@
           <object class="GtkImage" id="OriginalImage">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="pixbuf">gimp_logo.png</property>
+            <property name="pixbuf">../Images/gimp_logo.png</property>
           </object>
           <packing>
             <property name="expand">True</property>
