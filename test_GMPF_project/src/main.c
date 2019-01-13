@@ -89,10 +89,15 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 	//gtk_image_set_from_file(image, filename);
 
     //get the pixbuf from the gtk image
-    GError *err = g_error_new(0, 1, "pixbuf toz");
+    GError *err = NULL;
     struct _GdkPixbuf *imgPixbuf; 
     imgPixbuf = gdk_pixbuf_new_from_file(filename, &err);
-   
+
+    if(err)
+    {
+        printf("Error : %s\n", err->message);
+        g_error_free(err);
+    }
 
     int imgwidth = gdk_pixbuf_get_width(imgPixbuf) / 4;
     int imgheight = gdk_pixbuf_get_height(imgPixbuf) / 4;
