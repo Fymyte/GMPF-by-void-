@@ -1,0 +1,180 @@
+/*******Body*******/
+
+body {
+	background-image:url(images/background.png);
+	background-position: center;
+	font-family: Arial;
+	font-size: 12px;
+	margin: 0px;
+	padding: 0px;
+}
+
+/*center an image*/
+.center{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+
+/*******Menu*******/
+
+#menu{
+	margin: 0px 100px 0px 100px;
+	width: 800px;
+}
+
+nav{
+	width: 100%;
+	background-color: #424558;
+}
+
+nav > ul{
+	margin: 0px;
+	padding: 0px;
+}
+
+nav > ul > li{
+	float: left;
+	position: relative;
+}
+
+nav li{
+	list-style-type: none;
+}
+
+nav > ul::after{
+	content: "";
+	display: block;
+	clear: both;
+}
+
+nav a{
+	display: inline-block;
+	text-decoration: none;
+}
+
+nav > ul > li > a{
+	padding: 20px 30px;
+	color: #FFF;
+}
+
+.subsection{
+	display: none;
+}
+
+nav li:hover .subsection{
+	display: inline-block;
+	position: absolute;
+	top: 100%;
+	left: 0px;
+	padding: 0px;
+	z-index: 100000;
+}
+
+.subsection li{
+	border-bottom: 1px solid #CCC;
+}
+
+.subsection li a{
+	padding: 15px 30px;
+	font-size: 15px;
+	color: #222538;
+	width: 270;
+}
+
+.menu-blank{
+	margin: 0px 100px 0px 100px;
+}
+
+/*menu line on top*/
+.menu-index:hover{
+	border-top: 5px solid #e44d26;
+	background-color: RGBa(228, 77, 38, 0.15);
+}
+
+.menu-presentation:hover{
+	border-top: 5px solid #FFAA00;
+	background-color: RGBa(255, 170, 0, 0.15);
+}
+
+.menu-link:hover{
+	border-top: 5px solid #e44d26;
+	background-color: RGBa(228, 77, 38, 0.15);
+}
+
+nav > ul > li:hover a{
+	padding: 15px 30px 20px 30px;
+}
+
+/*subsection background color*/
+.menu-index .subsection{
+	background-color: RGB(230, 100, 40);
+}
+
+.menu-presentation .subsection{
+	background-color: RGB(255, 170, 0);
+}
+
+.menu-link .subsection{
+	background-color: RGB(230, 100, 40);
+}
+
+/*subsection color - mouse*/
+.menu-presentation .subsection li:hover{
+	background-color: RGB(255, 0, 0);
+}
+
+
+/*******Container*******/
+#container{
+	margin: 0px auto;
+	text-align: left;
+	width: 800px;
+}
+
+#content{
+	background-color: white;
+}
+text1{	
+	font-size: 20px;
+	color: #000000;
+}
+
+text2{
+	font-size: 10px;
+	color: #FF00AA;
+}
+
+/********************** Footer ***************************/
+#footer {
+	background-image: url(images/footer.png); /*a faire*/
+	background-repeat: no-repeat;
+	width: 800px;
+	height: 100px;
+	text-align: center;
+	float: left;
+	clear: both;
+}
+
+#footer li{
+	display: inline;
+	float: none;
+	text-align: center;
+	padding: 0px 10px 0px 10px;
+	border-right: solid 1px #908a68;
+}
+.lastchild{
+	border-right: 0px none !important;
+}
+#footer a{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: #99CCFF;
+	text-decoration: none;
+}
+#footer a:hover{text-decoration: underline;}
+
+
