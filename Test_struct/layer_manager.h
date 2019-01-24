@@ -1,6 +1,9 @@
 #ifndef LAYER_MANAGER_H
 #define LAYER_MANAGER_H
 
+
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
 #include "types_redefine.h"
 
 //
@@ -27,16 +30,9 @@ struct GMPF_Layer {
 
 // TODO: complete the struct GMPF_Image
 struct GMPF_Image {
-    unsigned int height;
-    unsigned int width;
-    GMPF_Pixel *image; // or Pixbuf
+    GdkPixbuf image;
 } GMPF_Image;
 
-
-// TODO: complete the struct GMPF_Pixel
-struct GMPF_Pixel {
-    Uint8 A, R, G, B;
-} GMPF_Pixel;
 
 
 
