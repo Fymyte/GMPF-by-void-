@@ -134,6 +134,8 @@ nav > ul > li:hover a{
 }
 
 #content{
+	/*background-image:url(images/content.png);
+	background-repeat: repeat-y;*/
 	background-color: white;
 }
 text1{	
