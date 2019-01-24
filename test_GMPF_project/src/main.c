@@ -12,7 +12,7 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data);
 void callback_adjust_scale (GtkRange *scale, gpointer user_data);
 //static gboolean key_event(GtkWidget *widget, GdkEventKey *event);
 
-struct _GdkPixbuf *imgPixbuf = NULL;
+struct _GdkPixbuf *imgPixbuf;
 
 int
 main(int argc, char *argv [])
@@ -103,24 +103,24 @@ void callback_adjust_scale(GtkRange *scale, gpointer user_data)
 
     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
-    // GError *err = NULL;
-    // struct _GdkPixbuf *imgPixbuf;
-    // imgPixbuf = gtk_image_get_pixbuf (image);
-
-    // if(err)
-    // {
-    //     g_print("Error here : %s\n", err->message);
-    //     g_error_free(err);
-    // }
+    struct _GdkPixbuf *imgPixbuf = NULL;
+    imgPixbuf = gtk_image_get_pixbuf (image);
 
     //gtk_image_clear(image);
 
     gdouble scaleValue = gtk_range_get_value (scale);
+    if (scaleValue < 0)
+    {
+        scaleValue = -scaleValue / 100;
+    }
+
+    g_print("scaleValue = %f", scaleValue);
 
     int imgwidth = gdk_pixbuf_get_width(imgPixbuf) * scaleValue;
     int imgheight = gdk_pixbuf_get_height(imgPixbuf) * scaleValue;
 
     struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight, GDK_INTERP_BILINEAR);
+    imgPixbuf = img2;
 
     gtk_image_set_from_pixbuf(image, img2);
 }
@@ -144,7 +144,7 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 
     //get the pixbuf from the gtk image
     GError *err = NULL;
-    struct _GdkPixbuf *imgPixbuf;
+    //struct _GdkPixbuf *imgPixbuf;
     imgPixbuf = gdk_pixbuf_new_from_file(filename, &err);
 
     if(err)
@@ -158,6 +158,8 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 
     //change the size of the pixbuf
     struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight, GDK_INTERP_BILINEAR);
+    imgPixbuf = img2;
+
 
     gtk_image_set_from_pixbuf(image, img2);
 }
