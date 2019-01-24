@@ -14,7 +14,7 @@ body {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	width: 50%;
+	width: 75%;
 }
 
 /*******Menu*******/
@@ -89,18 +89,28 @@ nav li:hover .subsection{
 
 /*menu line on top*/
 .menu-index:hover{
-	border-top: 5px solid #e44d26;
-	background-color: RGBa(228, 77, 38, 0.15);
+	border-top: 5px solid #ff0000;
+	background-color: RGBa(255, 0, 0, 0.15);
 }
 
 .menu-presentation:hover{
-	border-top: 5px solid #FFAA00;
-	background-color: RGBa(255, 170, 0, 0.15);
+	border-top: 5px solid #e44d26;
+	background-color: RGBa(228, 77, 38, 0.15);
 }
 
 .menu-link:hover{
-	border-top: 5px solid #e44d26;
-	background-color: RGBa(228, 77, 38, 0.15);
+	border-top: 5px solid #ffff00;
+	background-color: RGBa(255, 255, 0, 0.15);
+}
+
+.menu-download:hover{
+	border-top: 5px solid #00ff00;
+	background-color: RGBa(0, 255, 0, 0.15);
+}
+
+.menu-contact:hover{
+	border-top: 5px solid #0000ff;
+	background-color: RGBa(0, 0, 255, 0.15);
 }
 
 nav > ul > li:hover a{
@@ -109,20 +119,25 @@ nav > ul > li:hover a{
 
 /*subsection background color*/
 .menu-index .subsection{
-	background-color: RGB(230, 100, 40);
 }
 
 .menu-presentation .subsection{
-	background-color: RGB(255, 170, 0);
+	background-color: RGBa(228, 77, 38, 0.5);
 }
 
 .menu-link .subsection{
-	background-color: RGB(230, 100, 40);
 }
+
+.menu-download .subsection{
+}
+
+.menu-contact .subsection{
+}
+
 
 /*subsection color - mouse*/
 .menu-presentation .subsection li:hover{
-	background-color: RGB(255, 0, 0);
+	background-color: RGB(228, 77, 38);
 }
 
 
@@ -134,9 +149,9 @@ nav > ul > li:hover a{
 }
 
 #content{
-	/*background-image:url(images/content.png);
-	background-repeat: repeat-y;*/
-	background-color: white;
+	background-image:url(images/content.png);
+	background-repeat: repeat-y;
+	padding: 0px 50px 0px 50px; 
 }
 text1{	
 	font-size: 20px;
@@ -150,7 +165,7 @@ text2{
 
 /********************** Footer ***************************/
 #footer {
-	background-image: url(images/footer.png); /*a faire*/
+	background-image: url(images/footer.png);
 	background-repeat: no-repeat;
 	width: 800px;
 	height: 100px;
