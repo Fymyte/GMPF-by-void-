@@ -5,6 +5,7 @@
   <object class="GtkAdjustment" id="Slider_Value">
     <property name="lower">0.01</property>
     <property name="upper">300</property>
+    <property name="value">100</property>
     <property name="step_increment">1</property>
   </object>
   <object class="GtkWindow" id="MainWindow">
@@ -181,7 +182,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkScale" id="scale">
+          <object class="GtkScale" id="Scaler">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="margin_left">10</property>

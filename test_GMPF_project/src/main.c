@@ -10,11 +10,14 @@ typedef struct
 void callback_image(GtkFileChooser *filebtn, gpointer user_data);
 void callback_about (GtkMenuItem *menuitem, gpointer user_data);
 void callback_adjust_scale (GtkRange *scale, gpointer user_data);
+//static gboolean key_event(GtkWidget *widget, GdkEventKey *event);
 
-    int
+struct _GdkPixbuf *imgPixbuf = NULL;
+
+int
 main(int argc, char *argv [])
 {
-    GtkWidget *fenetre_principale = NULL;
+    GtkWidget *Main_window = NULL;
     SGlobalData data;  /* variable propagée à tous les callbacks. */
     gchar *filename = NULL;
     GError *error = NULL;
@@ -41,14 +44,16 @@ main(int argc, char *argv [])
         return code;
     }
 
+
     /* Affectation des signaux de l'interface aux différents CallBacks. */
     gtk_builder_connect_signals (data.builder, &data);
 
     /* Récupération du pointeur de la fenêtre principale */
-    fenetre_principale = GTK_WIDGET(gtk_builder_get_object (data.builder, "MainWindow"));
+    Main_window = GTK_WIDGET(gtk_builder_get_object (data.builder, "MainWindow"));
+    //g_signal_connect(Main_window, "key-release-event", G_CALLBACK(key_event), NULL);
 
     /* Affichage de la fenêtre principale. */
-    gtk_widget_show_all (fenetre_principale);
+    gtk_widget_show_all (Main_window);
 
     gtk_main();
 
@@ -72,25 +77,43 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data)
     menuitem = 0;
 }
 
-void callback_adjust_sacle(GtkRange *scale, gpointer user_data)
+// static gboolean key_event(GtkWidget *widget, GdkEventKey *event)
+// {
+//     char *key = gdk_keyval_name (event->keyval);
+//     if (event->keyval == 65362)
+//     {
+//         callback_adjust_sacle
+//     }
+//     g_printerr("%d : %s\n", event->keyval, key);
+//     return FALSE;
+// }
+
+
+void callback_adjust_scale(GtkRange *scale, gpointer user_data)
 {
+
     SGlobalData *data = (SGlobalData*) user_data;
+
+    // if (scale == NULL)
+    // {
+    //     scale = gtk_builder_get_object(data->builder, "Scaler");
+    // }
 
     GtkImage *image = NULL;
 
     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
-    GError *err = NULL;
-    struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = gtk_image_get_pixbuf (image);
+    // GError *err = NULL;
+    // struct _GdkPixbuf *imgPixbuf;
+    // imgPixbuf = gtk_image_get_pixbuf (image);
 
-    if(err)
-    {
-        printf("Error : %s\n", err->message);
-        g_error_free(err);
-    }
+    // if(err)
+    // {
+    //     g_print("Error here : %s\n", err->message);
+    //     g_error_free(err);
+    // }
 
-    gtk_image_clear(image);
+    //gtk_image_clear(image);
 
     gdouble scaleValue = gtk_range_get_value (scale);
 
@@ -104,20 +127,20 @@ void callback_adjust_sacle(GtkRange *scale, gpointer user_data)
 
 void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 {
-	SGlobalData *data = (SGlobalData*) user_data;
+    SGlobalData *data = (SGlobalData*) user_data;
 
-	//create the variable wich will contain the file path
-	char *filename = NULL;
-	GtkImage *image = NULL;
+    //create the variable wich will contain the file path
+    char *filename = NULL;
+    GtkImage *image = NULL;
 
-	//get the path from the gtk file chooser
-	filename = gtk_file_chooser_get_filename(filebtn);
+    //get the path from the gtk file chooser
+    filename = gtk_file_chooser_get_filename(filebtn);
 
-	image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
-	//print the image on the gtk image box
-	gtk_image_clear(image);
-	//gtk_image_set_from_file(image, filename);
+    //print the image on the gtk image box
+    gtk_image_clear(image);
+    //gtk_image_set_from_file(image, filename);
 
     //get the pixbuf from the gtk image
     GError *err = NULL;
