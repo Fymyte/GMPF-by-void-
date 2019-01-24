@@ -193,7 +193,7 @@
             <property name="round_digits">1</property>
             <property name="digits">0</property>
             <property name="value_pos">right</property>
-            <signal name="value-changed" handler="callback_adjust_scale" swapped="no"/>
+            <signal name="value-changed" handler="adjust_scale" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
