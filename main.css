@@ -27,11 +27,16 @@ body {
 nav{
 	width: 100%;
 	background-color: #424558;
+  	position: -webkit-sticky; /* Safari */
+	position: sticky;
+    
+    display: block;
 }
 
 nav > ul{
 	margin: 0px;
 	padding: 0px;
+    position: relative;
 }
 
 nav > ul > li{
@@ -125,6 +130,72 @@ nav > ul > li:hover a{
 	background-color: RGB(255, 0, 0);
 }
 
+/*******Menu mobile*****/
+nav input[type=checkbox] {
+    display: none;
+    
+}
+
+.menu-mobile {
+    display: none;
+}
+
+nav input[type=checkbox]:checked ~ ul {
+    display: block;
+}
+
+@media screen and (min-width: 500px) {
+    nav li:hover .menu-subsection {
+        display: inline-block;
+        position: absolute;
+        top: 100%;
+        left: 0px;
+        margin: 4px 0px 0px 0px;
+        padding: 0px;
+        z-index: 1000;
+    }
+    
+    .menu-presentations .subsection li:hover{
+        background-color: rgb(255, 255, 255);
+    }
+    
+    .menu-presentations .subsection li {
+        border-bottom: 1px solid rgb(192, 192, 192);
+        border-left: 1px solid rgb(192, 192, 192);
+        border-right: 1px solid rgb(192, 192, 192);
+    }
+}
+
+
+@media screen and (max-width: 500px) {
+    .menu-mobile {
+        display: block;
+        color: rgb(255, 255, 255);
+        background-color: rgba(29, 197, 151, 0.97);
+        text-align: center;
+        padding: 14px 0px;
+        font-family: Arial;
+    }
+    nav ul {
+        display: none;
+    }
+    nav ul li, nav ul li a {
+        width: 100%;
+        text-align: center;
+    }
+    nav ul li a, nav ul li a {
+        padding: 10px 0px;
+    }
+    nav li .subsection {
+        display: block;
+        position: relative;
+    }
+    
+    .subsection li {
+        border-left: 1px solid rgb(192, 192, 192);
+        border-right: 1px solid rgb(192, 192, 192);
+    }    
+}
 
 /*******Container*******/
 #container{
