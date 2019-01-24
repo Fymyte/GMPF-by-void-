@@ -220,7 +220,7 @@ nav input[type=checkbox]:checked ~ ul {
 }
 
 #content{
-	background-image:url(images/content.png);
+	background-image:url(images/content2.png);
 	background-repeat: repeat-y;
 	padding: 0px 50px 0px 50px; 
 }
