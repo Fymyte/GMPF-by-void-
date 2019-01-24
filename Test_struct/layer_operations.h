@@ -7,7 +7,7 @@
 
 #include "types_redefine.h"
 #include "layer_manager.h"
-#include "GMPF_Pixel.h"
+#include "GMPF_Struct.h"
 
 
 
@@ -18,11 +18,11 @@
 // FUNCTIONS
 
 Uint32 GetPixel(GdkPixbuf *surface, unsigned x, unsigned y); //TODO - Need to be deleted
-void PutPixel(GdkPixbuf *surface, unsigned x, unsigned y, GMPF_Pixel pixel); //TODO - Need to be deleted
+void PutPixel(GdkPixbuf *surface, unsigned x, unsigned y, GMPF_Pixel pixel);
 
 int IsInSurface(GdkPixbuf *img, int x, int y); //TODO
 
-GdkPixbuf* myRotation (GdkPixbuf *img, int angle); //TODO
+GdkPixbuf* myRotation (GdkPixbuf *img, double rad_angle); //TODO: soon finish
 
 
 void GetPixelRGB(GdkPixbuf *img, int x, int y, Uint8 *r, Uint8 *g, Uint8 *b); //TODO

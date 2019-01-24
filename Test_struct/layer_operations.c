@@ -13,17 +13,13 @@
 
 // TODO: NEED TO BE TESTED
 int IsInSurface(GdkPixbuf *img, int x, int y) {
-    if (x >= 0 && y >= 0 && x < img->width && y < img->height)
-    {
-        return 1; // return True
-    }
-    return 0; // return False
-}
+    return x >= 0 && y >= 0 && x < img->width && y < img->height;
+} // 1 = True && 0 = False
 
 
 
 
-// TODO: move from SDL to GDK
+// TODO: move from SDL to GDK - ADVANCED
 void myRotation_new_img_size(int *width, int *height,
         int s_width, int s_height, double cosValue, double sinValue)
 {
@@ -39,49 +35,48 @@ void myRotation_new_img_size(int *width, int *height,
         yVal = yVal2;
 }
 
-GdkPixbuf* myRotation (GdkPixbuf *img, int angle) {
-    double rad_angle = (angle / 180.0) * M_PI; //normalize_angle(angle);
+GdkPixbuf* myRotation (GdkPixbuf *src, double rad_angle) {
+    //double rad_angle = (angle / 180.0) * M_PI; //normalize_angle(angle);
     // to have an angle in radians
 
-    int s_img_w = img->w >> 1;
-    int s_img_h = img->h >> 1;
+    int src_sw = src->w >> 1; // src_sw = src semi width
+    int src_sh = src->h >> 1;
 
-    double cosValue = cos(rad_angle);
-    double sinValue = sin(rad_angle);
-
-
-    int r_width, r_height;
-
-    myRotation_new_img_size(&r_width, &r_height, s_img_w, s_img_h, cosValue, sinValue);
-
-    GdkPixbuf *rotation =
-            gdk_pixbuf_new (GdkColorspace colorspace,
-                TRUE, int bits_per_sample, int width, int height);
+    double cosVal = cos(rad_angle);
+    double sinVal = sin(rad_angle);
 
 
-    int semi_r_width = r_width / 2;
-    int semi_r_height = r_height / 2;
+    int dst_w, dst_h;
 
-    int x, y, new_i, new_j, isnot_moved;
+    myRotation_new_img_size(&dst_w, &dst_h, src_sw, src_sh, cosVal, sinVal);
 
-    for (int i = -semi_r_width; i < semi_r_width; i++)
+    GdkPixbuf *dst =
+            gdk_pixbuf_new (GdkColorspace colorspace, TRUE,
+                int bits_per_sample, dst_w, dst_h); // need to update
+
+
+    int dst_sw = dst_w / 2;
+    int dst_sh = dst_h / 2;
+
+    int x, y, new_i, new_j;
+
+    for (int i = -dst_sw; i < dst_sw; i++)
     {
-        for (int j = -semi_r_height; j < semi_r_height; j++)
+        for (int j = -dst_sh; j < dst_sh; j++)
         {
-            new_i = semi_r_width + i;
-            new_j = semi_r_height + j;
-            x = (int) (cosValue * i + sinValue * j);
-            y = (int) (-sinValue * i + cosValue * j);
-            isnot_moved = MovePixelBtwSurface(img, s_img_w + x, s_img_h + y,
-                    rotation, new_i, new_j);
-            if (isnot_moved)
+            new_i = dst_sw + i;
+            new_j = dst_sh + j;
+            x = (int) (cosVal * i + sinVal * j);
+            y = (int) (-sinVal * i + cosVal * j);
+            if (MovePixelBtwSurface(src, src_sw + x, src_sh + y,
+                    dst, new_i, new_j))
             {
-                SetPixelRGB(rotation, new_i, new_j, 255, 255, 255);
+                SetPixelRGB(dst, new_i, new_j, 255, 255, 255);
             }
         }
     }
 
-    return rotation;
+    return dst;
 }
 
 
@@ -118,7 +113,7 @@ void SetPixelRGB(GdkPixbuf *img, int x, int y, Uint8 r, Uint8 g, Uint8 b) {
 
 // TODO: move from SDL to GDK
 void MovePixelBtwSurface(GdkPixbuf *src, int sx, int sy, 
-        SDL_Surface *dst, int dx, int dy) {
+        GdkPixbuf *dst, int dx, int dy) {
     int test = IsInSurface(src, sx, sy);
     int test2 = IsInSurface(dst, dx, dy);
     if (test && test2)
@@ -134,57 +129,37 @@ void MovePixelBtwSurface(GdkPixbuf *src, int sx, int sy,
 
 
 // TODO: move from SDL to GDK
-static inline
-Uint8* pixelref(GdkPixbuf *surf, unsigned x, unsigned y) {
-  int bpp = surf->format->BytesPerPixel;
-  return (Uint8*)surf->pixels + y * surf->pitch + x * bpp;
-}
-
-// TODO: move from SDL to GDK
-Uint32 GetPixel(GdkPixbuf *surface, unsigned x, unsigned y) {
-  Uint8 *p = pixelref(surface, x, y);
-  switch(surface->format->BytesPerPixel) {
-  case 1:
-    return *p;
-  case 2:
-    return *(Uint16 *)p;
-  case 3:
-    if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-      return p[0] << 16 | p[1] << 8 | p[2];
-    else
-      return p[0] | p[1] << 8 | p[2] << 16;
-  case 4:
-    return *(Uint32 *)p;
-  }
-  return 0;
+GMPF_Pixel *GetPixel(GdkPixbuf *surface, unsigned x, unsigned y) {
+    
 }
 
 
-// TODO: move from SDL to GDK
-void PutPixel(GdkPixbuf *surface, unsigned x, unsigned y, Uint32 pixel) {
-  Uint8 *p = pixelref(surface, x, y);
-  switch(surface->format->BytesPerPixel) {
-  case 1:
-    *p = pixel;
-    break;
-  case 2:
-    *(Uint16 *)p = pixel;
-    break;
-  case 3:
-    if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-      p[0] = (pixel >> 16) & 0xff;
-      p[1] = (pixel >> 8) & 0xff;
-      p[2] = pixel & 0xff;
-    } else {
-      p[0] = pixel & 0xff;
-      p[1] = (pixel >> 8) & 0xff;
-      p[2] = (pixel >> 16) & 0xff;
-    }
-    break;
-  case 4:
-    *(Uint32 *)p = pixel;
-    break;
-  }
+// founded on GNOME DEVELOPER website
+void PutPixel(GdkPixbuf *surface, unsigned x, unsigned y, GMPF_Pixel *pixel) {
+    int width, height, rowstride, n_channels;
+    guchar *pixels, *p;
+
+    n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+
+    g_assert (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
+    g_assert (gdk_pixbuf_get_bits_per_sample (pixbuf) == 8);
+    g_assert (gdk_pixbuf_get_has_alpha (pixbuf));
+    g_assert (n_channels == 4);
+
+    width = gdk_pixbuf_get_width (pixbuf);
+    height = gdk_pixbuf_get_height (pixbuf);
+
+    g_assert (x >= 0 && x < width);
+    g_assert (y >= 0 && y < height);
+
+    rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+    pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+    p = pixels + y * rowstride + x * n_channels;
+    p[0] = pixel->R;
+    p[1] = pixel->G;
+    p[2] = pixel->B;
+    p[3] = pixel->A;
 }
 
 

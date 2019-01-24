@@ -14,6 +14,11 @@ struct GMPF_Pixel {
 } GMPF_Pixel;
 
 
+// TODO: complete the struct GMPF_Size
+struct GMPF_Size {
+    int h, w;
+} GMPF_Size;
+
 
 // FUNCTIONS
 
