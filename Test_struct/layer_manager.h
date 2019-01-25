@@ -5,6 +5,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "types_redefine.h"
+#include "GMPF_Struct.h"
 
 //
 //
@@ -15,28 +16,17 @@
 // STRUCTURES
 
 
-// TODO: complete the struct GMPF_Layer_Manager
-struct GMPF_Layer_Manager {
-    int nb_layer;
-} GMPF_Layer_Manager ;
 
-
-// TODO: complete the struct GMPF_Layer
-struct GMPF_Layer {
-    GdkPixbuf *img; // or without pointer
-    GMPF_Image image;
-} GMPF_Layer;
-
-
-// TODO: complete the struct GMPF_Image
-struct GMPF_Image {
-    GdkPixbuf image;
-} GMPF_Image;
 
 
 
 
 // FUNCTIONS
+
+GMPF_Layer * Layer_Create() {
+
+}
+
 
 
 

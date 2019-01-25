@@ -6,7 +6,6 @@
 #include <math.h>
 
 #include "types_redefine.h"
-#include "layer_manager.h"
 #include "GMPF_Struct.h"
 
 
@@ -17,19 +16,19 @@
 
 // FUNCTIONS
 
-Uint32 GetPixel(GdkPixbuf *surface, unsigned x, unsigned y); //TODO - Need to be deleted
-void PutPixel(GdkPixbuf *surface, unsigned x, unsigned y, GMPF_Pixel pixel);
+GMPF_Pixel * LayerGetPixel(GMPF_Layer *surface, unsigned x, unsigned y); //TODO
+void LayerPutPixel(GMPF_Layer *surface, unsigned x, unsigned y, GMPF_Pixel *pixel);
 
-int IsInSurface(GdkPixbuf *img, int x, int y); //TODO
+int IsInLayer(GMPF_Layer *layer, int x, int y);
 
-GdkPixbuf* myRotation (GdkPixbuf *img, double rad_angle); //TODO: soon finish
+GdkPixbuf * LayerRotation (GMPF_Layer *layer, double rad_angle); //TODO: soon finish
 
 
-void GetPixelRGB(GdkPixbuf *img, int x, int y, Uint8 *r, Uint8 *g, Uint8 *b); //TODO
-void SetPixelRGB(GdkPixbuf *img, int x, int y, Uint8 r, Uint8 g, Uint8 b); //TODO
+void GetPixelRGB(GMPF_Layer *img, int x, int y, Uint8 *r, Uint8 *g, Uint8 *b); //TODO - Need to be deleted
+void SetPixelRGB(GMPF_Layer *img, int x, int y, Uint8 r, Uint8 g, Uint8 b); //TODO - Need to be deleted
 
-void MovePixelBtwSurface(GdkPixbuf *src, int sx, int sy, 
-        GdkPixbuf *dst, int dx, int dy); //TODO
+void MovePixelBtwLayer(GMPF_Layer *src, int sx, int sy, 
+        GMPF_Layer *dst, int dx, int dy); //TODO
 
 
 

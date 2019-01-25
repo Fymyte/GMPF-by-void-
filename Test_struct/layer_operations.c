@@ -12,8 +12,8 @@
 
 
 // TODO: NEED TO BE TESTED
-int IsInSurface(GdkPixbuf *img, int x, int y) {
-    return x >= 0 && y >= 0 && x < img->width && y < img->height;
+int IsInLayer(GMPF_Layer *layer, int x, int y) {
+    return x >= 0 && y >= 0 && x < layer->img_size.w && y < layer->img_size.h;
 } // 1 = True && 0 = False
 
 
@@ -22,7 +22,7 @@ int IsInSurface(GdkPixbuf *img, int x, int y) {
 // TODO: move from SDL to GDK - ADVANCED
 void myRotation_new_img_size(int *width, int *height,
         int s_width, int s_height, double cosValue, double sinValue)
-{
+{ // need to remove and add in LayerRotation
     int xVal = (int) fabs(cosValue * (s_width) + sinValue * (-s_height));
     int yVal = (int) fabs(-sinValue * (s_width) + cosValue * (-s_height));
 
@@ -35,9 +35,8 @@ void myRotation_new_img_size(int *width, int *height,
         yVal = yVal2;
 }
 
-GdkPixbuf* myRotation (GdkPixbuf *src, double rad_angle) {
-    //double rad_angle = (angle / 180.0) * M_PI; //normalize_angle(angle);
-    // to have an angle in radians
+GdkPixbuf * LayerRotation (GMPF_Layer *layer, double rad_angle) {
+    GdkPixbuf *img = layer->image;
 
     int src_sw = src->w >> 1; // src_sw = src semi width
     int src_sh = src->h >> 1;
@@ -71,7 +70,7 @@ GdkPixbuf* myRotation (GdkPixbuf *src, double rad_angle) {
             if (MovePixelBtwSurface(src, src_sw + x, src_sh + y,
                     dst, new_i, new_j))
             {
-                SetPixelRGB(dst, new_i, new_j, 255, 255, 255);
+                SetPixelRGB(dst, new_i, new_j, 255, 255, 255); // need to change
             }
         }
     }
@@ -82,38 +81,22 @@ GdkPixbuf* myRotation (GdkPixbuf *src, double rad_angle) {
 
 
 // TODO: move from SDL to GDK
-void GetPixelRGB(GdkPixbuf *img, int x, int y, Uint8 *r, Uint8 *g, Uint8 *b) {
-    int test = IsInSurface(img, x, y);
-    if (test)
-    {
-        Uint32 pixel = getpixel(img, x, y);
-        SDL_GetRGB(pixel, img->format, r, g, b);
-    }
-    else
-    {
-        *r = 0;
-        *g = 0;
-        *b = 0;
-    }
+void GetPixelRGB(GMPF_Layer *img, int x, int y, Uint8 *r, Uint8 *g, Uint8 *b) {
+    
 }
 
 
 
 // TODO: move from SDL to GDK
-void SetPixelRGB(GdkPixbuf *img, int x, int y, Uint8 r, Uint8 g, Uint8 b) {
-    int test = IsInSurface(img, x, y);
-    if (test)
-    {
-        Uint32 pixel = SDL_MapRGB(img->format, r, g, b);
-        putpixel(img, x, y, pixel);
-    }
+void SetPixelRGB(GMPF_Layer *img, int x, int y, Uint8 r, Uint8 g, Uint8 b) {
+    
 }
 
 
 
 // TODO: move from SDL to GDK
-void MovePixelBtwSurface(GdkPixbuf *src, int sx, int sy, 
-        GdkPixbuf *dst, int dx, int dy) {
+void MovePixelBtwLayer(GMPF_Layer *src, int sx, int sy, 
+        GMPF_Layer *dst, int dx, int dy) {
     int test = IsInSurface(src, sx, sy);
     int test2 = IsInSurface(dst, dx, dy);
     if (test && test2)
@@ -129,14 +112,15 @@ void MovePixelBtwSurface(GdkPixbuf *src, int sx, int sy,
 
 
 // TODO: move from SDL to GDK
-GMPF_Pixel *GetPixel(GdkPixbuf *surface, unsigned x, unsigned y) {
+GMPF_Pixel * LayerGetPixel(GdkPixbuf *surface, unsigned x, unsigned y) {
     
 }
 
 
-// founded on GNOME DEVELOPER website
-void PutPixel(GdkPixbuf *surface, unsigned x, unsigned y, GMPF_Pixel *pixel) {
-    int width, height, rowstride, n_channels;
+// inspired by the function founded on GNOME DEVELOPER website
+void LayerPutPixel(GMPF_Layer *layer, unsigned x, unsigned y, GMPF_Pixel *pixel) {
+    GdkPixbuf *pixbuf = layer->image;
+    int rowstride, n_channels;
     guchar *pixels, *p;
 
     n_channels = gdk_pixbuf_get_n_channels (pixbuf);
@@ -146,16 +130,14 @@ void PutPixel(GdkPixbuf *surface, unsigned x, unsigned y, GMPF_Pixel *pixel) {
     g_assert (gdk_pixbuf_get_has_alpha (pixbuf));
     g_assert (n_channels == 4);
 
-    width = gdk_pixbuf_get_width (pixbuf);
-    height = gdk_pixbuf_get_height (pixbuf);
-
-    g_assert (x >= 0 && x < width);
-    g_assert (y >= 0 && y < height);
+    g_assert (x >= 0 && x < layer->img_size.w);
+    g_assert (y >= 0 && y < layer->img_size.h);
 
     rowstride = gdk_pixbuf_get_rowstride (pixbuf);
     pixels = gdk_pixbuf_get_pixels (pixbuf);
 
-    p = pixels + y * rowstride + x * n_channels;
+    p = pixels + y * rowstride + (x << 2);
+        // pixels + y * rowstride + x * nb_channels
     p[0] = pixel->R;
     p[1] = pixel->G;
     p[2] = pixel->B;
