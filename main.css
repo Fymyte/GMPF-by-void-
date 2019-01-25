@@ -4,9 +4,9 @@ body {
 	background-image:url(images/background.png);
 	background-position: center;
 	font-family: Arial;
-	font-size: 12px;
 	margin: 0px;
 	padding: 0px;
+	font-size: 14px;
 }
 
 index {
@@ -48,7 +48,6 @@ nav{
 	background-color: #424558;
   	position: -webkit-sticky; /* Safari */
 	position: sticky;
-    
     display: block;
 }
 
@@ -108,7 +107,7 @@ nav li:hover .subsection{
 }
 
 .menu-blank{
-	margin: 0px 100px 0px 100px;
+	margin: 0px 300px 0px 500px;
 }
 
 /*menu line on top*/
@@ -157,7 +156,6 @@ nav > ul > li:hover a{
 
 .menu-contact .subsection{
 }
-
 
 /*subsection color - mouse*/
 .menu-presentation .subsection li:hover{
@@ -235,7 +233,7 @@ nav input[type=checkbox]:checked ~ ul {
 #container{
 	margin: 0px auto;
 	text-align: left;
-	width: 800px;
+	width: 900px;
 }
 
 #content{
@@ -257,7 +255,7 @@ text2{
 #footer {
 	background-image: url(images/footer.png);
 	background-repeat: no-repeat;
-	width: 800px;
+	width: 900px;
 	height: 100px;
 	text-align: center;
 	float: left;
