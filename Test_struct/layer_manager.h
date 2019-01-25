@@ -3,6 +3,7 @@
 
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <stdlib.h>
 
 #include "types_redefine.h"
 #include "GMPF_Struct.h"
@@ -23,9 +24,8 @@
 
 // FUNCTIONS
 
-GMPF_Layer * Layer_Create() {
-
-}
+GMPF_Layer * Layer_CreateFromFile(const char *filename); //TODO: complete
+void Layer_Free(GMPF_Layer *layer); //TODO: complete
 
 
 
