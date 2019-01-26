@@ -1,0 +1,33 @@
+#ifndef LAYER_OPERATIONS_H
+#define LAYER_OPERATIONS_H
+
+
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <math.h>
+#include <stdlib.h>
+
+#include "types_redefine.h"
+#include "GMPF_Struct.h"
+
+
+
+// STRUCTURES
+
+
+
+// FUNCTIONS
+
+void LayerGetPixel(GMPF_Layer *layer, GMPF_Pos pos, GMPF_Pixel *pixel); // FINISHED / need to test
+void LayerPutPixel(GMPF_Layer *layer, GMPF_Pos pos, GMPF_Pixel *pixel); // FINISHED / need to test
+
+int IsInLayer(GMPF_Layer *layer, GMPF_Pos pos); // FINISHED / need to test
+
+GdkPixbuf * LayerRotation (GMPF_Layer *layer, double rad_angle); //TODO: soon finish
+
+
+void MovePixelBtwLayer(GMPF_Layer *src, GMPF_Pos *srcpos, 
+        GMPF_Layer *dst, GMPF_Pos *dstpos); //TODO: soon finish
+
+
+
+#endif /* LAYER_OPERATIONS_H */

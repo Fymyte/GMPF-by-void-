@@ -1,4 +1,4 @@
-#include "layer_manager.h"
+#include "GMPF_LayerMngr.h"
 
 
 GMPF_Layer * Layer_CreateFromFile(const char *filename) {
