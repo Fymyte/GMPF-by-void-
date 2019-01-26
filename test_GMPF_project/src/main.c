@@ -10,6 +10,13 @@ typedef struct
 void callback_image(GtkFileChooser *filebtn, gpointer user_data);
 void callback_about (GtkMenuItem *menuitem, gpointer user_data);
 void callback_adjust_scale (GtkRange *scale, gpointer user_data);
+void callback_grey(GtkMenuItem *menuitem, gpointer user_data);
+void callback_binarize(GtkMenuItem *menuitem, gpointer user_data);
+
+//pixels operations functions
+void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha);
+gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint     y, guchar *red, guchar *green, guchar *blue, guchar *alpha);
+
 //static gboolean key_event(GtkWidget *widget, GdkEventKey *event);
 
 struct _GdkPixbuf *imgPixbuf;
@@ -113,8 +120,8 @@ void callback_adjust_scale(GtkRange *scale, gpointer user_data)
 
     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
-    struct _GdkPixbuf *imgPixbuf = NULL;
-    imgPixbuf = gtk_image_get_pixbuf (image);
+    //struct _GdkPixbuf *imgPixbuf = NULL;
+    //imgPixbuf = gtk_image_get_pixbuf (image);
 
     //gtk_image_clear(image);
 
@@ -168,4 +175,126 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 
 
     gtk_image_set_from_pixbuf(image, img2);
+}
+
+void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
+{
+    menuitem = 0;
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkImage *image = NULL;
+    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    
+    struct _GdkPixbuf *imgPixbuf;
+    imgPixbuf = gtk_image_get_pixbuf(image);
+
+    guchar red;
+    guchar green;
+    guchar blue, alpha;
+
+    //gdkpixbuf_get_colors_by_coordinates(imgPixbuf, 0, 0, red, green, blue);
+    guchar grey;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < height; i++)
+    {
+        for(int j = 0; j < width; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, j, i, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            grey = (red + green + blue) / 3;
+            put_pixel(imgPixbuf, j, i, grey, grey, grey, alpha);
+        }
+    }
+}
+
+void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
+{
+    menuitem = 0;
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkImage *image = NULL;
+    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"))    ;   
+
+    struct _GdkPixbuf *imgPixbuf;
+    imgPixbuf = gtk_image_get_pixbuf(image);
+
+    guchar red;
+    guchar green;
+    guchar blue, alpha;
+
+
+    guchar grey;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < height; i++)
+    {
+        for(int j = 0; j < width; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, j, i, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            grey = (red + green + blue) / 3;
+            if(grey <= 127)
+                put_pixel(imgPixbuf, j, i, 0, 0, 0, alpha);
+            else
+                put_pixel(imgPixbuf, j, i, 255, 255, 255, alpha);
+        }
+    }
+}
+
+void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha)
+{
+    int width, height, rowstride, n_channels;
+    guchar *pixels, *p;
+
+    n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+
+    g_assert (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
+    g_assert (gdk_pixbuf_get_bits_per_sample (pixbuf) == 8);
+    g_assert (gdk_pixbuf_get_has_alpha (pixbuf));
+    g_assert (n_channels == 4);
+
+    width = gdk_pixbuf_get_width (pixbuf);
+    height = gdk_pixbuf_get_height (pixbuf);
+
+    g_assert (x >= 0 && x < width);
+    g_assert (y >= 0 && y < height);
+
+    rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+    pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+    p = pixels + y * rowstride + x * n_channels;
+    p[0] = red;
+    p[1] = green;
+    p[2] = blue;
+    p[3] = alpha;
+}
+
+gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y, guchar *red, guchar *green, guchar *blue, guchar *alpha)
+{
+    guchar *pixel=NULL;
+    gint channel=0;
+    gint width=0;
+
+    if (pixbuf == NULL) return FALSE;
+    if (x<0 || y<0) return FALSE;
+    if (x>=gdk_pixbuf_get_width(pixbuf)) return FALSE;
+    if (y>=gdk_pixbuf_get_height(pixbuf)) return FALSE;
+
+    pixel=gdk_pixbuf_get_pixels(pixbuf);
+    channel=gdk_pixbuf_get_n_channels(pixbuf);
+    width=gdk_pixbuf_get_width(pixbuf);
+
+    *red   = pixel[(x*channel)+(y*width*channel)];
+    *green = pixel[(x*channel)+(y*width*channel)+1];
+    *blue  = pixel[(x*channel)+(y*width*channel)+2];
+    *alpha = pixel[(x*channel)+(y*width*channel)+3];
+
+    return TRUE;
 }

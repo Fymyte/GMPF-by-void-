@@ -1,11 +1,26 @@
 #ifndef GMPF_PIXEL_H
 #define GMPF_PIXEL_H
 
+
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
 #include "types_redefine.h"
 
 
 
 // STRUCTURES
+
+// TODO: complete the struct GMPF_Layer_Manager
+struct GMPF_Layer_Manager {
+    int nb_layer;
+} GMPF_Layer_Manager ;
+
+
+// TODO: complete the struct GMPF_Layer
+struct GMPF_Layer {
+    GMPF_Size img_size;
+    GdkPixbuf *image;
+} GMPF_Layer;
 
 
 // TODO: complete the struct GMPF_Pixel
