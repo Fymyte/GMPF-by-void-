@@ -4,6 +4,7 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include "types_redefine.h"
 #include "GMPF_Struct.h"
@@ -16,19 +17,16 @@
 
 // FUNCTIONS
 
-GMPF_Pixel * LayerGetPixel(GMPF_Layer *surface, unsigned x, unsigned y); //TODO
-void LayerPutPixel(GMPF_Layer *surface, unsigned x, unsigned y, GMPF_Pixel *pixel);
+void LayerGetPixel(GMPF_Layer *layer, GMPF_Pos pos, GMPF_Pixel *pixel); // FINISHED / need to test
+void LayerPutPixel(GMPF_Layer *layer, GMPF_Pos pos, GMPF_Pixel *pixel); // FINISHED / need to test
 
-int IsInLayer(GMPF_Layer *layer, int x, int y);
+int IsInLayer(GMPF_Layer *layer, GMPF_Pos pos); // FINISHED / need to test
 
 GdkPixbuf * LayerRotation (GMPF_Layer *layer, double rad_angle); //TODO: soon finish
 
 
-void GetPixelRGB(GMPF_Layer *img, int x, int y, Uint8 *r, Uint8 *g, Uint8 *b); //TODO - Need to be deleted
-void SetPixelRGB(GMPF_Layer *img, int x, int y, Uint8 r, Uint8 g, Uint8 b); //TODO - Need to be deleted
-
-void MovePixelBtwLayer(GMPF_Layer *src, int sx, int sy, 
-        GMPF_Layer *dst, int dx, int dy); //TODO
+void MovePixelBtwLayer(GMPF_Layer *src, GMPF_Pos *srcpos, 
+        GMPF_Layer *dst, GMPF_Pos *dstpos); //TODO: soon finish
 
 
 

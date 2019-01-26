@@ -12,8 +12,9 @@
 
 
 // TODO: NEED TO BE TESTED
-int IsInLayer(GMPF_Layer *layer, int x, int y) {
-    return x >= 0 && y >= 0 && x < layer->img_size.w && y < layer->img_size.h;
+int IsInLayer(GMPF_Layer *layer, GMPF_Pos pos) {
+    return pos->x >= 0 && pos->y >= 0
+        && pos->x < layer->img_size.w && pos->y < layer->img_size.h;
 } // 1 = True && 0 = False
 
 
@@ -80,60 +81,63 @@ GdkPixbuf * LayerRotation (GMPF_Layer *layer, double rad_angle) {
 
 
 
-// TODO: move from SDL to GDK
-void GetPixelRGB(GMPF_Layer *img, int x, int y, Uint8 *r, Uint8 *g, Uint8 *b) {
-    
-}
 
 
 
 // TODO: move from SDL to GDK
-void SetPixelRGB(GMPF_Layer *img, int x, int y, Uint8 r, Uint8 g, Uint8 b) {
-    
-}
-
-
-
-// TODO: move from SDL to GDK
-void MovePixelBtwLayer(GMPF_Layer *src, int sx, int sy, 
-        GMPF_Layer *dst, int dx, int dy) {
-    int test = IsInSurface(src, sx, sy);
-    int test2 = IsInSurface(dst, dx, dy);
-    if (test && test2)
-    {
-        // don't use GetPixelRGB / SetPixelRGB for not test IsInSurface twice
-        Uint8 r, g, b;
-        Uint32 pixel = getpixel(src, sx, sy);
-        SDL_GetRGB(pixel, src->format, &r, &g, &b);
-        pixel = SDL_MapRGB(dst->format, r, g, b);
-        putpixel(dst, dx, dy, pixel);
-    }
+void MovePixelBtwLayer(GMPF_Layer *src, GMPF_Pos *srcpos, 
+        GMPF_Layer *dst, GMPF_Pos *dstpos) {
+    GMPF_Pixel *pixel = // need a malloc;
+    LayerGetPixel(src, srcpos, pixel);
+    LayerPutPixel(dst, dstpos, pixel);
+    // free pixel
 }
 
 
 // TODO: move from SDL to GDK
-GMPF_Pixel * LayerGetPixel(GdkPixbuf *surface, unsigned x, unsigned y) {
-    
+void LayerGetPixel(GMPF_Layer *layer, GMPF_Pos pos, GMPF_Pixel *pixel) {
+    GdkPixbuf *pixbuf = layer->image;
+    guchar *p;
+
+    int x = pos->x;
+    int y = pos->y;
+
+    g_assert (x >= 0 && x < layer->img_size.w); // need to be replaced
+    g_assert (y >= 0 && y < layer->img_size.h);
+
+    int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+    p = gdk_pixbuf_get_pixels (pixbuf);
+
+    p += y * rowstride + (x << 2);
+        // pixels + y * rowstride + x * nb_channels
+        // nb_channels is always 4.
+    pixel->R = p[0];
+    pixel->G = p[1];
+    pixel->B = p[2];
+    pixel->A = p[3];
 }
 
 
 // inspired by the function founded on GNOME DEVELOPER website
-void LayerPutPixel(GMPF_Layer *layer, unsigned x, unsigned y, GMPF_Pixel *pixel) {
+void LayerPutPixel(GMPF_Layer *layer, GMPF_Pos pos, GMPF_Pixel *pixel) {
     GdkPixbuf *pixbuf = layer->image;
-    int rowstride, n_channels;
+    //int rowstride, n_channels;
     guchar *pixels, *p;
 
-    n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+    //n_channels = gdk_pixbuf_get_n_channels (pixbuf);
 
-    g_assert (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
-    g_assert (gdk_pixbuf_get_bits_per_sample (pixbuf) == 8);
-    g_assert (gdk_pixbuf_get_has_alpha (pixbuf));
-    g_assert (n_channels == 4);
+    int x = pos->x;
+    int y = pos->y;
+
+    //g_assert (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
+    //g_assert (gdk_pixbuf_get_bits_per_sample (pixbuf) == 8);
+    //g_assert (gdk_pixbuf_get_has_alpha (pixbuf));
+    //g_assert (n_channels == 4);
 
     g_assert (x >= 0 && x < layer->img_size.w);
     g_assert (y >= 0 && y < layer->img_size.h);
 
-    rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+    int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
     pixels = gdk_pixbuf_get_pixels (pixbuf);
 
     p = pixels + y * rowstride + (x << 2);

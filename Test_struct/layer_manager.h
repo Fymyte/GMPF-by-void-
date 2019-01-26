@@ -4,6 +4,8 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <stdlib.h>
+#include <err.h> // for the errors
+#include <stdio.h> // for the errors
 
 #include "types_redefine.h"
 #include "GMPF_Struct.h"
