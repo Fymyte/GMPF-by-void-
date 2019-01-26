@@ -13,6 +13,7 @@
 // TODO: complete the struct GMPF_Layer_Manager
 struct GMPF_Layer_Manager {
     int nb_layer;
+    GMPF_Layer *layer_list;
 } GMPF_Layer_Manager ;
 
 
@@ -20,6 +21,7 @@ struct GMPF_Layer_Manager {
 struct GMPF_Layer {
     GMPF_Size img_size;
     GdkPixbuf *image;
+    GMPF_Layer *next;
 } GMPF_Layer;
 
 

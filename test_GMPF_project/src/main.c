@@ -20,8 +20,8 @@ gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint    
 //static gboolean key_event(GtkWidget *widget, GdkEventKey *event);
 
 struct _GdkPixbuf *imgPixbuf;
-int default_size_width;
-int default_size_height;
+int default_size_width = 0;
+int default_size_height = 0;
 
 int
 main(int argc, char *argv [])
@@ -30,6 +30,7 @@ main(int argc, char *argv [])
     SGlobalData data;  /* variable propagée à tous les callbacks. */
     gchar *filename = NULL;
     GError *error = NULL;
+    struct _GdkDevice *device = NULL;
 
     /* Initialisation de la librairie Gtk. */
     gtk_init(&argc, &argv);
@@ -40,7 +41,7 @@ main(int argc, char *argv [])
     /* Création du chemin complet pour accéder au fichier test.glade. */
     /* g_build_filename(); construit le chemin complet en fonction du système */
     /* d'exploitation. ( / pour Linux et \ pour Windows) */
-    filename =  g_build_filename ("test.glade", NULL);
+    filename =  g_build_filename ("interface.glade", NULL);
 
     /* Chargement du fichier test.glade. */
     gtk_builder_add_from_file (data.builder, filename, &error);
@@ -120,8 +121,8 @@ void callback_adjust_scale(GtkRange *scale, gpointer user_data)
 
     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
-    //struct _GdkPixbuf *imgPixbuf = NULL;
-    //imgPixbuf = gtk_image_get_pixbuf (image);
+    struct _GdkPixbuf *imgPixbuf = NULL;
+    imgPixbuf = gtk_image_get_pixbuf (image);
 
     //gtk_image_clear(image);
 
@@ -129,6 +130,11 @@ void callback_adjust_scale(GtkRange *scale, gpointer user_data)
 
     scaleValue = scaleValue / 100;
 
+    if (default_size_width == 0 || default_size_height == 0)
+    {
+        default_size_width = gdk_pixbuf_get_width(imgPixbuf);
+        default_size_height = gdk_pixbuf_get_height(imgPixbuf);
+    }
     int imgwidth = default_size_width * scaleValue;
     int imgheight = default_size_height * scaleValue;
 
@@ -148,6 +154,7 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 
     //get the path from the gtk file chooser
     filename = gtk_file_chooser_get_filename(filebtn);
+    g_print("filename : %s\n", filename);
 
     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
@@ -173,6 +180,8 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
     struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf, default_size_width, default_size_height, GDK_INTERP_BILINEAR);
     imgPixbuf = img2;
 
+    g_print("def_width = %d; def_height = %d", default_size_width, default_size_height);
+
 
     gtk_image_set_from_pixbuf(image, img2);
 }
@@ -183,7 +192,7 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
     SGlobalData *data = (SGlobalData*) user_data;
     GtkImage *image = NULL;
     image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-    
+
     struct _GdkPixbuf *imgPixbuf;
     imgPixbuf = gtk_image_get_pixbuf(image);
 
@@ -216,7 +225,7 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkImage *image = NULL;
-    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"))    ;   
+    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"))    ;
 
     struct _GdkPixbuf *imgPixbuf;
     imgPixbuf = gtk_image_get_pixbuf(image);
