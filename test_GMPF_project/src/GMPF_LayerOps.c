@@ -12,7 +12,7 @@
 
 
 // TODO: NEED TO BE TESTED
-int IsInLayer(GMPF_Layer *layer, GMPF_Pos pos) {
+int IsInLayer(GMPF_Layer *layer, GMPF_Pos *pos) {
     return pos->x >= 0 && pos->y >= 0
         && pos->x < layer->img_size.w && pos->y < layer->img_size.h;
 } // 1 = True && 0 = False
@@ -34,13 +34,16 @@ void myRotation_new_img_size(int *width, int *height,
         xVal = xVal2;
     if (yVal < yVal2)
         yVal = yVal2;
+
+    *width = xVal;
+    *height = yVal;
 }
 
-GdkPixbuf * LayerRotation (GMPF_Layer *layer, double rad_angle) {
-    GdkPixbuf *img = layer->image;
+GdkPixbuf * LayerRotation (GMPF_Layer *src, double rad_angle) {
+    GdkPixbuf *img = src->image;
 
-    int src_sw = src->w >> 1; // src_sw = src semi width
-    int src_sh = src->h >> 1;
+    int src_sw = src->img_size.w >> 1; // src_sw = src semi width
+    int src_sh = src->img_size.h >> 1;
 
     double cosVal = cos(rad_angle);
     double sinVal = sin(rad_angle);
@@ -51,14 +54,18 @@ GdkPixbuf * LayerRotation (GMPF_Layer *layer, double rad_angle) {
     myRotation_new_img_size(&dst_w, &dst_h, src_sw, src_sh, cosVal, sinVal);
 
     GdkPixbuf *dst =
-            gdk_pixbuf_new (GdkColorspace colorspace, TRUE,
-                int bits_per_sample, dst_w, dst_h); // need to update
+            gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE,
+                8, dst_w, dst_h);
+            // need to test - need to change w GMPF_Layer init
 
 
     int dst_sw = dst_w / 2;
     int dst_sh = dst_h / 2;
 
     int x, y, new_i, new_j;
+
+    GMPF_Pos src_pos = {.x = 0, .y = 0};
+    GMPF_Pos dst_pos = {.x = 0, .y = 0};
 
     for (int i = -dst_sw; i < dst_sw; i++)
     {
@@ -68,11 +75,14 @@ GdkPixbuf * LayerRotation (GMPF_Layer *layer, double rad_angle) {
             new_j = dst_sh + j;
             x = (int) (cosVal * i + sinVal * j);
             y = (int) (-sinVal * i + cosVal * j);
-            if (MovePixelBtwSurface(src, src_sw + x, src_sh + y,
-                    dst, new_i, new_j))
+            src_pos.x = src_sw + x;
+            src_pos.y = src_sh + y;
+            dst_pos.x = new_i;
+            dst_pos.y = new_j;
+            /*if (MovePixelBtwLayer(src, &src_pos, dst, &dst_pos))
             {
-                SetPixelRGB(dst, new_i, new_j, 255, 255, 255); // need to change
-            }
+                //SetPixelRGB(dst, new_i, new_j, 255, 255, 255); // need to change
+            }*/
         }
     }
 
@@ -87,15 +97,15 @@ GdkPixbuf * LayerRotation (GMPF_Layer *layer, double rad_angle) {
 // TODO: move from SDL to GDK
 void MovePixelBtwLayer(GMPF_Layer *src, GMPF_Pos *srcpos, 
         GMPF_Layer *dst, GMPF_Pos *dstpos) {
-    GMPF_Pixel *pixel = // need a malloc;
+    GMPF_Pixel *pixel = malloc(sizeof(GMPF_Pixel));
     LayerGetPixel(src, srcpos, pixel);
     LayerPutPixel(dst, dstpos, pixel);
-    // free pixel
+    free(pixel);
 }
 
 
 // TODO: move from SDL to GDK
-void LayerGetPixel(GMPF_Layer *layer, GMPF_Pos pos, GMPF_Pixel *pixel) {
+void LayerGetPixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel) {
     GdkPixbuf *pixbuf = layer->image;
     guchar *p;
 
@@ -119,7 +129,7 @@ void LayerGetPixel(GMPF_Layer *layer, GMPF_Pos pos, GMPF_Pixel *pixel) {
 
 
 // inspired by the function founded on GNOME DEVELOPER website
-void LayerPutPixel(GMPF_Layer *layer, GMPF_Pos pos, GMPF_Pixel *pixel) {
+void LayerPutPixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel) {
     GdkPixbuf *pixbuf = layer->image;
     //int rowstride, n_channels;
     guchar *pixels, *p;
