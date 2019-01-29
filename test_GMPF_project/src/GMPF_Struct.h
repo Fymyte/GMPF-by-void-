@@ -11,37 +11,42 @@
 
 // STRUCTURES
 
+typedef struct GMPF_Layer_Manager GMPF_Layer_Manager;
+typedef struct GMPF_Layer GMPF_Layer;
+typedef struct GMPF_Pixel GMPF_Pixel;
+typedef struct GMPF_Size GMPF_Size;
+typedef struct GMPF_Pos GMPF_Pos;
+
 // TODO: complete the struct GMPF_Layer_Manager
 struct GMPF_Layer_Manager {
     int nb_layer;
     GMPF_Layer *layer_list;
-} GMPF_Layer_Manager ;
-
+};
 
 // TODO: complete the struct GMPF_Layer
 struct GMPF_Layer {
-    GMPF_Size img_size;
+    GMPF_Size *img_size;
     GdkPixbuf *image;
     GMPF_Layer *next;
-} GMPF_Layer;
+};
 
 
 // TODO: complete the struct GMPF_Pixel
 struct GMPF_Pixel {
     Uint8 R, G, B, A;
-} GMPF_Pixel;
+};
 
 
 // TODO: complete the struct GMPF_Size
 struct GMPF_Size {
     int h, w;
-} GMPF_Size;
+};
 
 
 // TODO: complete the struct GMPF_Size
 struct GMPF_Pos {
     int x, y;
-} GMPF_Pos;
+};
 
 
 // FUNCTIONS
