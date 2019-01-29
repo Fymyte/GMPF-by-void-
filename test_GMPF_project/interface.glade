@@ -151,6 +151,40 @@
               </object>
             </child>
             <child>
+              <object class="GtkMenuItem" id="Filtre">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Filtre</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Grey filtre</property>
+                        <property name="label" translatable="yes">grey</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_grey" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Binarise to black and white </property>
+                        <property name="label" translatable="yes">binarise</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_binarize" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="GtkMenuItem">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>

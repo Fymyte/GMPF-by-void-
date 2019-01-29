@@ -23,7 +23,7 @@ struct _GdkPixbuf *imgPixbuf;
 int default_size_width = 0;
 int default_size_height = 0;
 
-GtkWidget *GMPF_start()
+int GMPF_start()
 {
     GtkWidget *Main_window = NULL;
     SGlobalData data;  /* variable propagée à tous les callbacks. */
@@ -46,7 +46,7 @@ GtkWidget *GMPF_start()
         //gint code = error->code;
         g_printerr("%s\n", error->message);
         g_error_free (error);
-        return NULL;
+        return 1;
     }
 
 
@@ -57,7 +57,11 @@ GtkWidget *GMPF_start()
     Main_window = GTK_WIDGET(gtk_builder_get_object (data.builder, "MainWindow"));
     //g_signal_connect(Main_window, "key-release-event", G_CALLBACK(key_event), NULL);
 
-    return Main_window;
+    gtk_widget_show_all (Main_window);
+
+    gtk_main();
+
+    return 0;
 }
 
 void callback_about (GtkMenuItem *menuitem, gpointer user_data)
@@ -99,7 +103,7 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data)
 
 void callback_adjust_scale(GtkRange *scale, gpointer user_data)
 {
-
+    g_print("its here");
     SGlobalData *data = (SGlobalData*) user_data;
 
     // if (scale == NULL)
@@ -178,6 +182,7 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
 {
+    g_print("binarisation\n");
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkImage *image = NULL;
@@ -245,6 +250,10 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
                 put_pixel(imgPixbuf, j, i, 255, 255, 255, alpha);
         }
     }
+    struct _GtkPixbuf *img2 = imgPixbuf;
+    //gtk_image_clear(image);
+    gtk_image_set_from_pixbuf(image, imgPixbuf);
+    // gtk_widget_queue_draw(image);
 }
 
 void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha)
@@ -275,7 +284,8 @@ void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, gucha
     p[3] = alpha;
 }
 
-gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y, guchar *red, guchar *green, guchar *blue, guchar *alpha)
+gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y
+    , guchar *red, guchar *green, guchar *blue, guchar *alpha)
 {
     guchar *pixel=NULL;
     gint channel=0;
