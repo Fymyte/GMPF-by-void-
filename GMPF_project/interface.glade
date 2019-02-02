@@ -314,6 +314,7 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Créateur de filtres</property>
                 <property name="use_underline">True</property>
+                <signal name="activate" handler="callback_FC" swapped="no"/>
               </object>
             </child>
             <child>

@@ -12,6 +12,7 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data);
 void callback_adjust_scale (GtkRange *scale, gpointer user_data);
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data);
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data);
+void callback_FC(GtkMenuItem *menuitem, gpointer *user_data);
 
 //pixels operations functions
 void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha);
@@ -254,6 +255,18 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
     //gtk_image_clear(image);
     gtk_image_set_from_pixbuf(image, imgPixbuf);
     // gtk_widget_queue_draw(image);
+}
+
+void callback_FC(GtkMenuItem *menuitem, gpointer *user_data)
+{
+    SGlobalData *data = (SGlobalData*)user_data;
+    GtkWidget *FCWindow = NULL;
+    
+    FCWindow = GTK_WINDOW(gtk_builder_get_object(data->builder, "FilterCreator"));
+    //gtk_window_set_transient_for(FCWindow, GTK_WINDOW(gtk_builder_get_object (data->builder, "MainWindow")));
+    
+    gtk_widget_show(FCWindow);
+    menuitem = 0;    
 }
 
 void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha)
