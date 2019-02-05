@@ -33,14 +33,6 @@ GMPF_Layer * Layer_CreateFromFile(const char *filename) {
         printf("pixbuf hasn't enough channel\n");
         is_error = 1;
     }
-    /*if (x < 0 && x >= layer->img_size.w)
-    {
-        is_error = 1;
-    }
-    if (y < 0 && y >= layer->img_size.h)
-    {
-        is_error = 1;
-    }*/
     if (is_error)
         err(1, "There is an error\n");
     
