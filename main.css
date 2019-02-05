@@ -237,9 +237,9 @@ nav input[type=checkbox]:checked ~ ul {
 }
 
 #content{
-	background-image:url(images/content2.png);
-	background-repeat: repeat-y;
-	padding: 0px 50px 0px 50px; 
+	background-color: #FFFFFF;
+	border:dashed 2px #000000;
+	padding: 20px 65px 30px 65px; 
 }
 text1{	
 	font-size: 20px;
@@ -253,8 +253,8 @@ text2{
 
 /********************** Footer ***************************/
 #footer {
-	background-image: url(images/footer.png);
-	background-repeat: no-repeat;
+	/*background-image: url(images/footer.png);
+	background-repeat: no-repeat;*/
 	width: 900px;
 	height: 100px;
 	text-align: center;
