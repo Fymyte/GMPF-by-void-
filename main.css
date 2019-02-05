@@ -21,11 +21,22 @@ index {
 	padding-bottom: 20px;
 }
 
+index a {
+  height: 250px;
+  width: 500px;
+  background-color : rgba(255, 255, 255, 0.5);
+  border: solid rgba(0, 0, 0, 1);
+  border-radius: 3em 3em 3em 3em;
+  display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .center_index {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	width: 50%;
+	width: 100%;
 }
 
 /*center an image*/
@@ -282,7 +293,7 @@ text2{
 }
 #footer a:hover{text-decoration: underline;}
 
-
+/********************right - menu***********************/
 #menuv {
  	position: fixed;
 	right: 0;
@@ -306,4 +317,14 @@ text2{
 	text-decoration: none;
 	font-size: 20px;
 	color: black;
+}
+
+/*************************/
+.dot {
+  height: 25px;
+  width: 50px;
+  background-color : rgba(66, 69, 88, 0.7);
+  border: solid rgba(66, 69, 88, 0.5);
+  border-radius: 3em 3em 3em 3em;
+  display: inline-block;
 }
