@@ -252,15 +252,6 @@ nav input[type=checkbox]:checked ~ ul {
 	padding: 20px 65px 30px 65px; 
 	background-color: RGBa(230, 230, 250, 0.75);
 }
-text1{	
-	font-size: 20px;
-	color: #000000;
-}
-
-text2{
-	font-size: 10px;
-	color: #FF00AA;
-}
 
 /********************** Footer ***************************/
 #footer {
@@ -319,12 +310,37 @@ text2{
 	color: black;
 }
 
-/*************************/
-.dot {
-  height: 25px;
-  width: 50px;
-  background-color : rgba(66, 69, 88, 0.7);
-  border: solid rgba(66, 69, 88, 0.5);
-  border-radius: 3em 3em 3em 3em;
-  display: inline-block;
+/*********************************/
+.tab{
+	margin-left: 40px;
 }
+
+text1{	
+	font-size: 15px;
+	color: #000000;
+}
+
+text2{
+	font-size: 10px;
+	color: #FF00AA;
+}
+
+h2 {
+	font-size: 25px;
+	margin: 20px 0px 20px 0px;
+	border-bottom: solid 1px black;
+	text-align: center;
+}
+
+h3 {
+	font-size: 20px;
+	margin: 15px 400px 0px 0px;
+	border-bottom: solid 1px black;
+}
+
+/***********Presentations***************/
+#void {}
+#Samory {}
+#Pierrick {}
+#Arnaud{}
+#Sabine {}
