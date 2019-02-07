@@ -58,6 +58,13 @@ int GMPF_start()
     Main_window = GTK_WIDGET(gtk_builder_get_object (data.builder, "MainWindow"));
     //g_signal_connect(Main_window, "key-release-event", G_CALLBACK(key_event), NULL);
 
+    GtkFlowBox *flow = (gtk_builder_get_object (data.builder, "FlowBoxLayer"));
+    GtkAdjustment *flowadj = (gtk_builder_get_object (data.builder, "FlowBoxLayer_Adjustment"));
+    gtk_flow_box_set_vadjustment(flow, flowadj);
+
+
+
+
     gtk_widget_show_all (Main_window);
 
     gtk_main();
