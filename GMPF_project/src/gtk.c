@@ -1,5 +1,7 @@
 #include <gtk-3.0/gtk/gtk.h>
 #include <err.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct
 {
@@ -256,6 +258,98 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
     gtk_image_set_from_pixbuf(image, imgPixbuf);
     // gtk_widget_queue_draw(image);
 }
+
+void callback_negative(GtkMenuItem *menuitem, gpointer user_data)
+{
+    g_print("Negative\n");
+    menuitem = 0;
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkImage *image = NULL;
+    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+
+    struct _GdkPixbuf *imgPixbuf;
+    imgPixbuf = gtk_image_get_pixbuf(image);
+
+    guchar red;
+    guchar green;
+    guchar blue, alpha;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < height; i++)
+    {
+        for(int j = 0; j < width; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, j, i, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            red = 255 - red;
+            green = 255 - green;
+            blue = 255 - blue;
+		    put_pixel(imgPixbuf, j, i, red, green, blue, alpha);
+        }
+    }
+    gtk_image_set_from_pixbuf(image, imgPixbuf);
+}
+
+void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
+{
+    g_print("Tinter\n");
+
+    guchar r, g, b;
+    int factor;
+
+    printf("Waiting for colors values ...\n");
+    printf("Enter red value\n");
+    if (scanf("%hhu", &r) == EOF)
+        errx(1, "Error, scanf()");
+    
+    printf("Enter green value\n");
+    if (scanf("%hhu", &g) == EOF)
+        errx(1, "Error, scanf()");
+
+    printf("Enter blue value\n");
+    if (scanf("%hhu", &b) == EOF)
+        errx(1, "Error, scanf()");
+
+    printf("Enter factor (between 0 and 100)\n");
+    if (scanf("%i", &factor) == EOF)
+        errx(1, "Error, scanf()");
+
+    menuitem = 0;
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkImage *image = NULL;
+    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+
+    struct _GdkPixbuf *imgPixbuf;
+    imgPixbuf = gtk_image_get_pixbuf(image);
+
+    guchar red;
+    guchar green;
+    guchar blue, alpha;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < height; i++)
+    {
+        for(int j = 0; j < width; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, j, i, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            red = red * (100 - factor) / 100 + r * factor / 100;
+            green = green * (100 - factor) / 100 + g * factor / 100;
+            blue = blue * (100 - factor) / 100 + b * factor / 100;
+            put_pixel(imgPixbuf, j, i, red, green, blue, alpha);
+        }
+    }
+    gtk_image_set_from_pixbuf(image, imgPixbuf);
+}
+
 
 void callback_FC(GtkMenuItem *menuitem, gpointer *user_data)
 {
