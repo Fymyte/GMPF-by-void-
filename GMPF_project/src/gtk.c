@@ -58,13 +58,6 @@ int GMPF_start()
     Main_window = GTK_WIDGET(gtk_builder_get_object (data.builder, "MainWindow"));
     //g_signal_connect(Main_window, "key-release-event", G_CALLBACK(key_event), NULL);
 
-    GtkFlowBox *flow = (gtk_builder_get_object (data.builder, "FlowBoxLayer"));
-    GtkAdjustment *flowadj = (gtk_builder_get_object (data.builder, "FlowBoxLayer_Adjustment"));
-    gtk_flow_box_set_vadjustment(flow, flowadj);
-
-
-
-
     gtk_widget_show_all (Main_window);
 
     gtk_main();
@@ -258,7 +251,7 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
                 put_pixel(imgPixbuf, j, i, 255, 255, 255, alpha);
         }
     }
-    struct _GtkPixbuf *img2 = imgPixbuf;
+    //struct _GtkPixbuf *img2 = imgPixbuf;
     //gtk_image_clear(image);
     gtk_image_set_from_pixbuf(image, imgPixbuf);
     // gtk_widget_queue_draw(image);
@@ -266,14 +259,39 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 
 void callback_FC(GtkMenuItem *menuitem, gpointer *user_data)
 {
+    //variables definitions
     SGlobalData *data = (SGlobalData*)user_data;
     GtkWidget *FCWindow = NULL;
+    GtkImage *test_image = NULL;
+    GError *err = NULL;
+    struct _GdkPixbuf *imgPixbuf = NULL;
+    printf("toz");
+    imgPixbuf = gdk_pixbuf_new_from_file(
+        "/home/samdiaby/GMPF-by-void-/GMPF_project/image_test.jpg", &err);
+
+    if(err)
+    {
+        printf("Error : %s\n", err->message);
+        g_error_free(err);
+    }
     
-    FCWindow = GTK_WINDOW(gtk_builder_get_object(data->builder, "FilterCreator"));
-    //gtk_window_set_transient_for(FCWindow, GTK_WINDOW(gtk_builder_get_object (data->builder, "MainWindow")));
+    FCWindow = GTK_WIDGET(gtk_builder_get_object(data->builder, "FilterCreator"));
+    test_image = GTK_IMAGE(gtk_builder_get_object(data->builder, "Image_test"));
     
+    //test image resize + setting
+    int pixbuf_width = gdk_pixbuf_get_width(imgPixbuf) / 2;
+    int pixbuf_height = gdk_pixbuf_get_height(imgPixbuf) / 2;
+
+    
+    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf, 
+        pixbuf_width, pixbuf_height, GDK_INTERP_BILINEAR);
+   
+    gtk_image_clear(test_image);
+    gtk_image_set_from_pixbuf(test_image, img2);
+
+    //show the filter creator window
     gtk_widget_show(FCWindow);
-    menuitem = 0;    
+    menuitem = 0;
 }
 
 void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha)
