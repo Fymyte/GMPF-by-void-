@@ -14,7 +14,8 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data);
 void callback_adjust_scale (GtkRange *scale, gpointer user_data);
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data);
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data);
-void callback_FC(GtkMenuItem *menuitem, gpointer *user_data);
+void callback_FC(GtkMenuItem *menuitem, gpointer user_data);
+void callback_hideWidget(GtkWidget *widget, gpointer user_data);
 
 //pixels operations functions
 void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha);
@@ -230,12 +231,17 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
     }
 }
 
+void callback_hideWidget(GtkWidget *widget, gpointer user_data)
+{
+        gtk_widget_hide(widget);
+}
+
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 {
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkImage *image = NULL;
-    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"))    ;
+    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
     struct _GdkPixbuf *imgPixbuf;
     imgPixbuf = gtk_image_get_pixbuf(image);
@@ -363,7 +369,7 @@ void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
-void callback_FC(GtkMenuItem *menuitem, gpointer *user_data)
+void callback_FC(GtkMenuItem *menuitem, gpointer user_data)
 {
     //variables definitions
     SGlobalData *data = (SGlobalData*)user_data;
@@ -371,7 +377,6 @@ void callback_FC(GtkMenuItem *menuitem, gpointer *user_data)
     GtkImage *test_image = NULL;
     GError *err = NULL;
     struct _GdkPixbuf *imgPixbuf = NULL;
-    printf("toz");
     imgPixbuf = gdk_pixbuf_new_from_file(
         "/home/samdiaby/GMPF-by-void-/GMPF_project/image_test.jpg", &err);
 
