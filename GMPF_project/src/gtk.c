@@ -204,9 +204,97 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
     gtk_image_set_from_pixbuf(image, img2);
 }
 
+void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
+{
+    g_print("Binarize\n");
+    menuitem = 0;
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkImage *image = NULL;
+    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+
+    struct _GdkPixbuf *imgPixbuf;
+    imgPixbuf = gtk_image_get_pixbuf(image);
+
+    guchar red;
+    guchar green;
+    guchar blue, alpha;
+
+    guchar grey;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < height; i++)
+    {
+        for(int j = 0; j < width; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, j, i, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            grey = (red + green + blue) / 3;
+            if (grey <= 127)
+                put_pixel(imgPixbuf, j, i, 0, 0, 0, alpha);
+            else
+                put_pixel(imgPixbuf, j, i, 255, 255, 255, alpha);
+        }
+    }
+    //struct _GtkPixbuf *img2 = imgPixbuf;
+    //gtk_image_clear(image);
+    gtk_image_set_from_pixbuf(image, imgPixbuf);
+    // gtk_widget_queue_draw(image);
+}
+
+void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
+{
+    g_print("Binarize color\n");
+    menuitem = 0;
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkImage *image = NULL;
+    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+
+    struct _GdkPixbuf *imgPixbuf;
+    imgPixbuf = gtk_image_get_pixbuf(image);
+
+    guchar red;
+    guchar green;
+    guchar blue, alpha;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < height; i++)
+    {
+        for(int j = 0; j < width; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, j, i, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            if (red > 127)
+                red = 255;
+            else
+                red = 0;
+                
+            if (green > 127)
+                green = 255;
+            else
+                green = 0;
+            
+            if (blue > 127)
+                blue = 255;
+            else
+                blue = 0;
+            
+            put_pixel(imgPixbuf, j, i, r, g, b, alpha);
+        }
+    }
+    gtk_image_set_from_pixbuf(image, imgPixbuf);
+}
+
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
 {
-    g_print("grey\n");
+    g_print("Grey\n");
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkImage *image = NULL;
@@ -238,49 +326,6 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
         }
     }
     gtk_image_set_from_pixbuf(image, imgPixbuf);
-}
-
-
-void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
-{
-    g_print("binarize\n");
-    menuitem = 0;
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkImage *image = NULL;
-    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-
-    struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = gtk_image_get_pixbuf(image);
-
-    guchar red;
-    guchar green;
-    guchar blue, alpha;
-
-
-    guchar grey;
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < height; i++)
-    {
-        for(int j = 0; j < width; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, j, i, &red, &green, &blue, &alpha);
-            if(!error)
-                err(1, "pixbuf get pixels error");
-            grey = (red + green + blue) / 3;
-            if(grey <= 127)
-                put_pixel(imgPixbuf, j, i, 0, 0, 0, alpha);
-            else
-                put_pixel(imgPixbuf, j, i, 255, 255, 255, alpha);
-        }
-    }
-    //struct _GtkPixbuf *img2 = imgPixbuf;
-    //gtk_image_clear(image);
-    gtk_image_set_from_pixbuf(image, imgPixbuf);
-    // gtk_widget_queue_draw(image);
 }
 
 void callback_negative(GtkMenuItem *menuitem, gpointer user_data)
