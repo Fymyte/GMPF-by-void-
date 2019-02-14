@@ -25,7 +25,7 @@ gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y, 
 
 //Other functions
 void resetCursor(SGlobalData* data);
-void GMPFquit(gpointer user_data);
+void GMPFquit(GtkMenuItem *menuitem, gpointer user_data);
 
 //static gboolean key_event(GtkWidget *widget, GdkEventKey *event);
 
@@ -508,7 +508,7 @@ void resetCursor(SGlobalData* data)
     //set the new cursor on the screen
     win = gdk_screen_get_root_window(screen);
     gdk_window_set_cursor (win, cursor);
-      
+    
 }
 
 void callback_hideWidget(GtkWidget *widget, gpointer user_data)
@@ -516,7 +516,7 @@ void callback_hideWidget(GtkWidget *widget, gpointer user_data)
         gtk_widget_hide(widget);
 }
 
-void GMPFquit(gpointer user_data)
+void GMPFquit(GtkMenuItem *menuitem, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     resetCursor(data);
