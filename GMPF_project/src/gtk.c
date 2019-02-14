@@ -9,6 +9,7 @@ typedef struct
     gpointer user_data;
 } SGlobalData;
 
+//callback functions
 void callback_image(GtkFileChooser *filebtn, gpointer user_data);
 void callback_about (GtkMenuItem *menuitem, gpointer user_data);
 void callback_adjust_scale (GtkRange *scale, gpointer user_data);
@@ -16,6 +17,7 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data);
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data);
 void callback_FC(GtkMenuItem *menuitem, gpointer user_data);
 void callback_hideWidget(GtkWidget *widget, gpointer user_data);
+void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data);
 
 //pixels operations functions
 void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha);
@@ -229,12 +231,9 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
             put_pixel(imgPixbuf, j, i, grey, grey, grey, alpha);
         }
     }
+    gtk_image_set_from_pixbuf(image, imgPixbuf);
 }
 
-void callback_hideWidget(GtkWidget *widget, gpointer user_data)
-{
-        gtk_widget_hide(widget);
-}
 
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -455,4 +454,13 @@ gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y
     *alpha = pixel[(x*channel)+(y*width*channel)+3];
 
     return TRUE;
+}
+
+void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
+{
+}
+
+void callback_hideWidget(GtkWidget *widget, gpointer user_data)
+{
+        gtk_widget_hide(widget);
 }
