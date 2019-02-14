@@ -23,8 +23,10 @@ gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint    
 //static gboolean key_event(GtkWidget *widget, GdkEventKey *event);
 
 struct _GdkPixbuf *imgPixbuf;
+struct _GdkPixbuf *unchangedPixbuf;
 int default_size_width = 0;
 int default_size_height = 0;
+const char *interface_file = "interface.glade";
 
 int GMPF_start()
 {
@@ -39,7 +41,7 @@ int GMPF_start()
     /* Création du chemin complet pour accéder au fichier test.glade. */
     /* g_build_filename(); construit le chemin complet en fonction du système */
     /* d'exploitation. ( / pour Linux et \ pour Windows) */
-    filename =  g_build_filename ("interface.glade", NULL);
+    filename =  g_build_filename (interface_file, NULL);
 
     /* Chargement du fichier test.glade. */
     gtk_builder_add_from_file (data.builder, filename, &error);
@@ -55,6 +57,13 @@ int GMPF_start()
 
     /* Affectation des signaux de l'interface aux différents CallBacks. */
     gtk_builder_connect_signals (data.builder, &data);
+    GError *err;
+    unchangedPixbuf = gdk_pixbuf_new_from_file("gimp_logo.png", &err);
+    if (err)
+    {
+        printf("Error : %s\n", err->message);
+        g_error_free(err);
+    }
 
     /* Récupération du pointeur de la fenêtre principale */
     Main_window = GTK_WIDGET(gtk_builder_get_object (data.builder, "MainWindow"));
@@ -106,7 +115,6 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data)
 
 void callback_adjust_scale(GtkRange *scale, gpointer user_data)
 {
-    g_print("its here");
     SGlobalData *data = (SGlobalData*) user_data;
 
     // if (scale == NULL)
@@ -118,9 +126,13 @@ void callback_adjust_scale(GtkRange *scale, gpointer user_data)
 
     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
-    struct _GdkPixbuf *imgPixbuf = NULL;
-    imgPixbuf = gtk_image_get_pixbuf (image);
+    GError *err = NULL;
 
+    struct _GdkPixbuf *imgPixbuf = NULL;
+    if (!unchangedPixbuf)
+        imgPixbuf = gtk_image_get_pixbuf (image);
+    else
+        imgPixbuf = unchangedPixbuf;
     //gtk_image_clear(image);
 
     gdouble scaleValue = gtk_range_get_value (scale);
@@ -162,7 +174,7 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
     //get the pixbuf from the gtk image
     GError *err = NULL;
     //struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = gdk_pixbuf_new_from_file(filename, &err);
+    unchangedPixbuf = gdk_pixbuf_new_from_file(filename, &err);
 
     if(err)
     {
@@ -170,12 +182,12 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
         g_error_free(err);
     }
 
-    int default_size_width = gdk_pixbuf_get_width(imgPixbuf) / 4;
-    int default_size_height = gdk_pixbuf_get_height(imgPixbuf) / 4;
+    int default_size_width = gdk_pixbuf_get_width(unchangedPixbuf) / 4;
+    int default_size_height = gdk_pixbuf_get_height(unchangedPixbuf) / 4;
 
     //change the size of the pixbuf
-    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf, default_size_width, default_size_height, GDK_INTERP_BILINEAR);
-    imgPixbuf = img2;
+    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(unchangedPixbuf, default_size_width, default_size_height, GDK_INTERP_BILINEAR);
+    unchangedPixbuf = img2;
 
     g_print("def_width = %d; def_height = %d", default_size_width, default_size_height);
 
@@ -265,7 +277,7 @@ void callback_negative(GtkMenuItem *menuitem, gpointer user_data)
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkImage *image = NULL;
-    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
     struct _GdkPixbuf *imgPixbuf;
     imgPixbuf = gtk_image_get_pixbuf(image);
@@ -305,7 +317,7 @@ void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
     printf("Enter red value\n");
     if (scanf("%hhu", &r) == EOF)
         errx(1, "Error, scanf()");
-    
+
     printf("Enter green value\n");
     if (scanf("%hhu", &g) == EOF)
         errx(1, "Error, scanf()");
@@ -368,18 +380,18 @@ void callback_FC(GtkMenuItem *menuitem, gpointer *user_data)
         printf("Error : %s\n", err->message);
         g_error_free(err);
     }
-    
+
     FCWindow = GTK_WIDGET(gtk_builder_get_object(data->builder, "FilterCreator"));
     test_image = GTK_IMAGE(gtk_builder_get_object(data->builder, "Image_test"));
-    
+
     //test image resize + setting
     int pixbuf_width = gdk_pixbuf_get_width(imgPixbuf) / 2;
     int pixbuf_height = gdk_pixbuf_get_height(imgPixbuf) / 2;
 
-    
-    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf, 
+
+    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf,
         pixbuf_width, pixbuf_height, GDK_INTERP_BILINEAR);
-   
+
     gtk_image_clear(test_image);
     gtk_image_set_from_pixbuf(test_image, img2);
 
