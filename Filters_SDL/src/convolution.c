@@ -1,26 +1,5 @@
 #include "../headers/convolution.h"
 
-/*void Img_rgb_to_Image(SDL_Surface* image_surface, struct Img_rgb *img)
-{
-    int width = image_surface -> w;
-    int height = image_surface -> h;
-
-    double r, g, b;
-
-    for (int i = 0; i < width; i++)
-    {
-        for (int j = 0; j < height; j++)
-        {
-            r = Matrix_IJ(img -> red, i, j);
-            g = Matrix_IJ(img -> green, i , j);
-            b = Matrix_IJ(img -> blue, i, j);
-            Uint32 p = SDL_MapRGB(image_surface->format, (Uint8)r, (Uint8)g, (Uint8)b);
-			put_pixel(image_surface, i, j, p);
-		    
-        }
-    }
-}*/
-
 int check(int width, int height, int i, int j)
 {
     if (i < 0 || j < 0 || i > width || j > height)
