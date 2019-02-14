@@ -2,7 +2,7 @@
 #define LAYER_OPERATIONS_H
 
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
 #include <math.h>
 #include <stdlib.h>
 

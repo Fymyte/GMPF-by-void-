@@ -2,7 +2,7 @@
 #define GMPF_PIXEL_H
 
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
 #include <stdlib.h>
 
 #include "types_redefine.h"
@@ -15,14 +15,12 @@ typedef struct GMPF_Pos GMPF_Pos;
 typedef struct GMPF_Size GMPF_Size;
 typedef struct GMPF_Pixel GMPF_Pixel;
 typedef struct GMPF_Layer GMPF_Layer;
-typedef struct GMPF_Layer_Manager GMPF_Layer_Manager;
+typedef struct GMPF_LayerMngr GMPF_LayerMngr;
 
-// TODO: complete the struct GMPF_Size
 struct GMPF_Pos {
     int x, y;
 };
 
-// TODO: complete the struct GMPF_Size
 struct GMPF_Size {
     int h, w;
 };
@@ -36,15 +34,14 @@ struct GMPF_Pixel {
 struct GMPF_Layer {
     GMPF_Size img_size;
     GdkPixbuf *image;
+
     GMPF_Layer *next;
    // GtkImage *gtkimage;
 };
 
-// TODO: complete the struct GMPF_Layer_Manager
-struct GMPF_Layer_Manager {
+struct GMPF_LayerMngr {
     int nb_layer;
     GMPF_Layer *layer_list;
-    //GtkFlowBox *gtkflowbox;
 };
 
 
@@ -54,20 +51,13 @@ struct GMPF_Layer_Manager {
 
 // FUNCTIONS
 
-GMPF_Pos *init_GMPF_Pos(); //TODO
-void free_GMPF_Pos(GMPF_Pos *pos); //TODO
+// use std init and free for GMPF_Pos, GMPF_Size & GMPF_Pixel
 
-GMPF_Size *init_GMPF_Size(); //TODO
-void free_GMPF_Size(GMPF_Size *size); //TODO
+GMPF_Layer *init_GMPF_Layer(GMPF_LayerMngr *layermngr); //TODO
+void free_GMPF_Layer(GMPF_Layer *layer, GMPF_LayerMngr *layermngr); //TODO
 
-GMPF_Pixel *init_GMPF_Pixel(); //TODO
-void free_GMPF_Pixel(GMPF_Pixel *pixel); //TODO
-
-GMPF_Layer *init_GMPF_Layer(GMPF_Layer_Manager *layer_mng); //TODO
-void free_GMPF_Layer(GMPF_Layer *layer, GMPF_Layer_Manager *layer_mng); //TODO
-
-GMPF_Layer_Manager *init_GMPF_Layer_Manager(); //TODO
-void free_GMPF_Layer_Manager(GMPF_Layer_Manager *layer_mng); //TODO
+GMPF_LayerMngr *init_GMPF_LayerMngr();
+void free_GMPF_LayerMngr(GMPF_LayerMngr *layermngr); //TODO
 
 
 

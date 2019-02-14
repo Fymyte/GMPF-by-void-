@@ -97,10 +97,9 @@ GdkPixbuf * LayerRotation (GMPF_Layer *src, double rad_angle) {
 // TODO: move from SDL to GDK
 void MovePixelBtwLayer(GMPF_Layer *src, GMPF_Pos *srcpos, 
         GMPF_Layer *dst, GMPF_Pos *dstpos) {
-    GMPF_Pixel *pixel = malloc(sizeof(GMPF_Pixel));
-    LayerGetPixel(src, srcpos, pixel);
-    LayerPutPixel(dst, dstpos, pixel);
-    free(pixel);
+    GMPF_Pixel pixel;
+    LayerGetPixel(src, srcpos, &pixel);
+    LayerPutPixel(dst, dstpos, &pixel);
 }
 
 

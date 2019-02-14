@@ -39,12 +39,56 @@ GMPF_Layer * Layer_CreateFromFile(const char *filename) {
 }
 
 
-void Layer_Free(GMPF_Layer *layer) {
+/*void Layer_Free(GMPF_Layer *layer) {
     GdkPixbuf *pixbuf = layer->image;
     layer->image = NULL;
     // need to free pixbuf
     free(layer);
+}*/
+
+
+
+
+void LayerMngr_Append_Layer(GMPF_LayerMngr *layermngr)
+{
+
 }
+
+
+
+GMPF_Layer * LayerMngr_Get_Layer(GMPF_LayerMngr *layermngr, int layernum)
+{
+    return NULL;
+}
+
+
+void LayerMngr_Remove_Layer(GMPF_LayerMngr *layermngr, int layernum)
+{
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

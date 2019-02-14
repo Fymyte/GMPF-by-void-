@@ -2,7 +2,7 @@
 #define LAYER_MANAGER_H
 
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
 #include <stdlib.h>
 #include <err.h> // for the errors
 #include <stdio.h> // for the errors
@@ -27,8 +27,12 @@
 // FUNCTIONS
 
 GMPF_Layer * Layer_CreateFromFile(const char *filename); //TODO: complete
-void Layer_Free(GMPF_Layer *layer); //TODO: complete
+//void Layer_Free(GMPF_Layer *layer); //TODO: complete
 
+
+void LayerMngr_Append_Layer(GMPF_LayerMngr *layermngr);
+GMPF_Layer * LayerMngr_Get_Layer(GMPF_LayerMngr *layermngr, int layernum);
+void LayerMngr_Remove_Layer(GMPF_LayerMngr *layermngr, int layernum);
 
 
 
