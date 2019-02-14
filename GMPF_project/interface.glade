@@ -285,7 +285,7 @@
     <property name="title" translatable="yes">GMPF</property>
     <property name="icon">../Example_projet/GMPF_white.png</property>
     <property name="has_resize_grip">True</property>
-    <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
+    <signal name="destroy" handler="GMPFquit" swapped="no"/>
     <child>
       <placeholder/>
     </child>
@@ -507,6 +507,7 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Pinceau</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_setCursor" swapped="no"/>
                       </object>
                     </child>
                   </object>
