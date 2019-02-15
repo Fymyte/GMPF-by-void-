@@ -78,9 +78,9 @@ int GMPF_start()
     /* Récupération du pointeur de la fenêtre principale */
     Main_window = GTK_WIDGET(gtk_builder_get_object (data.builder, "MainWindow"));
     //g_signal_connect(Main_window, "key-release-event", G_CALLBACK(key_event), NULL);
-    
+
     resetCursor(&data);
-    
+
     gtk_widget_show_all (Main_window);
 
     gtk_main();
@@ -137,8 +137,6 @@ void callback_adjust_scale(GtkRange *scale, gpointer user_data)
     GtkImage *image = NULL;
 
     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-
-    GError *err = NULL;
 
     struct _GdkPixbuf *imgPixbuf = NULL;
     if (!unchangedPixbuf)
@@ -238,7 +236,7 @@ void Img_rgb_to_Image(struct _GdkPixbuf *imgPixbuf, struct Img_rgb *img)
 {
     int width = gdk_pixbuf_get_width(imgPixbuf);
     int height = gdk_pixbuf_get_height(imgPixbuf);
-   
+
     guchar r;
     guchar g;
     guchar b;
@@ -252,8 +250,8 @@ void Img_rgb_to_Image(struct _GdkPixbuf *imgPixbuf, struct Img_rgb *img)
             g = Matrix_IJ(img -> green, i , j);
             b = Matrix_IJ(img -> blue, i, j);
             a = Matrix_IJ(img -> alpha, i, j);
-                
-            put_pixel(imgPixbuf, i, j, r, g, b, a);	    
+
+            put_pixel(imgPixbuf, i, j, r, g, b, a);
         }
     }
 }
@@ -326,18 +324,18 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
                 red = 255;
             else
                 red = 0;
-                
+
             if (green > 127)
                 green = 255;
             else
                 green = 0;
-            
+
             if (blue > 127)
                 blue = 255;
             else
                 blue = 0;
-            
-            put_pixel(imgPixbuf, i, j, r, g, b, alpha);
+
+            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
         }
     }
     gtk_image_set_from_pixbuf(image, imgPixbuf);
@@ -364,23 +362,23 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
     double *mat = malloc(sizeof(double) * 9);
     switch (number)
     {
-        case 0 : 
+        case 0 :
             printf("Edge Enhance\n");
             mat[0] = mat[1] = mat[2] = mat[3] = mat[5] = mat[6] = mat[7] = mat[8] = -1;
             mat[4] = 8;
             break;
-        case 1 :  
+        case 1 :
             printf("Sharpen\n");
             mat[0] = mat[2] = mat[6] = mat[8] = 0;
             mat[1] = mat[3] = mat[5] = mat[7] = -1;
             mat[4] = 5;
             break;
-        default : 
-            printf("Blur\n"); 
+        default :
+            printf("Blur\n");
             mat[0] = mat[1] = mat[2] = mat[3] = mat[4] = mat[5] = mat[6] = mat[7] = mat[8] = (double) 1/9;
             break;
     }
-    
+
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkImage *image = NULL;
@@ -394,7 +392,7 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
     int width = gdk_pixbuf_get_width(imgPixbuf);
     int height = gdk_pixbuf_get_height(imgPixbuf);
     gboolean error = FALSE;
-    
+
     int x = 3;
     struct Img_rgb *img = init_img_rgb(width, height);
 
@@ -403,40 +401,40 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
         for(int j = 0; j < height; j++)
         {
             r = g = b = a = 0;
-            
+
             for (int k = -x / 2; k <= x/2; k++)
             {
                 for(int l = -x / 2; l <= x/2; l++)
                 {
                     if (check(width, height, i + k, j +l) == 1)
                     {
-                        double red, green, blue, alpha;
+                        guchar red, green, blue, alpha;
                         error= gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
                         if(!error)
                             err(1, "pixbuf get pixels error");
-                        r += mat[l + x/2 + k + x/2] * red;
-                        g += mat[l + x/2 + k + x/2] * green;
-                        b += mat[l + x/2 + k + x/2] * blue;
+                        r += mat[l + x/2 + k + x/2] * (double)red;
+                        g += mat[l + x/2 + k + x/2] * (double)green;
+                        b += mat[l + x/2 + k + x/2] * (double)blue;
                         a = alpha;
                     }
                 }
             }
-            
-            if (red > 255)
-                red = 255;
-            else if (red < 0)
-                red = 0;
-                
-            if (green > 255)
-                green = 255;
-            else if (green < 0)
-                green = 0;
-            
-            if (blue > 255)
-                blue = 255;
-            else if (blue < 0)
-                blue = 0;
-            
+
+            if (r > 255)
+                r = 255;
+            else if (r < 0)
+                r = 0;
+
+            if (g > 255)
+                g = 255;
+            else if (g < 0)
+                g = 0;
+
+            if (b > 255)
+                b = 255;
+            else if (b < 0)
+                b = 0;
+
 	        Matrix_val(img -> red, i, j, r);
             Matrix_val(img -> green, i , j, g);
             Matrix_val(img -> blue, i , j, b);
@@ -444,9 +442,9 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
         }
     }
     Img_rgb_to_Image(imgPixbuf, img);
-    
+
     gtk_image_set_from_pixbuf(image, imgPixbuf);
-    
+
     free_img_rgb(img);
     free(mat);
 }
@@ -499,21 +497,21 @@ void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)
     int width = gdk_pixbuf_get_width(imgPixbuf);
     int height = gdk_pixbuf_get_height(imgPixbuf);
     gboolean error = FALSE;
-    
+
     struct Img_rgb *img = init_img_rgb(width, height);
-	
+
     for(int i = 0; i < width; i++)
     {
         for(int j = 0; j < height; j++)
         {
-            double red, green, blue, alpha;
+            guchar red, green, blue, alpha;
             error= gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
             if(!error)
                 err(1, "pixbuf get pixels error");
-            Matrix_val(img -> red, i, height - j - 1, red);
-            Matrix_val(img -> green, i , height - j - 1, green);
-            Matrix_val(img -> blue, i, height - j - 1, blue);
-            Matrix_val(img -> alpha, i, height - j - 1, alpha);
+            Matrix_val(img -> red, i, height - j - 1, (double)red);
+            Matrix_val(img -> green, i , height - j - 1, (double)green);
+            Matrix_val(img -> blue, i, height - j - 1, (double)blue);
+            Matrix_val(img -> alpha, i, height - j - 1, (double)alpha);
         }
     }
     Img_rgb_to_Image(imgPixbuf, img);
@@ -532,9 +530,7 @@ void callback_negative(GtkMenuItem *menuitem, gpointer user_data)
     struct _GdkPixbuf *imgPixbuf;
     imgPixbuf = gtk_image_get_pixbuf(image);
 
-    guchar red;
-    guchar green;
-    guchar blue, alpha;
+    guchar red, green, blue, alpha;
 
     int width = gdk_pixbuf_get_width(imgPixbuf);
     int height = gdk_pixbuf_get_height(imgPixbuf);
@@ -626,9 +622,9 @@ void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
     int width = gdk_pixbuf_get_width(imgPixbuf);
     int height = gdk_pixbuf_get_height(imgPixbuf);
     gboolean error = FALSE;
-    
+
     struct Img_rgb *img = init_img_rgb(width, height);
-	
+
     for(int i = 0; i < width; i++)
     {
         for(int j = 0; j < height; j++)
@@ -745,20 +741,20 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
     GdkCursor *cursor = NULL;
     GdkScreen *screen = NULL;
     GdkWindow * win = NULL;
-    
+
     //set variables
-    screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));   
+    screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
     display = gdk_screen_get_display(screen);
-    
+
     //create the new cursor
     cursor = gdk_cursor_new_for_display (display, GDK_X_CURSOR);
-    
+
     //gdk_display_beep (display); play a sound ("beep")
-    
+
     //set the new cursor on the screen
     win = gdk_screen_get_root_window(screen);
     gdk_window_set_cursor (win, cursor);
-    
+
 }
 
 void resetCursor(SGlobalData* data)
@@ -768,20 +764,20 @@ void resetCursor(SGlobalData* data)
     GdkCursor *cursor = NULL;
     GdkScreen *screen = NULL;
     GdkWindow * win = NULL;
-       
+
     //set variables
-    screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));   
+    screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
     display = gdk_screen_get_display(screen);
-    
+
     //create the new cursor
     cursor = gdk_cursor_new_from_name(display, "default");
-    
+
     //gdk_display_beep (display); play a sound ("beep")
-    
+
     //set the new cursor on the screen
     win = gdk_screen_get_root_window(screen);
     gdk_window_set_cursor (win, cursor);
-    
+
 }
 
 void callback_hideWidget(GtkWidget *widget, gpointer user_data)

@@ -586,7 +586,7 @@
                     <property name="can_focus">False</property>
                     <property name="tooltip_text" translatable="yes">Enter your custom scale value</property>
                     <property name="invisible_char">%</property>
-                    <property name="text" translatable="yes">200</property>
+                    <property name="text" translatable="yes">100</property>
                     <property name="overwrite_mode">True</property>
                     <property name="placeholder_text" translatable="yes">%</property>
                   </object>
