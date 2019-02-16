@@ -5,12 +5,14 @@
 
 #include "Struct.h"
 #include "Matrix.h"
+#include "cursor.h"
 
-typedef struct
+/*typedef struct
 {
     GtkBuilder *builder;
     gpointer user_data;
 } SGlobalData;
+*/
 
 //callback functions
 void callback_image(GtkFileChooser *filebtn, gpointer user_data);
@@ -26,8 +28,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data);
 void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha);
 gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y, guchar *red, guchar *green, guchar *blue, guchar *alpha);
 
-//Other functions
-void resetCursor(SGlobalData* data);
+//Other functions 
 void GMPFquit(GtkMenuItem *menuitem, gpointer user_data);
 
 //static gboolean key_event(GtkWidget *widget, GdkEventKey *event);
@@ -731,54 +732,33 @@ gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y
 
     return TRUE;
 }
+void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)              
+{                                                                               
+     menuitem = 0;                                                               
+     //init variables                                                            
+     SGlobalData *data = (SGlobalData*) user_data;                               
+     GdkDisplay *display = NULL;                                                 
+     GdkCursor *cursor = NULL;                                                   
+     GdkScreen *screen = NULL;                                                   
+     GdkWindow * win = NULL;                                                     
+                                                                                 
+     //set variables                                                             
+     screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
+     display = gdk_screen_get_display(screen);                                   
+                                                                                 
+     //create the new cursor                                                     
+     cursor = gdk_cursor_new_for_display (display, GDK_X_CURSOR);                
+                                                                                 
+     //gdk_display_beep (display); play a sound ("beep")                         
+                                                                                 
+     //set the new cursor on the screen                                          
+     win = gdk_screen_get_root_window(screen);                                   
+     gdk_window_set_cursor (win, cursor);                                        
+                                                                                 
+ }             
 
-void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
-{
-    menuitem = 0;
-    //init variables
-    SGlobalData *data = (SGlobalData*) user_data;
-    GdkDisplay *display = NULL;
-    GdkCursor *cursor = NULL;
-    GdkScreen *screen = NULL;
-    GdkWindow * win = NULL;
 
-    //set variables
-    screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
-    display = gdk_screen_get_display(screen);
 
-    //create the new cursor
-    cursor = gdk_cursor_new_for_display (display, GDK_X_CURSOR);
-
-    //gdk_display_beep (display); play a sound ("beep")
-
-    //set the new cursor on the screen
-    win = gdk_screen_get_root_window(screen);
-    gdk_window_set_cursor (win, cursor);
-
-}
-
-void resetCursor(SGlobalData* data)
-{
-    //init variables
-    GdkDisplay *display = NULL;
-    GdkCursor *cursor = NULL;
-    GdkScreen *screen = NULL;
-    GdkWindow * win = NULL;
-
-    //set variables
-    screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
-    display = gdk_screen_get_display(screen);
-
-    //create the new cursor
-    cursor = gdk_cursor_new_from_name(display, "default");
-
-    //gdk_display_beep (display); play a sound ("beep")
-
-    //set the new cursor on the screen
-    win = gdk_screen_get_root_window(screen);
-    gdk_window_set_cursor (win, cursor);
-
-}
 
 void callback_hideWidget(GtkWidget *widget, gpointer user_data)
 {
