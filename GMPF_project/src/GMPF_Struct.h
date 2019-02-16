@@ -32,16 +32,24 @@ struct GMPF_Pixel {
 
 // TODO: complete the struct GMPF_Layer
 struct GMPF_Layer {
+    // used variable
     GMPF_Size img_size;
     GdkPixbuf *image;
 
+    // for the list
     GMPF_Layer *next;
-   // GtkImage *gtkimage;
+
+    // to know the UIElement that contains the layer
+    GtkFlowBoxChild *UIElement;
 };
 
 struct GMPF_LayerMngr {
-    int nb_layer;
+    // basic variable
+    int nb_layer; // unused I think
     GMPF_Layer *layer_list;
+
+    // get the element on the GUI
+    GtkFlowBox *UIElement;
 };
 
 
@@ -53,11 +61,10 @@ struct GMPF_LayerMngr {
 
 // use std init and free for GMPF_Pos, GMPF_Size & GMPF_Pixel
 
-GMPF_Layer *init_GMPF_Layer(GMPF_LayerMngr *layermngr); //TODO
-void free_GMPF_Layer(GMPF_Layer *layer, GMPF_LayerMngr *layermngr); //TODO
+//GMPF_Layer * free_GMPF_Layer(GMPF_Layer *layer);
 
-GMPF_LayerMngr *init_GMPF_LayerMngr();
-void free_GMPF_LayerMngr(GMPF_LayerMngr *layermngr); //TODO
+GMPF_LayerMngr * init_GMPF_LayerMngr(GtkFlowBox *UIElement);
+void free_GMPF_LayerMngr(GMPF_LayerMngr *layermngr);
 
 
 

@@ -1,6 +1,9 @@
 #include "GMPF_LayerMngr.h"
 
 
+// CODE
+
+// need to be checked
 GMPF_Layer * Layer_CreateFromFile(const char *filename) {
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
     GError *error = NULL; // TODO: need to be checked
@@ -8,6 +11,7 @@ GMPF_Layer * Layer_CreateFromFile(const char *filename) {
     pixbuf = gdk_pixbuf_new_from_file(filename, &error);
     if (pixbuf == NULL)
         err(1, "Uncharged pixbuf\n");
+    // NEED TO FREE THE G_ERROR
     layer->image = pixbuf;
     layer->img_size.w = gdk_pixbuf_get_width(layer->image);
     layer->img_size.h = gdk_pixbuf_get_height(layer->image);
@@ -39,12 +43,23 @@ GMPF_Layer * Layer_CreateFromFile(const char *filename) {
 }
 
 
-/*void Layer_Free(GMPF_Layer *layer) {
-    GdkPixbuf *pixbuf = layer->image;
-    layer->image = NULL;
-    // need to free pixbuf
-    free(layer);
-}*/
+
+
+GMPF_Layer * LayerMngr_get_selected_layer(GMPF_LayerMngr *layermngr)
+{
+    GMPF_Layer *layer = NULL; // remove NULL when finished
+    GtkFlowBox *flowbox = layermngr->UIElement;
+    GList *list = gtk_flow_box_get_selected_children (flowbox);
+    GtkFlowBoxChild *flowboxchild = list->data;
+    // there's only one element selected
+    g_list_free(list);
+
+    // GET THE LAYER WITH THE FLOWBOXCHILD
+
+    return layer;
+}
+
+
 
 
 
@@ -56,15 +71,26 @@ void LayerMngr_Append_Layer(GMPF_LayerMngr *layermngr)
 
 
 
-GMPF_Layer * LayerMngr_Get_Layer(GMPF_LayerMngr *layermngr, int layernum)
+void LayerMngr_Delete_Layer(GMPF_LayerMngr *layermngr, int layernum)
 {
-    return NULL;
-}
-
-
-void LayerMngr_Remove_Layer(GMPF_LayerMngr *layermngr, int layernum)
-{
-    
+    if (layernum < 0 || layernum >= layermngr->nb_layer)
+    {
+        return;
+    }
+    if (layernum == 0)
+    {
+        layermngr->layer_list = free_GMPF_Layer(layermngr->layer_list);
+        return;
+    }
+    GMPF_Layer *layer = layermngr->layer_list;
+    layernum--;
+    while (layernum > 0) // the first element is 0
+    {
+        layer = layer->next;
+        layernum--;
+    }
+    layer->next = free_GMPF_Layer(layer->next);
+    return;
 }
 
 

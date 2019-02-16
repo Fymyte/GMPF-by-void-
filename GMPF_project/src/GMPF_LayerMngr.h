@@ -10,11 +10,6 @@
 #include "types_redefine.h"
 #include "GMPF_Struct.h"
 
-//
-//
-// Maybe split the file by struct
-//
-//
 
 // STRUCTURES
 
@@ -27,12 +22,14 @@
 // FUNCTIONS
 
 GMPF_Layer * Layer_CreateFromFile(const char *filename); //TODO: complete
-//void Layer_Free(GMPF_Layer *layer); //TODO: complete
+
+
+GMPF_Layer * LayerMngr_get_selected_layer(GMPF_LayerMngr *layermngr);
 
 
 void LayerMngr_Append_Layer(GMPF_LayerMngr *layermngr);
-GMPF_Layer * LayerMngr_Get_Layer(GMPF_LayerMngr *layermngr, int layernum);
-void LayerMngr_Remove_Layer(GMPF_LayerMngr *layermngr, int layernum);
+// GMPF_Layer * LayerMngr_Get_Layer(GMPF_LayerMngr *layermngr, int layernum);
+void LayerMngr_Delete_Layer(GMPF_LayerMngr *layermngr, int layernum);
 
 
 
