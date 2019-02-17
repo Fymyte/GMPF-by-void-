@@ -137,18 +137,18 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
 
 void layermngr_add_new_layer(GtkFlowBox *flowbox)
 {
-    GMPF_Layer *prevlayer = layermngr_get_selected_layer(flowbox);
     GMPF_Layer *newlayer = layer_initialization();
     GMPF_LayerMngr *layermngr =
             (GMPF_LayerMngr *) g_object_get_data(flowbox, LAYERMNGR_KEY_NAME);
 
     // add the layer in the list
-    if (prevlayer == NULL)
+    if (layermngr->nb_layer == 0)
     {
         layermngr->layer_list = newlayer;
     }
     else
     {
+        GMPF_Layer *prevlayer = layermngr_get_selected_layer(flowbox);
         GMPF_Layer *nextlayer = prevlayer->next;
         prevlayer->next = layer;
         layer->prev = prevlayer;
@@ -157,18 +157,17 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox)
         layer->next = nextlayer;
     }
 
-    layermngr->nb_layer += 1;
-
     /*
     add UIElement to the flowbox
     */
-    /*GtkWidget *image = gtk_image_new ();
+    GtkWidget *image = gtk_image_new();
 
+    gtk_container_add((GtkContainer *) flowbox, image);
 
+    newlayer->UIElement =
+        gtk_flow_box_get_child_at_index(flowbox, layermngr->nb_layer);
 
-
-
-    gtk_container_add ((GtkContainer *) flowbox, image);*/
+    layermngr->nb_layer += 1;
 }
 
 
