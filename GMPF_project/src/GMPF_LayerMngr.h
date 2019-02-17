@@ -11,6 +11,11 @@
 #include "GMPF_Struct.h"
 
 
+// DEFINES
+#define LAYERMNGR_KEY_NAME "GMPF_layermngr"
+#define LAYER_KEY_NAME "GMPF_layer"
+
+
 // STRUCTURES
 
 
@@ -23,13 +28,27 @@
 
 GMPF_Layer * Layer_CreateFromFile(const char *filename); //TODO: complete
 
+//
+// for the GtkFlowBox - interact with Gtk
+//
+void layermngr_initialization(GtkFlowBox *flowbox);
+void layermngr_clear(GtkFlowBox *flowbox);
+void layermngr_delete(GtkFlowBox *flowbox);
 
-GMPF_Layer * LayerMngr_get_selected_layer(GMPF_LayerMngr *layermngr);
+//
+// for the GMPF_LayerMngr
+//
+GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox);
+            // maybe change this function
+void layermngr_add_new_layer(GtkFlowBox *flowbox);
+void layermngr_delete_selected_layer(GtkFlowBox *flowbox);
 
 
-void LayerMngr_Append_Layer(GMPF_LayerMngr *layermngr);
-// GMPF_Layer * LayerMngr_Get_Layer(GMPF_LayerMngr *layermngr, int layernum);
-void LayerMngr_Delete_Layer(GMPF_LayerMngr *layermngr, int layernum);
+//
+// for the GMPF_Layer
+//
+GMPF_Layer * layer_initialization();
+void layer_delete(GMPF_Layer *layer);
 
 
 

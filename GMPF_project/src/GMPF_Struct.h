@@ -37,6 +37,7 @@ struct GMPF_Layer {
     GdkPixbuf *image;
 
     // for the list
+    GMPF_Layer *prev;
     GMPF_Layer *next;
 
     // to know the UIElement that contains the layer
@@ -59,12 +60,6 @@ struct GMPF_LayerMngr {
 
 // FUNCTIONS
 
-// use std init and free for GMPF_Pos, GMPF_Size & GMPF_Pixel
-
-//GMPF_Layer * free_GMPF_Layer(GMPF_Layer *layer);
-
-GMPF_LayerMngr * init_GMPF_LayerMngr(GtkFlowBox *UIElement);
-void free_GMPF_LayerMngr(GMPF_LayerMngr *layermngr);
 
 
 
