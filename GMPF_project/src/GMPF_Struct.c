@@ -10,7 +10,7 @@ GMPF_Layer * free_GMPF_Layer(GMPF_Layer *layer)
 
     layer->next = NULL;
     // remove and free the GtkFlowBoxChild from the GtkFlowBox
-    gtk_widget_destroy(layer->UIElement);
+    gtk_widget_destroy((GtkWidget *)layer->UIElement);
     // free the pixbuf
     g_object_unref(layer->image);
 
@@ -46,5 +46,3 @@ void free_GMPF_LayerMngr(GMPF_LayerMngr *layermngr)
     layermngr->UIElement = NULL;
     free(layermngr);
 }
-
-
