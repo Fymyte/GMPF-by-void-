@@ -64,6 +64,11 @@ void layer_rotation_right(GtkFlowBox *flowbox);
 void layer_rotation_left(GtkFlowBox *flowbox);
 
 
+//
+// for GdkPixbuf standardization
+//
+int pixbuf_standardize(GdkPixbuf *pixbuf);
+
 
 
 

@@ -3,8 +3,8 @@
 
 // DEFINE
 #define IS_NOT_IN_LAYER(size, pos) \
-       (pos->x < 0 || pos->x >= size->w || \
-        pos->y < 0 || pos->y >= size->h )
+       (pos->x < 0 || pos->x >= size.w || \
+        pos->y < 0 || pos->y >= size.h )
 
 
 // CODE
@@ -362,12 +362,71 @@ void layer_rotation(GtkFlowBox *flowbox, double rad_angle)
 void layer_rotation_right(GtkFlowBox *flowbox)
 {
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    GdkPixbuf *pixbuf = layer->image;
+    GdkPixbuf *newpixbuf; // INIT THE PIXBUF
+    GMPF_Pos position = {.x = 0, .y = 0};
     
+    for (; position.x < layer->size.w; position.x++)
+    {
+        for (; position.y < layer->size.h; position.y++)
+        {
+            layer_get_pixel
+        }
+    }
+    layer->image = newpixbuf;
+
+    int tmp = layer->size.w;
+    layer->size.w = layer->size.h;
+    layer->size.h = tmp;
+
+    // SWAP THE POS TOO
 }
 
 void layer_rotation_left(GtkFlowBox *flowbox)
 {
     // TODO
+}
+
+
+
+
+
+
+
+
+
+
+
+//
+// for GdkPixbuf standardization
+//
+
+int pixbuf_standardize(GdkPixbuf *pixbuf)
+{
+    int is_error = 0;
+    if (gdk_pixbuf_get_colorspace (pixbuf) != GDK_COLORSPACE_RGB)
+    {
+        printf("Wrong colorspace for pixbuf\n");
+        is_error = 1;
+    }
+    if (gdk_pixbuf_get_bits_per_sample (pixbuf) != 8)
+    {
+        printf("pixbuf hasn't 8bits per sample\n");
+        is_error = 1;
+    }
+    if (!gdk_pixbuf_get_has_alpha (pixbuf))
+    {
+        printf("pixbuf as no alpha\n");
+        is_error = 1;
+    }
+    if (gdk_pixbuf_get_n_channels (pixbuf) != 4)
+    {
+        printf("pixbuf hasn't enough channel\n");
+        is_error = 1;
+    }
+    if (is_error)
+        return -1;
+    return 0;
 }
 
 
