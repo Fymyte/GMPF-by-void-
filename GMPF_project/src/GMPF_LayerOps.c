@@ -7,7 +7,7 @@
 
 
 
-
+/*
 
 
 
@@ -79,10 +79,10 @@ GdkPixbuf * LayerRotation (GMPF_Layer *src, double rad_angle) {
             src_pos.y = src_sh + y;
             dst_pos.x = new_i;
             dst_pos.y = new_j;
-            /*if (MovePixelBtwLayer(src, &src_pos, dst, &dst_pos))
-            {
-                //SetPixelRGB(dst, new_i, new_j, 255, 255, 255); // need to change
-            }*/
+            //if (MovePixelBtwLayer(src, &src_pos, dst, &dst_pos))
+            //{
+            //    //SetPixelRGB(dst, new_i, new_j, 255, 255, 255); // need to change
+            //}
         }
     }
 
@@ -157,7 +157,7 @@ void LayerPutPixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel) {
     p[3] = pixel->A;
 }
 
-
+*/
 
 
 

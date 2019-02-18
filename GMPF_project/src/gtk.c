@@ -7,6 +7,8 @@
 #include "Matrix.h"
 #include "cursor.h"
 
+#include "GMPF_LayerMngr.h"
+
 /*typedef struct
 {
     GtkBuilder *builder;
@@ -23,6 +25,14 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data);
 void callback_FC(GtkMenuItem *menuitem, gpointer user_data);
 void callback_hideWidget(GtkWidget *widget, gpointer user_data);
 void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data);
+
+    // GMPF_LayerMngr
+void callback_create_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
+void callback_clear_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
+void callback_add_GMPF_Layer(GtkMenuItem *menuitem, gpointer user_data);
+void callback_remove_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
+
+
 
 //pixels operations functions
 void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha);
@@ -771,3 +781,96 @@ void GMPFquit(GtkMenuItem *menuitem, gpointer user_data)
     resetCursor(data);
     gtk_main_quit();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // GMPF_LayerMngr
+void callback_create_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr_create(flowbox);
+}
+
+void callback_clear_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr_clear(flowbox);
+}
+
+void callback_add_GMPF_Layer(GtkMenuItem *menuitem, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr_add_new_layer(flowbox);
+}
+
+void callback_remove_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr_delete_selected_layer(flowbox);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

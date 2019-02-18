@@ -39,7 +39,7 @@ struct GMPF_Layer {
     GdkPixbuf *image;
 
     // for the list
-    List list;
+    GMPF_List list;
 
     // to know the UIElement that contains the layer
     GtkFlowBoxChild *UIElement;
@@ -50,7 +50,7 @@ struct GMPF_LayerMngr {
     // basic variable
     GMPF_Size size;
     int nb_layer;
-    List layer_list;
+    GMPF_List layer_list;
 
     GdkPixbuf *image;
     GdkPixbuf *zoomed_image;

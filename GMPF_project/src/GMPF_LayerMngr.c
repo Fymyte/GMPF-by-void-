@@ -13,8 +13,8 @@ GMPF_Layer * Layer_CreateFromFile(const char *filename) {
         err(1, "Uncharged pixbuf\n");
     // NEED TO FREE THE G_ERROR
     layer->image = pixbuf;
-    layer->img_size.w = gdk_pixbuf_get_width(layer->image);
-    layer->img_size.h = gdk_pixbuf_get_height(layer->image);
+    layer->size.w = gdk_pixbuf_get_width(layer->image);
+    layer->size.h = gdk_pixbuf_get_height(layer->image);
     
     int is_error = 0;
     if (gdk_pixbuf_get_colorspace (pixbuf) != GDK_COLORSPACE_RGB)
@@ -206,14 +206,22 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox)
     */
     GtkWidget *image = gtk_image_new();
 
-    //
-    // TODO: set style of the image
-    //
+    // Style of the image
+    gtk_widget_set_size_request(image, 160, 90); //size
+    gtk_widget_set_halign(image, GTK_ALIGN_START); // Alignement
+    gtk_widget_set_valign(image, GTK_ALIGN_START);
+    gtk_widget_set_margin_top(image, 5); // Margin
+    gtk_widget_set_margin_bottom(image, 5);
+    gtk_widget_set_margin_start(image, 5);
+    gtk_widget_set_margin_end(image, 5);
+
 
     gtk_container_add((GtkContainer *) flowbox, image);
 
+
     newlayer->UIElement =
         gtk_flow_box_get_child_at_index(flowbox, layermngr->nb_layer);
+    g_object_set_data(newlayer->UIElement, LAYER_KEY_NAME, newlayer);
 
     layermngr->nb_layer += 1;
 }
@@ -247,7 +255,7 @@ void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
 //
 GMPF_Layer * layer_initialization()
 {
-    GMPF_Layer *layer = malloc(sizeof(GMPF_Layer);
+    GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
 
     layer->pos.x = 0;
     layer->pos.y = 0;
@@ -275,8 +283,6 @@ void layer_delete(GMPF_Layer *layer)
     g_object_unref(layer->image);
 
     free(layer);
-
-    return layernext;
 }
 
 
