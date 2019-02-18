@@ -34,8 +34,11 @@ void callback_remove_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
 
 
 //pixels operations functions
-void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha);
-gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y, guchar *red, guchar *green, guchar *blue, guchar *alpha);
+void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green,
+                            guchar blue, guchar alpha);
+gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x,
+                            gint y, guchar *red, guchar *green, guchar *blue,
+                            guchar *alpha);
 
 //Other functions
 void GMPFquit(GtkMenuItem *menuitem, gpointer user_data);
@@ -106,22 +109,6 @@ int GMPF_start()
     return 0;
 }
 
-// void callback_about (GtkMenuItem *menuitem, gpointer user_data)
-// {
-//     /* Transtypage du pointeur user_data pour récupérer nos données. */
-//     SGlobalData *data = (SGlobalData*) user_data;
-//     GtkWidget *dialog = NULL;
-//
-//     dialog =  gtk_about_dialog_new ();
-//
-//     /* Pour l'exemple on va rendre la fenêtre "À propos" modale par rapport à la */
-//     /* fenêtre principale. */
-//     gtk_window_set_transient_for (GTK_WINDOW(dialog), GTK_WINDOW(gtk_builder_get_object (data->builder, "MainWindow")));
-//
-//     gtk_dialog_run (GTK_DIALOG (dialog));
-//     gtk_widget_destroy (dialog);
-//     menuitem = 0;
-// }
 
 // static gboolean key_event(GtkWidget *widget, GdkEventKey *event)
 // {
@@ -142,77 +129,6 @@ int GMPF_start()
 //     struct
 //}
 
-
-// void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
-// {
-//     SGlobalData *data = (SGlobalData*) user_data;
-//
-//     GtkImage *image = NULL;
-//
-//     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-//
-//     struct _GdkPixbuf *imgPixbuf = NULL;
-//     if (!unchangedPixbuf)
-//         imgPixbuf = gtk_image_get_pixbuf (image);
-//     else
-//         imgPixbuf = unchangedPixbuf;
-//     //gtk_image_clear(image);
-//     const gchar *s = gtk_entry_get_text (entry);
-//     float scaleValue = atof(s);
-//
-//     float scaleValue2 = scaleValue / 100;
-//
-//     int width = gdk_pixbuf_get_width(unchangedPixbuf);
-//     int height = gdk_pixbuf_get_height(unchangedPixbuf);
-//
-//     int imgwidth = width * scaleValue2;
-//     int imgheight = height * scaleValue2;
-//
-//     struct _GdkPixbuf *img2;
-//
-//         img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight,
-//                 scaleValue > 100 ? GDK_INTERP_NEAREST : GDK_INTERP_HYPER);
-//
-//     gtk_image_set_from_pixbuf(image, img2);
-// }
-
-// void callback_image(GtkFileChooser *filebtn, gpointer user_data)
-// {
-//     SGlobalData *data = (SGlobalData*) user_data;
-//
-//     //create the variable wich will contain the file path
-//     char *filename = NULL;
-//     GtkImage *image = NULL;
-//
-//     //get the path from the gtk file chooser
-//     filename = gtk_file_chooser_get_filename(filebtn);
-//     g_print("filename : %s\n", filename);
-//
-//     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-//
-//     //print the image on the gtk image box
-//     gtk_image_clear(image);
-//     //gtk_image_set_from_file(image, filename);
-//
-//     //get the pixbuf from the gtk image
-//     GError *err = NULL;
-//     //struct _GdkPixbuf *imgPixbuf;
-//     unchangedPixbuf = gdk_pixbuf_new_from_file(filename, &err);
-//
-//     if(err)
-//     {
-//         printf("Error : %s\n", err->message);
-//         g_error_free(err);
-//     }
-//
-//     //change the size of the pixbuf
-//     // struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(unchangedPixbuf, default_size_width, default_size_height, GDK_INTERP_HYPER);
-//     // unchangedPixbuf = img2;
-//     //
-//     // g_print("def_width = %d; def_height = %d", default_size_width, default_size_height);
-//
-//     gtk_image_set_from_pixbuf(image, unchangedPixbuf);
-// }
 /** Define a struct which is similar to an image **/
 struct Img_rgb *init_img_rgb(int rows, int cols)
 {
@@ -265,45 +181,6 @@ void Img_rgb_to_Image(struct _GdkPixbuf *imgPixbuf, struct Img_rgb *img)
     }
 }
 
-
-// void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
-// {
-//     g_print("Binarize\n");
-//     menuitem = 0;
-//     SGlobalData *data = (SGlobalData*) user_data;
-//     GtkImage *image = NULL;
-//     image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-//
-//     struct _GdkPixbuf *imgPixbuf;
-//     imgPixbuf = gtk_image_get_pixbuf(image);
-//
-//     guchar red, green, blue, alpha;
-//
-//     guchar grey;
-//
-//     int width = gdk_pixbuf_get_width(imgPixbuf);
-//     int height = gdk_pixbuf_get_height(imgPixbuf);
-//     gboolean error = FALSE;
-//
-//     for(int i = 0; i < width; i++)
-//     {
-//         for(int j = 0; j < height; j++)
-//         {
-//             error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-//             if(!error)
-//                 err(1, "pixbuf get pixels error");
-//             grey = (red + green + blue) / 3;
-//             if (grey <= 127)
-//                 put_pixel(imgPixbuf, i, j, 0, 0, 0, alpha);
-//             else
-//                 put_pixel(imgPixbuf, i, j, 255, 255, 255, alpha);
-//         }
-//     }
-//     //struct _GtkPixbuf *img2 = imgPixbuf;
-//     //gtk_image_clear(image);
-//     gtk_image_set_from_pixbuf(image, imgPixbuf);
-//     // gtk_widget_queue_draw(image);
-// }
 
 // void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
 // {

@@ -9,7 +9,6 @@
 
 #include "GMPF_LayerMngr.h"
 
-struct _GdkPixbuf *imgPixbuf;
 struct _GdkPixbuf *unchangedPixbuf;
 
 
@@ -40,8 +39,16 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
     struct _GdkPixbuf *imgPixbuf = NULL;
+    GError *err = NULL;
     if (!unchangedPixbuf)
-        imgPixbuf = gtk_image_get_pixbuf (image);
+    {
+        imgPixbuf = gdk_pixbuf_new_from_file("gimp_logo.png", &err);
+        if(err)
+        {
+            printf("Error : %s\n", err->message);
+            g_error_free(err);
+        }
+    }
     else
         imgPixbuf = unchangedPixbuf;
     //gtk_image_clear(image);
@@ -50,8 +57,8 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
 
     float scaleValue2 = scaleValue / 100;
 
-    int width = gdk_pixbuf_get_width(unchangedPixbuf);
-    int height = gdk_pixbuf_get_height(unchangedPixbuf);
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
 
     int imgwidth = width * scaleValue2;
     int imgheight = height * scaleValue2;
@@ -86,18 +93,11 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
     GError *err = NULL;
     //struct _GdkPixbuf *imgPixbuf;
     unchangedPixbuf = gdk_pixbuf_new_from_file(filename, &err);
-
     if(err)
     {
         printf("Error : %s\n", err->message);
         g_error_free(err);
     }
-
-    //change the size of the pixbuf
-    // struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(unchangedPixbuf, default_size_width, default_size_height, GDK_INTERP_HYPER);
-    // unchangedPixbuf = img2;
-    //
-    // g_print("def_width = %d; def_height = %d", default_size_width, default_size_height);
 
     gtk_image_set_from_pixbuf(image, unchangedPixbuf);
 }
@@ -108,7 +108,7 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkImage *image = NULL;
-    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
     struct _GdkPixbuf *imgPixbuf;
     imgPixbuf = gtk_image_get_pixbuf(image);
@@ -138,6 +138,8 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
     //struct _GtkPixbuf *img2 = imgPixbuf;
     //gtk_image_clear(image);
     gtk_image_set_from_pixbuf(image, imgPixbuf);
+    g_object_unref(G_OBJECT(imgPixbuf));
+
     // gtk_widget_queue_draw(image);
 }
 
