@@ -27,7 +27,6 @@ void callback_hideWidget(GtkWidget *widget, gpointer user_data);
 void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data);
 
     // GMPF_LayerMngr
-void callback_create_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
 void callback_clear_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
 void callback_add_GMPF_Layer(GtkMenuItem *menuitem, gpointer user_data);
 void callback_remove_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
@@ -91,6 +90,16 @@ int GMPF_start()
     //g_signal_connect(Main_window, "key-release-event", G_CALLBACK(key_event), NULL);
 
     resetCursor(&data);
+
+
+
+    // INIT THE WINDOW ELEMENT
+    GtkFlowBox *flowbox = NULL;
+    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data.builder, "GMPF_flowbox"));
+    layermngr_create(flowbox);
+
+
+
 
     gtk_widget_show_all (Main_window);
 
@@ -795,14 +804,6 @@ void GMPFquit(GtkMenuItem *menuitem, gpointer user_data)
 
 
     // GMPF_LayerMngr
-void callback_create_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data)
-{
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layermngr_create(flowbox);
-}
-
 void callback_clear_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;

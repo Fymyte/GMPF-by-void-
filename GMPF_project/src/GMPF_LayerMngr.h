@@ -58,9 +58,13 @@ void layer_delete(GMPF_Layer *layer); //ENDED
 //
 void layer_get_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel);
 void layer_put_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel);
-void layer_rotation(GMPF_Layer *layer, double rad_angle);
-void layer_rotation_right(GMPF_Layer *layer);
-void layer_rotation_left(GMPF_Layer *layer);
+void layer_rotation(GtkFlowBox *flowbox, double rad_angle);
+void layer_rotation_right(GtkFlowBox *flowbox);
+void layer_rotation_left(GtkFlowBox *flowbox);
+
+
+
+
 
 
 #endif /* LAYER_MANAGER_H */

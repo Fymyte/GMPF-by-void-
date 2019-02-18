@@ -319,17 +319,17 @@ void layer_put_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
     // TODO
 }
 
-void layer_rotation(GMPF_Layer *layer, double rad_angle)
+void layer_rotation(GtkFlowBox *flowbox, double rad_angle)
 {
     // TODO
 }
 
-void layer_rotation_right(GMPF_Layer *layer)
+void layer_rotation_right(GtkFlowBox *flowbox)
 {
     // TODO
 }
 
-void layer_rotation_left(GMPF_Layer *layer)
+void layer_rotation_left(GtkFlowBox *flowbox)
 {
     // TODO
 }
