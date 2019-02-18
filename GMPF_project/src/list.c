@@ -31,6 +31,13 @@ void list_add_after(GMPF_List *list, GMPF_List *add)
         nextlist->prev = add;
 }
 
+void list_append(GMPF_List *list, GMPF_List *add)
+{
+    while (list->next != NULL)
+        list = list->next;
+    list_add_after(list, add);
+}
+
 void list_remove_at_pos(GMPF_List *list, int pos)
 {
     GMPF_List *getlist = list_get_at_pos(list, pos);

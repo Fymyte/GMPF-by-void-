@@ -33,6 +33,7 @@ struct GMPF_List {
 void list_init(GMPF_List *list);
 void list_add_at_pos(GMPF_List *list, GMPF_List *add, int pos);
 void list_add_after(GMPF_List *list, GMPF_List *add);
+void list_append(GMPF_List *list, GMPF_List *add);
 void list_remove_at_pos(GMPF_List *list, int pos);
 void list_remove(GMPF_List *list);
 GMPF_List * list_get_at_pos(GMPF_List *list, int pos);

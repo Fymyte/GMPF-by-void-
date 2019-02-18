@@ -698,7 +698,6 @@
                         <property name="halign">start</property>
                         <property name="valign">start</property>
                         <property name="max_children_per_line">1</property>
-                        <property name="selection_mode">browse</property>
                       </object>
                     </child>
                   </object>

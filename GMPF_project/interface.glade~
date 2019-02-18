@@ -272,11 +272,6 @@
     <property name="value">100</property>
     <property name="step_increment">1</property>
   </object>
-  <object class="GtkImage" id="checkbox">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
-  </object>
   <object class="GtkWindow" id="MainWindow">
     <property name="name">GMPF</property>
     <property name="width_request">700</property>
@@ -703,67 +698,6 @@
                         <property name="halign">start</property>
                         <property name="valign">start</property>
                         <property name="max_children_per_line">1</property>
-                        <property name="selection_mode">browse</property>
-                        <child>
-                          <object class="GtkFlowBoxChild">
-                            <property name="width_request">160</property>
-                            <property name="height_request">90</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="halign">center</property>
-                            <property name="valign">start</property>
-                            <property name="margin_left">5</property>
-                            <property name="margin_right">5</property>
-                            <property name="margin_top">5</property>
-                            <property name="margin_bottom">5</property>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <child>
-                                  <object class="GtkCheckButton">
-                                    <property name="label" translatable="yes">Activer le filtre</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="image">checkbox</property>
-                                    <property name="always_show_image">True</property>
-                                    <property name="draw_indicator">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <placeholder/>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkFlowBoxChild">
-                            <property name="width_request">160</property>
-                            <property name="height_request">90</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="halign">start</property>
-                            <property name="valign">start</property>
-                            <property name="margin_left">5</property>
-                            <property name="margin_right">5</property>
-                            <property name="margin_top">5</property>
-                            <property name="margin_bottom">5</property>
-                            <child>
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="stock">gtk-cancel</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
                       </object>
                     </child>
                   </object>

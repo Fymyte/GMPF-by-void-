@@ -195,25 +195,10 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox)
     GMPF_LayerMngr *layermngr =
             (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
-    printf("layer 1\n");
-    // add the layer in the list
-    if (layermngr->nb_layer == 0)
-    {
-        list_add_after(&(layermngr->layer_list), &(newlayer->list));
-        printf("layer 2A\n");
-    }
-    else
-    {
-        GMPF_Layer *prevlayer = layermngr_get_selected_layer(flowbox);
-        list_add_after(&(prevlayer->list), &(newlayer->list));
-        printf("layer 2B\n");
-    }
-
     /*
     add UIElement to the flowbox
     */
     GtkWidget *image = gtk_image_new();
-    printf("layer 3\n");
 
     // Style of the image
     gtk_widget_set_sensitive (image, TRUE);
@@ -226,18 +211,36 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox)
     gtk_widget_set_margin_bottom(image, 5);
     gtk_widget_set_margin_start(image, 5);
     gtk_widget_set_margin_end(image, 5);
-    printf("layer 4\n");
 
+    int insertpos;
+    // add the layer in the list
+    if (layermngr->nb_layer == 0)
+    {
+        list_add_after(&(layermngr->layer_list), &(newlayer->list));
+        insertpos = 0;
+    }
+    else
+    {
+        GMPF_Layer *prevlayer = layermngr_get_selected_layer(flowbox);
+        if (prevlayer != NULL)
+        {
+            list_add_after(&(prevlayer->list), &(newlayer->list));
+            insertpos = gtk_flow_box_child_get_index(prevlayer->UIElement);
+        }
+        else
+        {
+            list_append(&(layermngr->layer_list), &(newlayer->list));
+            insertpos = layermngr->nb_layer;
+        }
+    }
 
     //gtk_container_add((GtkContainer *) flowbox, image);
-    gtk_flow_box_insert (flowbox, image, layermngr->nb_layer);
-    printf("layer 5\n");
+    gtk_flow_box_insert (flowbox, image, insertpos);
 
 
     newlayer->UIElement =
-        gtk_flow_box_get_child_at_index(flowbox, layermngr->nb_layer);
+        gtk_flow_box_get_child_at_index(flowbox, insertpos);
     g_object_set_data(G_OBJECT(newlayer->UIElement), LAYER_KEY_NAME, newlayer);
-    printf("layer 6\n");
 
     layermngr->nb_layer += 1;
 }
