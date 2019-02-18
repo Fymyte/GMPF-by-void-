@@ -360,24 +360,33 @@ void layer_rotation(GtkFlowBox *flowbox, double rad_angle)
 }
 
 void layer_rotation_right(GtkFlowBox *flowbox)
-{
+{// TODO: Test it
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    GMPF_Size newsize = {.w = layer->size.h, .h = layer->size.w};
+
     GdkPixbuf *pixbuf = layer->image;
-    GdkPixbuf *newpixbuf; // INIT THE PIXBUF
+    GdkPixbuf *newpixbuf = new_pixbuf_standardized(&newsize);
+
     GMPF_Pos position = {.x = 0, .y = 0};
+    GMPF_Pos newpos = {.x = 0, .y = 0};
+
+    GMPF_Pixel pixel;
     
-    for (; position.x < layer->size.w; position.x++)
+    for (; position.x < layer->size.w; position.x++, )
     {
         for (; position.y < layer->size.h; position.y++)
         {
-            layer_get_pixel
+            layer_get_pixel(pixbuf, &position, &pixel);
+            layer_put_pixel(newpixbuf, &newpos, &pixel);
         }
     }
+
+    g_object_unref(layer->image);
+
     layer->image = newpixbuf;
 
-    int tmp = layer->size.w;
-    layer->size.w = layer->size.h;
-    layer->size.h = tmp;
+    layer->size.w = newsize.w;
+    layer->size.h = newsize.h;
 
     // SWAP THE POS TOO
 }
@@ -400,10 +409,29 @@ void layer_rotation_left(GtkFlowBox *flowbox)
 //
 // for GdkPixbuf standardization
 //
+GdkPixbuf * new_pixbuf_standardized(GMPF_Size *size)
+{
+    GdkPixbuf *pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE,
+                8, size->w, size->h);
+    if (pixbuf_standardized(pixbuf) == -1)
+        return NULL;
+    return pixbuf;
+}
 
-int pixbuf_standardize(GdkPixbuf *pixbuf)
+int pixbuf_standardized(GdkPixbuf *pixbuf)
 {
     int is_error = 0;
+    if (!gdk_pixbuf_get_has_alpha (pixbuf))
+    {
+        GdkPixbuf * pix2 = gdk_pixbuf_add_alpha(pixbuf, FALSE, 0, 0, 0);
+        g_object_unref(pixbuf);
+        pixbuf = pix2;
+        if (!gdk_pixbuf_get_has_alpha (pixbuf))
+        {
+            printf("pixbuf as no alpha\n");
+            is_error = 1;
+        }
+    }
     if (gdk_pixbuf_get_colorspace (pixbuf) != GDK_COLORSPACE_RGB)
     {
         printf("Wrong colorspace for pixbuf\n");
@@ -412,11 +440,6 @@ int pixbuf_standardize(GdkPixbuf *pixbuf)
     if (gdk_pixbuf_get_bits_per_sample (pixbuf) != 8)
     {
         printf("pixbuf hasn't 8bits per sample\n");
-        is_error = 1;
-    }
-    if (!gdk_pixbuf_get_has_alpha (pixbuf))
-    {
-        printf("pixbuf as no alpha\n");
         is_error = 1;
     }
     if (gdk_pixbuf_get_n_channels (pixbuf) != 4)
