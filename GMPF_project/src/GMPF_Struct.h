@@ -36,6 +36,7 @@ struct GMPF_Layer {
     // used variable
     GMPF_Pos pos;
     GMPF_Size size;
+    char isvisible;
 
     GdkPixbuf *image;
 

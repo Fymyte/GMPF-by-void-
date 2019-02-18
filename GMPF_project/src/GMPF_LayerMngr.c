@@ -1,6 +1,12 @@
 #include "GMPF_LayerMngr.h"
 
 
+// DEFINE
+#define IS_NOT_IN_LAYER(size, pos) \
+       (pos->x < 0 || pos->x >= size->w || \
+        pos->y < 0 || pos->y >= size->h )
+
+
 // CODE
 
 /*
@@ -64,12 +70,9 @@ void layermngr_create(GtkFlowBox *flowbox)
         Initialize a new GMPF_LayerMngr and attach it to the flowbox.
     */
 
-    printf("manager 1\n");
     GMPF_LayerMngr *layermngr = malloc(sizeof(GMPF_LayerMngr));
 
     layermngr_initialization(layermngr);
-
-printf("manager 2\n");
 
     layermngr->flowbox = flowbox;
     layermngr->display = NULL;
@@ -281,6 +284,8 @@ GMPF_Layer * layer_initialization()
     layer->size.h = 0;
     layer->size.w = 0;
 
+    layer->isvisible = 1;
+
     layer->image = NULL;
 
     list_init(&(layer->list));
@@ -309,14 +314,44 @@ void layer_delete(GMPF_Layer *layer)
 //
 // for Operations on GMPF_Layer
 //
-void layer_get_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
+int layer_get_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
 {
-    // TODO
+    GdkPixbuf *pixbuf = layer->image;
+    guchar *p;
+
+    if (IS_NOT_IN_LAYER(layer->size, pos))
+        return -1;
+
+    int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+    p = gdk_pixbuf_get_pixels (pixbuf);
+
+    p += pos->y * rowstride + (pos->x << 2);
+        // pixels + y * rowstride + x * nb_channels
+        // nb_channels is always 4.
+    pixel->R = p[0];
+    pixel->G = p[1];
+    pixel->B = p[2];
+    pixel->A = p[3];
 }
 
-void layer_put_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
+int layer_put_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
 {
-    // TODO
+    GdkPixbuf *pixbuf = layer->image;
+    guchar *pixels, *p;
+
+    if (IS_NOT_IN_LAYER(layer->size, pos))
+        return -1;
+
+    int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+    pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+    p = pixels + pos->y * rowstride + (pos->x << 2);
+        // pixels + y * rowstride + x * nb_channels
+    p[0] = pixel->R;
+    p[1] = pixel->G;
+    p[2] = pixel->B;
+    p[3] = pixel->A;
+    return 0;
 }
 
 void layer_rotation(GtkFlowBox *flowbox, double rad_angle)
@@ -326,7 +361,8 @@ void layer_rotation(GtkFlowBox *flowbox, double rad_angle)
 
 void layer_rotation_right(GtkFlowBox *flowbox)
 {
-    // TODO
+    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    
 }
 
 void layer_rotation_left(GtkFlowBox *flowbox)
