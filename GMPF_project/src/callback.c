@@ -6,11 +6,10 @@
 #include "Struct.h"
 #include "Matrix.h"
 #include "cursor.h"
-
 #include "GMPF_LayerMngr.h"
 
-struct _GdkPixbuf *unchangedPixbuf;
 
+struct _GdkPixbuf *unchangedPixbuf;
 
 void callback_about (GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -321,3 +320,224 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
     }
     gtk_image_set_from_pixbuf(image, imgPixbuf);
 }
+
+void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
+{
+     menuitem = 0;
+     //init variables
+     SGlobalData *data = (SGlobalData*) user_data;
+     GdkDisplay *display = NULL;
+     GdkCursor *cursor = NULL;
+     GdkScreen *screen = NULL;
+     GdkWindow * win = NULL;
+
+     //set variables
+     screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
+     display = gdk_screen_get_display(screen);
+
+     //create the new cursor
+     cursor = gdk_cursor_new_for_display (display, GDK_X_CURSOR);
+
+     //gdk_display_beep (display); play a sound ("beep")
+
+     //set the new cursor on the screen
+     win = gdk_screen_get_root_window(screen);
+     gdk_window_set_cursor (win, cursor);
+ }
+
+ void callback_FC(GtkMenuItem *menuitem, gpointer user_data)
+ {
+     //variables definitions
+     SGlobalData *data = (SGlobalData*)user_data;
+     GtkWidget *FCWindow = NULL;
+     GtkImage *test_image = NULL;
+     GError *err = NULL;
+     struct _GdkPixbuf *imgPixbuf = NULL;
+     imgPixbuf = gdk_pixbuf_new_from_file(
+         "/home/samdiaby/GMPF-by-void-/GMPF_project/image_test.jpg", &err);
+
+     if(err)
+     {
+         printf("Error : %s\n", err->message);
+         g_error_free(err);
+     }
+
+     FCWindow = GTK_WIDGET(gtk_builder_get_object(data->builder, "FilterCreator"));
+     test_image = GTK_IMAGE(gtk_builder_get_object(data->builder, "Image_test"));
+
+     //test image resize + setting
+     int pixbuf_width = gdk_pixbuf_get_width(imgPixbuf) / 2;
+     int pixbuf_height = gdk_pixbuf_get_height(imgPixbuf) / 2;
+
+
+     struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf,
+         pixbuf_width, pixbuf_height, GDK_INTERP_BILINEAR);
+
+     gtk_image_clear(test_image);
+     gtk_image_set_from_pixbuf(test_image, img2);
+
+     //show the filter creator window
+     gtk_widget_show(FCWindow);
+     menuitem = 0;
+ }
+
+ void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
+ {
+     g_print("Mirror - Vertical\n");
+     menuitem = 0;
+     SGlobalData *data = (SGlobalData*) user_data;
+     GtkImage *image = NULL;
+     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+
+     struct _GdkPixbuf *imgPixbuf;
+     imgPixbuf = gtk_image_get_pixbuf(image);
+
+     int width = gdk_pixbuf_get_width(imgPixbuf);
+     int height = gdk_pixbuf_get_height(imgPixbuf);
+     gboolean error = FALSE;
+
+     struct Img_rgb *img = init_img_rgb(width, height);
+
+     for(int i = 0; i < width; i++)
+     {
+         for(int j = 0; j < height; j++)
+         {
+             guchar red, green, blue, alpha;
+             error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+             if(!error)
+                 err(1, "pixbuf get pixels error");
+             Matrix_val(img -> red, width - i - 1, j, (double)red);
+             Matrix_val(img -> green, width - i - 1, j, (double)green);
+             Matrix_val(img -> blue, width - i - 1, j, (double)blue);
+             Matrix_val(img -> alpha, width - i - 1, j, (double)alpha);
+         }
+     }
+     Img_rgb_to_Image(imgPixbuf, img);
+     gtk_image_set_from_pixbuf(image, imgPixbuf);
+     free_img_rgb(img);
+ }
+
+ void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
+ {
+     g_print("Tinter\n");
+
+     guchar r, g, b;
+     int factor;
+
+     printf("Waiting for colors values ...\n");
+     printf("Enter red value\n");
+     if (scanf("%hhu", &r) == EOF)
+         errx(1, "Error, scanf()");
+
+     printf("Enter green value\n");
+     if (scanf("%hhu", &g) == EOF)
+         errx(1, "Error, scanf()");
+
+     printf("Enter blue value\n");
+     if (scanf("%hhu", &b) == EOF)
+         errx(1, "Error, scanf()");
+
+     printf("Enter factor (between 0 and 100)\n");
+     if (scanf("%i", &factor) == EOF)
+         errx(1, "Error, scanf()");
+
+     menuitem = 0;
+     SGlobalData *data = (SGlobalData*) user_data;
+     GtkImage *image = NULL;
+     image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+
+     struct _GdkPixbuf *imgPixbuf;
+     imgPixbuf = gtk_image_get_pixbuf(image);
+
+     guchar red;
+     guchar green;
+     guchar blue, alpha;
+
+     int width = gdk_pixbuf_get_width(imgPixbuf);
+     int height = gdk_pixbuf_get_height(imgPixbuf);
+     gboolean error = FALSE;
+
+     for(int i = 0; i < width; i++)
+     {
+         for(int j = 0; j < height; j++)
+         {
+             error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+             if(!error)
+                 err(1, "pixbuf get pixels error");
+             red = red * (100 - factor) / 100 + r * factor / 100;
+             green = green * (100 - factor) / 100 + g * factor / 100;
+             blue = blue * (100 - factor) / 100 + b * factor / 100;
+             put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
+         }
+     }
+     gtk_image_set_from_pixbuf(image, imgPixbuf);
+ }
+
+ void callback_negative(GtkMenuItem *menuitem, gpointer user_data)
+ {
+     g_print("Negative\n");
+     menuitem = 0;
+     SGlobalData *data = (SGlobalData*) user_data;
+     GtkImage *image = NULL;
+     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+
+     struct _GdkPixbuf *imgPixbuf;
+     imgPixbuf = gtk_image_get_pixbuf(image);
+
+     guchar red, green, blue, alpha;
+
+     int width = gdk_pixbuf_get_width(imgPixbuf);
+     int height = gdk_pixbuf_get_height(imgPixbuf);
+     gboolean error = FALSE;
+
+     for(int i = 0; i < width; i++)
+     {
+         for(int j = 0; j < height; j++)
+         {
+             error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+             if(!error)
+                 err(1, "pixbuf get pixels error");
+             red = 255 - red;
+             green = 255 - green;
+             blue = 255 - blue;
+ 		    put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
+         }
+     }
+     gtk_image_set_from_pixbuf(image, imgPixbuf);
+ }
+
+ void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)
+ {
+     g_print("Mirror - Horizontal\n");
+     menuitem = 0;
+     SGlobalData *data = (SGlobalData*) user_data;
+     GtkImage *image = NULL;
+     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+
+     struct _GdkPixbuf *imgPixbuf;
+     imgPixbuf = gtk_image_get_pixbuf(image);
+
+     int width = gdk_pixbuf_get_width(imgPixbuf);
+     int height = gdk_pixbuf_get_height(imgPixbuf);
+     gboolean error = FALSE;
+
+     struct Img_rgb *img = init_img_rgb(width, height);
+
+     for(int i = 0; i < width; i++)
+     {
+         for(int j = 0; j < height; j++)
+         {
+             guchar red, green, blue, alpha;
+             error= gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+             if(!error)
+                 err(1, "pixbuf get pixels error");
+             Matrix_val(img -> red, i, height - j - 1, (double)red);
+             Matrix_val(img -> green, i , height - j - 1, (double)green);
+             Matrix_val(img -> blue, i, height - j - 1, (double)blue);
+             Matrix_val(img -> alpha, i, height - j - 1, (double)alpha);
+         }
+     }
+     Img_rgb_to_Image(imgPixbuf, img);
+     gtk_image_set_from_pixbuf(image, imgPixbuf);
+     free_img_rgb(img);
+ }
