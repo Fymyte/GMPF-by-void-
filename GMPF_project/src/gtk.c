@@ -150,7 +150,7 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     else
         imgPixbuf = unchangedPixbuf;
     //gtk_image_clear(image);
-    gchar *s = gtk_entry_get_text (entry);
+    const gchar *s = gtk_entry_get_text (entry);
     int scaleValue = atoi(s);
 
     scaleValue = scaleValue / 100;
