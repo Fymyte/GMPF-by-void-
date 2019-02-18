@@ -5,6 +5,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 
+#include "list.h"
 #include "types_redefine.h"
 
 
@@ -33,24 +34,31 @@ struct GMPF_Pixel {
 // TODO: complete the struct GMPF_Layer
 struct GMPF_Layer {
     // used variable
-    GMPF_Size img_size;
+    GMPF_Pos pos;
+    GMPF_Size size;
     GdkPixbuf *image;
 
     // for the list
-    GMPF_Layer *prev;
-    GMPF_Layer *next;
+    List list;
 
     // to know the UIElement that contains the layer
     GtkFlowBoxChild *UIElement;
 };
 
+
 struct GMPF_LayerMngr {
     // basic variable
-    int nb_layer; // unused I think
-    GMPF_Layer *layer_list;
+    GMPF_Size size;
+    int nb_layer;
+    List layer_list;
+
+    GdkPixbuf *image;
+    GdkPixbuf *zoomed_image;
+
 
     // get the element on the GUI
-    GtkFlowBox *UIElement;
+    GtkFlowBox *flowbox;
+    GtkImage *display;
 };
 
 

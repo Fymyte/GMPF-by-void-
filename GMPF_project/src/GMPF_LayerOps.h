@@ -9,7 +9,9 @@
 #include "types_redefine.h"
 #include "GMPF_Struct.h"
 
-
+/*
+    Don't use this file.
+*/
 
 // STRUCTURES
 

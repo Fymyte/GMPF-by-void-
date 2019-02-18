@@ -51,44 +51,85 @@ GMPF_Layer * Layer_CreateFromFile(const char *filename) {
 //
 //
 
+
+
 //
 // for the GtkFlowBox - interact with Gtk
 //
-void layermngr_initialization(GtkFlowBox *flowbox)
-{// TODO: test it / ADD THE ERRORS
+
+void layermngr_create(GtkFlowBox *flowbox)
+{
+    /*
+        Initialize a new GMPF_LayerMngr and attach it to the flowbox.
+    */
 
     GMPF_LayerMngr *layermngr = malloc(sizeof(GMPF_LayerMngr));
-    layermngr->nb_layer = 0;
-    layermngr->layer_list = NULL;
-    // add if new variable
 
-    layermngr->UIElement = flowbox;
+    layermngr_initialization(layermngr);
+
+    layermngr->flowbox = flowbox;
+    layermngr->display = NULL;
 
     g_object_set_data(flowbox, LAYERMNGR_KEY_NAME, layermngr);
+}
 
+void layermngr_initialization(GMPF_LayerMngr *layermngr)
+{
+    /*
+        Initialize a new GMPF_LayerMngr.
+    */
+
+    layermngr->size.h = 0; // maybe change it with parameters
+    layermngr->size.w = 0;
+
+    layermngr->nb_layer = 0;
+    list_init(&(layermngr->layer_list));
+    // add if new variable
+
+    layermngr->image = NULL;
+    layermngr->zoomed_image = NULL;
+
+    // don't touch the flowbox and the display again
+    // did in the creation
 }
 
 
 void layermngr_clear(GtkFlowBox *flowbox)
-{// TODO: test it / ADD THE ERRORS
+{
+    /*
+        Clear the GMPF_LayerMngr attched to the flowbox.
+    */
+
     GMPF_LayerMngr *layermngr =
         (GMPF_LayerMngr *) g_object_get_data(flowbox, LAYERMNGR_KEY_NAME);
 
     // delete the layer in the layermngr
-    while (layermngr->layer_list != NULL)
+    GMPF_Layer *lay;
+    while (layermngr->layer_list.next != NULL)
     {
         // remove the element from the layermngr list
-        layermngr->layer_list = free_GMPF_Layer(layermngr->layer_list);
+        lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+        list_remove(layermngr->layer_list.next);
+        layer_delete(lay);
     }
+    // clear the images
+    if (layermngr->image != NULL)
+        g_object_unref(layermngr->image);
+    if (layermngr->zoomed_image != NULL)
+        g_object_unref(layermngr->zoomed_image);
 
-    layermngr->nb_layer = 0;
+    // reset default values
+    layermngr_initialization(layermngr);
 
 }
 
 
 void layermngr_delete(GtkFlowBox *flowbox)
-{// TODO: test it / ADD THE ERRORS
-
+{
+    /*
+        Delete the GMPF_LayerMngr attched to the flowbox.
+        Use it only when you close the application/GtkWindow.
+    */
 
     // get data and set it to NULL
     GMPF_LayerMngr *layermngr =
@@ -98,7 +139,7 @@ void layermngr_delete(GtkFlowBox *flowbox)
 
     // delete the layermngr
     layermngr_clear(flowbox); // clear the layermngr before delete it
-    layermngr->UIElement = NULL; // don't delete the UIElement to keep it
+    layermngr->flowbox = NULL; // don't delete the flowbox to keep it
     free(layermngr);
 }
 
@@ -111,13 +152,16 @@ void layermngr_delete(GtkFlowBox *flowbox)
 //
 
 
-
 GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
 {
+    /*
+        Return the GMPF_Layer associated to the selected element in the flowbox.
+    */
+
     GMPF_LayerMngr *layermngr =
         (GMPF_LayerMngr *) g_object_get_data(flowbox, LAYERMNGR_KEY_NAME);
 
-    if (layermngr->layer_list == NULL)
+    if (layermngr->nb_layer == 0)
         return NULL;
 
     GMPF_Layer *layer = NULL; // remove NULL when finished
@@ -137,6 +181,11 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
 
 void layermngr_add_new_layer(GtkFlowBox *flowbox)
 {
+    /*
+        Add a GMPF_Layer after the selected element in the flowbox.
+        (At first if there is no element in the flowbox)
+    */
+
     GMPF_Layer *newlayer = layer_initialization();
     GMPF_LayerMngr *layermngr =
             (GMPF_LayerMngr *) g_object_get_data(flowbox, LAYERMNGR_KEY_NAME);
@@ -144,23 +193,22 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox)
     // add the layer in the list
     if (layermngr->nb_layer == 0)
     {
-        layermngr->layer_list = newlayer;
+        list_add_after(&(layermngr->layer_list), &(newlayer->list));
     }
     else
     {
         GMPF_Layer *prevlayer = layermngr_get_selected_layer(flowbox);
-        GMPF_Layer *nextlayer = prevlayer->next;
-        prevlayer->next = layer;
-        layer->prev = prevlayer;
-        if (nextlayer != NULL)
-            nextlayer->prev = layer;
-        layer->next = nextlayer;
+        list_add_after(&(prevlayer->list), &(newlayer->list));
     }
 
     /*
     add UIElement to the flowbox
     */
     GtkWidget *image = gtk_image_new();
+
+    //
+    // TODO: set style of the image
+    //
 
     gtk_container_add((GtkContainer *) flowbox, image);
 
@@ -174,6 +222,10 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox)
 
 void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
 {
+    /*
+        Delete the selected layer.
+    */
+
     GMPF_LayerMngr *layermngr =
         (GMPF_LayerMngr *) g_object_get_data(flowbox, LAYERMNGR_KEY_NAME);
 
@@ -197,13 +249,15 @@ GMPF_Layer * layer_initialization()
 {
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer);
 
-    layer->img_size.h = 0;
-    layer->img_size.w = 0;
+    layer->pos.x = 0;
+    layer->pos.y = 0;
+
+    layer->size.h = 0;
+    layer->size.w = 0;
 
     layer->image = NULL;
 
-    layer->prev = NULL;
-    layer->next = NULL;
+    list_init(&(layer->list));
 
     layer->UIElement = NULL;
 
@@ -213,19 +267,7 @@ GMPF_Layer * layer_initialization()
 
 void layer_delete(GMPF_Layer *layer)
 {
-    GMPF_Layer *layerprev = layer->prev;
-    GMPF_Layer *layernext = layer->next;
-
-    if (layerprev != NULL) // need to test
-    {
-        layerprev->next = layer->next;
-    }
-    if (layernext != NULL)
-    {
-        layernext->prev = layer->prev;
-    }
-    layer->prev = NULL;
-    layer->next = NULL;
+    list_remove(&(layer->list));
 
     // remove and free the GtkFlowBoxChild from the GtkFlowBox
     gtk_widget_destroy((GtkWidget *) layer->UIElement);
@@ -236,6 +278,38 @@ void layer_delete(GMPF_Layer *layer)
 
     return layernext;
 }
+
+
+
+
+//
+// for Operations on GMPF_Layer
+//
+void layer_get_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
+{
+    // TODO
+}
+
+void layer_put_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
+{
+    // TODO
+}
+
+void layer_rotation(GMPF_Layer *layer, double rad_angle)
+{
+    // TODO
+}
+
+void layer_rotation_right(GMPF_Layer *layer)
+{
+    // TODO
+}
+
+void layer_rotation_left(GMPF_Layer *layer)
+{
+    // TODO
+}
+
 
 
 

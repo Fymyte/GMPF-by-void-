@@ -9,6 +9,7 @@
 
 #include "types_redefine.h"
 #include "GMPF_Struct.h"
+#include "list.h"
 
 
 // DEFINES
@@ -27,29 +28,39 @@
 // FUNCTIONS
 
 GMPF_Layer * Layer_CreateFromFile(const char *filename); //TODO: complete
+    // don't use this function
 
 //
 // for the GtkFlowBox - interact with Gtk
 //
-void layermngr_initialization(GtkFlowBox *flowbox);
-void layermngr_clear(GtkFlowBox *flowbox);
-void layermngr_delete(GtkFlowBox *flowbox);
+void layermngr_create(GtkFlowBox *flowbox); //ENDED
+void layermngr_initialization(GMPF_LayerMngr *layermngr); //ENDED
+void layermngr_clear(GtkFlowBox *flowbox); //ENDED
+void layermngr_delete(GtkFlowBox *flowbox); //ENDED
 
 //
 // for the GMPF_LayerMngr
 //
-GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox);
-            // maybe change this function
-void layermngr_add_new_layer(GtkFlowBox *flowbox);
-void layermngr_delete_selected_layer(GtkFlowBox *flowbox);
+GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox); //ENDED
+void layermngr_add_new_layer(GtkFlowBox *flowbox); //ENDED
+void layermngr_delete_selected_layer(GtkFlowBox *flowbox); //ENDED
 
 
 //
 // for the GMPF_Layer
 //
-GMPF_Layer * layer_initialization();
-void layer_delete(GMPF_Layer *layer);
+GMPF_Layer * layer_initialization(); //ENDED
+void layer_delete(GMPF_Layer *layer); //ENDED
 
+
+//
+// for Operations on GMPF_Layer
+//
+void layer_get_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel);
+void layer_put_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel);
+void layer_rotation(GMPF_Layer *layer, double rad_angle);
+void layer_rotation_right(GMPF_Layer *layer);
+void layer_rotation_left(GMPF_Layer *layer);
 
 
 #endif /* LAYER_MANAGER_H */
