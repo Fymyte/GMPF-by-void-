@@ -19,7 +19,7 @@
 //callback functions
 void callback_image(GtkFileChooser *filebtn, gpointer user_data);
 void callback_about (GtkMenuItem *menuitem, gpointer user_data);
-void callback_adjust_scale (GtkRange *scale, gpointer user_data);
+void callback_adjust_scale (GtkEntry *entry, gpointer user_data);
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data);
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data);
 void callback_FC(GtkMenuItem *menuitem, gpointer user_data);
@@ -136,14 +136,9 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data)
 //}
 
 
-void callback_adjust_scale(GtkRange *scale, gpointer user_data)
+void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
-
-    // if (scale == NULL)
-    // {
-    //     scale = gtk_builder_get_object(data->builder, "Scaler");
-    // }
 
     GtkImage *image = NULL;
 
@@ -155,8 +150,8 @@ void callback_adjust_scale(GtkRange *scale, gpointer user_data)
     else
         imgPixbuf = unchangedPixbuf;
     //gtk_image_clear(image);
-
-    gdouble scaleValue = gtk_range_get_value (scale);
+    gchar *s = gtk_entry_get_text (entry);
+    int scaleValue = atoi(s);
 
     scaleValue = scaleValue / 100;
 
@@ -831,46 +826,3 @@ void callback_remove_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data)
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     layermngr_delete_selected_layer(flowbox);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
