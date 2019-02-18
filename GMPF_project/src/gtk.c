@@ -44,8 +44,6 @@ void GMPFquit(GtkMenuItem *menuitem, gpointer user_data);
 
 struct _GdkPixbuf *imgPixbuf;
 struct _GdkPixbuf *unchangedPixbuf;
-int default_size_width = 0;
-int default_size_height = 0;
 const char *interface_file = "interface.glade";
 
 int GMPF_start()
@@ -162,18 +160,15 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     const gchar *s = gtk_entry_get_text (entry);
     float scaleValue = atof(s);
 
-    scaleValue = scaleValue / 100;
+    float scaleValue2 = scaleValue / 100;
 
-    if (default_size_width == 0 || default_size_height == 0)
-    {
-        default_size_width = gdk_pixbuf_get_width(imgPixbuf);
-        default_size_height = gdk_pixbuf_get_height(imgPixbuf);
-    }
-    int imgwidth = default_size_width * scaleValue;
-    int imgheight = default_size_height * scaleValue;
+    int width = gdk_pixbuf_get_width(unchangedPixbuf);
+    int height = gdk_pixbuf_get_height(unchangedPixbuf);
 
-    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight, GDK_INTERP_BILINEAR);
-    imgPixbuf = img2;
+    int imgwidth = width * scaleValue2;
+    int imgheight = height * scaleValue2;
+
+    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight, GDK_INTERP_HYPER);
 
     gtk_image_set_from_pixbuf(image, img2);
 }
@@ -207,17 +202,13 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
         g_error_free(err);
     }
 
-    int default_size_width = gdk_pixbuf_get_width(unchangedPixbuf);
-    int default_size_height = gdk_pixbuf_get_height(unchangedPixbuf);
-
     //change the size of the pixbuf
-    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(unchangedPixbuf, default_size_width, default_size_height, GDK_INTERP_HYPER);
-    unchangedPixbuf = img2;
+    // struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(unchangedPixbuf, default_size_width, default_size_height, GDK_INTERP_HYPER);
+    // unchangedPixbuf = img2;
+    //
+    // g_print("def_width = %d; def_height = %d", default_size_width, default_size_height);
 
-    g_print("def_width = %d; def_height = %d", default_size_width, default_size_height);
-
-
-    gtk_image_set_from_pixbuf(image, img2);
+    gtk_image_set_from_pixbuf(image, unchangedPixbuf);
 }
 /** Define a struct which is similar to an image **/
 struct Img_rgb *init_img_rgb(int rows, int cols)
