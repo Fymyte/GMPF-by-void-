@@ -55,7 +55,7 @@ struct GMPF_LayerMngr {
     GMPF_List layer_list;
 
     GdkPixbuf *image;
-    GdkPixbuf *zoomed_image;
+    GdkPixbuf *display_image;
 
 
     // get the element on the GUI

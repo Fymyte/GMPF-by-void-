@@ -7,6 +7,26 @@
         pos->y < 0 || pos->y >= size.h )
 
 
+// PRIVATE FUNCTION
+void layermngr_image_create(GMPF_LayerMngr *layermngr)
+{
+    GMPF_Layer *layer = containerof(layermngr->list.next, GMPF_Layer, list);
+    while (layer)
+    {
+        gdk_pixbuf_composite(layer->image,
+                      layermngr->image,
+                      layer->pos.x, layer->pos.y,
+                      layer->size.w, layer->size.h,
+                      0.0, 0.0,
+                      1.0, 1.0,
+                      GDK_INTERP_BILINEAR,
+                      255); // test it
+        layer = containerof(layer->list.next, GMPF_Layer, list);
+    }
+}
+
+
+
 // CODE
 
 /*
@@ -60,6 +80,10 @@ GMPF_Layer * Layer_CreateFromFile(const char *filename) {
 
 
 
+
+
+
+
 //
 // for the GtkFlowBox - interact with Gtk
 //
@@ -94,7 +118,7 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
     // add if new variable
 
     layermngr->image = NULL;
-    layermngr->zoomed_image = NULL;
+    layermngr->display_image = NULL;
 
     // don't touch the flowbox and the display again
     // did in the creation
@@ -122,8 +146,8 @@ void layermngr_clear(GtkFlowBox *flowbox)
     // clear the images
     if (layermngr->image != NULL)
         g_object_unref(layermngr->image);
-    if (layermngr->zoomed_image != NULL)
-        g_object_unref(layermngr->zoomed_image);
+    if (layermngr->display_image != NULL)
+        g_object_unref(layermngr->display_image);
 
     // reset default values
     layermngr_initialization(layermngr);
@@ -149,6 +173,11 @@ void layermngr_delete(GtkFlowBox *flowbox)
     layermngr->flowbox = NULL; // don't delete the flowbox to keep it
     free(layermngr);
 }
+
+
+
+
+
 
 
 
@@ -186,7 +215,7 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
 }
 
 
-void layermngr_add_new_layer(GtkFlowBox *flowbox)
+void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
 {
     /*
         Add a GMPF_Layer after the selected element in the flowbox.
@@ -197,14 +226,36 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox)
     GMPF_LayerMngr *layermngr =
             (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
+
+    if (filename != NULL)
+    {
+        GError *gerror = NULL;
+        newlayer->image = gdk_pixbuf_new_from_file(filename, &gerror);
+        if (gerror)
+        {
+            printf("error: %s\n", gerror->message);
+            g_error_free(gerror);
+        }
+        newlayer->image = pixbuf_standardized(newlayer->image);
+    }
+
+    if (newlayer->image == NULL)
+    {
+        newlayer->image = new_pixbuf_standardized(GMPF_Size *size);
+    }
+
+    layermngr_display_refresh(flowbox);
+
+
+
     /*
     add UIElement to the flowbox
     */
     GtkWidget *image = gtk_image_new();
 
     // Style of the image
-    gtk_widget_set_sensitive (image, TRUE);
-    gtk_widget_set_visible (image, TRUE);
+    gtk_widget_set_sensitive(image, TRUE);
+    gtk_widget_set_visible(image, TRUE);
 
     gtk_widget_set_size_request(image, 160, 90); //size
     gtk_widget_set_halign(image, GTK_ALIGN_START); // Alignement
@@ -270,6 +321,18 @@ void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
 }
 
 
+void layermngr_display_refresh(GtkFlowBox *flowbox)
+{
+    GMPF_LayerMngr *layermngr =
+            (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
+    layermngr_image_create(layermngr)
+    gtk_image_clear(layermngr->display);
+    gtk_image_set_from_pixbuf(layermngr->display, layermngr->display_image);
+}
+
+
+
+
 
 //
 // for the GMPF_Layer
@@ -307,6 +370,10 @@ void layer_delete(GMPF_Layer *layer)
 
     free(layer);
 }
+
+
+
+
 
 
 
@@ -372,9 +439,9 @@ void layer_rotation_right(GtkFlowBox *flowbox)
 
     GMPF_Pixel pixel;
     
-    for (; position.x < layer->size.w; position.x++, )
+    for (; position.x < layer->size.w; position.x++, newpos.y++)
     {
-        for (; position.y < layer->size.h; position.y++)
+        for (; position.y < layer->size.h; position.y++, newpos.x++)
         {
             layer_get_pixel(pixbuf, &position, &pixel);
             layer_put_pixel(newpixbuf, &newpos, &pixel);

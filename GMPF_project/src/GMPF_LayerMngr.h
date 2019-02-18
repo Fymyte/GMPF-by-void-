@@ -27,8 +27,6 @@
 
 // FUNCTIONS
 
-GMPF_Layer * Layer_CreateFromFile(const char *filename); //TODO: complete
-    // don't use this function
 
 //
 // for the GtkFlowBox - interact with Gtk
@@ -38,12 +36,15 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr); //ENDED
 void layermngr_clear(GtkFlowBox *flowbox); //ENDED
 void layermngr_delete(GtkFlowBox *flowbox); //ENDED
 
+
 //
 // for the GMPF_LayerMngr
 //
 GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox); //ENDED
-void layermngr_add_new_layer(GtkFlowBox *flowbox); //ENDED
+void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename); //ENDED
 void layermngr_delete_selected_layer(GtkFlowBox *flowbox); //ENDED
+
+void layermngr_display_refresh(GtkFlowBox *flowbox);
 
 
 //
