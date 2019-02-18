@@ -160,7 +160,7 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
         imgPixbuf = unchangedPixbuf;
     //gtk_image_clear(image);
     const gchar *s = gtk_entry_get_text (entry);
-    int scaleValue = atoi(s);
+    float scaleValue = atof(s);
 
     scaleValue = scaleValue / 100;
 
@@ -207,11 +207,11 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
         g_error_free(err);
     }
 
-    int default_size_width = gdk_pixbuf_get_width(unchangedPixbuf) / 4;
-    int default_size_height = gdk_pixbuf_get_height(unchangedPixbuf) / 4;
+    int default_size_width = gdk_pixbuf_get_width(unchangedPixbuf);
+    int default_size_height = gdk_pixbuf_get_height(unchangedPixbuf);
 
     //change the size of the pixbuf
-    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(unchangedPixbuf, default_size_width, default_size_height, GDK_INTERP_BILINEAR);
+    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(unchangedPixbuf, default_size_width, default_size_height, GDK_INTERP_HYPER);
     unchangedPixbuf = img2;
 
     g_print("def_width = %d; def_height = %d", default_size_width, default_size_height);
