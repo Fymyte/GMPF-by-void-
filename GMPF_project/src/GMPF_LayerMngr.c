@@ -82,7 +82,7 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
     /*
         Initialize a new GMPF_LayerMngr.
     */
-printf("manager init begin\n");
+
     layermngr->size.h = 0; // maybe change it with parameters
     layermngr->size.w = 0;
 
@@ -95,7 +95,6 @@ printf("manager init begin\n");
 
     // don't touch the flowbox and the display again
     // did in the creation
-    printf("manager init end\n");
 }
 
 
