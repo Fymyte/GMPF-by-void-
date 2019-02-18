@@ -168,7 +168,10 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     int imgwidth = width * scaleValue2;
     int imgheight = height * scaleValue2;
 
-    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight, GDK_INTERP_HYPER);
+    struct _GdkPixbuf *img2;
+
+        img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight,
+                scaleValue > 100 ? GDK_INTERP_NEAREST : GDK_INTERP_HYPER);
 
     gtk_image_set_from_pixbuf(image, img2);
 }
