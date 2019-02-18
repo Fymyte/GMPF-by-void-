@@ -3,6 +3,7 @@
 
 // CODE
 
+/*
 // need to be checked
 GMPF_Layer * Layer_CreateFromFile(const char *filename) {
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
@@ -41,7 +42,7 @@ GMPF_Layer * Layer_CreateFromFile(const char *filename) {
         err(1, "There is an error\n");
     
 }
-
+*/
 
 
 
@@ -63,14 +64,17 @@ void layermngr_create(GtkFlowBox *flowbox)
         Initialize a new GMPF_LayerMngr and attach it to the flowbox.
     */
 
+    printf("manager 1\n");
     GMPF_LayerMngr *layermngr = malloc(sizeof(GMPF_LayerMngr));
 
     layermngr_initialization(layermngr);
 
+printf("manager 2\n");
+
     layermngr->flowbox = flowbox;
     layermngr->display = NULL;
 
-    g_object_set_data(flowbox, LAYERMNGR_KEY_NAME, layermngr);
+    g_object_set_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME, layermngr);
 }
 
 void layermngr_initialization(GMPF_LayerMngr *layermngr)
@@ -78,7 +82,7 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
     /*
         Initialize a new GMPF_LayerMngr.
     */
-
+printf("manager init begin\n");
     layermngr->size.h = 0; // maybe change it with parameters
     layermngr->size.w = 0;
 
@@ -91,6 +95,7 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
 
     // don't touch the flowbox and the display again
     // did in the creation
+    printf("manager init end\n");
 }
 
 
@@ -101,7 +106,7 @@ void layermngr_clear(GtkFlowBox *flowbox)
     */
 
     GMPF_LayerMngr *layermngr =
-        (GMPF_LayerMngr *) g_object_get_data(flowbox, LAYERMNGR_KEY_NAME);
+        (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
     // delete the layer in the layermngr
     GMPF_Layer *lay;
@@ -133,8 +138,8 @@ void layermngr_delete(GtkFlowBox *flowbox)
 
     // get data and set it to NULL
     GMPF_LayerMngr *layermngr =
-        (GMPF_LayerMngr *) g_object_get_data(flowbox, LAYERMNGR_KEY_NAME);
-    g_object_set_data(flowbox, LAYERMNGR_KEY_NAME, NULL);
+        (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
+    g_object_set_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME, NULL);
 
 
     // delete the layermngr
@@ -159,7 +164,7 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
     */
 
     GMPF_LayerMngr *layermngr =
-        (GMPF_LayerMngr *) g_object_get_data(flowbox, LAYERMNGR_KEY_NAME);
+        (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
     if (layermngr->nb_layer == 0)
         return NULL;
@@ -173,7 +178,7 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
 
     g_list_free(list);
 
-    layer = (GMPF_Layer *) g_object_get_data(flowboxchild, LAYER_KEY_NAME);
+    layer = (GMPF_Layer *) g_object_get_data(G_OBJECT(flowboxchild), LAYER_KEY_NAME);
 
     return layer;
 }
@@ -188,25 +193,32 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox)
 
     GMPF_Layer *newlayer = layer_initialization();
     GMPF_LayerMngr *layermngr =
-            (GMPF_LayerMngr *) g_object_get_data(flowbox, LAYERMNGR_KEY_NAME);
+            (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
+    printf("layer 1\n");
     // add the layer in the list
     if (layermngr->nb_layer == 0)
     {
         list_add_after(&(layermngr->layer_list), &(newlayer->list));
+        printf("layer 2A\n");
     }
     else
     {
         GMPF_Layer *prevlayer = layermngr_get_selected_layer(flowbox);
         list_add_after(&(prevlayer->list), &(newlayer->list));
+        printf("layer 2B\n");
     }
 
     /*
     add UIElement to the flowbox
     */
     GtkWidget *image = gtk_image_new();
+    printf("layer 3\n");
 
     // Style of the image
+    gtk_widget_set_sensitive (image, TRUE);
+    gtk_widget_set_visible (image, TRUE);
+
     gtk_widget_set_size_request(image, 160, 90); //size
     gtk_widget_set_halign(image, GTK_ALIGN_START); // Alignement
     gtk_widget_set_valign(image, GTK_ALIGN_START);
@@ -214,14 +226,18 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox)
     gtk_widget_set_margin_bottom(image, 5);
     gtk_widget_set_margin_start(image, 5);
     gtk_widget_set_margin_end(image, 5);
+    printf("layer 4\n");
 
 
-    gtk_container_add((GtkContainer *) flowbox, image);
+    //gtk_container_add((GtkContainer *) flowbox, image);
+    gtk_flow_box_insert (flowbox, image, layermngr->nb_layer);
+    printf("layer 5\n");
 
 
     newlayer->UIElement =
         gtk_flow_box_get_child_at_index(flowbox, layermngr->nb_layer);
-    g_object_set_data(newlayer->UIElement, LAYER_KEY_NAME, newlayer);
+    g_object_set_data(G_OBJECT(newlayer->UIElement), LAYER_KEY_NAME, newlayer);
+    printf("layer 6\n");
 
     layermngr->nb_layer += 1;
 }
@@ -235,7 +251,7 @@ void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
     */
 
     GMPF_LayerMngr *layermngr =
-        (GMPF_LayerMngr *) g_object_get_data(flowbox, LAYERMNGR_KEY_NAME);
+        (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
     if (layermngr->nb_layer != 0)
     {

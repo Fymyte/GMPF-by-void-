@@ -27,7 +27,8 @@ void list_add_after(GMPF_List *list, GMPF_List *add)
     list->next = add;
     add->prev = list;
     add->next = nextlist;
-    nextlist->prev = add;
+    if (nextlist != NULL)
+        nextlist->prev = add;
 }
 
 void list_remove_at_pos(GMPF_List *list, int pos)

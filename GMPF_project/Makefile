@@ -15,7 +15,7 @@ c_debug:
 	${CC} $(LDLIBS) ${CFLAGS} -g -xc -o debug.out $(SOURCE_FILE)
 
 c_test:
-	${CC} $(LDLIBS) ${CFLAGS} -xc -o test.out $(TEST_FILE)
+	${CC} $(LDLIBS) ${CFLAGS} -xc -o test.out -fsanitize=address $(SOURCE_FILE)
 
 clean:
 	rm -f *~ *.out ; rm -rf memory/
