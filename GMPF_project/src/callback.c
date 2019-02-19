@@ -270,7 +270,7 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
         printf("Error : %s\n", err->message);
         g_error_free(err);
     }
-    GtkWidget *MainWindow = gtk_builder_get_object(data->builder, "MainWindow");
+    GtkWidget *MainWindow = GTK_WIDGET(gtk_builder_get_object(data->builder, "MainWindow"));
     char *title = malloc (sizeof(char) * 1000);
     asprintf(&title, "GMPF - %s : %d * %d", filename, width, height);
     gtk_window_set_title (GTK_WINDOW(MainWindow), title);
@@ -310,12 +310,8 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
                 put_pixel(imgPixbuf, i, j, 255, 255, 255, alpha);
         }
     }
-    //struct _GtkPixbuf *img2 = imgPixbuf;
-    //gtk_image_clear(image);
-    gtk_image_set_from_pixbuf(image, imgPixbuf);
-    // g_object_unref(G_OBJECT(imgPixbuf));
 
-    // gtk_widget_queue_draw(image);
+    gtk_image_set_from_pixbuf(image, imgPixbuf);
 }
 
 void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
@@ -397,10 +393,10 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkImage *image = NULL;
-    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
-    struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = gtk_image_get_pixbuf(image);
+    GdkPixbuf *imgPixbuf;
+    imgPixbuf = unchangedPixbuf;
 
     double r, g, b, a;
 
@@ -424,7 +420,7 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
                     if (check(width, height, i + k, j +l) == 1)
                     {
                         guchar red, green, blue, alpha;
-                        error= gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+                        error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
                         if(!error)
                             err(1, "pixbuf get pixels error");
                         r += mat[l + x/2 + k + x/2] * (double)red;
