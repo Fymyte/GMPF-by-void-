@@ -7,7 +7,10 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data);
 void callback_FC(GtkMenuItem *menuitem, gpointer user_data);
 void callback_hideWidget(GtkWidget *widget, gpointer user_data);
 void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data);
-// 
+void callback_rotate(GtkMenuItem *menuitem, gpointer user_data);
+void callback_flip(GtkMenuItem *menuitem, gpointer user_data);
+
+//
 //     // GMPF_LayerMngr
 // void callback_clear_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
 // void callback_add_GMPF_Layer(GtkMenuItem *menuitem, gpointer user_data);
