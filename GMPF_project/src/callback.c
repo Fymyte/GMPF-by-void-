@@ -43,6 +43,7 @@ void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
     g_object_unref(unchangedPixbuf);
     unchangedPixbuf = pixbuf;
     gtk_image_set_from_pixbuf(image, pixbuf);
+    g_print("Ajout du multijoueur");
 }
 
 
@@ -544,7 +545,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      gtk_image_clear(test_image);
      gtk_image_set_from_pixbuf(test_image, img2);
 
-     //show the filter creator window
+     //show the filter creator windowjust
      gtk_widget_show(FCWindow);
      menuitem = 0;
  }
