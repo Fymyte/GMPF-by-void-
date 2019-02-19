@@ -470,10 +470,30 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Bords">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Convolute</property>
+                        <property name="tooltip_text" translatable="yes">Mets les bords en évidence</property>
+                        <property name="label" translatable="yes">Bords</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_convolute_f" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="Epine">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Epine</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_convolute_f" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="Flou">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Ajoute du flou à l'image</property>
+                        <property name="label" translatable="yes">Flou</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_convolute_f" swapped="no"/>
                       </object>

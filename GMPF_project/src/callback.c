@@ -192,7 +192,8 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data)
 
     /* Pour l'exemple on va rendre la fenêtre "À propos" modale par rapport à la */
     /* fenêtre principale. */
-    gtk_window_set_transient_for (GTK_WINDOW(dialog), GTK_WINDOW(gtk_builder_get_object (data->builder, "MainWindow")));
+    gtk_window_set_transient_for (GTK_WINDOW(dialog),
+            GTK_WINDOW(gtk_builder_get_object (data->builder, "MainWindow")));
 
     gtk_dialog_run (GTK_DIALOG (dialog));
     gtk_widget_destroy (dialog);
@@ -320,7 +321,7 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkImage *image = NULL;
-    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
     struct _GdkPixbuf *imgPixbuf;
     imgPixbuf = gtk_image_get_pixbuf(image);
@@ -363,12 +364,26 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
 {
     g_print("Convolution\n");
     int number;
-    printf("Waiting for a number....\n");
-    printf("0 : Edge Enhance\n");
-    printf("1 : Sharpen\n");
-    printf("2 : Blur\n");
-    if (scanf("%i", &number) == EOF)
-        errx(1, "Error, scanf()");
+    const char *menulabel = gtk_menu_item_get_label (menuitem);
+    if (!strcmp(menulabel, "Bords"))
+    {
+        number = 0;
+    }
+    else if (!strcmp(menulabel, "Epine"))
+    {
+        number = 1;
+    }
+    else
+    {
+        number = 2;
+    }
+    // printf("Waiting for a number....\n");
+    // printf("0 : Edge Enhance\n");
+    // printf("1 : Sharpen\n");
+    // printf("2 : Blur\n");
+    // if (scanf("%i", &number) == EOF)
+    //     errx(1, "Error, scanf()");
+
 
     double *mat = malloc(sizeof(double) * 9);
     switch (number)
