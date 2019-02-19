@@ -522,7 +522,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      GError *err = NULL;
      struct _GdkPixbuf *imgPixbuf = NULL;
      imgPixbuf = gdk_pixbuf_new_from_file(
-         "/home/samdiaby/GMPF-by-void-/GMPF_project/image_test.jpg", &err);
+         "image_test.jpg", &err);
 
      if(err)
      {
