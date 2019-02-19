@@ -8,7 +8,7 @@
 
 
 // PRIVATE FUNCTION
-void layermngr_image_create(GMPF_LayerMngr *layermngr)
+/*void layermngr_image_create(GMPF_LayerMngr *layermngr)
 {
     GMPF_Layer *layer = container_of(layermngr->layer_list.next, GMPF_Layer, list);
     while (layer)
@@ -23,7 +23,7 @@ void layermngr_image_create(GMPF_LayerMngr *layermngr)
                       255); // test it
         layer = container_of(layer->list.next, GMPF_Layer, list);
     }
-}
+}*/
 
 
 
@@ -215,7 +215,7 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
 }
 
 
-void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
+void layermngr_add_new_layer(GtkFlowBox *flowbox/*, const char *filename*/)
 {
     /*
         Add a GMPF_Layer after the selected element in the flowbox.
@@ -227,7 +227,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
             (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
 
-    if (filename != NULL)
+    /*if (filename != NULL)
     {
         GError *gerror = NULL;
         newlayer->image = gdk_pixbuf_new_from_file(filename, &gerror);
@@ -245,7 +245,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
         newlayer->image = new_pixbuf_standardized(&size);
     }
 
-    layermngr_display_refresh(flowbox);
+    layermngr_display_refresh(flowbox);*/
 
 
 
@@ -322,14 +322,14 @@ void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
 }
 
 
-void layermngr_display_refresh(GtkFlowBox *flowbox)
+/*void layermngr_display_refresh(GtkFlowBox *flowbox)
 {
     GMPF_LayerMngr *layermngr =
             (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
     layermngr_image_create(layermngr);
     gtk_image_clear(layermngr->display);
     gtk_image_set_from_pixbuf(layermngr->display, layermngr->display_image);
-}
+}*/
 
 
 
@@ -367,7 +367,8 @@ void layer_delete(GMPF_Layer *layer)
     // remove and free the GtkFlowBoxChild from the GtkFlowBox
     gtk_widget_destroy((GtkWidget *) layer->UIElement);
     // free the pixbuf
-    g_object_unref(layer->image);
+    if (layer->image != NULL)
+        g_object_unref(layer->image);
 
     free(layer);
 }
@@ -400,6 +401,7 @@ int layer_get_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
     pixel->G = p[1];
     pixel->B = p[2];
     pixel->A = p[3];
+    return 0;
 }
 
 int layer_put_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
@@ -422,7 +424,7 @@ int layer_put_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
     return 0;
 }
 
-void layer_rotation(GtkFlowBox *flowbox, double rad_angle)
+/*void layer_rotation(GtkFlowBox *flowbox, double rad_angle)
 {
     // TODO
 }
@@ -463,7 +465,7 @@ void layer_rotation_left(GtkFlowBox *flowbox)
 {
     // TODO
 }
-
+*/
 
 
 
@@ -477,7 +479,7 @@ void layer_rotation_left(GtkFlowBox *flowbox)
 //
 // for GdkPixbuf standardization
 //
-GdkPixbuf * new_pixbuf_standardized(GMPF_Size *size)
+/*GdkPixbuf * new_pixbuf_standardized(GMPF_Size *size)
 {
     GdkPixbuf *pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE,
                 8, size->w, size->h);
@@ -518,4 +520,4 @@ int pixbuf_standardized(GdkPixbuf *pixbuf)
     if (is_error)
         return -1;
     return 0;
-}
+}*/

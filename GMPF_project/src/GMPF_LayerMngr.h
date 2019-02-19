@@ -41,11 +41,11 @@ void layermngr_delete(GtkFlowBox *flowbox); //ENDED
 // for the GMPF_LayerMngr
 //
 GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox); //ENDED
-void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename); //ENDED
+void layermngr_add_new_layer(GtkFlowBox *flowbox/*, const char *filename*/); //ENDED
 void layermngr_delete_selected_layer(GtkFlowBox *flowbox); //ENDED
 
-void layermngr_display_refresh(GtkFlowBox *flowbox);
-
+/*void layermngr_display_refresh(GtkFlowBox *flowbox);
+*/
 
 //
 // for the GMPF_Layer
@@ -60,16 +60,16 @@ void layer_delete(GMPF_Layer *layer); //ENDED
 int layer_get_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel);
 int layer_put_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel);
 
-void layer_rotation(GtkFlowBox *flowbox, double rad_angle);
+/*void layer_rotation(GtkFlowBox *flowbox, double rad_angle);
 void layer_rotation_right(GtkFlowBox *flowbox);
-void layer_rotation_left(GtkFlowBox *flowbox);
+void layer_rotation_left(GtkFlowBox *flowbox);*/
 
 
 //
 // for GdkPixbuf standardization
 //
-GdkPixbuf * new_pixbuf_standardized(GMPF_Size *size);
-int pixbuf_standardized(GdkPixbuf *pixbuf);
+/*GdkPixbuf * new_pixbuf_standardized(GMPF_Size *size);
+int pixbuf_standardized(GdkPixbuf *pixbuf);*/
 
 
 

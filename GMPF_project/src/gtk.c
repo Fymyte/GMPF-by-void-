@@ -132,7 +132,7 @@ void callback_add_GMPF_Layer(GtkMenuItem *menuitem, gpointer user_data)
     SGlobalData *data = (SGlobalData*) user_data;
     GtkFlowBox *flowbox = NULL;
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layermngr_add_new_layer(flowbox, NULL);
+    layermngr_add_new_layer(flowbox);
 }
 
 void callback_remove_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data)
