@@ -499,6 +499,44 @@
                         <signal name="activate" handler="callback_setCursor" swapped="no"/>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkMenuItem" id="RotateLeft">
+                        <property name="name">MenuRotateLeft</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Rotate left</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_rotate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="RotateRight">
+                        <property name="name">MenuRotateLeft</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Rotate right</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_rotate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="FlipHorizontal">
+                        <property name="name">MenuRotateLeft</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Flip horizontal</property>
+                        <signal name="activate" handler="callback_flip" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="FlipVertical">
+                        <property name="name">MenuRotateLeft</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Flip Vertical</property>
+                        <signal name="activate" handler="callback_flip" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

@@ -22,6 +22,56 @@ int check(int width, int height, int i, int j)
     return 1;
 }
 
+void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+
+    GtkImage *image = NULL;
+
+    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    GdkPixbuf *pixbuf;
+
+    const char *menulabel = gtk_menu_item_get_label (menuitem);
+    g_print("%s\n", menulabel);
+    if (strcmp(menulabel, "Flip horizontal"))
+    {
+        pixbuf = gdk_pixbuf_flip (unchangedPixbuf, TRUE);
+    }
+    else
+    {
+        pixbuf = gdk_pixbuf_flip (unchangedPixbuf, FALSE);
+    }
+
+    unchangedPixbuf = pixbuf;
+    gtk_image_set_from_pixbuf(image, pixbuf);
+    g_object_unref(pixbuf);
+}
+
+void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+
+    GtkImage *image = NULL;
+
+    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    GdkPixbuf *pixbuf;
+
+    const char *menulabel = gtk_menu_item_get_label (menuitem);
+    g_print("%s\n", menulabel);
+    if (strcmp(menulabel, "Rotate left"))
+    {
+        pixbuf = gdk_pixbuf_rotate_simple(unchangedPixbuf, GDK_PIXBUF_ROTATE_CLOCKWISE);
+    }
+    else
+    {
+        pixbuf = gdk_pixbuf_rotate_simple(unchangedPixbuf, GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE);
+    }
+
+    unchangedPixbuf = pixbuf;
+    gtk_image_set_from_pixbuf(image, pixbuf);
+    g_object_unref(pixbuf);
+}
+
 struct Img_rgb *init_img_rgb(int rows, int cols)
 {
     struct Img_rgb *img = malloc(sizeof(struct Img_rgb));
