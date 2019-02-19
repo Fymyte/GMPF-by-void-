@@ -468,7 +468,7 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
         }
     }
     Img_rgb_to_Image(imgPixbuf, img);
-
+    unchangedPixbuf = imgPixbuf;
     gtk_image_set_from_pixbuf(image, imgPixbuf);
 
     free_img_rgb(img);
