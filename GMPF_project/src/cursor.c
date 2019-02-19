@@ -23,12 +23,12 @@ void resetCursor(SGlobalData* data)
     gdk_window_set_cursor (win, cursor);
 }
 
-void resizeCursor(SGlobalData* data)
+/*void resizeCursor(SGlobalData* data)
 {
-
+    //TODO
 }
 
 void stayInWindow(SGlobalData* data)
 {
-
-}
+    //TODO
+}*/

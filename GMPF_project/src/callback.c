@@ -24,6 +24,7 @@ int check(int width, int height, int i, int j)
 
 void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
 {
+    menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
 
     GtkImage *image = NULL;
@@ -178,6 +179,7 @@ gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y
 void callback_hideWidget(GtkWidget *widget, gpointer user_data)
 {
     gtk_widget_hide(widget);
+    user_data = 0;
 }
 
 void callback_about (GtkMenuItem *menuitem, gpointer user_data)
@@ -505,7 +507,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      display = gdk_screen_get_display(screen);
 
      //create the new cursor
-     cursor = gdk_cursor_new_for_display (display, GDK_X_CURSOR);
+     cursor = gdk_cursor_new_for_display (display, GDK_DOT);
 
      //gdk_display_beep (display); play a sound ("beep")
 
@@ -589,6 +591,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
  void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
  {
      g_print("Tinter\n");
+     menuitem = 0;
 
      guchar r, g, b, factor;
 
@@ -635,7 +638,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
  void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data)
  {
      g_print("Colorfull\n");
-
+     menuitem = 0;
      guchar r, g, b, factor;
 
      SGlobalData *data = (SGlobalData*) user_data;
