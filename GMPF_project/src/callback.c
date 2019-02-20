@@ -1,20 +1,6 @@
-#include <gtk-3.0/gtk/gtk.h>
-#include <err.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "Struct.h"
-#include "Matrix.h"
-#include "cursor.h"
-#include "GMPF_LayerMngr.h"
-
+#include "callback.h"
 
 struct _GdkPixbuf *unchangedPixbuf;
-
-void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha);
-gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y
-    , guchar *red, guchar *green, guchar *blue, guchar *alpha);
 
 int check(int width, int height, int i, int j)
 {
@@ -74,108 +60,7 @@ void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
     gtk_image_set_from_pixbuf(image, pixbuf);
 }
 
-struct Img_rgb *init_img_rgb(int rows, int cols)
-{
-    struct Img_rgb *img = malloc(sizeof(struct Img_rgb));
-    img -> rows = rows;
-    img -> cols = cols;
-    img -> red = init_matrix(rows, cols);
-    img -> green = init_matrix(rows, cols);
-    img -> blue = init_matrix(rows, cols);
-    img -> alpha = init_matrix(rows, cols);
-    return img;
-}
 
-void img_rgb_zero(struct Img_rgb *img)
-{
-    InitializeMatrixZero(img -> red);
-    InitializeMatrixZero(img -> green);
-    InitializeMatrixZero(img -> blue);
-}
-
-void free_img_rgb(struct Img_rgb *img)
-{
-    FreeMatrix(img -> red);
-    FreeMatrix(img -> green);
-    FreeMatrix(img -> blue);
-    free(img);
-}
-
-void Img_rgb_to_Image(struct _GdkPixbuf *imgPixbuf, struct Img_rgb *img)
-{
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-
-    guchar r;
-    guchar g;
-    guchar b;
-    guchar a;
-
-    for (int i = 0; i < width; i++)
-    {
-        for (int j = 0; j < height; j++)
-        {
-            r = Matrix_IJ(img -> red, i, j);
-            g = Matrix_IJ(img -> green, i , j);
-            b = Matrix_IJ(img -> blue, i, j);
-            a = Matrix_IJ(img -> alpha, i, j);
-
-            put_pixel(imgPixbuf, i, j, r, g, b, a);
-        }
-    }
-}
-
-void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha)
-{
-    int width, height, rowstride, n_channels;
-    guchar *pixels, *p;
-
-    n_channels = gdk_pixbuf_get_n_channels (pixbuf);
-
-    g_assert (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
-    g_assert (gdk_pixbuf_get_bits_per_sample (pixbuf) == 8);
-    g_assert (gdk_pixbuf_get_has_alpha (pixbuf));
-    g_assert (n_channels == 4);
-
-    width = gdk_pixbuf_get_width (pixbuf);
-    height = gdk_pixbuf_get_height (pixbuf);
-
-    g_assert (x >= 0 && x < width);
-    g_assert (y >= 0 && y < height);
-
-    rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-    pixels = gdk_pixbuf_get_pixels (pixbuf);
-
-    p = pixels + y * rowstride + x * n_channels;
-    p[0] = red;
-    p[1] = green;
-    p[2] = blue;
-    p[3] = alpha;
-}
-
-gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x, gint y
-    , guchar *red, guchar *green, guchar *blue, guchar *alpha)
-{
-    guchar *pixel=NULL;
-    gint channel=0;
-    gint width=0;
-
-    if (pixbuf == NULL) return FALSE;
-    if (x<0 || y<0) return FALSE;
-    if (x>=gdk_pixbuf_get_width(pixbuf)) return FALSE;
-    if (y>=gdk_pixbuf_get_height(pixbuf)) return FALSE;
-
-    pixel=gdk_pixbuf_get_pixels(pixbuf);
-    channel=gdk_pixbuf_get_n_channels(pixbuf);
-    width=gdk_pixbuf_get_width(pixbuf);
-
-    *red   = pixel[(x*channel)+(y*width*channel)];
-    *green = pixel[(x*channel)+(y*width*channel)+1];
-    *blue  = pixel[(x*channel)+(y*width*channel)+2];
-    *alpha = pixel[(x*channel)+(y*width*channel)+3];
-
-    return TRUE;
-}
 
 void callback_hideWidget(GtkWidget *widget, gpointer user_data)
 {

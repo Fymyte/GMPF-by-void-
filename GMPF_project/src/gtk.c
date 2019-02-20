@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Struct.h"
-#include "Matrix.h"
 #include "cursor.h"
 
 #include "GMPF_LayerMngr.h"
