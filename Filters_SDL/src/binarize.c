@@ -12,21 +12,14 @@ void binarize(SDL_Surface* image_surface , SDL_Surface* screen_surface)
 			Uint32 pixel = get_pixel(image_surface, i, j);
 			Uint8 r, g, b;
 			SDL_GetRGB(pixel, image_surface->format, &r, &g, &b);
-            
-            if (r > 127)
-                r = 255;
-            else
-                r = 0;
-            if (g > 127)
-                g = 255;
-            else 
-                g = 0;
-            if (b > 127)
-                b = 255;
-            else
-                b = 0;
+            Uint8 average = (r + g + b) / 3;
 
-			pixel = SDL_MapRGB(image_surface->format, r, g, b);
+            if (average > 127)
+                average = 255;
+            else
+                average = 0;
+
+			pixel = SDL_MapRGB(image_surface->format, average, average, average);
 			put_pixel(image_surface, i, j, pixel);
 		}
 	}
