@@ -18,4 +18,6 @@ void free_img_rgb(struct Img_rgb *img);
 
 void Img_rgb_to_Image(struct _GdkPixbuf *imgPixbuf, struct Img_rgb *img);
 
+struct Img_rgb *Assemble_2_Img_rgb(struct Img_rgb *img1, struct Img_rgb *img2);
+
 #endif
