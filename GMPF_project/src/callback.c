@@ -264,19 +264,28 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
     GError *err = NULL;
     //struct _GdkPixbuf *imgPixbuf;
     unchangedPixbuf = gdk_pixbuf_new_from_file(filename, &err);
-    int height = gdk_pixbuf_get_height(unchangedPixbuf);
-    int width = gdk_pixbuf_get_width(unchangedPixbuf);
     if(err)
     {
         printf("Error : %s\n", err->message);
         g_error_free(err);
     }
+    if (!gdk_pixbuf_get_has_alpha(unchangedPixbuf))
+    {
+         GdkPixbuf *i = gdk_pixbuf_add_alpha ((const GdkPixbuf *)unchangedPixbuf, FALSE, 0, 0, 0);
+        g_object_unref (unchangedPixbuf);
+        unchangedPixbuf = i;
+    }
+
+    int height = gdk_pixbuf_get_height(unchangedPixbuf);
+    int width = gdk_pixbuf_get_width(unchangedPixbuf);
+
     GtkWidget *MainWindow = GTK_WIDGET(gtk_builder_get_object(data->builder, "MainWindow"));
     char *title = malloc (sizeof(char) * 1000);
     sprintf(title, "GMPF - %s : %d * %d", filename, width, height);
     gtk_window_set_title (GTK_WINDOW(MainWindow), title);
-    gtk_image_set_from_pixbuf(image, unchangedPixbuf);
     free (title);
+
+    gtk_image_set_from_pixbuf(image, unchangedPixbuf);
 }
 
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
