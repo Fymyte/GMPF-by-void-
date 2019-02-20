@@ -11,7 +11,6 @@ int check(int width, int height, int i, int j)
 
 void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
 {
-    menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
 
     GtkImage *image = NULL;
