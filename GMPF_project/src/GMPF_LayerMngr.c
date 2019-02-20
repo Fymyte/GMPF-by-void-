@@ -209,6 +209,9 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
 
     g_list_free(list);
 
+    if (flowboxchild == NULL)
+        return NULL;
+
     layer = (GMPF_Layer *) g_object_get_data(G_OBJECT(flowboxchild), LAYER_KEY_NAME);
 
     return layer;
@@ -315,9 +318,11 @@ void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
         GMPF_Layer *layer =
             (GMPF_Layer *) layermngr_get_selected_layer(flowbox);
 
-        layer_delete(layer);
-
-        layermngr->nb_layer -= 1;
+        if (layer != NULL)
+        {
+            layer_delete(layer);
+            layermngr->nb_layer -= 1;
+        }
     }
 }
 

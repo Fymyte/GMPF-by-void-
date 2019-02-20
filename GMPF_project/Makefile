@@ -9,7 +9,7 @@ SOURCE_FILE = $(wildcard src/*c)
 TEST_FILE = $(wildcard test/*.c)
 
 all:
-	${CC} $(LDLIBS) ${CFLAGS} -Ofast -xc -o run.out $(SOURCE_FILE)
+	${CC} $(LDLIBS) ${CFLAGS} -Ofast -xc -o GMPF.out $(SOURCE_FILE)
 
 c_debug:
 	${CC} $(LDLIBS) ${CFLAGS} -g -xc -o debug.out $(SOURCE_FILE)

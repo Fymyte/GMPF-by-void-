@@ -273,9 +273,10 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
     }
     GtkWidget *MainWindow = GTK_WIDGET(gtk_builder_get_object(data->builder, "MainWindow"));
     char *title = malloc (sizeof(char) * 1000);
-    asprintf(&title, "GMPF - %s : %d * %d", filename, width, height);
+    sprintf(title, "GMPF - %s : %d * %d", filename, width, height);
     gtk_window_set_title (GTK_WINDOW(MainWindow), title);
     gtk_image_set_from_pixbuf(image, unchangedPixbuf);
+    free (title);
 }
 
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
