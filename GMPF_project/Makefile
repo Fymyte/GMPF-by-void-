@@ -1,22 +1,23 @@
-# Makefile for malloc
+# Makefile for GMPF
 
 CC=clang
-
-CFLAGS= -Wall -Wextra -std=c99 -lm `pkg-config --cflags gtk+-3.0`
+CFLAGS=-Wall -Wextra -std=c99  `pkg-config --cflags gtk+-3.0`
 LDLIBS= `pkg-config --libs gtk+-3.0` `pkg-config --libs gmodule-2.0`
+LDFLAGS=
+EXEC=GMPF.out
+SRC= $(wildcard src/*.c)
+OBJ= $(SRC:.c=.o)
 
-SOURCE_FILE = $(wildcard src/*c)
-TEST_FILE = $(wildcard test/*.c)
+all: GMPF.out
 
-all:
-	${CC} $(LDLIBS) ${CFLAGS} -Ofast -xc -o GMPF.out $(SOURCE_FILE)
+GMPF.out: $(OBJ)
+	@$(CC) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
-c_debug:
-	${CC} $(LDLIBS) ${CFLAGS} -g -xc -o debug.out $(SOURCE_FILE)
 
-c_test:
-	${CC} $(LDLIBS) ${CFLAGS} -xc -o test.out -fsanitize=address $(SOURCE_FILE)
+%.o: %.c
+	@$(CC) -o $@ -c $< $(CFLAGS)
+
+.PHONY: clean
 
 clean:
-	rm -f *~ *.out ; rm -rf memory/
-# end
+	@rm -rf $(OBJ) $(EXEC)
