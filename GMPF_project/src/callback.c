@@ -263,11 +263,11 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
     g_print("Binarize color\n");
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
-    GtkImage *image = NULL;
-    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    GtkWidget *da = NULL;
+    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
 
     struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = gtk_image_get_pixbuf(image);
+    imgPixbuf = unchangedPixbuf;
 
     guchar red, green, blue, alpha;
 
@@ -300,7 +300,8 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
             put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
         }
     }
-    gtk_image_set_from_pixbuf(image, imgPixbuf);
+    glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);   
 }
 
 void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
@@ -423,11 +424,11 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
     g_print("Grey\n");
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
-    GtkImage *image = NULL;
-    image= GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    GtkWidget *da = NULL;
+    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
 
     struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = gtk_image_get_pixbuf(image);
+    imgPixbuf = unchangedPixbuf;
 
     guchar red, green, blue, alpha;
 
@@ -448,7 +449,8 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
             put_pixel(imgPixbuf, i, j, grey, grey, grey, alpha);
         }
     }
-    gtk_image_set_from_pixbuf(image, imgPixbuf);
+    glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
 void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
@@ -555,10 +557,10 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      guchar r, g, b, factor;
 
      SGlobalData *data = (SGlobalData*) user_data;
-     GtkImage *image = NULL;
+     GtkWidget *da = NULL;
      GtkColorChooser *colorChooser = NULL;
      GdkRGBA rgba;
-     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
      colorChooser = (GtkColorChooser *)(gtk_builder_get_object(data->builder, "ColorTinter"));
      gtk_color_chooser_get_rgba (colorChooser, &rgba);
      r = (guchar)(rgba.red * 255);
@@ -567,7 +569,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      factor = (guchar)(rgba.alpha * 100);
 
      struct _GdkPixbuf *imgPixbuf;
-     imgPixbuf = gtk_image_get_pixbuf(image);
+     imgPixbuf = unchangedPixbuf;
 
      guchar red;
      guchar green;
@@ -590,7 +592,8 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
              put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
          }
      }
-     gtk_image_set_from_pixbuf(image, imgPixbuf);
+    glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
  }
 
 
@@ -601,10 +604,10 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      guchar r, g, b, factor;
 
      SGlobalData *data = (SGlobalData*) user_data;
-     GtkImage *image = NULL;
+     GtkWidget *da = NULL;
      GtkColorChooser *colorChooser = NULL;
      GdkRGBA rgba;
-     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
      colorChooser = (GtkColorChooser *)(gtk_builder_get_object(data->builder, "ColorTinter"));
      gtk_color_chooser_get_rgba (colorChooser, &rgba);
      r = (guchar)(rgba.red * 255);
@@ -613,7 +616,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      factor = (guchar)(rgba.alpha * 255);
 
      struct _GdkPixbuf *imgPixbuf;
-     imgPixbuf = gtk_image_get_pixbuf(image);
+     imgPixbuf = unchangedPixbuf;
 
      guchar red;
      guchar green;
@@ -635,8 +638,9 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
              blue = blue * (100 - factor) / 100 + b * factor / 100;
              put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
          }
-     }
-     gtk_image_set_from_pixbuf(image, imgPixbuf);
+    }
+    glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
  }
 
 
@@ -645,11 +649,11 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      g_print("Negative\n");
      menuitem = 0;
      SGlobalData *data = (SGlobalData*) user_data;
-     GtkImage *image = NULL;
-     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+     GtkWidget *da = NULL;
+     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
 
      struct _GdkPixbuf *imgPixbuf;
-     imgPixbuf = gtk_image_get_pixbuf(image);
+     imgPixbuf = unchangedPixbuf;
 
      guchar red, green, blue, alpha;
 
@@ -669,8 +673,9 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
              blue = 255 - blue;
  		    put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
          }
-     }
-     gtk_image_set_from_pixbuf(image, imgPixbuf);
+    }
+    glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
  }
 
  void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)
