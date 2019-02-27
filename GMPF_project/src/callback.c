@@ -93,9 +93,9 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
 
-    GtkImage *image = NULL;
+    GtkWidget *da = NULL;
 
-    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
 
     struct _GdkPixbuf *imgPixbuf = NULL;
     GError *err = NULL;
@@ -127,7 +127,8 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
         img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight,
                 scaleValue > 100 ? GDK_INTERP_NEAREST : GDK_INTERP_HYPER);
 
-    gtk_image_set_from_pixbuf(image, img2);
+    //gtk_image_set_from_pixbuf(image, img2);
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
 void callback_image(GtkFileChooser *filebtn, gpointer user_data)
@@ -198,15 +199,26 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     
     gchar *filename = gtk_file_chooser_get_filename(btn);
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
-    glob.image = gdk_cairo_surface_create_from_pixbuf(gdk_pixbuf_new_from_file(filename, &error), 0, NULL);
+    
+    
+    unchangedPixbuf = gdk_pixbuf_new_from_file(filename, &error);
+    glob.image = gdk_cairo_surface_create_from_pixbuf(unchangedPixbuf, 0, NULL);
+    
     if(error)
     {
         printf("Error : %s\n", error->message);
         g_error_free(error);
     }    
+    
+    if (!gdk_pixbuf_get_has_alpha(unchangedPixbuf))
+    {
+         GdkPixbuf *i = gdk_pixbuf_add_alpha ((const GdkPixbuf *)unchangedPixbuf, FALSE, 0, 0, 0);
+        g_object_unref (unchangedPixbuf);
+        unchangedPixbuf = i;
+    }
         
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
-            
+      
 }
 
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
@@ -214,11 +226,11 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
     g_print("Binarize\n");
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
-    GtkImage *image = NULL;
-    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    GtkWidget *da = NULL;
+    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
 
     struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = gtk_image_get_pixbuf(image);
+    imgPixbuf = unchangedPixbuf;
 
     guchar red, green, blue, alpha;
 
@@ -242,8 +254,8 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
                 put_pixel(imgPixbuf, i, j, 255, 255, 255, alpha);
         }
     }
-
-    gtk_image_set_from_pixbuf(image, imgPixbuf);
+    glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
 void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)

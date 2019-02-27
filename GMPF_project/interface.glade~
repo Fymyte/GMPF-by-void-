@@ -726,23 +726,21 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkScrolledWindow">
+              <object class="GtkLayout">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="shadow_type">in</property>
-                <property name="kinetic_scrolling">False</property>
+                <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkViewport">
+                  <object class="GtkDrawingArea" id="drawingArea">
+                    <property name="width_request">200</property>
+                    <property name="height_request">150</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_STRUCTURE_MASK</property>
-                    <child>
-                      <object class="GtkDrawingArea" id="drawingArea">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                      </object>
-                    </child>
+                    <property name="margin_top">18</property>
                   </object>
+                  <packing>
+                    <property name="x">170</property>
+                    <property name="y">74</property>
+                  </packing>
                 </child>
               </object>
               <packing>
@@ -792,7 +790,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="title" translatable="yes"/>
-            <signal name="selection-changed" handler="callback_image" swapped="no"/>
+            <signal name="selection-changed" handler="callback_image_cairo" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
