@@ -1,6 +1,9 @@
 #include "callback.h"
 
 struct _GdkPixbuf *unchangedPixbuf;
+struct {
+  cairo_surface_t *image;
+} glob;
 
 int check(int width, int height, int i, int j)
 {
@@ -171,6 +174,33 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
     free (title);
 
     gtk_image_set_from_pixbuf(image, unchangedPixbuf);
+}
+
+static void do_drawing(cairo_t *cr)
+{
+    cairo_set_source_surface(cr, glob.image, 0, 0);
+    cairo_paint(cr); 
+}
+
+static gboolean on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data)
+{
+    do_drawing(cr);
+    user_data = 0;
+    widget = 0;
+    return FALSE;
+}
+
+void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkWidget *da = NULL;
+ 
+    gchar *filename = gtk_file_chooser_get_filename(btn);
+    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
+    glob.image = cairo_image_surface_create_from_png(filename);
+    
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
+            
 }
 
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)

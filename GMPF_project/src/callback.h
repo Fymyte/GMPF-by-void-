@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <err.h>
 #include <string.h>
-
+#include <cairo.h>
 #include <gtk-3.0/gtk/gtk.h>
 
 #include "cursor.h"
@@ -14,6 +14,8 @@
 #include "Matrix.h"
 #include "Img_rgb.h"
 #include "pixel_op.h"
+
+
 
 //callback functions
 void callback_image(GtkFileChooser *filebtn, gpointer user_data);
@@ -26,6 +28,11 @@ void callback_hideWidget(GtkWidget *widget, gpointer user_data);
 void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data);
 void callback_rotate(GtkMenuItem *menuitem, gpointer user_data);
 void callback_flip(GtkMenuItem *menuitem, gpointer user_data);
+void callback_image_cairo(GtkFileChooser *btn, gpointer user_data);
+
+static void do_drawing(cairo_t *cr);
+static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+
 
 //
 //     // GMPF_LayerMngr

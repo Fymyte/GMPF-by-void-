@@ -792,7 +792,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="title" translatable="yes"/>
-            <signal name="selection-changed" handler="callback_image_cairo" swapped="no"/>
+            <signal name="selection-changed" handler="callback_image" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
