@@ -807,7 +807,14 @@
     <property name="type_hint">dialog</property>
     <property name="transient_for">MainWindow</property>
     <property name="program_name">GMPF</property>
-    <property name="logo_icon_name">help-about</property>
+    <property name="version">1.2</property>
+    <property name="copyright" translatable="yes">©2019. void*, Inc. Graphic Maestro Photo FormaatTM, GMPFTMand alllogos are registered trademark of void*, Inc. All rights reserved.</property>
+    <property name="website">https://fymyte.github.io/GMPF-by-void-/accueil.html</property>
+    <property name="authors">Sabine HU
+Arnaud CASSEZ
+Pierrick GUILLAUME
+Samory DIABY</property>
+    <property name="logo">GMPF.png</property>
     <child>
       <placeholder/>
     </child>
@@ -844,9 +851,5 @@
     <property name="upper">300</property>
     <property name="value">100</property>
     <property name="step_increment">1</property>
-  </object>
-  <object class="GtkDrawingArea">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
   </object>
 </interface>
