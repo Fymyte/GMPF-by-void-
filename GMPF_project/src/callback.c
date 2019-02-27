@@ -194,11 +194,17 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     GtkWidget *da = NULL;
- 
+    GError *error = NULL;
+    
     gchar *filename = gtk_file_chooser_get_filename(btn);
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
-    glob.image = cairo_image_surface_create_from_png(filename);
-    
+    glob.image = gdk_cairo_surface_create_from_pixbuf(gdk_pixbuf_new_from_file(filename, &error), 0, NULL);
+    if(error)
+    {
+        printf("Error : %s\n", error->message);
+        g_error_free(error);
+    }    
+        
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
             
 }
