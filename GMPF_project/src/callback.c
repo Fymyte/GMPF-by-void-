@@ -199,8 +199,8 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     
     gchar *filename = gtk_file_chooser_get_filename(btn);
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
-    
-    
+    if(da == NULL)
+        printf("toz\n");
     unchangedPixbuf = gdk_pixbuf_new_from_file(filename, &error);
     glob.image = gdk_cairo_surface_create_from_pixbuf(unchangedPixbuf, 0, NULL);
     
@@ -479,7 +479,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      img2 = gdk_pixbuf_scale_simple(imgPixbuf, width/6, height/6, GDK_INTERP_HYPER);
      
      //create the new cursor
-     cursor = gdk_cursor_new_from_pixbuf(display, img2, 0, 0);
+     cursor = gdk_cursor_new_from_pixbuf(display, img2, 23, 23);
     if(error)
     {
         printf("Error : %s\n", error->message);

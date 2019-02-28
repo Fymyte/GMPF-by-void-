@@ -536,6 +536,7 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Gomme</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_setCursor" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -740,9 +741,11 @@
                 <property name="can_focus">True</property>
                 <property name="shadow_type">in</property>
                 <child>
-                  <object class="GtkViewport">
+                  <object class="GtkLayout">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="width">2000</property>
+                    <property name="height">2000</property>
                     <child>
                       <object class="GtkDrawingArea" id="drawingArea">
                         <property name="width_request">100</property>
@@ -750,6 +753,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
+                      <packing>
+                        <property name="x">210</property>
+                        <property name="y">120</property>
+                      </packing>
                     </child>
                   </object>
                 </child>
