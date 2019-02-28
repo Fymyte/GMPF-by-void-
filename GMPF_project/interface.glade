@@ -525,6 +525,15 @@
                       <object class="GtkMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">reset cursor</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="resetCursor" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Gomme</property>
                         <property name="use_underline">True</property>
                       </object>

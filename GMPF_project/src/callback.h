@@ -29,6 +29,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data);
 void callback_rotate(GtkMenuItem *menuitem, gpointer user_data);
 void callback_flip(GtkMenuItem *menuitem, gpointer user_data);
 void callback_image_cairo(GtkFileChooser *btn, gpointer user_data);
+void reset_cursor(GtkMenuItem *menuitem, gpointer user_data);
 
 static void do_drawing(cairo_t *cr);
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data);
