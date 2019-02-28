@@ -204,6 +204,10 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     unchangedPixbuf = gdk_pixbuf_new_from_file(filename, &error);
     glob.image = gdk_cairo_surface_create_from_pixbuf(unchangedPixbuf, 0, NULL);
     
+    int width = gdk_pixbuf_get_width(unchangedPixbuf);
+    int height = gdk_pixbuf_get_height(unchangedPixbuf);
+	gtk_widget_set_size_request(da, width, height);
+    
     if(error)
     {
         printf("Error : %s\n", error->message);
