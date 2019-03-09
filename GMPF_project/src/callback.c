@@ -127,14 +127,16 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
 
     struct _GdkPixbuf *img2;
 
+    // Set the new size of the drawingArea
     gtk_widget_set_size_request(da, imgwidth, imgheight);
+    // Set the new size of the layout that contain the drawingArea
     gtk_layout_set_size((GtkLayout *)layout, imgwidth * 1.1, imgheight * 1.1);
+    // Apply the scaling on pixbuf
     img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight,
                 scaleValue > 100 ? GDK_INTERP_NEAREST : GDK_INTERP_HYPER);
 
-    //gtk_image_set_from_pixbuf(image, img2);
+
     glob.image = gdk_cairo_surface_create_from_pixbuf(img2, 0, NULL);
-    //g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
