@@ -33,7 +33,6 @@ void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
     g_object_unref(unchangedPixbuf);
     unchangedPixbuf = pixbuf;
     gtk_image_set_from_pixbuf(image, pixbuf);
-    g_print("Ajout du multijoueur");
 }
 
 
@@ -94,8 +93,10 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     SGlobalData *data = (SGlobalData*) user_data;
 
     GtkWidget *da = NULL;
+    GtkWidget *layout = NULL;
 
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
+    layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
 
     struct _GdkPixbuf *imgPixbuf = NULL;
     GError *err = NULL;
@@ -110,24 +111,30 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     }
     else
         imgPixbuf = unchangedPixbuf;
-    //gtk_image_clear(image);
+
     const gchar *s = gtk_entry_get_text (entry);
     float scaleValue = atof(s);
 
     float scaleValue2 = scaleValue / 100;
+    g_message("scaleValue = %f", scaleValue);
 
     int width = gdk_pixbuf_get_width(imgPixbuf);
     int height = gdk_pixbuf_get_height(imgPixbuf);
 
     int imgwidth = width * scaleValue2;
     int imgheight = height * scaleValue2;
+    g_message("base: %i*%i, after:%i*%i", width, height, imgwidth, imgheight);
 
     struct _GdkPixbuf *img2;
 
-        img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight,
+    gtk_widget_set_size_request(da, imgwidth, imgheight);
+    gtk_layout_set_size((GtkLayout *)layout, imgwidth * 1.1, imgheight * 1.1);
+    img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight,
                 scaleValue > 100 ? GDK_INTERP_NEAREST : GDK_INTERP_HYPER);
 
     //gtk_image_set_from_pixbuf(image, img2);
+    glob.image = gdk_cairo_surface_create_from_pixbuf(img2, 0, NULL);
+    //g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
@@ -180,7 +187,7 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 static void do_drawing(cairo_t *cr)
 {
     cairo_set_source_surface(cr, glob.image, 0, 0);
-    cairo_paint(cr); 
+    cairo_paint(cr);
 }
 
 static gboolean on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data)
@@ -196,33 +203,33 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     SGlobalData *data = (SGlobalData*) user_data;
     GtkWidget *da = NULL;
     GError *error = NULL;
-    
+
     gchar *filename = gtk_file_chooser_get_filename(btn);
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
     if(da == NULL)
         printf("toz\n");
     unchangedPixbuf = gdk_pixbuf_new_from_file(filename, &error);
     glob.image = gdk_cairo_surface_create_from_pixbuf(unchangedPixbuf, 0, NULL);
-    
+
     int width = gdk_pixbuf_get_width(unchangedPixbuf);
     int height = gdk_pixbuf_get_height(unchangedPixbuf);
 	gtk_widget_set_size_request(da, width, height);
-    
+
     if(error)
     {
         printf("Error : %s\n", error->message);
         g_error_free(error);
-    }    
-    
+    }
+
     if (!gdk_pixbuf_get_has_alpha(unchangedPixbuf))
     {
          GdkPixbuf *i = gdk_pixbuf_add_alpha ((const GdkPixbuf *)unchangedPixbuf, FALSE, 0, 0, 0);
         g_object_unref (unchangedPixbuf);
         unchangedPixbuf = i;
     }
-        
+
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
-      
+
 }
 
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
@@ -305,7 +312,7 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
         }
     }
     glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
-    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);   
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
 void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
@@ -468,7 +475,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      GdkWindow * win = NULL;
      struct _GdkPixbuf *imgPixbuf;
      struct _GdkPixbuf *img2;
-     
+
      //set variables
      screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
      display = gdk_screen_get_display(screen);
@@ -477,7 +484,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      int width = gdk_pixbuf_get_width(imgPixbuf);
      int height = gdk_pixbuf_get_height(imgPixbuf);
      img2 = gdk_pixbuf_scale_simple(imgPixbuf, width/6, height/6, GDK_INTERP_HYPER);
-     
+
      //create the new cursor
      cursor = gdk_cursor_new_from_pixbuf(display, img2, 23, 23);
     if(error)
@@ -693,41 +700,41 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
  }
 
- void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)
- {
-     g_print("Mirror - Horizontal\n");
-     menuitem = 0;
-     SGlobalData *data = (SGlobalData*) user_data;
-     GtkImage *image = NULL;
-     image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)
+{
+    g_print("Mirror - Horizontal\n");
+    menuitem = 0;
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkImage *image = NULL;
+    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
 
-     struct _GdkPixbuf *imgPixbuf;
-     imgPixbuf = gtk_image_get_pixbuf(image);
+    struct _GdkPixbuf *imgPixbuf;
+    imgPixbuf = gtk_image_get_pixbuf(image);
 
-     int width = gdk_pixbuf_get_width(imgPixbuf);
-     int height = gdk_pixbuf_get_height(imgPixbuf);
-     gboolean error = FALSE;
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
 
-     struct Img_rgb *img = init_img_rgb(width, height);
+    struct Img_rgb *img = init_img_rgb(width, height);
 
-     for(int i = 0; i < width; i++)
-     {
-         for(int j = 0; j < height; j++)
-         {
-             guchar red, green, blue, alpha;
-             error= gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-             if(!error)
-                 err(1, "pixbuf get pixels error");
-             Matrix_val(img -> red, i, height - j - 1, (double)red);
-             Matrix_val(img -> green, i , height - j - 1, (double)green);
-             Matrix_val(img -> blue, i, height - j - 1, (double)blue);
-             Matrix_val(img -> alpha, i, height - j - 1, (double)alpha);
-         }
-     }
-     Img_rgb_to_Image(imgPixbuf, img);
-     gtk_image_set_from_pixbuf(image, imgPixbuf);
-     free_img_rgb(img);
- }
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            guchar red, green, blue, alpha;
+            error= gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            Matrix_val(img -> red, i, height - j - 1, (double)red);
+            Matrix_val(img -> green, i , height - j - 1, (double)green);
+            Matrix_val(img -> blue, i, height - j - 1, (double)blue);
+            Matrix_val(img -> alpha, i, height - j - 1, (double)alpha);
+        }
+    }
+    Img_rgb_to_Image(imgPixbuf, img);
+    gtk_image_set_from_pixbuf(image, imgPixbuf);
+    free_img_rgb(img);
+}
 
 void reset_cursor(GtkMenuItem *menuitem, gpointer user_data)
 {

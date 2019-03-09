@@ -741,11 +741,11 @@
                 <property name="can_focus">True</property>
                 <property name="shadow_type">in</property>
                 <child>
-                  <object class="GtkLayout">
+                  <object class="GtkLayout" id="Layout">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="width">2000</property>
-                    <property name="height">2000</property>
+                    <property name="width">5000</property>
+                    <property name="height">5000</property>
                     <child>
                       <object class="GtkDrawingArea" id="drawingArea">
                         <property name="width_request">100</property>
