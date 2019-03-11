@@ -62,7 +62,6 @@ struct GMPF_LayerMngr {
 
     // get the element on the GUI
     GtkFlowBox *flowbox;
-    GtkImage *display;
 };
 
 

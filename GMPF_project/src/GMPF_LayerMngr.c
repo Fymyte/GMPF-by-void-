@@ -29,56 +29,6 @@
 
 // CODE
 
-/*
-// need to be checked
-GMPF_Layer * Layer_CreateFromFile(const char *filename) {
-    GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
-    GError *error = NULL; // TODO: need to be checked
-    GdkPixbuf *pixbuf = NULL;
-    pixbuf = gdk_pixbuf_new_from_file(filename, &error);
-    if (pixbuf == NULL)
-        err(1, "Uncharged pixbuf\n");
-    // NEED TO FREE THE G_ERROR
-    layer->image = pixbuf;
-    layer->size.w = gdk_pixbuf_get_width(layer->image);
-    layer->size.h = gdk_pixbuf_get_height(layer->image);
-
-    int is_error = 0;
-    if (gdk_pixbuf_get_colorspace (pixbuf) != GDK_COLORSPACE_RGB)
-    {
-        printf("Wrong colorspace for pixbuf\n");
-        is_error = 1;
-    }
-    if (gdk_pixbuf_get_bits_per_sample (pixbuf) != 8)
-    {
-        printf("pixbuf hasn't 8bits per sample\n");
-        is_error = 1;
-    }
-    if (!gdk_pixbuf_get_has_alpha (pixbuf))
-    {
-        printf("pixbuf as no alpha\n");
-        is_error = 1;
-    }
-    if (gdk_pixbuf_get_n_channels (pixbuf) != 4)
-    {
-        printf("pixbuf hasn't enough channel\n");
-        is_error = 1;
-    }
-    if (is_error)
-        err(1, "There is an error\n");
-
-}
-*/
-
-
-
-//
-//
-// FINISHED PART
-//
-//
-
-
 
 
 
@@ -99,7 +49,6 @@ void layermngr_create(GtkFlowBox *flowbox)
     layermngr_initialization(layermngr);
 
     layermngr->flowbox = flowbox;
-    layermngr->display = NULL;
 
     g_object_set_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME, layermngr);
 }
@@ -244,7 +193,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
 
     if (newlayer->image == NULL)
     {
-        GMPF_Size size = {.w=1, .h=1};
+        GMPF_Size size = {.w=10, .h=10};
         newlayer->image = new_pixbuf_standardized(&size);
     }
 
@@ -402,7 +351,7 @@ void layer_icon_refresh(GMPF_Layer *layer)
         finalh = layer->size.h / ratio1;
 
     layer->icon = gdk_pixbuf_scale_simple(layer->image, finalw, finalh,
-                         GDK_INTERP_HYPER);
+                         GDK_INTERP_NEAREST);
     
     gtk_image_set_from_pixbuf(layer->UIIcon, layer->icon);
 }
