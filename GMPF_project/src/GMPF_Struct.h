@@ -45,6 +45,7 @@ struct GMPF_Layer {
     GMPF_List list;
 
     // to know the UIElement that contains the layer
+    GtkImage *UIIcon;
     GtkFlowBoxChild *UIElement;
 };
 

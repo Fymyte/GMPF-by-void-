@@ -244,7 +244,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
 
     if (newlayer->image == NULL)
     {
-        GMPF_Size size = {.w=0, .h=0};
+        GMPF_Size size = {.w=1, .h=1};
         newlayer->image = new_pixbuf_standardized(&size);
     }
 
@@ -258,9 +258,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
     /*
     add UIElement to the flowbox
     */
-    layer_icon_refresh(newlayer);
-    GtkWidget *image = gtk_image_new_from_pixbuf(newlayer->icon);
-
+    GtkWidget *image = gtk_image_new();
 
     // Style of the image
     gtk_widget_set_sensitive(image, TRUE);
@@ -305,6 +303,10 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
     g_object_set_data(G_OBJECT(newlayer->UIElement), LAYER_KEY_NAME, newlayer);
 
     layermngr->nb_layer += 1;
+
+    newlayer->UIIcon = (GtkImage *) image;
+    layer_icon_refresh(newlayer);
+
 }
 
 
@@ -364,6 +366,7 @@ GMPF_Layer * layer_initialization()
 
     list_init(&(layer->list));
 
+    layer->UIIcon = NULL;
     layer->UIElement = NULL;
 
     return layer;
@@ -400,7 +403,20 @@ void layer_icon_refresh(GMPF_Layer *layer)
 
     layer->icon = gdk_pixbuf_scale_simple(layer->image, finalw, finalh,
                          GDK_INTERP_HYPER);
+    
+    gtk_image_set_from_pixbuf(layer->UIIcon, layer->icon);
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
