@@ -218,7 +218,7 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
 }
 
 
-void layermngr_add_new_layer(GtkFlowBox *flowbox/*, const char *filename*/)
+void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
 {
     /*
         Add a GMPF_Layer after the selected element in the flowbox.
@@ -230,7 +230,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox/*, const char *filename*/)
             (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
 
-    /*if (filename != NULL)
+    if (filename != NULL)
     {
         GError *gerror = NULL;
         newlayer->image = gdk_pixbuf_new_from_file(filename, &gerror);
@@ -239,7 +239,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox/*, const char *filename*/)
             printf("error: %s\n", gerror->message);
             g_error_free(gerror);
         }
-        newlayer->image = pixbuf_standardized(newlayer->image);
+        pixbuf_standardized(&(newlayer->image));
     }
 
     if (newlayer->image == NULL)
@@ -248,7 +248,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox/*, const char *filename*/)
         newlayer->image = new_pixbuf_standardized(&size);
     }
 
-    layermngr_display_refresh(flowbox);*/
+    //layermngr_display_refresh(flowbox);
 
 
 
@@ -484,40 +484,40 @@ void layer_rotation_left(GtkFlowBox *flowbox)
 //
 // for GdkPixbuf standardization
 //
-/*GdkPixbuf * new_pixbuf_standardized(GMPF_Size *size)
+GdkPixbuf * new_pixbuf_standardized(GMPF_Size *size)
 {
     GdkPixbuf *pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE,
                 8, size->w, size->h);
-    if (pixbuf_standardized(pixbuf) == -1)
+    if (pixbuf_standardized(&pixbuf) == -1)
         return NULL;
     return pixbuf;
 }
 
-int pixbuf_standardized(GdkPixbuf *pixbuf)
+int pixbuf_standardized(GdkPixbuf **pixbuf)
 {
     int is_error = 0;
-    if (!gdk_pixbuf_get_has_alpha (pixbuf))
+    if (!gdk_pixbuf_get_has_alpha (*pixbuf))
     {
-        GdkPixbuf * pix2 = gdk_pixbuf_add_alpha(pixbuf, FALSE, 0, 0, 0);
-        g_object_unref(pixbuf);
-        pixbuf = pix2;
-        if (!gdk_pixbuf_get_has_alpha (pixbuf))
+        GdkPixbuf * pix2 = gdk_pixbuf_add_alpha(*pixbuf, FALSE, 0, 0, 0);
+        g_object_unref(*pixbuf);
+        *pixbuf = pix2;
+        if (!gdk_pixbuf_get_has_alpha (*pixbuf))
         {
             printf("pixbuf as no alpha\n");
             is_error = 1;
         }
     }
-    if (gdk_pixbuf_get_colorspace (pixbuf) != GDK_COLORSPACE_RGB)
+    if (gdk_pixbuf_get_colorspace (*pixbuf) != GDK_COLORSPACE_RGB)
     {
         printf("Wrong colorspace for pixbuf\n");
         is_error = 1;
     }
-    if (gdk_pixbuf_get_bits_per_sample (pixbuf) != 8)
+    if (gdk_pixbuf_get_bits_per_sample (*pixbuf) != 8)
     {
         printf("pixbuf hasn't 8bits per sample\n");
         is_error = 1;
     }
-    if (gdk_pixbuf_get_n_channels (pixbuf) != 4)
+    if (gdk_pixbuf_get_n_channels (*pixbuf) != 4)
     {
         printf("pixbuf hasn't enough channel\n");
         is_error = 1;
@@ -525,4 +525,4 @@ int pixbuf_standardized(GdkPixbuf *pixbuf)
     if (is_error)
         return -1;
     return 0;
-}*/
+}

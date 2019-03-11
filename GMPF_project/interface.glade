@@ -769,9 +769,9 @@
             </child>
             <child>
               <object class="GtkScrolledWindow">
-                <property name="width_request">175</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="hscrollbar_policy">never</property>
                 <property name="shadow_type">in</property>
                 <child>
                   <object class="GtkViewport">
@@ -779,7 +779,7 @@
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkFlowBox" id="GMPF_flowbox">
-                        <property name="width_request">170</property>
+                        <property name="width_request">176</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
