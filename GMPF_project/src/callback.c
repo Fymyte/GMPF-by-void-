@@ -89,12 +89,12 @@ void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
-
 void callback_hideWidget(GtkWidget *widget, gpointer user_data)
 {
     gtk_widget_hide(widget);
     user_data = 0;
 }
+
 
 void callback_about (GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -173,6 +173,7 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
+
 void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
@@ -219,11 +220,13 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
     gtk_image_set_from_pixbuf(image, unchangedPixbuf);
 }
 
+
 static void do_drawing(cairo_t *cr)
 {
     cairo_set_source_surface(cr, glob.image, 0, 0);
     cairo_paint(cr);
 }
+
 
 static gboolean on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data)
 {
@@ -232,6 +235,7 @@ static gboolean on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_dat
     widget = 0;
     return FALSE;
 }
+
 
 void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 {
@@ -279,6 +283,7 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 
 }
 
+
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 {
     g_print("Binarize\n");
@@ -315,6 +320,7 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
     glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
+
 
 void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -361,6 +367,7 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
     glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
+
 
 void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -477,6 +484,7 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
     free(mat);
 }
 
+
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
 {
     g_print("Grey\n");
@@ -510,6 +518,7 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
     glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
+
 
 void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -545,6 +554,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      win = gdk_screen_get_root_window(screen);
      gdk_window_set_cursor (win, cursor);
  }
+
 
  void callback_FC(GtkMenuItem *menuitem, gpointer user_data)
  {
@@ -582,6 +592,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      menuitem = 0;
  }
 
+
  void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
  {
      g_print("Mirror - Vertical\n");
@@ -617,6 +628,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      gtk_image_set_from_pixbuf(image, imgPixbuf);
      free_img_rgb(img);
  }
+
 
  void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
  {
