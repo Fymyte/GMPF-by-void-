@@ -44,6 +44,8 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox); //ENDED
 void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename); //ENDED
 void layermngr_delete_selected_layer(GtkFlowBox *flowbox); //ENDED
 
+GMPF_LayerMngr *layermngr_get_layermngr(GtkFlowBox *flowbox);
+
 /*void layermngr_display_refresh(GtkFlowBox *flowbox);
 */
 

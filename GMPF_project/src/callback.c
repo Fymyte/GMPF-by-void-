@@ -94,13 +94,17 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
 
     GtkWidget *da = NULL;
     GtkWidget *layout = NULL;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
 
+    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
     layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
+    layermngr = layermngr_get_layermngr(flowbox);
 
     struct _GdkPixbuf *imgPixbuf = NULL;
     GError *err = NULL;
-    if (!unchangedPixbuf)
+    if (!(layermngr->image))
     {
         imgPixbuf = gdk_pixbuf_new_from_file("GMPF.png", &err);
         if(err)
@@ -110,12 +114,16 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
         }
     }
     else
-        imgPixbuf = unchangedPixbuf;
+        imgPixbuf = layermngr->image;
 
     const gchar *s = gtk_entry_get_text (entry);
     float scaleValue = atof(s);
 
     float scaleValue2 = scaleValue / 100;
+    if (scaleValue2 <= 0)
+    {
+        scaleValue2 = 1;
+    }
     g_message("scaleValue = %f", scaleValue);
 
     int width = gdk_pixbuf_get_width(imgPixbuf);
@@ -125,18 +133,17 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     int imgheight = height * scaleValue2;
     g_message("base: %i*%i, after:%i*%i", width, height, imgwidth, imgheight);
 
-    struct _GdkPixbuf *img2;
-
     // Set the new size of the drawingArea
     gtk_widget_set_size_request(da, imgwidth, imgheight);
     // Set the new size of the layout that contain the drawingArea
     gtk_layout_set_size((GtkLayout *)layout, imgwidth * 1.1, imgheight * 1.1);
     // Apply the scaling on pixbuf
-    img2 = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight,
+    layermngr->display_image = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight,
                 scaleValue > 100 ? GDK_INTERP_NEAREST : GDK_INTERP_HYPER);
 
 
-    glob.image = gdk_cairo_surface_create_from_pixbuf(img2, 0, NULL);
+    glob.image = gdk_cairo_surface_create_from_pixbuf(layermngr->display_image, 0, NULL);
+    //g_object_unref(img2);
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
@@ -205,26 +212,28 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     SGlobalData *data = (SGlobalData*) user_data;
     GtkWidget *da = NULL;
     GError *error = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
 
     gchar *filename = gtk_file_chooser_get_filename(btn);
-
-
     /*
         Ici c'est chez moi
     */
     GtkFlowBox *flowbox = NULL;
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
     layermngr_add_new_layer(flowbox, filename);
-
 
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
     if(da == NULL)
         printf("toz\n");
-    unchangedPixbuf = gdk_pixbuf_new_from_file(filename, &error);
-    glob.image = gdk_cairo_surface_create_from_pixbuf(unchangedPixbuf, 0, NULL);
 
-    int width = gdk_pixbuf_get_width(unchangedPixbuf);
-    int height = gdk_pixbuf_get_height(unchangedPixbuf);
+    // layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
+
+    layermngr->image = gdk_pixbuf_new_from_file(filename, &error);
+    glob.image = gdk_cairo_surface_create_from_pixbuf(layermngr->image, 0, NULL);
+
+    int width = gdk_pixbuf_get_width(layermngr->image);
+    int height = gdk_pixbuf_get_height(layermngr->image);
 	gtk_widget_set_size_request(da, width, height);
 
     if(error)
@@ -233,11 +242,11 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
         g_error_free(error);
     }
 
-    if (!gdk_pixbuf_get_has_alpha(unchangedPixbuf))
+    if (!gdk_pixbuf_get_has_alpha(layermngr->image))
     {
-         GdkPixbuf *i = gdk_pixbuf_add_alpha ((const GdkPixbuf *)unchangedPixbuf, FALSE, 0, 0, 0);
-        g_object_unref (unchangedPixbuf);
-        unchangedPixbuf = i;
+        GdkPixbuf *i = gdk_pixbuf_add_alpha ((const GdkPixbuf *)layermngr->image, FALSE, 0, 0, 0);
+        g_object_unref (layermngr->image);
+        layermngr->image = i;
     }
 
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);

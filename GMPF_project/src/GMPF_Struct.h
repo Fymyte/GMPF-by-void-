@@ -56,8 +56,8 @@ struct GMPF_LayerMngr {
     int nb_layer;
     GMPF_List layer_list;
 
-    GdkPixbuf *image;
-    GdkPixbuf *display_image;
+    GdkPixbuf *image; //unchungedPixbuf
+    GdkPixbuf *display_image; //displayedPixbuf (with scale)
 
 
     // get the element on the GUI

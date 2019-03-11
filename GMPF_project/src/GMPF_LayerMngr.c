@@ -123,6 +123,10 @@ void layermngr_delete(GtkFlowBox *flowbox)
     free(layermngr);
 }
 
+GMPF_LayerMngr *layermngr_get_layermngr(GtkFlowBox *flowbox)
+{
+    return (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
+}
 
 
 
@@ -351,26 +355,10 @@ void layer_icon_refresh(GMPF_Layer *layer)
         finalh = layer->size.h / ratio1;
 
     layer->icon = gdk_pixbuf_scale_simple(layer->image, finalw, finalh,
-                         GDK_INTERP_NEAREST);
-    
+                         GDK_INTERP_BILINEAR);
+
     gtk_image_set_from_pixbuf(layer->UIIcon, layer->icon);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
