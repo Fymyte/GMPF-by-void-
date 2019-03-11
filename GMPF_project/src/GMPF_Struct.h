@@ -38,6 +38,7 @@ struct GMPF_Layer {
     GMPF_Size size;
     char isvisible;
 
+    GdkPixbuf *icon;
     GdkPixbuf *image;
 
     // for the list

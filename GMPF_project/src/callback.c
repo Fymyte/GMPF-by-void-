@@ -207,6 +207,16 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     GError *error = NULL;
 
     gchar *filename = gtk_file_chooser_get_filename(btn);
+
+
+    /*
+        Ici c'est chez moi
+    */
+    GtkFlowBox *flowbox = NULL;
+    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr_add_new_layer(flowbox, filename);
+
+
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
     if(da == NULL)
         printf("toz\n");

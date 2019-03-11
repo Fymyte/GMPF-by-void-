@@ -52,6 +52,7 @@ void layermngr_delete_selected_layer(GtkFlowBox *flowbox); //ENDED
 //
 GMPF_Layer * layer_initialization(); //ENDED
 void layer_delete(GMPF_Layer *layer); //ENDED
+void layer_icon_refresh(GMPF_Layer *layer);
 
 
 //

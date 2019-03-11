@@ -251,11 +251,16 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
     //layermngr_display_refresh(flowbox);
 
 
+    newlayer->size.w = gdk_pixbuf_get_width(newlayer->image);
+    newlayer->size.h = gdk_pixbuf_get_height(newlayer->image);
+
 
     /*
     add UIElement to the flowbox
     */
-    GtkWidget *image = gtk_image_new();
+    layer_icon_refresh(newlayer);
+    GtkWidget *image = gtk_image_new_from_pixbuf(newlayer->icon);
+
 
     // Style of the image
     gtk_widget_set_sensitive(image, TRUE);
@@ -301,7 +306,6 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
 
     layermngr->nb_layer += 1;
 }
-
 
 
 void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
@@ -355,6 +359,7 @@ GMPF_Layer * layer_initialization()
 
     layer->isvisible = 1;
 
+    layer->icon = NULL;
     layer->image = NULL;
 
     list_init(&(layer->list));
@@ -372,10 +377,29 @@ void layer_delete(GMPF_Layer *layer)
     // remove and free the GtkFlowBoxChild from the GtkFlowBox
     gtk_widget_destroy((GtkWidget *) layer->UIElement);
     // free the pixbuf
+    if (layer->icon != NULL)
+        g_object_unref(layer->icon);
+
     if (layer->image != NULL)
         g_object_unref(layer->image);
 
     free(layer);
+}
+
+
+void layer_icon_refresh(GMPF_Layer *layer)
+{
+    float ratio1 = layer->size.w / 160.0;
+    float ratio2 = layer->size.h / 90.0;
+    int finalh = 90;
+    int finalw = 160;
+    if (ratio1 < ratio2)
+        finalw = layer->size.w / ratio2;
+    else
+        finalh = layer->size.h / ratio1;
+
+    layer->icon = gdk_pixbuf_scale_simple(layer->image, finalw, finalh,
+                         GDK_INTERP_HYPER);
 }
 
 
