@@ -262,15 +262,6 @@ void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
 }
 
 
-/*void layermngr_display_refresh(GtkFlowBox *flowbox)
-{
-    GMPF_LayerMngr *layermngr =
-            (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
-    layermngr_image_create(layermngr);
-    gtk_image_clear(layermngr->display);
-    gtk_image_set_from_pixbuf(layermngr->display, layermngr->display_image);
-}*/
-
 
 
 
