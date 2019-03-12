@@ -18,8 +18,8 @@
 
 
 //callback functions
-static void do_drawing(cairo_t *cr);
-static gboolean on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data);
+// static void do_drawing(cairo_t *cr);
+void on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data);
 
 int check(int width, int height, int i, int j);
 void callback_flip(GtkMenuItem *menuitem, gpointer user_data);

@@ -6,8 +6,8 @@ struct {
 } glob;
 
 
-static void do_drawing(cairo_t *cr);
-static gboolean on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data);
+// static void do_drawing(cairo_t *cr);
+void on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data);
 
 int check(int width, int height, int i, int j);
 void callback_flip(GtkMenuItem *menuitem, gpointer user_data);
@@ -221,15 +221,15 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 }
 
 
-static void do_drawing(cairo_t *cr)
-{
+// static void do_drawing(cairo_t *cr)
+// {
+//
+//     cairo_set_source_surface(cr, glob.image, 0, 0);
+//     cairo_paint(cr);
+// }
 
-    cairo_set_source_surface(cr, glob.image, 0, 0);
-    cairo_paint(cr);
-}
 
-
-static gboolean on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data)
+void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     GtkFlowBox *flowbox = NULL;
@@ -249,7 +249,6 @@ static gboolean on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_dat
     //do_drawing(cr);
     user_data = 0;
     widget = 0;
-    return FALSE;
 }
 
 
