@@ -203,7 +203,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
 
     //layermngr_display_refresh(flowbox);
 
-
+    newlayer->surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
     newlayer->size.w = gdk_pixbuf_get_width(newlayer->image);
     newlayer->size.h = gdk_pixbuf_get_height(newlayer->image);
 
@@ -317,6 +317,8 @@ GMPF_Layer * layer_initialization()
     layer->icon = NULL;
     layer->image = NULL;
 
+    layer->surface = NULL;
+
     list_init(&(layer->list));
 
     layer->UIIcon = NULL;
@@ -338,6 +340,9 @@ void layer_delete(GMPF_Layer *layer)
 
     if (layer->image != NULL)
         g_object_unref(layer->image);
+
+    if (layer->surface != NULL)
+        cairo_surface_destroy (layer->surface);
 
     free(layer);
 }
@@ -461,7 +466,7 @@ void layer_rotation_left(GtkFlowBox *flowbox)
 //
 // for GdkPixbuf standardization
 //
-GdkPixbuf * new_pixbuf_standardized(GMPF_Size *size)
+GdkPixbuf *new_pixbuf_standardized(GMPF_Size *size)
 {
     GdkPixbuf *pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE,
                 8, size->w, size->h);

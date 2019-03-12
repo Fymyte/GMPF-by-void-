@@ -72,6 +72,7 @@ on_drawingarea_draw (GtkWidget *widget, cairo_t *cr, SGlobalData *gui)
 
   // Affichage de tous les claques
   GList *list = gui->calclist;
+  g_print("drawing\n");
   while (list)
     {
       cairo_set_source_surface (cr, ((SCalc*)(list->data))->surface, 0, 0);
