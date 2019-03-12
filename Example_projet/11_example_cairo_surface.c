@@ -23,8 +23,8 @@ on_drawingarea_draw (GtkWidget *widget, cairo_t *cr, SGlobalData *gui)
   gtk_widget_get_size_request (widget, &width, &height);
 
   // Affichage de l'image de fond (fond noir avec texte en blanc "image de fond")
-  cairo_paint (cr);
   cairo_set_source_rgb (cr, 1, 1, 1);
+  cairo_paint (cr);
   cairo_move_to (cr, 0, 15);
   cairo_set_font_size (cr, 20);
   cairo_show_text (cr, "Image de fond");

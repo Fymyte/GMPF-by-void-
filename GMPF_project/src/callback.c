@@ -223,6 +223,7 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 
 static void do_drawing(cairo_t *cr)
 {
+
     cairo_set_source_surface(cr, glob.image, 0, 0);
     cairo_paint(cr);
 }
@@ -230,7 +231,22 @@ static void do_drawing(cairo_t *cr)
 
 static gboolean on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data)
 {
-    do_drawing(cr);
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
+
+    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+    while (lay != NULL)
+    {
+        cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
+        cairo_paint (cr);
+        lay = container_of(lay->list.next, GMPF_Layer, list);
+    }
+
+    //do_drawing(cr);
     user_data = 0;
     widget = 0;
     return FALSE;
@@ -279,7 +295,7 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
         layermngr->image = i;
     }
 
-    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), user_data);
 
 }
 
