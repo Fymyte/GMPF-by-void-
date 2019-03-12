@@ -7,29 +7,7 @@
         pos->y < 0 || pos->y >= size.h )
 
 
-// PRIVATE FUNCTION
-/*void layermngr_image_create(GMPF_LayerMngr *layermngr)
-{
-    GMPF_Layer *layer = container_of(layermngr->layer_list.next, GMPF_Layer, list);
-    while (layer)
-    {
-        gdk_pixbuf_composite(layer->image,
-                      layermngr->image,
-                      layer->pos.x, layer->pos.y,
-                      layer->size.w, layer->size.h,
-                      0.0, 0.0,
-                      1.0, 1.0,
-                      GDK_INTERP_BILINEAR,
-                      255); // test it
-        layer = container_of(layer->list.next, GMPF_Layer, list);
-    }
-}*/
-
-
-
 // CODE
-
-
 
 
 
@@ -200,8 +178,6 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
         GMPF_Size size = {.w=10, .h=10};
         newlayer->image = new_pixbuf_standardized(&size);
     }
-
-    //layermngr_display_refresh(flowbox);
 
     newlayer->surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
     newlayer->size.w = gdk_pixbuf_get_width(newlayer->image);
