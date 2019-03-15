@@ -12,5 +12,6 @@ typedef struct
 void resetCursor(SGlobalData* data);
 void stayInWindow(SGlobalData* data);
 void resizeCuror(SGlobalData* data);
+void callback_setCursor(SGlobalData* data);
 
-#endif 
+#endif

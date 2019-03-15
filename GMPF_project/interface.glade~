@@ -545,7 +545,7 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Pinceau</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_setCursor" swapped="no"/>
+                        <signal name="activate" handler="callback_brush" swapped="no"/>
                       </object>
                     </child>
                     <child>

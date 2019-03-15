@@ -29,7 +29,6 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data);
 void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data);
 void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data);
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data);
-void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data);
 void callback_FC(GtkMenuItem *menuitem, gpointer user_data);
 void callback_vertical(GtkMenuItem *menuitem, gpointer user_data);
 void callback_tinter(GtkMenuItem *menuitem, gpointer user_data);
@@ -316,6 +315,24 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y)
   gtk_widget_queue_draw_area (widget, x - 3, y - 3, 6, 6);
 }
 
+
+void draw_rubber (GtkWidget *widget, gdouble x, gdouble y)
+{
+  cairo_t *cr;
+
+  /* Paint to the surface, where we store our state */
+  cr = cairo_create (glob.image);
+
+  cairo_set_source_rgba (cr, 0, 1, 0, 0); //set the brush color
+  cairo_rectangle (cr, x - 3, y - 3, 6, 6);
+  cairo_fill (cr);
+
+  cairo_destroy (cr);
+
+  /* Now invalidate the affected region of the drawing area. */
+  gtk_widget_queue_draw_area (widget, x - 3, y - 3, 6, 6);
+}
+
 /* Handle button press events by either drawing a rectangle
  * or clearing the surface, depending on which button was pressed.
  * The ::button-press signal handler receives a GdkEventButton
@@ -330,9 +347,11 @@ gboolean button_press_event_cb (GtkWidget      *widget,
     return FALSE;
 
   if (event->button == GDK_BUTTON_PRIMARY & cursor_state == 1)
-    {
       draw_brush (widget, event->x, event->y);
-    }
+
+  else if (event->button == GDK_BUTTON_PRIMARY & cursor_state == 2)
+      draw_rubber (widget, event->x, event->y);
+
   else if (event->button == GDK_BUTTON_SECONDARY)
     {
       clear_surface ();
@@ -359,6 +378,10 @@ motion_notify_event_cb (GtkWidget      *widget,
   if (cursor_state == 1)
     if (event->state & GDK_BUTTON1_MASK )
         draw_brush (widget, event->x, event->y);
+
+  if (cursor_state == 2)
+    if (event->state & GDK_BUTTON1_MASK )
+        draw_rubber (widget, event->x, event->y);
 
 
   /* We've handled it, stop processing */
@@ -395,8 +418,8 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
         }
     }
     //do_drawing(cr);
-    user_data = 0;
-    widget = 0;
+    (void)user_data;
+    (void)widget = 0;
 }
 
 
@@ -682,11 +705,24 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
-
-void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
+void callback_brush(GtkMenuItem *menuitem, gpointer user_data)
 {
-     menuitem = 0;
-     cursor_state = 1; //cursor_state = 1 for the brush
+    (void)menuitem;
+    cursor_state = 1;
+    SGlobalData *data = (SGlobalData*) user_data;
+    callback_setCursor(data);
+}
+
+void callback_rubber(GtkMenuItem *menuitem, gpointer user_data)
+{
+    (void)menuitem;
+    cursor_state = 2;
+    SGlobalData *data = (SGlobalData*) user_data;
+    callback_setCursor(data);
+}
+
+/*void callback_setCursor(gpointer user_data)
+{
      //init variables
      SGlobalData *data = (SGlobalData*) user_data;
      GdkDisplay *display = NULL;
@@ -719,7 +755,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
      gdk_window_set_cursor (win, cursor);
  }
 
-
+*/
  void callback_FC(GtkMenuItem *menuitem, gpointer user_data)
  {
      //variables definitions
@@ -922,6 +958,7 @@ void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
     glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
  }
+
 
 void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)
 {
