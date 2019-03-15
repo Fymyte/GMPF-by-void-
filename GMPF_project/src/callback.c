@@ -247,8 +247,8 @@ void clear_surface (void)
 
   cr = cairo_create (glob.image);
 
-  cairo_set_source_rgb (cr, 1, 1, 1);
-  cairo_paint (cr);
+  cairo_set_source_rgba (cr, 1, 1, 1, 1);
+  cairo_paint_with_alpha (cr, 1.0);
 
   cairo_destroy (cr);
 }
@@ -261,8 +261,11 @@ gboolean configure_event_cb (GtkWidget *widget,
   if (glob.image)
     cairo_surface_destroy (glob.image);
 
+  cairo_content_t content =
+            cairo_surface_get_content (cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1));
+
   glob.image = gdk_window_create_similar_surface (gtk_widget_get_window (widget),
-                                       CAIRO_CONTENT_COLOR,
+                                       content,
                                        gtk_widget_get_allocated_width (widget),
                                        gtk_widget_get_allocated_height (widget));
 
@@ -283,8 +286,8 @@ gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
   cairo_set_source_surface (cr, glob.image, 0, 0);
   cairo_paint (cr);
 
-  (void)data;
   (void)widget;
+  (void)data;
   return FALSE;
 }
 
@@ -296,6 +299,7 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y)
   /* Paint to the surface, where we store our state */
   cr = cairo_create (glob.image);
 
+  cairo_set_source_rgba (cr, 1, 0, 0, 1); //set the brush color
   cairo_rectangle (cr, x - 3, y - 3, 6, 6);
   cairo_fill (cr);
 
@@ -348,8 +352,9 @@ motion_notify_event_cb (GtkWidget      *widget,
   if (event->state & GDK_BUTTON1_MASK)
     draw_brush (widget, event->x, event->y);
 
-  (void)data;
+
   /* We've handled it, stop processing */
+  (void)data;
   return TRUE;
 }
 
