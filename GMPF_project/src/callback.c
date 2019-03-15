@@ -5,6 +5,12 @@ struct {
   cairo_surface_t *image;
 } glob;
 
+/* change the cursor
+    values :
+    0 ==> normal
+    1 ==> draw_brush
+    2 ==> rubber
+*/
 int cursor_state = 0;
 
 // static void do_drawing(cairo_t *cr);
@@ -323,7 +329,7 @@ gboolean button_press_event_cb (GtkWidget      *widget,
   if (glob.image == NULL)
     return FALSE;
 
-  if (event->button == GDK_BUTTON_PRIMARY)
+  if (event->button == GDK_BUTTON_PRIMARY & cursor_state == 1)
     {
       draw_brush (widget, event->x, event->y);
     }
@@ -350,8 +356,9 @@ motion_notify_event_cb (GtkWidget      *widget,
   if (glob.image == NULL)
     return FALSE;
 
-  if (event->state & GDK_BUTTON1_MASK)
-    draw_brush (widget, event->x, event->y);
+  if (cursor_state == 1)
+    if (event->state & GDK_BUTTON1_MASK )
+        draw_brush (widget, event->x, event->y);
 
 
   /* We've handled it, stop processing */
@@ -956,5 +963,6 @@ void reset_cursor(GtkMenuItem *menuitem, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     resetCursor(data);
+    cursor_state = 0; // 0 ==> normal cursor
     menuitem = 0;
 }
