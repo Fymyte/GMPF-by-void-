@@ -5,11 +5,7 @@ struct {
   cairo_surface_t *image;
 } glob;
 
-int glob_init(void)
-{
-    glob.image = NULL;
-    return 0;
-}
+
 // static void do_drawing(cairo_t *cr);
 void on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data);
 

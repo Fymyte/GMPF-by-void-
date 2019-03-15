@@ -42,7 +42,7 @@ void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data);
 void reset_cursor(GtkMenuItem *menuitem, gpointer user_data);
 void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data);
 void callback_negative(GtkMenuItem *menuitem, gpointer user_data);
-int glob_init(void);
+
 
 //drawing functions
  void clear_surface (void);
