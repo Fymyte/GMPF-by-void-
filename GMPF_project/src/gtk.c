@@ -87,6 +87,11 @@ int GMPF_start()
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data.builder, "GMPF_flowbox"));
     layermngr_create(flowbox);
 
+    GtkWidget *da = NULL;
+    da = GTK_WIDGET(gtk_builder_get_object(data.builder, "drawingArea"));
+    gtk_widget_set_events (da, gtk_widget_get_events (da)
+                                | GDK_BUTTON_PRESS_MASK
+                                | GDK_POINTER_MOTION_MASK);
 
 
 

@@ -18,7 +18,7 @@
 
 
 //callback functions
-// static void do_drawing(cairo_t *cr);
+void draw_line(cairo_t *cr);
 void on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data);
 
 int check(int width, int height, int i, int j);
@@ -42,6 +42,15 @@ void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data);
 void reset_cursor(GtkMenuItem *menuitem, gpointer user_data);
 void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data);
 void callback_negative(GtkMenuItem *menuitem, gpointer user_data);
+int glob_init(void);
+
+//drawing functions
+ void clear_surface (void);
+ gboolean configure_event_cb (GtkWidget *widget, GdkEventConfigure *event, gpointer data);
+ gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data);
+ void draw_brush (GtkWidget *widget, gdouble x, gdouble y);
+ gboolean button_press_event_cb (GtkWidget *widget, GdkEventButton *event, gpointer data);
+ gboolean motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event, gpointer data);
 
 
 //

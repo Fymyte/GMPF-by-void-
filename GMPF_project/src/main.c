@@ -6,7 +6,7 @@
 int main(int argc, char *argv [])
 {
     int error;
-
+    glob_init();
     /* Initialisation de la librairie Gtk. */
     gtk_init(&argc, &argv);
 

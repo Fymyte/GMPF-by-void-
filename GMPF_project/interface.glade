@@ -747,9 +747,19 @@
                     <property name="width">5000</property>
                     <property name="height">5000</property>
                     <child>
-                      <object class="GtkDrawingArea" id="drawingArea">
+                      <object class="GtkEventBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkDrawingArea" id="drawingArea">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <signal name="button-press-event" handler="button_press_event_cb" swapped="no"/>
+                            <signal name="configure-event" handler="configure_event_cb" swapped="no"/>
+                            <signal name="draw" handler="draw_cb" swapped="no"/>
+                            <signal name="motion-notify-event" handler="motion_notify_event_cb" swapped="no"/>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="x">210</property>
