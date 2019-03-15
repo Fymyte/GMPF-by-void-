@@ -166,8 +166,12 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
         while (lay != NULL)
         {
             g_print("drawing\n");
+            cr = cairo_create(lay->surface);
             cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
-            cairo_scale (cr, scaleValue, scaleValue);
+            gtk_widget_set_size_request(da, imgwidth, imgheight);
+            cairo_scale (cr, scaleValue2, scaleValue2);
+            cairo_paint (cr);
+            cairo_destroy (cr);
             if (lay->list.next)
             {
                 lay = container_of(lay->list.next, GMPF_Layer, list);
@@ -196,7 +200,7 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
 
 
     //glob.image = gdk_cairo_surface_create_from_pixbuf(layermngr->display_image, 0, NULL);
-    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
+    //g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
 
@@ -249,14 +253,14 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 
 void clear_surface (void)
 {
-  cairo_t *cr;
+    cairo_t *cr;
 
-  cr = cairo_create (glob.image);
+    cr = cairo_create (glob.image);
 
-  cairo_set_source_rgba (cr, 1, 0, 1, 0);
-  cairo_paint_with_alpha (cr, 1.0);
+    cairo_set_source_rgba (cr, 1, 0, 1, 0);
+    cairo_paint_with_alpha (cr, 1.0);
 
-  cairo_destroy (cr);
+    cairo_destroy (cr);
 }
 
 /* Create a new surface of the appropriate size to store our scribbles */
