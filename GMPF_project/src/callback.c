@@ -5,6 +5,7 @@ struct {
   cairo_surface_t *image;
 } glob;
 
+int cursor_state = 0;
 
 // static void do_drawing(cairo_t *cr);
 void on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data);
@@ -247,7 +248,7 @@ void clear_surface (void)
 
   cr = cairo_create (glob.image);
 
-  cairo_set_source_rgba (cr, 1, 1, 1, 1);
+  cairo_set_source_rgba (cr, 1, 0, 1, 0);
   cairo_paint_with_alpha (cr, 1.0);
 
   cairo_destroy (cr);
@@ -678,6 +679,7 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
 void callback_setCursor(GtkMenuItem *menuitem, gpointer user_data)
 {
      menuitem = 0;
+     cursor_state = 1; //cursor_state = 1 for the brush
      //init variables
      SGlobalData *data = (SGlobalData*) user_data;
      GdkDisplay *display = NULL;
