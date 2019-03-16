@@ -298,8 +298,8 @@ void clear_surface (gpointer user_data)
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     layermngr = layermngr_get_layermngr(flowbox);
 
-    if(layermngr->layer_list.next == NULL)
-        layermngr_add_new_layer(flowbox, "gimp_logo.png");
+    // if(layermngr->layer_list.next == NULL)
+    //     layermngr_add_new_layer(flowbox, "gimp_logo.png");
     GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
 
     cairo_t *cr;
@@ -308,7 +308,7 @@ void clear_surface (gpointer user_data)
 
     cairo_set_source_rgba (cr, 1, 0, 1, 0);
     cairo_paint_with_alpha (cr, 1.0);
-    
+
     cairo_destroy (cr);
 
 }
@@ -538,7 +538,7 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
             }
         }
     }
-    cairo_destroy(cr);
+    //cairo_destroy(cr);
     //do_drawing(cr);
     (void)user_data;
     widget = 0;
