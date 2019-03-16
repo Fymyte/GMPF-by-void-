@@ -289,38 +289,61 @@ void callback_image(GtkFileChooser *filebtn, gpointer user_data)
 }
 
 
-void clear_surface (void)
+void clear_surface (gpointer user_data)
 {
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
+
+    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    if(layermngr->layer_list.next == NULL)
+        layermngr_add_new_layer(flowbox, "gimp_logo.png");
+    GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+
     cairo_t *cr;
 
-    cr = cairo_create (glob.image);
+    cr = cairo_create (lay->surface);
 
     cairo_set_source_rgba (cr, 1, 0, 1, 0);
     cairo_paint_with_alpha (cr, 1.0);
-
+    
     cairo_destroy (cr);
+
 }
 
 /* Create a new surface of the appropriate size to store our scribbles */
 gboolean configure_event_cb (GtkWidget *widget,
                                         GdkEventConfigure *event,
-                                        gpointer data)
+                                        gpointer user_data)
 {
-  if (glob.image)
-    cairo_surface_destroy (glob.image);
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
+
+    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    if(layermngr->layer_list.next == NULL)
+        layermngr_add_new_layer(flowbox, "gimp_logo.png");
+    GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+
+  if (lay->surface)
+    cairo_surface_destroy (lay->surface);
 
   cairo_content_t content =
             cairo_surface_get_content (cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1));
 
-  glob.image = gdk_window_create_similar_surface (gtk_widget_get_window (widget),
+  lay->surface = gdk_window_create_similar_surface (gtk_widget_get_window (widget),
                                        content,
                                        gtk_widget_get_allocated_width (widget),
                                        gtk_widget_get_allocated_height (widget));
 
   /* Initialize the surface to white */
-  clear_surface ();
+  clear_surface (user_data);
   (void)event;
-  (void)data;
+
   /* We've handled the configure event, no need for further processing. */
   return TRUE;
 }
@@ -329,23 +352,45 @@ gboolean configure_event_cb (GtkWidget *widget,
  * signal receives a ready-to-be-used cairo_t that is already
  * clipped to only draw the exposed areas of the widget
  */
-gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
+gboolean draw_cb (GtkWidget *widget, cairo_t *cr, gpointer user_data)
 {
-  cairo_set_source_surface (cr, glob.image, 0, 0);
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
+
+    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    if(layermngr->layer_list.next == NULL)
+        layermngr_add_new_layer(flowbox, "gimp_logo.png");
+    GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+
+  cairo_set_source_surface (cr, lay->surface, 0, 0);
   cairo_paint (cr);
 
   (void)widget;
-  (void)data;
+
   return FALSE;
 }
 
 /* Draw a rectangle on the surface at the given position */
-void draw_brush (GtkWidget *widget, gdouble x, gdouble y)
+void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
+
+    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    if(layermngr->layer_list.next == NULL)
+        layermngr_add_new_layer(flowbox, "gimp_logo.png");
+    GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+
   cairo_t *cr;
 
   /* Paint to the surface, where we store our state */
-  cr = cairo_create (glob.image);
+  cr = cairo_create (lay->surface);
 
   cairo_set_source_rgba (cr, 1, 0, 0, 1); //set the brush color
   cairo_rectangle (cr, x - 3, y - 3, 6, 6);
@@ -358,12 +403,23 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y)
 }
 
 
-void draw_rubber (GtkWidget *widget, gdouble x, gdouble y)
+void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
+
+    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    if(layermngr->layer_list.next == NULL)
+        layermngr_add_new_layer(flowbox, "gimp_logo.png");
+    GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+
   cairo_t *cr;
 
   /* Paint to the surface, where we store our state */
-  cr = cairo_create (glob.image);
+  cr = cairo_create (lay->surface);
 
   cairo_set_source_rgba (cr, 1, 1, 1, 1); //set the brush color
   cairo_rectangle (cr, x - 3, y - 3, 6, 6);
@@ -382,24 +438,35 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y)
  */
 gboolean button_press_event_cb (GtkWidget      *widget,
                GdkEventButton *event,
-               gpointer        data)
+               gpointer        user_data)
 {
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
+
+    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    if(layermngr->layer_list.next == NULL)
+        layermngr_add_new_layer(flowbox, "gimp_logo.png");
+    GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+
   /* paranoia check, in case we haven't gotten a configure event */
-  if (glob.image == NULL)
+  if (lay->surface == NULL)
     return FALSE;
 
   if (event->button == GDK_BUTTON_PRIMARY & cursor_state == 1)
-      draw_brush (widget, event->x, event->y);
+      draw_brush (widget, event->x, event->y, user_data);
 
   else if (event->button == GDK_BUTTON_PRIMARY & cursor_state == 2)
-      draw_rubber (widget, event->x, event->y);
+      draw_rubber (widget, event->x, event->y, user_data);
 
   else if (event->button == GDK_BUTTON_SECONDARY)
     {
-      clear_surface ();
+      clear_surface (user_data);
       gtk_widget_queue_draw (widget);
     }
-    (void)data;
+
   /* We've handled the event, stop processing */
   return TRUE;
 }
@@ -411,23 +478,33 @@ gboolean button_press_event_cb (GtkWidget      *widget,
 gboolean
 motion_notify_event_cb (GtkWidget      *widget,
                 GdkEventMotion *event,
-                gpointer        data)
+                gpointer        user_data)
 {
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
+
+    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    if(layermngr->layer_list.next == NULL)
+        layermngr_add_new_layer(flowbox, "gimp_logo.png");
+    GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+
   /* paranoia check, in case we haven't gotten a configure event */
-  if (glob.image == NULL)
+  if (lay->surface == NULL)
     return FALSE;
 
   if (cursor_state == 1)
     if (event->state & GDK_BUTTON1_MASK )
-        draw_brush (widget, event->x, event->y);
+        draw_brush (widget, event->x, event->y, user_data);
 
   if (cursor_state == 2)
     if (event->state & GDK_BUTTON1_MASK )
-        draw_rubber (widget, event->x, event->y);
+        draw_rubber (widget, event->x, event->y, user_data);
 
 
   /* We've handled it, stop processing */
-  (void)data;
   return TRUE;
 }
 
