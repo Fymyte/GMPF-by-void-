@@ -160,10 +160,10 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
-            g_print("drawing\n");
+            // g_print("drawing\n");
             double sw = cairo_image_surface_get_width  (lay->surface);
             double sh = cairo_image_surface_get_height (lay->surface);
-            gtk_widget_set_size_request(da, sw * scale_x * 2, sh * scale_y * 2);
+            //gtk_widget_set_size_request(da, sw * scale_x * 2, sh * scale_y * 2);
             sx=  - sw/2.0;
             sy=  - sh/2.0;
 
@@ -517,13 +517,15 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     layermngr = layermngr_get_layermngr(flowbox);
+    int cur_lay = 0;
 
     if (layermngr->layer_list.next != NULL)
     {
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
-            g_print("drawing\n");
+            cur_lay ++;
+            g_print("drawing layer %i\n", cur_lay);
             cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
             cairo_paint (cr);
             if (lay->list.next)
@@ -536,6 +538,7 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
             }
         }
     }
+    cairo_destroy(cr);
     //do_drawing(cr);
     (void)user_data;
     widget = 0;
@@ -567,9 +570,32 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     layermngr->image = gdk_pixbuf_new_from_file(filename, &error);
     glob.image = gdk_cairo_surface_create_from_pixbuf(layermngr->image, 0, NULL);
 
-    int width = gdk_pixbuf_get_width(layermngr->image);
-    int height = gdk_pixbuf_get_height(layermngr->image);
-	gtk_widget_set_size_request(da, width, height);
+    int width, height;
+    int max_width = 0;
+    int max_height = 0;// = gdk_pixbuf_get_height(layermngr->image);
+    if (layermngr->layer_list.next != NULL)
+    {
+        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+        while (lay != NULL)
+        {
+
+            width = cairo_image_surface_get_width(lay->surface);
+            height = cairo_image_surface_get_height(lay->surface);
+            if (width > max_width)
+                max_width = width;
+            if (height > max_height)
+                max_height = height;
+            if (lay->list.next)
+            {
+                lay = container_of(lay->list.next, GMPF_Layer, list);
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+	gtk_widget_set_size_request(da, max_width, max_height);
 
     if(error)
     {
