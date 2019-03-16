@@ -753,6 +753,7 @@
                         <child>
                           <object class="GtkDrawingArea" id="drawingArea">
                             <property name="visible">True</property>
+                            <property name="app_paintable">True</property>
                             <property name="can_focus">False</property>
                             <signal name="button-press-event" handler="button_press_event_cb" swapped="no"/>
                             <signal name="configure-event" handler="configure_event_cb" swapped="no"/>

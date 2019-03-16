@@ -131,24 +131,11 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     GtkFlowBox *flowbox = NULL;
     GMPF_LayerMngr *layermngr = NULL;
 
-    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
+    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
     layermngr = layermngr_get_layermngr(flowbox);
 
-    // struct _GdkPixbuf *imgPixbuf = NULL;
-    // GError *err = NULL;
-    // if (!(layermngr->image))
-    // {
-    //     imgPixbuf = gdk_pixbuf_new_from_file("GMPF.png", &err);
-    //     if(err)
-    //     {
-    //         printf("Error : %s\n", err->message);
-    //         g_error_free(err);
-    //     }
-    // }
-    // else
-    //     imgPixbuf = layermngr->image;
 
     const gchar *s = gtk_entry_get_text (entry);
     float scaleValue = atof(s);
@@ -160,18 +147,51 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     }
     g_message("scaleValue = %f", scaleValue);
 
+    double sx, sy;
+    gint dw, dh;
+    dw = gtk_widget_get_allocated_width(da);
+    dh = gtk_widget_get_allocated_height(da);
+    cairo_matrix_t mat;
+    cairo_surface_t *new_surface;
+    double scale_x= scaleValue2, scale_y= scaleValue2;
+
     if (layermngr->layer_list.next != NULL)
     {
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
             g_print("drawing\n");
+            double sw = cairo_image_surface_get_width  (lay->surface);
+            double sh = cairo_image_surface_get_height (lay->surface);
+            gtk_widget_set_size_request(da, sw * scale_x * 2, sh * scale_y * 2);
+            sx=  - sw/2.0;
+            sy=  - sh/2.0;
+
             cr = cairo_create(lay->surface);
-            cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
-            gtk_widget_set_size_request(da, imgwidth, imgheight);
-            cairo_scale (cr, scaleValue2, scaleValue2);
+            cairo_save (cr);
+
+            // cairo_set_source_rgba (cr, 1, 0, 1, 0);
+            // cairo_paint_with_alpha (cr, 1.0);
+
+            cairo_matrix_init_identity (& mat);
+            cairo_matrix_translate (& mat, dw * scale_x/2.0, dh * scale_y/2.0);
+            cairo_matrix_scale (& mat, scale_x, scale_y);
+            cairo_set_matrix (cr, & mat);
+            new_surface = cairo_surface_create_similar_image(lay->surface,
+                CAIRO_FORMAT_ARGB32, sw * scale_x, sh * scale_y);
+
+
+            cairo_set_source_surface (cr, new_surface, sx, sy);
+            cairo_pattern_set_filter (cairo_get_source (cr), CAIRO_FILTER_NEAREST);
             cairo_paint (cr);
+
+            cairo_restore (cr);
             cairo_destroy (cr);
+
+            //cairo_surface_finish (new_surface); /* data will go out of scope */
+            //cairo_surface_destroy (lay->surface);
+            lay->surface = new_surface;
+
             if (lay->list.next)
             {
                 lay = container_of(lay->list.next, GMPF_Layer, list);
@@ -183,24 +203,42 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
         }
     }
 
-    // int width = gdk_pixbuf_get_width(imgPixbuf);
-    // int height = gdk_pixbuf_get_height(imgPixbuf);
-
-    // int imgwidth = width * scaleValue2;
-    // int imgheight = height * scaleValue2;
-    // g_message("base: %i*%i, after:%i*%i", width, height, imgwidth, imgheight);
-
-    // Set the new size of the drawingArea
-    //gtk_widget_set_size_request(da, imgwidth, imgheight);
-    // Set the new size of the layout that contain the drawingArea
-    //gtk_layout_set_size((GtkLayout *)layout, imgwidth * 1.1, imgheight * 1.1);
-    // Apply the scaling on pixbuf
-    //layermngr->display_image = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight,
-            //    scaleValue > 100 ? GDK_INTERP_NEAREST : GDK_INTERP_HYPER);
-
-
-    //glob.image = gdk_cairo_surface_create_from_pixbuf(layermngr->display_image, 0, NULL);
-    //g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
+    //
+    //
+    // // struct _GdkPixbuf *imgPixbuf = NULL;
+    // // GError *err = NULL;
+    // // if (!(layermngr->image))
+    // // {
+    // //     imgPixbuf = gdk_pixbuf_new_from_file("GMPF.png", &err);
+    // //     if(err)
+    // //     {
+    // //         printf("Error : %s\n", err->message);
+    // //         g_error_free(err);
+    // //     }
+    // // }
+    // // else
+    // //     imgPixbuf = layermngr->image;
+    //
+    //
+    //
+    // // int width = gdk_pixbuf_get_width(imgPixbuf);
+    // // int height = gdk_pixbuf_get_height(imgPixbuf);
+    //
+    // // int imgwidth = width * scaleValue2;
+    // // int imgheight = height * scaleValue2;
+    // // g_message("base: %i*%i, after:%i*%i", width, height, imgwidth, imgheight);
+    //
+    // // Set the new size of the drawingArea
+    // //gtk_widget_set_size_request(da, imgwidth, imgheight);
+    // // Set the new size of the layout that contain the drawingArea
+    // //gtk_layout_set_size((GtkLayout *)layout, imgwidth * 1.1, imgheight * 1.1);
+    // // Apply the scaling on pixbuf
+    // //layermngr->display_image = gdk_pixbuf_scale_simple(imgPixbuf, imgwidth, imgheight,
+    //         //    scaleValue > 100 ? GDK_INTERP_NEAREST : GDK_INTERP_HYPER);
+    //
+    //
+    // //glob.image = gdk_cairo_surface_create_from_pixbuf(layermngr->display_image, 0, NULL);
+    // //g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
 }
 
 
@@ -327,7 +365,7 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y)
   /* Paint to the surface, where we store our state */
   cr = cairo_create (glob.image);
 
-  cairo_set_source_rgba (cr, 0, 1, 0, 0); //set the brush color
+  cairo_set_source_rgba (cr, 1, 1, 1, 1); //set the brush color
   cairo_rectangle (cr, x - 3, y - 3, 6, 6);
   cairo_fill (cr);
 
@@ -423,7 +461,7 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
     }
     //do_drawing(cr);
     (void)user_data;
-    (void)widget = 0;
+    widget = 0;
 }
 
 
