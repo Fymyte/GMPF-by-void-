@@ -41,6 +41,7 @@ struct GMPF_Layer {
     GdkPixbuf *icon;
     GdkPixbuf *image;
 
+    cairo_surface_t *unchanged_surface;
     cairo_surface_t *surface;
 
     // for the list

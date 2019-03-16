@@ -182,6 +182,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
     }
 
     newlayer->surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
+    newlayer->unchanged_surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
     newlayer->size.w = gdk_pixbuf_get_width(newlayer->image);
     newlayer->size.h = gdk_pixbuf_get_height(newlayer->image);
 
@@ -286,6 +287,7 @@ GMPF_Layer * layer_initialization()
     layer->icon = NULL;
     layer->image = NULL;
 
+    layer->unchanged_surface = NULL;
     layer->surface = NULL;
 
     list_init(&(layer->list));
