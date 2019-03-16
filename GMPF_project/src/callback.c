@@ -521,148 +521,139 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
                 }
 
 
-                void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
-                {
-                    SGlobalData *data = (SGlobalData*) user_data;
-                    GtkFlowBox *flowbox = NULL;
-                    GMPF_LayerMngr *layermngr = NULL;
+void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
 
-                    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-                    layermngr = layermngr_get_layermngr(flowbox);
-                    int cur_lay = 0;
+    // Getting the flowbox that contain the layermngr
+    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
 
-                    if (layermngr->layer_list.next != NULL)
-                    {
-                        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
-                        while (lay != NULL)
-                        {
-                            cur_lay ++;
-                            g_print("drawing layer %i\n", cur_lay);
-                            cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
-                            cairo_paint (cr);
-                            if (lay->list.next)
-                            {
-                                lay = container_of(lay->list.next, GMPF_Layer, list);
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    //cairo_destroy(cr);
-                    //do_drawing(cr);
-                    (void)user_data;
-                    widget = 0;
-                }
+    // int cur_lay = 0; // Use this variable for debuging
 
+    if (layermngr->layer_list.next != NULL)
+    {
+        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+        while (lay != NULL)
+        {
+            /*
+                Use for debuging
+                cur_lay ++;
+                g_print("drawing layer %i\n", cur_lay);
+            */
 
-                void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
-                {
-                    SGlobalData *data = (SGlobalData*) user_data;
-                    GtkWidget *da = NULL;
-                    GError *error = NULL;
-                    GMPF_LayerMngr *layermngr = NULL;
+            cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
+            cairo_paint (cr);
 
-                    gchar *filename = gtk_file_chooser_get_filename(btn);
-                    /*
-                    Ici c'est chez moi
-                    */
-                    GtkFlowBox *flowbox = NULL;
-                    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-                    layermngr = layermngr_get_layermngr(flowbox);
-                    layermngr_add_new_layer(flowbox, filename);
+            if (!lay->list.next) break;
+            lay = container_of(lay->list.next, GMPF_Layer, list);
 
-                    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
-                    if(da == NULL)
-                    printf("toz\n");
+        }
+    }
 
-                    // layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
-
-                    layermngr->image = gdk_pixbuf_new_from_file(filename, &error);
-                    glob.image = gdk_cairo_surface_create_from_pixbuf(layermngr->image, 0, NULL);
-
-                    int width, height;
-                    int max_width = 0;
-                    int max_height = 0;// = gdk_pixbuf_get_height(layermngr->image);
-                    if (layermngr->layer_list.next != NULL)
-                    {
-                        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
-                        while (lay != NULL)
-                        {
-
-                            width = cairo_image_surface_get_width(lay->surface);
-                            height = cairo_image_surface_get_height(lay->surface);
-                            if (width > max_width)
-                            max_width = width;
-                            if (height > max_height)
-                            max_height = height;
-                            if (lay->list.next)
-                            {
-                                lay = container_of(lay->list.next, GMPF_Layer, list);
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    gtk_widget_set_size_request(da, max_width, max_height);
-
-                    if(error)
-                    {
-                        printf("Error : %s\n", error->message);
-                        g_error_free(error);
-                    }
-
-                    if (!gdk_pixbuf_get_has_alpha(layermngr->image))
-                    {
-                        GdkPixbuf *i = gdk_pixbuf_add_alpha ((const GdkPixbuf *)layermngr->image, FALSE, 0, 0, 0);
-                        g_object_unref (layermngr->image);
-                        layermngr->image = i;
-                    }
-
-                    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), user_data);
-
-                }
+    (void)user_data;
+    widget = 0;
+}
 
 
-                void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
-                {
-                    g_print("Binarize\n");
-                    menuitem = 0;
-                    SGlobalData *data = (SGlobalData*) user_data;
-                    GtkWidget *da = NULL;
-                    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
+void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkWidget *da = NULL;
+    GError *error = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
 
-                    struct _GdkPixbuf *imgPixbuf;
-                    imgPixbuf = unchangedPixbuf;
+    gchar *filename = gtk_file_chooser_get_filename(btn);
+    /*
+    Ici c'est chez moi
+    */
+    GtkFlowBox *flowbox = NULL;
+    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+    layermngr_add_new_layer(flowbox, filename);
 
-                    guchar red, green, blue, alpha;
+    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
+    if(da == NULL)
+        printf("gtk_builder_get_object(): \
+            error while getting the drawing area\n");
 
-                    guchar grey;
+    // layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
+    int width, height;
+    int max_width  = layermngr->size.w;
+    int max_height = layermngr->size.h;
 
-                    int width = gdk_pixbuf_get_width(imgPixbuf);
-                    int height = gdk_pixbuf_get_height(imgPixbuf);
-                    gboolean error = FALSE;
+    layermngr->image  = gdk_pixbuf_new_from_file(filename, &error);
+    width  = gdk_pixbuf_get_width  (layermngr->image);
+    height = gdk_pixbuf_get_height (layermngr->image);
 
-                    for(int i = 0; i < width; i++)
-                    {
-                        for(int j = 0; j < height; j++)
-                        {
-                            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-                            if(!error)
-                            err(1, "pixbuf get pixels error");
-                            grey = (red + green + blue) / 3;
-                            if (grey <= 127)
-                            put_pixel(imgPixbuf, i, j, 0, 0, 0, alpha);
-                            else
-                            put_pixel(imgPixbuf, i, j, 255, 255, 255, alpha);
-                        }
-                    }
-                    glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
-                    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
-                }
+    if (width > max_width)
+        max_width = width;
+    if (height > max_height)
+        max_height = height;
+
+    layermngr->size.w = max_width;
+    layermngr->size.h = max_height;
+
+    glob.image = gdk_cairo_surface_create_from_pixbuf(layermngr->image, 0, NULL);
+
+    gtk_widget_set_size_request(da, max_width, max_height);
+
+    if(error)
+    {
+        printf("Error : %s\n", error->message);
+        g_error_free(error);
+    }
+
+    if (!gdk_pixbuf_get_has_alpha(layermngr->image))
+    {
+        GdkPixbuf *i = gdk_pixbuf_add_alpha ((const GdkPixbuf *)layermngr->image, FALSE, 0, 0, 0);
+        g_object_unref (layermngr->image);
+        layermngr->image = i;
+    }
+
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), user_data);
+
+}
+
+
+void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
+{
+    g_print("Binarize\n");
+    menuitem = 0;
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkWidget *da = NULL;
+    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
+
+    struct _GdkPixbuf *imgPixbuf;
+    imgPixbuf = unchangedPixbuf;
+
+    guchar red, green, blue, alpha;
+
+    guchar grey;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+            err(1, "pixbuf get pixels error");
+            grey = (red + green + blue) / 3;
+            if (grey <= 127)
+            put_pixel(imgPixbuf, i, j, 0, 0, 0, alpha);
+            else
+            put_pixel(imgPixbuf, i, j, 255, 255, 255, alpha);
+        }
+    }
+    glob.image = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
+    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
+}
 
 
                 void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)

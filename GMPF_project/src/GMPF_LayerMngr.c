@@ -38,7 +38,7 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
     */
 
     layermngr->size.h = 0; // maybe change it with parameters
-    layermngr->size.w = 0;
+    layermngr->size.w = 0; // Keep this part, use for max width
 
     layermngr->nb_layer = 0;
     list_init(&(layermngr->layer_list));
