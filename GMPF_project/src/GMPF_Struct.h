@@ -58,6 +58,8 @@ struct GMPF_LayerMngr {
     int nb_layer;
     GMPF_List layer_list;
 
+    cairo_surface_t *surface;
+
     GdkPixbuf *image; //unchungedPixbuf
     GdkPixbuf *display_image; //displayedPixbuf (with scale)
 

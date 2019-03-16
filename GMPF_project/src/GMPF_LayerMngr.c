@@ -47,6 +47,8 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
     layermngr->image = NULL;
     layermngr->display_image = NULL;
 
+    layermngr->surface = NULL;
+
     // don't touch the flowbox and the display again
     // did in the creation
 }
