@@ -202,7 +202,7 @@ void clear_surface (gpointer user_data)
     cr = cairo_create (layermngr->surface);
 
     cairo_set_source_rgba(cr, 0, 1, 0, 0);
-    cairo_paint_with_alpha (cr, 1.0);
+    cairo_paint (cr);
 
     cairo_destroy (cr);
 
@@ -305,8 +305,9 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
     /* Paint to the surface, where we store our state */
     cr = cairo_create (layermngr->surface);
 
-    cairo_set_source_rgba (cr, 1, 1, 1, 1); //set the brush color
+    cairo_set_source_rgba (cr, 1, 1, 1, 0); //set the brush color
     cairo_rectangle (cr, x - 3, y - 3, 6, 6);
+    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
     cairo_fill (cr);
 
     cairo_destroy (cr);
