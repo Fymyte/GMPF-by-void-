@@ -122,8 +122,10 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     gint dw, dh;
     cairo_matrix_t mat;
     cairo_surface_t *new_surface;
-    double scale_x= scaleValue2, scale_y= scaleValue2;
+    double scale_x= scaleValue2;
+    double scale_y= scaleValue2;
 
+    gtk_widget_set_size_request(da, layermngr->size.w * scale_x, layermngr->size.h * scale_y);
     //gtk_layout_set_size((GtkLayout *)layout, imgwidth * 1.1, imgheight * 1.1);
 
     if (layermngr->layer_list.next != NULL)
@@ -134,9 +136,9 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
             // g_print("drawing\n");
             double sw = gdk_pixbuf_get_width  (lay->image);
             double sh = gdk_pixbuf_get_height (lay->image);
-            gtk_widget_set_size_request(da, sw * scale_x, sh * scale_y);
-            dw = gtk_widget_get_allocated_width(da);
-            dh = gtk_widget_get_allocated_height(da);
+            dw = sw;
+            dh = sh;
+            g_print("sw: %f, sh: %f, scale_x: %f; scale_y: %f, dw: %d, dh: %d\n", sw, sh, scale_x, scale_y, dw, dh);
             sx= - sw /2.0;
             sy= - sh /2.0;
 
@@ -471,6 +473,7 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     layermngr->surface = gdk_cairo_surface_create_from_pixbuf(layermngr->image, 0, NULL);
 
     gtk_widget_set_size_request(da, max_width, max_height);
+    g_print("max_width: %d, max_height = %d\n", max_width, max_height);
 
     if(error)
     {
