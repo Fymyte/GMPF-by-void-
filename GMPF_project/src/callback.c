@@ -142,7 +142,7 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
             sx= - sw /2.0;
             sy= - sh /2.0;
 
-            cr = cairo_create(lay->surface);
+            cr = cairo_create(lay->unchanged_surface);
             cairo_save (cr);
 
             // cairo_set_source_rgba (cr, 1, 0, 1, 0);
@@ -164,7 +164,7 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
             cairo_set_matrix (new_cr, & mat);
 
 
-            cairo_set_source_surface (new_cr, lay->surface, sx, sy);
+            cairo_set_source_surface (new_cr, lay->unchanged_surface, sx, sy);
             cairo_paint (new_cr);
             cairo_restore(new_cr);
             cairo_destroy(new_cr);
