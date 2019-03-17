@@ -277,30 +277,23 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
     cairo_t *cr;
 
     /* Paint to the surface, where we store our state */
-    float pi = 3.1415926535;
+
     cr = cairo_create (layermngr->surface);
 
-    cairo_set_source_rgba (cr, 1, 0, 0, 1); //set the brush color
-    cairo_arc(cr, x, y, 10.0, 0.0, 2 * pi);
+    //begin brush zone
+    circular_brush(widget, cr, x, y, 10);
+    //end brush zone
 
-    //cairo_rectangle (cr, x - 3, y - 3, 6, 6);
-    cairo_fill_preserve (cr);
-
-    cairo_destroy (cr);
 
     cr = cairo_create (lay->unchanged_surface);
+    //begin brush zone
+    circular_brush(widget, cr, x, y, 10);
+    //end brush zone
 
-    cairo_set_source_rgba (cr, 1, 0, 0, 1); //set the brush color
-    cairo_arc(cr, x, y, 10.0, 0.0, 2 * pi);
-
-    //cairo_rectangle (cr, x - 3, y - 3, 6, 6);
-    cairo_fill_preserve (cr);
-
-    cairo_destroy (cr);
 
     /* Now invalidate the affected region of the drawing area. */
-    //gtk_widget_queue_draw_area (widget, x - 3, y - 3, 6, 6); rectangle
-    gtk_widget_queue_draw_area (widget, x - 10, y - 10, 20, 20);
+
+
 }
 
 
@@ -324,24 +317,11 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
     /* Paint to the surface, where we store our state */
     cr = cairo_create (layermngr->surface);
 
-    cairo_set_source_rgba (cr, 1, 1, 1, 0); //set the brush color
-    cairo_rectangle (cr, x - 3, y - 3, 6, 6);
-    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-    cairo_fill (cr);
-
-    cairo_destroy (cr);
+    circular_rubber(widget, cr, x, y, 10);
 
     cr = cairo_create (lay->unchanged_surface);
 
-    cairo_set_source_rgba (cr, 1, 1, 1, 0); //set the brush color
-    cairo_rectangle (cr, x - 3, y - 3, 6, 6);
-    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-    cairo_fill (cr);
-
-    cairo_destroy (cr);
-
-    /* Now invalidate the affected region of the drawing area. */
-    gtk_widget_queue_draw_area (widget, x - 3, y - 3, 6, 6);
+    circular_rubber(widget, cr, x, y, 10);
 }
 
 /* Handle button press events by either drawing a rectangle
