@@ -126,7 +126,7 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     double scale_y= scaleValue2;
 
     gtk_widget_set_size_request(da, layermngr->size.w * scale_x, layermngr->size.h * scale_y);
-    //gtk_layout_set_size((GtkLayout *)layout, imgwidth * 1.1, imgheight * 1.1);
+    gtk_layout_set_size((GtkLayout *)layout, layermngr->size.w * scale_x * 1.1, layermngr->size.h * scale_y * 1.1);
 
     if (layermngr->layer_list.next != NULL)
     {
@@ -165,15 +165,18 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
 
 
             cairo_set_source_surface (new_cr, lay->unchanged_surface, sx, sy);
+            cairo_set_operator(new_cr, CAIRO_OPERATOR_SOURCE);
             cairo_paint (new_cr);
             cairo_restore(new_cr);
             cairo_destroy(new_cr);
 
-
-
             cairo_restore (cr);
             cairo_destroy (cr);
 
+            // free old displayed surface
+            // cairo_surface_destroy(lay->surface);
+
+            // assign lew_surface as the surface to display
             lay->surface = new_surface;
 
             if (!lay->list.next) break;
@@ -282,6 +285,14 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 
     cairo_destroy (cr);
 
+    cr = cairo_create (lay->unchanged_surface);
+
+    cairo_set_source_rgba (cr, 1, 0, 0, 1); //set the brush color
+    cairo_rectangle (cr, x - 3, y - 3, 6, 6);
+    cairo_fill (cr);
+
+    cairo_destroy (cr);
+
     /* Now invalidate the affected region of the drawing area. */
     gtk_widget_queue_draw_area (widget, x - 3, y - 3, 6, 6);
 }
@@ -306,6 +317,15 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 
     /* Paint to the surface, where we store our state */
     cr = cairo_create (layermngr->surface);
+
+    cairo_set_source_rgba (cr, 1, 1, 1, 0); //set the brush color
+    cairo_rectangle (cr, x - 3, y - 3, 6, 6);
+    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+    cairo_fill (cr);
+
+    cairo_destroy (cr);
+
+    cr = cairo_create (lay->unchanged_surface);
 
     cairo_set_source_rgba (cr, 1, 1, 1, 0); //set the brush color
     cairo_rectangle (cr, x - 3, y - 3, 6, 6);
