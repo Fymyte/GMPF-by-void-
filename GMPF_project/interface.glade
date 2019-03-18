@@ -778,6 +778,7 @@
                         <property name="label" translatable="yes">Remove Layer</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_remove_GMPF_LayerMngr" swapped="no"/>
+                        <accelerator key="Delete" signal="activate"/>
                       </object>
                     </child>
                   </object>
@@ -873,17 +874,25 @@
                   <object class="GtkLayout" id="Layout">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="width">5000</property>
-                    <property name="height">5000</property>
+                    <property name="hexpand">False</property>
+                    <property name="vexpand">False</property>
+                    <property name="width">10000</property>
+                    <property name="height">10000</property>
                     <child>
                       <object class="GtkEventBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
                         <child>
                           <object class="GtkDrawingArea" id="drawingArea">
                             <property name="visible">True</property>
                             <property name="app_paintable">True</property>
                             <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="hexpand">False</property>
+                            <property name="vexpand">False</property>
                             <signal name="button-press-event" handler="button_press_event_cb" swapped="no"/>
                             <signal name="configure-event" handler="configure_event_cb" swapped="no"/>
                             <signal name="draw" handler="on_draw_event" swapped="no"/>
@@ -891,10 +900,6 @@
                           </object>
                         </child>
                       </object>
-                      <packing>
-                        <property name="x">210</property>
-                        <property name="y">120</property>
-                      </packing>
                     </child>
                   </object>
                 </child>

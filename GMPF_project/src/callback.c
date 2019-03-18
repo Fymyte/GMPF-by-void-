@@ -8,6 +8,20 @@ values :
 1 ==> draw_brush
 2 ==> rubber
 */
+
+/*
+Use this to convert our imga with multiple layer in one pixbuf
+GdkPixbuf *
+gdk_pixbuf_get_from_drawable (GdkPixbuf *dest,
+                              GdkDrawable *src,
+                              GdkColormap *cmap,
+                              int src_x,
+                              int src_y,
+                              int dest_x,
+                              int dest_y,
+                              int width,
+                              int height);
+                              */
 int cursor_state = 0;
 
 int check(int width, int height, int i, int j)
@@ -94,6 +108,14 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data)
 
 void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
 {
+    const gchar *s = gtk_entry_get_text (entry);
+    float scaleValue = atof(s) / 100;
+    adjust_scale (scaleValue, scaleValue, user_data);
+}
+
+
+void adjust_scale(double scale_x, double scale_y, gpointer user_data)
+{
     SGlobalData *data = (SGlobalData*) user_data;
 
     cairo_t *cr = NULL;
@@ -107,26 +129,15 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
     layermngr = layermngr_get_layermngr(flowbox);
 
-
-    const gchar *s = gtk_entry_get_text (entry);
-    float scaleValue = atof(s);
-
-    float scaleValue2 = scaleValue / 100;
-    if (scaleValue2 <= 0)
-    {
-        scaleValue2 = 1;
-    }
-    g_message("scaleValue = %f", scaleValue);
-
     double sx, sy;
     gint dw, dh;
     cairo_matrix_t mat;
     cairo_surface_t *new_surface;
-    double scale_x= scaleValue2;
-    double scale_y= scaleValue2;
+
+    g_print("w: %d, h: %d\n", layermngr->size.w, layermngr->size.h);
 
     gtk_widget_set_size_request(da, layermngr->size.w * scale_x, layermngr->size.h * scale_y);
-    gtk_layout_set_size((GtkLayout *)layout, layermngr->size.w * scale_x * 1.1, layermngr->size.h * scale_y * 1.1);
+    // gtk_layout_set_size((GtkLayout *)layout, layermngr->size.w * scale_x * 1.1, layermngr->size.h * scale_y * 1.1);
 
     if (layermngr->layer_list.next != NULL)
     {
@@ -136,8 +147,8 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
             // g_print("drawing\n");
             double sw = gdk_pixbuf_get_width  (lay->image);
             double sh = gdk_pixbuf_get_height (lay->image);
-            dw = sw;
-            dh = sh;
+            dw = layermngr->size.w * scale_x;
+            dh = layermngr->size.h * scale_y;
             g_print("sw: %f, sh: %f, scale_x: %f; scale_y: %f, dw: %d, dh: %d\n", sw, sh, scale_x, scale_y, dw, dh);
             sx= - sw /2.0;
             sy= - sh /2.0;
@@ -159,7 +170,7 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
 
 
             cairo_matrix_init_identity (& mat);
-            cairo_matrix_translate (& mat, dw * scale_x/2.0, dh * scale_y/2.0);
+            cairo_matrix_translate (& mat, dw /2.0, dh /2.0);
             cairo_matrix_scale (& mat, scale_x, scale_y);
             cairo_set_matrix (new_cr, & mat);
 
