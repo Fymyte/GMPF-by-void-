@@ -153,8 +153,8 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
             sx= - sw /2.0;
             sy= - sh /2.0;
 
-            cr = cairo_create(lay->unchanged_surface);
-            cairo_save (cr);
+            //cr = cairo_create(lay->unchanged_surface);
+            //cairo_save (cr);
 
             // cairo_set_source_rgba (cr, 1, 0, 1, 0);
             // cairo_paint_with_alpha (cr, 1.0);
@@ -181,8 +181,8 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
             cairo_restore(new_cr);
             cairo_destroy(new_cr);
 
-            cairo_restore (cr);
-            cairo_destroy (cr);
+            //cairo_restore (cr);
+            //cairo_destroy (cr);
 
             // free old displayed surface
             // cairo_surface_destroy(lay->surface);
@@ -274,33 +274,29 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     GtkFlowBox *flowbox = NULL;
-    GMPF_LayerMngr *layermngr = NULL;
 
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layermngr = layermngr_get_layermngr(flowbox);
 
-    GMPF_Layer *lay;
-    if((lay = layermngr_get_selected_layer(flowbox)) != NULL)
-        layermngr->surface = lay->surface;
-    else
-        layermngr->surface = NULL;
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
-    cairo_t *cr;
+    if (lay != NULL) // NEW VERSION - AVAILABLE NOW
+    {
+        cairo_t *cr;
 
-    /* Paint to the surface, where we store our state */
+        /* Paint to the surface, where we store our state */
 
-    cr = cairo_create (layermngr->surface);
+        cr = cairo_create (lay->surface);
 
-    //begin brush zone
-    circular_brush(widget, cr, x, y, 10);
-    //end brush zone
+        //begin brush zone
+        circular_brush(widget, cr, x, y, 10);
+        //end brush zone
 
 
-    cr = cairo_create (lay->unchanged_surface);
-    //begin brush zone
-    circular_brush(widget, cr, x, y, 10);
-    //end brush zone
-
+        cr = cairo_create (lay->unchanged_surface);
+        //begin brush zone
+        circular_brush(widget, cr, x, y, 10);
+        //end brush zone
+    }
 
     /* Now invalidate the affected region of the drawing area. */
 
@@ -312,27 +308,29 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     GtkFlowBox *flowbox = NULL;
-    GMPF_LayerMngr *layermngr = NULL;
 
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layermngr = layermngr_get_layermngr(flowbox);
 
-    GMPF_Layer *lay;
-    if((lay = layermngr_get_selected_layer(flowbox)) != NULL)
-        layermngr->surface = lay->surface;
-    else
-        layermngr->surface = NULL;
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
-    cairo_t *cr;
+    if (lay != NULL) // NEW VERSION - AVAILABLE NOW
+    {
+        cairo_t *cr;
 
-    /* Paint to the surface, where we store our state */
-    cr = cairo_create (layermngr->surface);
+        /* Paint to the surface, where we store our state */
 
-    circular_rubber(widget, cr, x, y, 10);
+        cr = cairo_create (lay->surface);
 
-    cr = cairo_create (lay->unchanged_surface);
+        //begin brush zone
+        circular_rubber(widget, cr, x, y, 10);
+        //end brush zone
 
-    circular_rubber(widget, cr, x, y, 10);
+
+        cr = cairo_create (lay->unchanged_surface);
+        //begin brush zone
+        circular_rubber(widget, cr, x, y, 10);
+        //end brush zone
+    }
 }
 
 /* Handle button press events by either drawing a rectangle
