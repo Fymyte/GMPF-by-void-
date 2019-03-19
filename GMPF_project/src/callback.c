@@ -153,8 +153,8 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
             sx= - sw /2.0;
             sy= - sh /2.0;
 
-            //cr = cairo_create(lay->unchanged_surface);
-            //cairo_save (cr);
+            cr = cairo_create(lay->surface);
+            cairo_save (cr);
 
             // cairo_set_source_rgba (cr, 1, 0, 1, 0);
             // cairo_paint_with_alpha (cr, 1.0);
@@ -173,19 +173,20 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
             cairo_matrix_translate (& mat, dw /2.0, dh /2.0);
             cairo_matrix_scale (& mat, scale_x, scale_y);
             cairo_set_matrix (new_cr, & mat);
+            cairo_scale(cr, scale_x * 100, scale_y * 100);
 
 
-            cairo_set_source_surface (new_cr, lay->unchanged_surface, sx, sy);
+            cairo_set_source_surface (new_cr, lay->surface, sx, sy);
             cairo_set_operator(new_cr, CAIRO_OPERATOR_SOURCE);
             cairo_paint (new_cr);
             cairo_restore(new_cr);
             cairo_destroy(new_cr);
 
-            //cairo_restore (cr);
-            //cairo_destroy (cr);
+            cairo_restore (cr);
+            cairo_destroy (cr);
 
             // free old displayed surface
-            // cairo_surface_destroy(lay->surface);
+            cairo_surface_destroy(lay->surface);
 
             // assign lew_surface as the surface to display
             lay->surface = new_surface;
@@ -274,27 +275,32 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     GtkFlowBox *flowbox = NULL;
+    GtkColorChooser *chooser = NULL;
+    GdkRGBA color;
 
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    chooser = (GtkColorChooser *)(gtk_builder_get_object(data->builder, "ColorTinter"));
+    gtk_color_chooser_get_rgba(chooser, &color);
 
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
     if (lay != NULL) // NEW VERSION - AVAILABLE NOW
     {
-        cairo_t *cr;
-
         /* Paint to the surface, where we store our state */
 
-        cr = cairo_create (lay->surface);
+        lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
-        circular_brush(widget, cr, x, y, 10);
+        circular_brush(widget, lay->cr, x, y, 10, (float)color.red,
+                (float)color.green, (float)color.blue, (float)color.alpha);
         //end brush zone
 
 
-        cr = cairo_create (lay->unchanged_surface);
-        //begin brush zone
-        circular_brush(widget, cr, x, y, 10);
+
+        // cr = cairo_create (lay->unchanged_surface);
+        // //begin brush zone
+        // circular_brush(widget, cr, x, y, 10, (float)color.red,
+        //         (float)color.green, (float)color.blue, (float)color.alpha);
         //end brush zone
     }
 
@@ -315,20 +321,20 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 
     if (lay != NULL) // NEW VERSION - AVAILABLE NOW
     {
-        cairo_t *cr;
 
         /* Paint to the surface, where we store our state */
 
-        cr = cairo_create (lay->surface);
+        lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
-        circular_rubber(widget, cr, x, y, 10);
+        circular_brush(widget, lay->cr, x, y, 10, 0, 0, 0, 0.0);
         //end brush zone
+        cairo_destroy(lay->cr);
 
 
-        cr = cairo_create (lay->unchanged_surface);
+        // cr = cairo_create (lay->unchanged_surface);
         //begin brush zone
-        circular_rubber(widget, cr, x, y, 10);
+        // circular_brush(widget, cr, x, y, 10, 0, 0, 0, 0.0);
         //end brush zone
     }
 }
