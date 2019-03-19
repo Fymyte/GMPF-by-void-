@@ -2,6 +2,9 @@
 
 struct _GdkPixbuf *unchangedPixbuf;
 
+#define GET_UI(_type, _name) \
+    (_type *) (gtk_builder_get_object(data->builder, _name));
+
 /* change the cursor
 values :
 0 ==> normal
@@ -60,7 +63,9 @@ void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
 
     GtkImage *image = NULL;
 
-    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    image = GET_UI(GtkImage, "OriginalImage");
+
+    // image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
     GdkPixbuf *pixbuf;
 
     const char *menulabel = gtk_menu_item_get_label (menuitem);
@@ -465,7 +470,8 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 
 
     GtkFlowBox *flowbox = NULL;
-    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    // flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     layermngr = layermngr_get_layermngr(flowbox);
     layermngr_add_new_layer(flowbox, filename);
 
