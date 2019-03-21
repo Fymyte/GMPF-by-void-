@@ -118,6 +118,20 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     adjust_scale (scaleValue, scaleValue, user_data);
 }
 
+void callback_resize_brush(GtkEntry *entry, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    GMPF_LayerMngr *layermngr = NULL;
+    GtkFlowBox *flowbox = NULL;
+    flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    const gchar *s = gtk_entry_get_text (entry);
+    float size = atof(s);
+    layermngr->brush_size = size;
+    resizeCursor(data, (int)size);
+}
+
 
 void adjust_scale(double scale_x, double scale_y, gpointer user_data)
 {
@@ -282,9 +296,12 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
     GtkFlowBox *flowbox = NULL;
     GtkColorChooser *chooser = NULL;
     GdkRGBA color;
+    GMPF_LayerMngr *layermngr = NULL;
+
 
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     chooser = (GtkColorChooser *)(gtk_builder_get_object(data->builder, "ColorTinter"));
+    layermngr = layermngr_get_layermngr(flowbox);
     gtk_color_chooser_get_rgba(chooser, &color);
 
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
@@ -296,7 +313,7 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
-        circular_brush(widget, lay->cr, x, y, 10, (float)color.red,
+        circular_brush(widget, lay->cr, x, y, layermngr->brush_size, (float)color.red,
                 (float)color.green, (float)color.blue, (float)color.alpha);
         //end brush zone
 
@@ -319,9 +336,11 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
+
 
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-
+    layermngr = layermngr_get_layermngr(flowbox);
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
     if (lay != NULL) // NEW VERSION - AVAILABLE NOW
@@ -332,7 +351,7 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
-        circular_brush(widget, lay->cr, x, y, 10, 0, 0, 0, 0.0);
+        circular_brush(widget, lay->cr, x, y, layermngr->brush_size, 0, 0, 0, 0.0);
         //end brush zone
         cairo_destroy(lay->cr);
 

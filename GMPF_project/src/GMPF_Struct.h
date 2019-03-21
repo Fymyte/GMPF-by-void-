@@ -18,6 +18,7 @@ typedef struct GMPF_Pixel GMPF_Pixel;
 typedef struct GMPF_Layer GMPF_Layer;
 typedef struct GMPF_LayerMngr GMPF_LayerMngr;
 
+
 struct GMPF_Pos {
     int x, y;
 };
@@ -62,6 +63,7 @@ struct GMPF_LayerMngr {
     GMPF_List layer_list;
 
     cairo_surface_t *surface;
+    float brush_size;
 
     GdkPixbuf *image; //unchungedPixbuf
     GdkPixbuf *display_image; //displayedPixbuf (with scale)
@@ -70,7 +72,6 @@ struct GMPF_LayerMngr {
     // get the element on the GUI
     GtkFlowBox *flowbox;
 };
-
 
 
 

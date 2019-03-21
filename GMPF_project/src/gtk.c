@@ -86,6 +86,8 @@ int GMPF_start()
     GtkFlowBox *flowbox = NULL;
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data.builder, "GMPF_flowbox"));
     layermngr_create(flowbox);
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    layermngr->brush_size = 4;
 
     GtkWidget *da = NULL;
     da = GTK_WIDGET(gtk_builder_get_object(data.builder, "drawingArea"));

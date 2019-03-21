@@ -49,7 +49,7 @@ void callback_negative(GtkMenuItem *menuitem, gpointer user_data);
 //tools functions
 void callback_brush(GtkMenuItem *menuitem, gpointer user_data);
 void callback_rubber(GtkMenuItem *menuitem, gpointer user_data);
-
+void callback_resize_brush(GtkEntry *entry, gpointer user_data);
 
 //drawing functions
 void clear_surface (gpointer user_data);
