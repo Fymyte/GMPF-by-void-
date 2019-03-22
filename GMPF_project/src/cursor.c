@@ -1,4 +1,5 @@
 #include "cursor.h"
+#include "GMPF_LayerMngr.h"
 #include <gtk-3.0/gtk/gtk.h>
 
 void resetCursor(SGlobalData* data)
@@ -31,20 +32,28 @@ void callback_setCursor(SGlobalData* data)
      GdkCursor *cursor = NULL;
      GdkScreen *screen = NULL;
      GdkWindow * win = NULL;
-     struct _GdkPixbuf *imgPixbuf;
-     struct _GdkPixbuf *img2;
+     GtkFlowBox *flowbox;
+     struct _GdkPixbuf *pixbuf;
+     struct _GdkPixbuf *newpixbuf;
+     GMPF_LayerMngr *layermngr;
+     int size;
 
      //set variables
      screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
      display = gdk_screen_get_display(screen);
+     flowbox = (GtkFlowBox *)gtk_builder_get_object(data->builder, "GMPF_flowbox");
+     layermngr = layermngr_get_layermngr(flowbox);
+     size = layermngr->brush_size;
      GError *error = NULL;
-     imgPixbuf = gdk_pixbuf_new_from_file("penta00.gif", &error);
-     int width = gdk_pixbuf_get_width(imgPixbuf);
-     int height = gdk_pixbuf_get_height(imgPixbuf);
-     img2 = gdk_pixbuf_scale_simple(imgPixbuf, width/25, height/25, GDK_INTERP_HYPER);
+     pixbuf = gdk_pixbuf_new_from_file("penta00.gif", &error);
+     int width = gdk_pixbuf_get_width(pixbuf);
+     int height = gdk_pixbuf_get_height(pixbuf);
+     // img2 = gdk_pixbuf_scale_simple(imgPixbuf, width/25, height/25, GDK_INTERP_HYPER);
 
      //create the new cursor
-     cursor = gdk_cursor_new_from_pixbuf(display, img2, width/50, height/50);
+     newpixbuf = gdk_pixbuf_scale_simple(pixbuf, (width*size)/100, (height*size)/100, GDK_INTERP_HYPER);
+     cursor = gdk_cursor_new_from_pixbuf(display, newpixbuf, (width*size)/200, (height*size)/200);
+     // cursor = gdk_cursor_new_from_pixbuf(display, img2, width/50, height/50);
     if(error)
     {
         printf("Error : %s\n", error->message);

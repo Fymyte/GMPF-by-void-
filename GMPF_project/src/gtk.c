@@ -7,6 +7,8 @@
 
 #include "GMPF_LayerMngr.h"
 
+#define INTERFACE_NAME "interface.glade"
+
 /*typedef struct
 {
     GtkBuilder *builder;
@@ -22,20 +24,20 @@ void callback_remove_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
 
 
 //pixels operations functions
-void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green,
-                            guchar blue, guchar alpha);
-gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x,
-                            gint y, guchar *red, guchar *green, guchar *blue,
-                            guchar *alpha);
+// void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green,
+//                             guchar blue, guchar alpha);
+// gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x,
+//                             gint y, guchar *red, guchar *green, guchar *blue,
+//                             guchar *alpha);
 
 //Other functions
 void GMPFquit(GtkMenuItem *menuitem, gpointer user_data);
 
 //static gboolean key_event(GtkWidget *widget, GdkEventKey *event);
 
-struct _GdkPixbuf *imgPixbuf;
-struct _GdkPixbuf *unchangedPixbuf;
-const char *interface_file = "interface.glade";
+// struct _GdkPixbuf *imgPixbuf;
+// struct _GdkPixbuf *unchangedPixbuf;
+// const char *interface_file = "interface.glade";
 
 int GMPF_start()
 {
@@ -50,7 +52,7 @@ int GMPF_start()
     /* Création du chemin complet pour accéder au fichier test.glade. */
     /* g_build_filename(); construit le chemin complet en fonction du système */
     /* d'exploitation. ( / pour Linux et \ pour Windows) */
-    filename =  g_build_filename (interface_file, NULL);
+    filename =  g_build_filename (INTERFACE_NAME, NULL);
 
     /* Chargement du fichier test.glade. */
     gtk_builder_add_from_file (data.builder, filename, &error);
@@ -67,7 +69,7 @@ int GMPF_start()
     /* Affectation des signaux de l'interface aux différents CallBacks. */
     gtk_builder_connect_signals (data.builder, &data);
     GError *err = NULL;
-    unchangedPixbuf = gdk_pixbuf_new_from_file("gimp_logo.png", &err);
+    // unchangedPixbuf = gdk_pixbuf_new_from_file("gimp_logo.png", &err);
     if (err)
     {
         printf("Error : %s\n", err->message);

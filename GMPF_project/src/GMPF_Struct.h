@@ -35,20 +35,20 @@ struct GMPF_Pixel {
 // TODO: complete the struct GMPF_Layer
 struct GMPF_Layer {
     // used variable
-    GMPF_Pos pos;
-    GMPF_Size size;
-    char isvisible;
+    GMPF_Pos pos; // Offset on the rendering
+    GMPF_Size size; // Size of the condained surface
+    char isvisible; // Set to one if it has to be rendered
 
-    GdkPixbuf *icon;
+    GdkPixbuf *icon; // The icon displayed in the list of layer
     GdkPixbuf *image;
 
-    cairo_t *cr;
+    cairo_t *cr; // The cairo context of the surface attribut
 
     cairo_surface_t *unchanged_surface;
     cairo_surface_t *surface;
 
     // for the list
-    GMPF_List list;
+    GMPF_List list; // The position of the layer in the list
 
     // to know the UIElement that contains the layer
     GtkImage *UIIcon;

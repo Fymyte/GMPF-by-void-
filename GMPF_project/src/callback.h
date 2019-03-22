@@ -1,6 +1,8 @@
 #ifndef CALLBACK_H_
 #define CALLBACK_H_
 
+#define DEBUG 1 // Use for only print debuging info if true
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <err.h>

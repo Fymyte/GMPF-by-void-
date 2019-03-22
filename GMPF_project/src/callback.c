@@ -5,6 +5,10 @@ struct _GdkPixbuf *unchangedPixbuf;
 #define GET_UI(_type, _name) \
     (_type *) (gtk_builder_get_object(data->builder, _name));
 
+#define D_PRINT(fmt, ...) \
+        do { if (DEBUG) fprintf(stderr, "debug: %s:%d:%s(): " fmt, __FILE__, \
+                                __LINE__, __func__, __VA_ARGS__); } while (0)
+
 /* change the cursor
 values :
 0 ==> normal
@@ -129,7 +133,7 @@ void callback_resize_brush(GtkEntry *entry, gpointer user_data)
     const gchar *s = gtk_entry_get_text (entry);
     float size = atof(s);
     layermngr->brush_size = size;
-    resizeCursor(data, (int)size);
+    // resizeCursor(data, (int)size);
 }
 
 
@@ -153,9 +157,14 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
     cairo_matrix_t mat;
     cairo_surface_t *new_surface;
 
-    g_print("w: %d, h: %d\n", layermngr->size.w, layermngr->size.h);
+    D_PRINT("w: %d, h: %d\n", layermngr->size.w, layermngr->size.h);
 
     gtk_widget_set_size_request(da, layermngr->size.w * scale_x, layermngr->size.h * scale_y);
+    gint rw, rh;
+    gtk_widget_get_size_request(da, &rw, &rh);
+
+    D_PRINT("new da size w: %f, h: %f\n", layermngr->size.w * scale_x, layermngr->size.h * scale_y);
+    D_PRINT("w: %d, h:%d\n", rw, rh);
     // gtk_layout_set_size((GtkLayout *)layout, layermngr->size.w * scale_x * 1.1, layermngr->size.h * scale_y * 1.1);
 
     if (layermngr->layer_list.next != NULL)
@@ -164,26 +173,28 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
         while (lay != NULL)
         {
             // g_print("drawing\n");
-            double sw = gdk_pixbuf_get_width  (lay->image);
-            double sh = gdk_pixbuf_get_height (lay->image);
-            dw = layermngr->size.w * scale_x;
-            dh = layermngr->size.h * scale_y;
-            g_print("sw: %f, sh: %f, scale_x: %f; scale_y: %f, dw: %d, dh: %d\n", sw, sh, scale_x, scale_y, dw, dh);
+            double sw = lay->size.w;
+            double sh = lay->size.h;
+            dw = lay->size.w * scale_x;
+            dh = lay->size.h * scale_y;
+
+            D_PRINT("sw: %f, sh: %f, scale_x: %f; scale_y: %f\ndw: %d, dh: %d\n", sw, sh, scale_x, scale_y, dw, dh);
+
             sx= - sw /2.0;
             sy= - sh /2.0;
 
             cr = cairo_create(lay->surface);
-            cairo_save (cr);
-
-            // cairo_set_source_rgba (cr, 1, 0, 1, 0);
-            // cairo_paint_with_alpha (cr, 1.0);
 
             cairo_t *new_cr;
-            new_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+            new_surface = cairo_surface_create_similar_image(lay->surface,
+                CAIRO_FORMAT_ARGB32,
                 sw * scale_x, sh * scale_y);
-
             new_cr = cairo_create(new_surface);
-            cairo_save(new_cr);
+            // Offset a revoir mais on tient le bon bout
+            cairo_set_source_surface(new_cr, lay->surface, sw * scale_x / 2, sh * scale_y / 2);
+            cairo_paint(new_cr);
+
+            // cairo_save(new_cr);
             cairo_pattern_set_filter (cairo_get_source (new_cr),
                 CAIRO_FILTER_NEAREST);
 
@@ -192,16 +203,15 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
             cairo_matrix_translate (& mat, dw /2.0, dh /2.0);
             cairo_matrix_scale (& mat, scale_x, scale_y);
             cairo_set_matrix (new_cr, & mat);
-            cairo_scale(cr, scale_x * 100, scale_y * 100);
+            //cairo_scale(cr, scale_x * 100, scale_y * 100);
 
 
-            cairo_set_source_surface (new_cr, lay->surface, sx, sy);
-            cairo_set_operator(new_cr, CAIRO_OPERATOR_SOURCE);
+            // cairo_set_source_surface (new_cr, lay->surface, sx, sy);
+            // cairo_set_operator(new_cr, CAIRO_OPERATOR_SOURCE);
             cairo_paint (new_cr);
-            cairo_restore(new_cr);
-            cairo_destroy(new_cr);
+            // cairo_restore(new_cr);
+            // cairo_destroy(new_cr);
 
-            cairo_restore (cr);
             cairo_destroy (cr);
 
             // free old displayed surface
@@ -215,7 +225,6 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
         }
     }
 }
-
 
 
 void clear_surface (gpointer user_data)
@@ -286,7 +295,6 @@ gboolean configure_event_cb (GtkWidget *widget,
     /* We've handled the configure event, no need for further processing. */
     return TRUE;
 }
-
 
 
 /* Draw a rectangle on the surface at the given position */
@@ -464,9 +472,11 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
                 cur_lay ++;
                 g_print("drawing layer %i\n", cur_lay);
             */
-
-            cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
-            cairo_paint(cr);
+            if (lay->isvisible)
+            {
+                cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
+                cairo_paint(cr);
+            }
 
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
@@ -496,8 +506,7 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
     if(da == NULL)
-        printf("gtk_builder_get_object(): \
-            error while getting the drawing area\n");
+        D_PRINT("unable to get the drawingArea", NULL);
 
     // layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
     int width, height;
@@ -519,7 +528,8 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     layermngr->surface = gdk_cairo_surface_create_from_pixbuf(layermngr->image, 0, NULL);
 
     gtk_widget_set_size_request(da, max_width, max_height);
-    g_print("max_width: %d, max_height = %d\n", max_width, max_height);
+
+    D_PRINT("max_width: %d, max_height = %d\n", max_width, max_height);
 
     if(error)
     {
