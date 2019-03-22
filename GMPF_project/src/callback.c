@@ -48,7 +48,7 @@ void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
     GdkPixbuf *pixbuf;
 
     const char *menulabel = gtk_menu_item_get_label (menuitem);
-    g_print("%s\n", menulabel);
+    D_PRINT("%s\n", menulabel);
 
     if (strcmp(menulabel, "Flip horizontal"))
     pixbuf = gdk_pixbuf_flip (unchangedPixbuf, TRUE);
@@ -73,7 +73,7 @@ void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
     GdkPixbuf *pixbuf;
 
     const char *menulabel = gtk_menu_item_get_label (menuitem);
-    g_print("%s\n", menulabel);
+    D_PRINT("%s\n", menulabel);
     if (strcmp(menulabel, "Rotate left"))
     {
         pixbuf = gdk_pixbuf_rotate_simple(unchangedPixbuf, GDK_PIXBUF_ROTATE_CLOCKWISE);
@@ -141,89 +141,95 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
 
-    cairo_t *cr = NULL;
+    // cairo_t *cr = NULL;
     GtkWidget *da = NULL;
-    GtkWidget *layout = NULL;
+    // GtkWidget *layout = NULL;
     GtkFlowBox *flowbox = NULL;
     GMPF_LayerMngr *layermngr = NULL;
 
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
+    // layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
     layermngr = layermngr_get_layermngr(flowbox);
 
-    double sx, sy;
-    gint dw, dh;
-    cairo_matrix_t mat;
-    cairo_surface_t *new_surface;
+    // double sx, sy;
+    // gint dw, dh;
+    // cairo_matrix_t mat;
+    // cairo_surface_t *new_surface;
 
     D_PRINT("w: %d, h: %d\n", layermngr->size.w, layermngr->size.h);
 
-    gtk_widget_set_size_request(da, layermngr->size.w * scale_x, layermngr->size.h * scale_y);
-    gint rw, rh;
-    gtk_widget_get_size_request(da, &rw, &rh);
+    // gtk_widget_set_size_request(da, layermngr->size.w * scale_x, layermngr->size.h * scale_y);
+    // gint rw, rh;
+    // gtk_widget_get_size_request(da, &rw, &rh);
 
-    D_PRINT("new da size w: %f, h: %f\n", layermngr->size.w * scale_x, layermngr->size.h * scale_y);
-    D_PRINT("w: %d, h:%d\n", rw, rh);
+    // D_PRINT("new da size w: %f, h: %f\n", layermngr->size.w * scale_x, layermngr->size.h * scale_y);
+    // D_PRINT("w: %d, h:%d\n", rw, rh);
     // gtk_layout_set_size((GtkLayout *)layout, layermngr->size.w * scale_x * 1.1, layermngr->size.h * scale_y * 1.1);
+    double max_width = 0;
+    double max_height = 0;
 
     if (layermngr->layer_list.next != NULL)
     {
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
-            // g_print("drawing\n");
-            double sw = lay->size.w;
-            double sh = lay->size.h;
-            dw = lay->size.w * scale_x;
-            dh = lay->size.h * scale_y;
 
-            D_PRINT("sw: %f, sh: %f, scale_x: %f; scale_y: %f\ndw: %d, dh: %d\n", sw, sh, scale_x, scale_y, dw, dh);
+            lay->scale_factor.x = scale_x;
+            lay->scale_factor.y = scale_y;
 
-            sx= - sw /2.0;
-            sy= - sh /2.0;
-
-            cr = cairo_create(lay->surface);
-
-            cairo_t *new_cr;
-            new_surface = cairo_surface_create_similar_image(lay->surface,
-                CAIRO_FORMAT_ARGB32,
-                sw * scale_x, sh * scale_y);
-            new_cr = cairo_create(new_surface);
-            // Offset a revoir mais on tient le bon bout
-            cairo_set_source_surface(new_cr, lay->surface, sw * scale_x / 2, sh * scale_y / 2);
-            cairo_paint(new_cr);
-
-            // cairo_save(new_cr);
-            cairo_pattern_set_filter (cairo_get_source (new_cr),
-                CAIRO_FILTER_NEAREST);
-
-
-            cairo_matrix_init_identity (& mat);
-            cairo_matrix_translate (& mat, dw /2.0, dh /2.0);
-            cairo_matrix_scale (& mat, scale_x, scale_y);
-            cairo_set_matrix (new_cr, & mat);
-            //cairo_scale(cr, scale_x * 100, scale_y * 100);
-
-
+            if (lay->size.w * scale_x > max_width)
+                max_width = lay->size.w * scale_x;
+            if (lay->size.h * scale_y > max_height)
+                max_height = lay->size.h * scale_y;
+            // D_PRINT("drawing\n");
+            // double sw = lay->size.w;
+            // double sh = lay->size.h;
+            // dw = lay->size.w * scale_x;
+            // dh = lay->size.h * scale_y;
+            //
+            // D_PRINT("sw: %f, sh: %f, scale_x: %f; scale_y: %f, dw: %d, dh: %d\n", sw, sh, scale_x, scale_y, dw, dh);
+            //
+            // sx= - sw /2.0;
+            // sy= - sh /2.0;
+            //
+            // cr = cairo_create(lay->surface);
+            //
+            // cairo_t *new_cr;
+            // new_surface = cairo_surface_create_similar_image(lay->surface,
+            //     CAIRO_FORMAT_ARGB32,
+            //     dw, dh);
+            // new_cr = cairo_create(new_surface);
+            // cairo_pattern_set_filter (cairo_get_source (new_cr),
+            //     CAIRO_FILTER_FAST);
+            //
+            // cairo_matrix_init_identity (& mat);
+            // cairo_matrix_translate (& mat, dw /2.0, dh /2.0);
+            // cairo_matrix_scale (& mat, scale_x, scale_y);
+            // cairo_set_matrix (new_cr, & mat);
+            // // cairo_scale(new_cr, scale_x, scale_y);
+            //
+            //
             // cairo_set_source_surface (new_cr, lay->surface, sx, sy);
             // cairo_set_operator(new_cr, CAIRO_OPERATOR_SOURCE);
-            cairo_paint (new_cr);
-            // cairo_restore(new_cr);
-            // cairo_destroy(new_cr);
-
-            cairo_destroy (cr);
-
-            // free old displayed surface
-            cairo_surface_destroy(lay->surface);
-
-            // assign lew_surface as the surface to display
-            lay->surface = new_surface;
+            // // cairo_set_source_surface(new_cr, lay->surface, sw / scale_x, sh / scale_y);
+            // cairo_paint (new_cr);
+            // // cairo_restore(new_cr);
+            // // cairo_destroy(new_cr);
+            //
+            // cairo_destroy (cr);
+            //
+            // // free old displayed surface
+            // cairo_surface_destroy(lay->surface);
+            //
+            // // assign lew_surface as the surface to display
+            // lay->surface = new_surface;
 
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
+    gtk_widget_set_size_request(da, max_width, max_height);
 }
 
 
@@ -264,11 +270,11 @@ gboolean configure_event_cb (GtkWidget *widget,
 
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     if (!flowbox)
-        g_print("configure_event_cb(): unable to get flowbox");
+        D_PRINT("sunable to get flowbox", NULL);
 
     layermngr = layermngr_get_layermngr(flowbox);
     if (!layermngr)
-        g_print("configure_event_cb(): unable to get layermngr");
+        D_PRINT("unable to get layermngr", NULL);
 
 
     GMPF_Layer *lay;
@@ -470,12 +476,16 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
             /*
                 Use for debuging
                 cur_lay ++;
-                g_print("drawing layer %i\n", cur_lay);
+                D_PRINT("drawing layer %i\n", cur_lay);
             */
             if (lay->isvisible)
             {
+                cairo_save(cr);
+                // cairo_surface_t *surface = lay->surface ? lay->surface : lay->surface;
+                cairo_scale(cr, lay->scale_factor.x, lay->scale_factor.y);
                 cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
                 cairo_paint(cr);
+                cairo_restore(cr);
             }
 
             if (!lay->list.next) break;
@@ -550,7 +560,7 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 /*
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 {
-    g_print("Binarize\n");
+    D_PRINT("Binarize\n");
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkWidget *da = NULL;

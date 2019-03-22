@@ -11,9 +11,9 @@
 
 
 // STRUCTURES
-
 typedef struct GMPF_Pos GMPF_Pos;
 typedef struct GMPF_Size GMPF_Size;
+typedef struct GMPF_Scale GMPF_Scale;
 typedef struct GMPF_Pixel GMPF_Pixel;
 typedef struct GMPF_Layer GMPF_Layer;
 typedef struct GMPF_LayerMngr GMPF_LayerMngr;
@@ -27,6 +27,11 @@ struct GMPF_Size {
     int h, w;
 };
 
+struct GMPF_Scale {
+    float x, y;
+};
+
+
 // TODO: complete the struct GMPF_Pixel
 struct GMPF_Pixel {
     Uint8 R, G, B, A;
@@ -36,6 +41,7 @@ struct GMPF_Pixel {
 struct GMPF_Layer {
     // used variable
     GMPF_Pos pos; // Offset on the rendering
+    GMPF_Scale scale_factor;
     GMPF_Size size; // Size of the condained surface
     char isvisible; // Set to one if it has to be rendered
 
@@ -44,7 +50,7 @@ struct GMPF_Layer {
 
     cairo_t *cr; // The cairo context of the surface attribut
 
-    cairo_surface_t *unchanged_surface;
+    cairo_surface_t *unscaled_surface;
     cairo_surface_t *surface;
 
     // for the list
