@@ -277,13 +277,6 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
             (float)color.alpha, lay->scale_factor.x, lay->scale_factor.y);
         //end brush zone
 
-
-
-        // cr = cairo_create (lay->unchanged_surface);
-        // //begin brush zone
-        // circular_brush(widget, cr, x, y, 10, (float)color.red,
-        //         (float)color.green, (float)color.blue, (float)color.alpha);
-        //end brush zone
     }
 
     /* Now invalidate the affected region of the drawing area. */
@@ -315,12 +308,6 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
                     lay->scale_factor.x, lay->scale_factor.y);
         //end brush zone
         cairo_destroy(lay->cr);
-
-
-        // cr = cairo_create (lay->unchanged_surface);
-        //begin brush zone
-        // circular_brush(widget, cr, x, y, 10, 0, 0, 0, 0.0);
-        //end brush zone
     }
 }
 
@@ -414,18 +401,15 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
     cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 
-    // int cur_lay = 0; // Use this variable for debuging
+    int cur_lay = 0; // Use this variable for debuging
 
     if (layermngr->layer_list.next != NULL)
     {
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
-            /*
-                Use for debuging
-                cur_lay ++;
-                D_PRINT("drawing layer %i\n", cur_lay);
-            */
+
+            D_PRINT("drawing layer %i\n", cur_lay);
             if (lay->isvisible)
             {
                 cairo_save(cr);

@@ -32,5 +32,8 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
     cairo_fill_preserve(cr);
     // cairo_destroy (cr);
     // gtk_widget_queue_draw(widget);
-    gtk_widget_queue_draw_area (widget, x - radius, y - radius, radius*2, radius*2);
+    float refreshx = scale_x * radius;
+    float refreshy = scale_y * radius;
+    gtk_widget_queue_draw_area (widget, x - refreshx, y - refreshx,
+            refreshx * 2, refreshy * 2);
 }
