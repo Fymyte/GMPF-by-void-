@@ -141,31 +141,17 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
 
-    // cairo_t *cr = NULL;
     GtkWidget *da = NULL;
-    // GtkWidget *layout = NULL;
     GtkFlowBox *flowbox = NULL;
     GMPF_LayerMngr *layermngr = NULL;
 
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    // layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
     layermngr = layermngr_get_layermngr(flowbox);
 
-    // double sx, sy;
-    // gint dw, dh;
-    // cairo_matrix_t mat;
-    // cairo_surface_t *new_surface;
 
     D_PRINT("w: %d, h: %d\n", layermngr->size.w, layermngr->size.h);
 
-    // gtk_widget_set_size_request(da, layermngr->size.w * scale_x, layermngr->size.h * scale_y);
-    // gint rw, rh;
-    // gtk_widget_get_size_request(da, &rw, &rh);
-
-    // D_PRINT("new da size w: %f, h: %f\n", layermngr->size.w * scale_x, layermngr->size.h * scale_y);
-    // D_PRINT("w: %d, h:%d\n", rw, rh);
-    // gtk_layout_set_size((GtkLayout *)layout, layermngr->size.w * scale_x * 1.1, layermngr->size.h * scale_y * 1.1);
     double max_width = 0;
     double max_height = 0;
 
@@ -182,54 +168,13 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
                 max_width = lay->size.w * scale_x;
             if (lay->size.h * scale_y > max_height)
                 max_height = lay->size.h * scale_y;
-            // D_PRINT("drawing\n");
-            // double sw = lay->size.w;
-            // double sh = lay->size.h;
-            // dw = lay->size.w * scale_x;
-            // dh = lay->size.h * scale_y;
-            //
-            // D_PRINT("sw: %f, sh: %f, scale_x: %f; scale_y: %f, dw: %d, dh: %d\n", sw, sh, scale_x, scale_y, dw, dh);
-            //
-            // sx= - sw /2.0;
-            // sy= - sh /2.0;
-            //
-            // cr = cairo_create(lay->surface);
-            //
-            // cairo_t *new_cr;
-            // new_surface = cairo_surface_create_similar_image(lay->surface,
-            //     CAIRO_FORMAT_ARGB32,
-            //     dw, dh);
-            // new_cr = cairo_create(new_surface);
-            // cairo_pattern_set_filter (cairo_get_source (new_cr),
-            //     CAIRO_FILTER_FAST);
-            //
-            // cairo_matrix_init_identity (& mat);
-            // cairo_matrix_translate (& mat, dw /2.0, dh /2.0);
-            // cairo_matrix_scale (& mat, scale_x, scale_y);
-            // cairo_set_matrix (new_cr, & mat);
-            // // cairo_scale(new_cr, scale_x, scale_y);
-            //
-            //
-            // cairo_set_source_surface (new_cr, lay->surface, sx, sy);
-            // cairo_set_operator(new_cr, CAIRO_OPERATOR_SOURCE);
-            // // cairo_set_source_surface(new_cr, lay->surface, sw / scale_x, sh / scale_y);
-            // cairo_paint (new_cr);
-            // // cairo_restore(new_cr);
-            // // cairo_destroy(new_cr);
-            //
-            // cairo_destroy (cr);
-            //
-            // // free old displayed surface
-            // cairo_surface_destroy(lay->surface);
-            //
-            // // assign lew_surface as the surface to display
-            // lay->surface = new_surface;
 
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
     gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_widget_queue_draw(da);
 }
 
 
@@ -270,7 +215,7 @@ gboolean configure_event_cb (GtkWidget *widget,
 
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     if (!flowbox)
-        D_PRINT("sunable to get flowbox", NULL);
+        D_PRINT("unable to get flowbox", NULL);
 
     layermngr = layermngr_get_layermngr(flowbox);
     if (!layermngr)
@@ -327,8 +272,9 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
-        circular_brush(widget, lay->cr, x, y, layermngr->brush_size, (float)color.red,
-                (float)color.green, (float)color.blue, (float)color.alpha);
+        circular_brush(widget, lay->cr, x, y, layermngr->brush_size,
+            (float)color.red, (float)color.green, (float)color.blue,
+            (float)color.alpha, lay->scale_factor.x, lay->scale_factor.y);
         //end brush zone
 
 
@@ -365,7 +311,8 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
-        circular_brush(widget, lay->cr, x, y, layermngr->brush_size, 0, 0, 0, 0.0);
+        circular_brush(widget, lay->cr, x, y, layermngr->brush_size, 0, 0, 0, 0.0,
+                    lay->scale_factor.x, lay->scale_factor.y);
         //end brush zone
         cairo_destroy(lay->cr);
 
@@ -447,7 +394,6 @@ motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event,
 
     if (cursor_state == 1 && (event->state & GDK_BUTTON1_MASK))
         draw_brush (widget, event->x, event->y, user_data);
-
     if (cursor_state == 2 && (event->state & GDK_BUTTON1_MASK))
         draw_rubber (widget, event->x, event->y, user_data);
 
@@ -465,6 +411,8 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     layermngr = layermngr_get_layermngr(flowbox);
+
+    cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 
     // int cur_lay = 0; // Use this variable for debuging
 
