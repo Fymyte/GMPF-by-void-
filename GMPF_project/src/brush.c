@@ -43,13 +43,20 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
         cairo_fill_preserve(cr);
     }
 
+    // cairo_destroy (cr);
+    gtk_widget_queue_draw(widget);
+    float refreshx = x < layermngr->pos.x ? x : layermngr->pos.x;
+    float refreshy = y < layermngr->pos.y ? y : layermngr->pos.y;
+    int width = x - layermngr->pos.x;
+    int height = y - layermngr->pos.y;
+    if (width < 0)
+        width *= -1;
+    if (height < 0)
+        height *= -1;
+
     layermngr->pos.x = x;
     layermngr->pos.y = y;
 
-    // cairo_destroy (cr);
-    gtk_widget_queue_draw(widget);
-    // float refreshx = scale_x * radius;
-    // float refreshy = scale_y * radius;
-    // gtk_widget_queue_draw_area (widget, x - refreshx, y - refreshx,
-    //         refreshx * 2, refreshy * 2);
+    gtk_widget_queue_draw_area (widget, refreshx, refreshy,
+            width, height);
 }

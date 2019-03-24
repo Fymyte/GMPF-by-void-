@@ -346,6 +346,9 @@ gpointer user_data)
     layermngr->pos.x = -1;
     layermngr->pos.y = -1;
 
+    widget = 0;
+    event = 0;
+
     return TRUE;
 }
 
@@ -442,7 +445,7 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
     cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 
-    int cur_lay = 0; // Use this variable for debuging
+    // int cur_lay = 0; // Use this variable for debuging
 
     if (layermngr->layer_list.next != NULL)
     {
@@ -539,14 +542,14 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 
     SGlobalData *data = (SGlobalData*) user_data;
 
-    GtkFlowBox *flowbox = 
+    GtkFlowBox *flowbox =
         (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
-  
+
     struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-     
+
     if (lay == NULL)
         return;
-    
+
     int width = (lay -> size).w;
     int height = (lay -> size).h;
 
@@ -564,7 +567,7 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
         for(int j = 0; j < height; j++)
         {
             pos -> y = j;
-            
+
             if (layer_get_pixel(lay, pos, pixel) != 0)
                 errx(EXIT_FAILURE, "error get pixel");
 
@@ -600,14 +603,14 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
 
     SGlobalData *data = (SGlobalData*) user_data;
 
-    GtkFlowBox *flowbox = 
+    GtkFlowBox *flowbox =
         (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
-  
+
     struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-     
+
     if (lay == NULL)
         return;
-    
+
     int width = (lay -> size).w;
     int height = (lay -> size).h;
 
@@ -625,25 +628,25 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
         for(int j = 0; j < height; j++)
         {
             pos -> y = j;
-            
+
             if (layer_get_pixel(lay, pos, pixel) != 0)
                 errx(EXIT_FAILURE, "error get pixel");
-	
+
 			if (pixel -> R > 127)
 				red = 255;
 			else
 				red = 0;
-			
+
 			if (pixel -> B > 127)
 				blue = 255;
 			else
 				blue = 0;
-				
+
 			if (pixel -> G > 127)
 				green = 255;
 			else
 				green = 0;
-			
+
             cairo_set_source_rgb(cr, red, green, blue);
             cairo_move_to(cr, i, j);
             cairo_rel_line_to(cr, 0, 1);
@@ -780,14 +783,14 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
 
     SGlobalData *data = (SGlobalData*) user_data;
 
-    GtkFlowBox *flowbox = 
+    GtkFlowBox *flowbox =
         (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
-  
+
     struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-     
+
     if (lay == NULL)
         return;
-    
+
     int width = (lay -> size).w;
     int height = (lay -> size).h;
 
@@ -805,12 +808,12 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
         for(int j = 0; j < height; j++)
         {
             pos -> y = j;
-            
+
             if (layer_get_pixel(lay, pos, pixel) != 0)
                 errx(EXIT_FAILURE, "error get pixel");
-	
+
 			grey = (pixel->R + pixel->G + pixel->B)/3;
-			
+
             cairo_set_source_rgb(cr, grey, grey, grey);
             cairo_move_to(cr, i, j);
             cairo_rel_line_to(cr, 1, 1);
