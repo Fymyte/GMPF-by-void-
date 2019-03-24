@@ -9,6 +9,11 @@
 
 #define INTERFACE_NAME "interface.glade"
 
+#define DEBUG 1 // Use for only print debuging info if true
+#define D_PRINT(fmt, ...) \
+        do { if (DEBUG) fprintf(stderr, "debug: %s:%d:%s(): " fmt, __FILE__, \
+                                __LINE__, __func__, __VA_ARGS__); } while (0)
+
 /*typedef struct
 {
     GtkBuilder *builder;
@@ -95,7 +100,21 @@ int GMPF_start()
     da = GTK_WIDGET(gtk_builder_get_object(data.builder, "drawingArea"));
     gtk_widget_set_events (da, gtk_widget_get_events (da)
                                 | GDK_BUTTON_PRESS_MASK
-                                | GDK_POINTER_MOTION_MASK);
+                                | GDK_POINTER_MOTION_MASK
+                                | GDK_BUTTON_RELEASE_MASK);
+
+    /* Use this to solve problems*/
+#ifndef GTK2
+     GdkWindow *gdk_window = gtk_widget_get_window(Main_window);
+
+     printf("Pointer to gdkwindow [%x]\n", gdk_window);
+     printf("Event compresssion: %d\n", gdk_window_get_event_compression (gdk_window));
+//    gdk_window_set_event_compression (gtk_widget_get_parent_window (window), FALSE);
+      gdk_window_set_event_compression (gdk_window, FALSE);
+     printf("Event compresssion: %d\n", gdk_window_get_event_compression (gdk_window));
+#endif
+    // g_free(gdk_window);
+
 
 
 

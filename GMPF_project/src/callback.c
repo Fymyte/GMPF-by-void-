@@ -61,6 +61,18 @@ void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
     gtk_image_set_from_pixbuf(image, pixbuf);
 }
 
+void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData *)user_data;
+    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+
+    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    if (! layer)
+        D_PRINT("Unable to get selected layer", NULL);
+    else
+        layer->isvisible = gtk_toggle_button_get_active(button);
+}
+
 void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
@@ -274,8 +286,11 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         //begin brush zone
         circular_brush(widget, lay->cr, x, y, layermngr->brush_size,
             (float)color.red, (float)color.green, (float)color.blue,
-            (float)color.alpha, lay->scale_factor.x, lay->scale_factor.y);
+            (float)color.alpha, lay->scale_factor.x, lay->scale_factor.y,
+            layermngr);
         //end brush zone
+
+        cairo_destroy(lay->cr);
 
     }
 
@@ -305,7 +320,7 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 
         //begin brush zone
         circular_brush(widget, lay->cr, x, y, layermngr->brush_size, 0, 0, 0, 0.0,
-                    lay->scale_factor.x, lay->scale_factor.y);
+                    lay->scale_factor.x, lay->scale_factor.y, layermngr);
         //end brush zone
         cairo_destroy(lay->cr);
     }
@@ -316,6 +331,24 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 * The ::button-press signal handler receives a GdkEventButton
 * struct which contains this information.
 */
+
+gboolean button_release_event_cb(GtkWidget     *widget,
+GdkEventButton *event,
+gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkFlowBox *flowbox = NULL;
+    GMPF_LayerMngr *layermngr = NULL;
+
+    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    layermngr->pos.x = -1;
+    layermngr->pos.y = -1;
+
+    return TRUE;
+}
+
 gboolean button_press_event_cb (GtkWidget      *widget,
 GdkEventButton *event,
 gpointer        user_data)
@@ -336,6 +369,14 @@ gpointer        user_data)
     /* paranoia check, in case we haven't gotten a configure event */
     if (layermngr->surface == NULL)
         return FALSE;
+
+    // if (lay->cr)
+    //     cairo_destroy(lay->cr);
+    // lay->cr = cairo_create(lay->surface);
+    // // cairo_save (lay->cr);
+
+    // layermngr->pos.x = event->x;
+    // layermngr->pos.y = event->y;
 
     if (event->button == GDK_BUTTON_PRIMARY & cursor_state == 1)
         draw_brush (widget, event->x, event->y, user_data);
@@ -409,7 +450,7 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
         while (lay != NULL)
         {
 
-            D_PRINT("drawing layer %i\n", cur_lay);
+            // D_PRINT("drawing layer %i\n", cur_lay);
             if (lay->isvisible)
             {
                 cairo_save(cr);
@@ -424,7 +465,7 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
-
+    // cairo_destroy(cr);
     (void)user_data;
     widget = 0;
 }

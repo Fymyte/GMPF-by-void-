@@ -40,6 +40,9 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
     layermngr->size.h = 0; // maybe change it with parameters
     layermngr->size.w = 0; // Keep this part, use for max width
 
+    layermngr->pos.x = -1; // Keep the last position of the cairo
+    layermngr->pos.y = -1; // So it can draw a line between eatch point
+
     layermngr->nb_layer = 0;
     list_init(&(layermngr->layer_list));
     // add if new variable

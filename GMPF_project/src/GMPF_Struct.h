@@ -65,6 +65,7 @@ struct GMPF_Layer {
 struct GMPF_LayerMngr {
     // basic variable
     GMPF_Size size;
+    GMPF_Pos pos;
     int nb_layer;
     GMPF_List layer_list;
 
