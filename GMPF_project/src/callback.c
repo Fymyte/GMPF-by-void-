@@ -463,14 +463,15 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
                 cairo_paint(cr);
                 cairo_restore(cr);
             }
-
+            lay->image = gdk_pixbuf_get_from_surface (lay->surface, lay->pos.x, lay->pos.y,
+                                                                        lay->size.w, lay->size.h);
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
     // cairo_destroy(cr);
     (void)user_data;
-    widget = 0;
+    (void)widget;
 }
 
 
@@ -583,7 +584,7 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
             if (layer_put_pixel(lay, pos, pixel) == 0)
                 printf("%d %d %d \n", pixel -> R, pixel -> G, pixel -> G);
 */
-            cairo_set_source_rgb(cr, grey,grey,grey);
+            cairo_set_source_rgba(cr, grey,grey,grey, pixel->A);
             cairo_move_to(cr, i, j);
             cairo_rel_line_to(cr, 0, 1);
             cairo_stroke(cr);
