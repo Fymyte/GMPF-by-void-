@@ -148,6 +148,12 @@ void callback_resize_brush(GtkEntry *entry, gpointer user_data)
     // resizeCursor(data, (int)size);
 }
 
+void callback_save(GtkMenuItem *menuitem, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    export_cairo_to_png(data);
+    (void)menuitem;
+}
 
 void adjust_scale(double scale_x, double scale_y, gpointer user_data)
 {

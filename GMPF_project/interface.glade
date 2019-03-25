@@ -323,6 +323,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_save" swapped="no"/>
                       </object>
                     </child>
                     <child>

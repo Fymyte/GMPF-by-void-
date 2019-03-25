@@ -21,6 +21,7 @@
 #include "Img_rgb.h"
 #include "pixel_op.h"
 #include "brush.h"
+#include "Save.h"
 
 //callback functions
 
