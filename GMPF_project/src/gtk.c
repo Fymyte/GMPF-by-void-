@@ -101,7 +101,9 @@ int GMPF_start()
     gtk_widget_set_events (da, gtk_widget_get_events (da)
                                 | GDK_BUTTON_PRESS_MASK
                                 | GDK_POINTER_MOTION_MASK
-                                | GDK_BUTTON_RELEASE_MASK);
+                                | GDK_BUTTON_RELEASE_MASK
+                                | GDK_ENTER_NOTIFY_MASK
+                                | GDK_LEAVE_NOTIFY_MASK);
 
     /* Use this to solve problems*/
 // #ifndef GTK2

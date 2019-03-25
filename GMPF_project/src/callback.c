@@ -300,6 +300,7 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 }
 
 
+
 void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
@@ -326,6 +327,23 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
     }
 }
 
+gboolean enter_notify_event_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData *)user_data;
+    callback_setCursor(data);
+    event = 0;
+    (void)widget;
+    return TRUE;
+}
+
+gboolean leave_notify_event_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData *)user_data;
+    resetCursor(data);
+    event = 0;
+    (void)widget;
+    return TRUE;
+}
 /* Handle button press events by either drawing a rectangle
 * or clearing the surface, depending on which button was pressed.
 * The ::button-press signal handler receives a GdkEventButton
