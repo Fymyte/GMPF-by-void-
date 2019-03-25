@@ -590,6 +590,8 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
             cairo_stroke(cr);
         }
     }
+    GtkWidget *w = GET_UI(GtkWidget, "drawingArea");
+    gtk_widget_queue_draw(w);
     cairo_destroy(cr);
     free(pos);
     free(pixel);
@@ -648,7 +650,7 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
 			else
 				green = 0;
 
-            cairo_set_source_rgb(cr, red, green, blue);
+            cairo_set_source_rgba(cr, red, green, blue, pixel->A);
             cairo_move_to(cr, i, j);
             cairo_rel_line_to(cr, 0, 1);
             cairo_stroke(cr);
@@ -776,7 +778,7 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
 }
 */
 
-/*void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
+void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
 // NOT OK
 {
     menuitem = 0;
@@ -815,17 +817,17 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
 
 			grey = (pixel->R + pixel->G + pixel->B)/3;
 
-            cairo_set_source_rgb(cr, grey, grey, grey);
+            cairo_set_source_rgba(cr, grey, grey, grey, pixel->A);
             cairo_move_to(cr, i, j);
-            cairo_rel_line_to(cr, 1, 1);
+            cairo_rel_line_to(cr, 0, 1);
             cairo_stroke(cr);
         }
     }
-    lay -> cr = cr;
+    //lay -> cr = cr;
     cairo_destroy(cr);
     free(pos);
     free(pixel);
-}*/
+}
 
 
 void callback_brush(GtkMenuItem *menuitem, gpointer user_data)
@@ -844,45 +846,9 @@ void callback_rubber(GtkMenuItem *menuitem, gpointer user_data)
     callback_setCursor(data);
 }
 
-/*void callback_setCursor(gpointer user_data)
-{
-//init variables
-SGlobalData *data = (SGlobalData*) user_data;
-GdkDisplay *display = NULL;
-GdkCursor *cursor = NULL;
-GdkScreen *screen = NULL;
-GdkWindow * win = NULL;
-struct _GdkPixbuf *imgPixbuf;
-struct _GdkPixbuf *img2;
-
-//set variables
-screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
-display = gdk_screen_get_display(screen);
-GError *error = NULL;
-imgPixbuf = gdk_pixbuf_new_from_file("penta00.gif", &error);
-int width = gdk_pixbuf_get_width(imgPixbuf);
-int height = gdk_pixbuf_get_height(imgPixbuf);
-img2 = gdk_pixbuf_scale_simple(imgPixbuf, width/6, height/6, GDK_INTERP_HYPER);
-
-//create the new cursor
-cursor = gdk_cursor_new_from_pixbuf(display, img2, 23, 23);
-if(error)
-{
-printf("Error : %s\n", error->message);
-g_error_free(error);
-}
-//gdk_display_beep (display); play a sound ("beep")
-
-//set the new cursor on the screen
-win = gdk_screen_get_root_window(screen);
-gdk_window_set_cursor (win, cursor);
-}
-
-*/
-
 void callback_FC(GtkMenuItem *menuitem, gpointer user_data)
 {
-//variables definitions
+    //variables definitions
     SGlobalData *data = (SGlobalData*)user_data;
     GtkWidget *FCWindow = NULL;
     GtkImage *test_image = NULL;
