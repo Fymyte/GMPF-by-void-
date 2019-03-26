@@ -2,9 +2,6 @@
 
 int export_cairo_to_png(SGlobalData *data)
 {
-    cairo_surface_t *final_surface = NULL;
-    cairo_t *final_context = cairo_create(final_surface);
-
     GMPF_LayerMngr *layermngr = NULL;
     GtkFlowBox *flowbox = NULL;
 
@@ -12,16 +9,18 @@ int export_cairo_to_png(SGlobalData *data)
     layermngr = layermngr_get_layermngr(flowbox);
 
     if (layermngr->layer_list.next == NULL)
-    {
-        printf("toz\n");
         return -1; //save failed
-    }
-    cairo_arc(final_context, 0, 0, 10, 0.0, G_PI * 2);
-    cairo_fill_preserve(final_context);
-    cairo_paint(final_context);
+    
+    
 
-    /*GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+	GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
 
+	//create a new surface and context to store all the layer surfaces
+	cairo_surface_t *final_surface =
+		cairo_image_surface_create (CAIRO_FORMAT_ARGB32, lay->size.w, lay->size.h);
+	cairo_t *final_context = cairo_create(final_surface);
+
+	//write the surfaces on the new surface
     while (lay != NULL)
     {
         if (lay->isvisible)
@@ -37,8 +36,8 @@ int export_cairo_to_png(SGlobalData *data)
         lay = container_of(lay->list.next, GMPF_Layer, list);
     }
 
-    */
-    //char filename = malloc();
+   
+	//get the surface from the context and save it
     final_surface = cairo_get_target(final_context);
     cairo_status_t status = cairo_surface_write_to_png (final_surface, "image.png");
     cairo_destroy(final_context);
@@ -62,7 +61,6 @@ int export_cairo_to_png(SGlobalData *data)
         return -1;
     }
 
-    //if (status == CAIRO_STATUS_SUCCESS)
-    printf("fail\n");
+    //save succeed
     return 0;
 }
