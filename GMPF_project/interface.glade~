@@ -194,11 +194,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="Image_test">
-                <property name="width_request">300</property>
+              <object class="GtkDrawingArea">
+                <property name="width_request">200</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="pixbuf">GMPF.png</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -323,6 +322,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_save" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -779,73 +779,241 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">False</property>
             <child>
-              <object class="GtkScrolledWindow">
+              <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="shadow_type">in</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
                 <child>
-                  <object class="GtkLayout" id="Layout">
+                  <object class="GtkToolbar">
+                    <property name="width_request">20</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="hexpand">False</property>
-                    <property name="vexpand">False</property>
-                    <property name="width">10000</property>
-                    <property name="height">10000</property>
+                    <property name="orientation">vertical</property>
+                    <property name="toolbar_style">icons</property>
+                    <property name="icon_size">4</property>
                     <child>
-                      <object class="GtkEventBox">
+                      <object class="GtkToolButton" id="PaintButton">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="halign">center</property>
-                        <property name="valign">center</property>
+                        <property name="tooltip_text" translatable="yes">Pinceau pour peindre sur le calque séléctionné de la couleur choisie</property>
+                        <property name="label" translatable="yes">Pinceau</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-edit</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolButton" id="EraiserButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Gomme</property>
+                        <property name="label" translatable="yes">Gomme</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-media-stop</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolButton" id="ColorPickerButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Définie la couleur d'après la valeur du pixel séléctionné</property>
+                        <property name="label" translatable="yes">Pipette</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-color-picker</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="shadow_type">in</property>
+                    <child>
+                      <object class="GtkLayout" id="Layout">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="hexpand">False</property>
+                        <property name="vexpand">False</property>
+                        <property name="width">10000</property>
+                        <property name="height">10000</property>
                         <child>
-                          <object class="GtkDrawingArea" id="drawingArea">
+                          <object class="GtkEventBox">
                             <property name="visible">True</property>
-                            <property name="app_paintable">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">center</property>
                             <property name="valign">center</property>
-                            <property name="hexpand">False</property>
-                            <property name="vexpand">False</property>
-                            <signal name="button-press-event" handler="button_press_event_cb" swapped="no"/>
-                            <signal name="button-release-event" handler="button_release_event_cb" swapped="no"/>
-                            <signal name="configure-event" handler="configure_event_cb" swapped="no"/>
-                            <signal name="draw" handler="on_draw_event" swapped="no"/>
-                            <signal name="motion-notify-event" handler="motion_notify_event_cb" swapped="no"/>
+                            <child>
+                              <object class="GtkDrawingArea" id="drawingArea">
+                                <property name="visible">True</property>
+                                <property name="app_paintable">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="hexpand">False</property>
+                                <property name="vexpand">False</property>
+                                <signal name="button-press-event" handler="button_press_event_cb" swapped="no"/>
+                                <signal name="button-release-event" handler="button_release_event_cb" swapped="no"/>
+                                <signal name="configure-event" handler="configure_event_cb" swapped="no"/>
+                                <signal name="draw" handler="on_draw_event" swapped="no"/>
+                                <signal name="motion-notify-event" handler="motion_notify_event_cb" swapped="no"/>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
                     </child>
                   </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow">
+              <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">never</property>
-                <property name="shadow_type">in</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkViewport">
+                  <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">never</property>
+                    <property name="shadow_type">in</property>
                     <child>
-                      <object class="GtkFlowBox" id="GMPF_flowbox">
-                        <property name="width_request">176</property>
+                      <object class="GtkViewport">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="valign">start</property>
-                        <property name="max_children_per_line">1</property>
+                        <child>
+                          <object class="GtkFlowBox" id="GMPF_flowbox">
+                            <property name="width_request">176</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">start</property>
+                            <property name="max_children_per_line">1</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolbar">
+                    <property name="height_request">20</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="toolbar_style">icons</property>
+                    <property name="icon_size">4</property>
+                    <child>
+                      <object class="GtkToolButton" id="AddLayerButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Ajoute un nouveau calque à la liste</property>
+                        <property name="label" translatable="yes">Ajouter un calque</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-add</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolButton" id="MoveUpButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Remonte le calque séléctionné d'un rang dans la liste</property>
+                        <property name="label" translatable="yes">Remonter le calque</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-go-up</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolButton" id="MoveDownButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Descend le calque séléctionner d'un rang dans la liste</property>
+                        <property name="label" translatable="yes">Descendre le calque</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-go-down</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolButton" id="CopyLayerButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Duplique le calque séléctionné et ajoute la copie à la liste</property>
+                        <property name="label" translatable="yes">Duplique le calque</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-copy</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolButton" id="RemoveLayerButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Supprime le calque séléctionné de la liste</property>
+                        <property name="label" translatable="yes">Retirer le calque</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-remove</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </object>
               <packing>

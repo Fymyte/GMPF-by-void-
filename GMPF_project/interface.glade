@@ -194,11 +194,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkImage" id="Image_test">
-                <property name="width_request">300</property>
+              <object class="GtkDrawingArea">
+                <property name="width_request">200</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="pixbuf">GMPF.png</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -299,6 +298,15 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
+                      <object class="GtkMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">exporter l'image vers png</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_save" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkImageMenuItem">
                         <property name="label">gtk-new</property>
                         <property name="visible">True</property>
@@ -323,7 +331,6 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="callback_save" swapped="no"/>
                       </object>
                     </child>
                     <child>
