@@ -31,6 +31,13 @@ void layermngr_create(GtkFlowBox *flowbox)
     g_object_set_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME, layermngr);
 }
 
+
+void layermngr_set_to_flowbox(GtkFlowBox *flowbox, GMPF_LayerMngr *layermngr)
+{
+    layermngr->flowbox = flowbox;
+    g_object_set_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME, layermngr);
+}
+
 void layermngr_initialization(GMPF_LayerMngr *layermngr)
 {
     /*

@@ -5,9 +5,9 @@ struct _GdkPixbuf *unchangedPixbuf;
 #define GET_UI(_type, _name) \
     (_type *) (gtk_builder_get_object(data->builder, _name));
 
-#define D_PRINT(fmt, ...) \
-        do { if (DEBUG) fprintf(stderr, "debug: %s:%d:%s(): " fmt, __FILE__, \
-                                __LINE__, __func__, __VA_ARGS__); } while (0)
+//#define D_PRINT(fmt, ...) \
+//        do { if (DEBUG) fprintf(stderr, "debug: %s:%d:%s(): " fmt, __FILE__, \
+//                                __LINE__, __func__, __VA_ARGS__); } while (0)
 
 /* change the cursor
 values :
@@ -67,10 +67,12 @@ void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
     GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
 
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
-    if (! layer)
-        D_PRINT("Unable to get selected layer", NULL);
-    else
+    if (layer)
+    {
         layer->isvisible = gtk_toggle_button_get_active(button);
+        return;
+    }
+    D_PRINT("Unable to get selected layer", NULL);
 }
 
 void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)

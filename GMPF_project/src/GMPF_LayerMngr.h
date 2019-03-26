@@ -32,6 +32,7 @@
 // for the GtkFlowBox - interact with Gtk
 //
 void layermngr_create(GtkFlowBox *flowbox); //ENDED
+void layermngr_set_to_flowbox(GtkFlowBox *flowbox, GMPF_LayerMngr *layermngr);
 void layermngr_initialization(GMPF_LayerMngr *layermngr); //ENDED
 void layermngr_clear(GtkFlowBox *flowbox); //ENDED
 void layermngr_delete(GtkFlowBox *flowbox); //ENDED
