@@ -111,15 +111,6 @@ GMPF_LayerMngr *layermngr_get_layermngr(GtkFlowBox *flowbox)
 {
     return (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 }
-
-
-
-
-
-
-
-
-
 //
 // for the GMPF_LayerMngr
 //

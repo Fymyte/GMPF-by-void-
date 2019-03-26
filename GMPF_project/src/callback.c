@@ -297,7 +297,7 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         //end brush zone
 
         cairo_destroy(lay->cr);
-
+        lay->cr = 0;
     }
 
     /* Now invalidate the affected region of the drawing area. */
@@ -330,6 +330,7 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
                     lay->scale_factor.x, lay->scale_factor.y, layermngr);
         //end brush zone
         cairo_destroy(lay->cr);
+        lay->cr = 0;
     }
 }
 
@@ -487,6 +488,7 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
                 cairo_paint(cr);
                 cairo_restore(cr);
             }
+            g_object_unref(lay->image);
             lay->image = gdk_pixbuf_get_from_surface (lay->surface, lay->pos.x, lay->pos.y,
                                                                         lay->size.w, lay->size.h);
             if (!lay->list.next) break;
