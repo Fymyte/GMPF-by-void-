@@ -26,7 +26,6 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
 {
     // float two_pi = 6.2831853070; // float pi = 3.1415926535;
     cairo_set_source_rgba (cr, red, green, blue, alpha);
-    D_PRINT("x: %f, y: %f\n", x, y);
     if (layermngr->pos.x != -1)
     {
         cairo_set_line_width(cr, radius * 2);

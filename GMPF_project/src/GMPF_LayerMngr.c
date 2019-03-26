@@ -348,6 +348,8 @@ GMPF_Layer * layer_initialization()
 {
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
 
+    layer->name = NULL;
+
     layer->pos.x = 0;
     layer->pos.y = 0;
 

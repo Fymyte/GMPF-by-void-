@@ -31,7 +31,6 @@ struct GMPF_Scale {
     float x, y;
 };
 
-
 // TODO: complete the struct GMPF_Pixel
 struct GMPF_Pixel {
     Uint8 R, G, B, A;
@@ -39,6 +38,8 @@ struct GMPF_Pixel {
 
 // TODO: complete the struct GMPF_Layer
 struct GMPF_Layer {
+
+    char *name;
     // used variable
     GMPF_Pos pos; // Offset on the rendering
     GMPF_Scale scale_factor;

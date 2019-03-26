@@ -2,13 +2,6 @@
 
 struct _GdkPixbuf *unchangedPixbuf;
 
-#define GET_UI(_type, _name) \
-    (_type *) (gtk_builder_get_object(data->builder, _name));
-
-//#define D_PRINT(fmt, ...) \
-//        do { if (DEBUG) fprintf(stderr, "debug: %s:%d:%s(): " fmt, __FILE__, \
-//                                __LINE__, __func__, __VA_ARGS__); } while (0)
-
 /* change the cursor
 values :
 0 ==> normal
@@ -156,6 +149,13 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     adjust_scale (scaleValue, scaleValue, user_data);
 }
 
+void callback_save(GtkMenuItem *menuitem, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData*) user_data;
+    export_cairo_to_png(data);
+    (void)menuitem;
+}
+
 void callback_resize_brush(GtkEntry *entry, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
@@ -170,11 +170,16 @@ void callback_resize_brush(GtkEntry *entry, gpointer user_data)
     // resizeCursor(data, (int)size);
 }
 
-void callback_save(GtkMenuItem *menuitem, gpointer user_data)
+void callback_show_layer_window(GtkWidget *widget, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
-    export_cairo_to_png(data);
-    (void)menuitem;
+    //variables definitions
+    SGlobalData *data = (SGlobalData*)user_data;
+    GtkWidget *layer_window = NULL;
+
+    layer_window = GET_UI(GtkWidget, "LayerWindow");
+    //show the filter creator windowjust
+    gtk_widget_show(layer_window);
+    (void)widget;
 }
 
 void adjust_scale(double scale_x, double scale_y, gpointer user_data)
@@ -182,15 +187,14 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
     SGlobalData *data = (SGlobalData*) user_data;
 
     GtkWidget *da = NULL;
+    GtkWidget *layout = NULL;
     GtkFlowBox *flowbox = NULL;
     GMPF_LayerMngr *layermngr = NULL;
 
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
+    layout = GET_UI(GtkWidget, "DrawingAreaLayout");
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     layermngr = layermngr_get_layermngr(flowbox);
-
-
-    D_PRINT("w: %d, h: %d\n", layermngr->size.w, layermngr->size.h);
 
     double max_width = 0;
     double max_height = 0;
@@ -213,7 +217,9 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
+    gtk_widget_set_size_request(layout, max_width, max_height);
     gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
     gtk_widget_queue_draw(da);
 }
 
@@ -490,7 +496,9 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 
     cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 
-    // int cur_lay = 0; // Use this variable for debuging
+    int cur_lay = 0; // Use this variable for debuging
+
+    D_PRINT("before drawing\n", NULL);
 
     if (layermngr->layer_list.next != NULL)
     {
@@ -498,12 +506,12 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
         while (lay != NULL)
         {
 
-            // D_PRINT("drawing layer %i\n", cur_lay);
+            D_PRINT("drawing layer %i\n", cur_lay);
             if (lay->isvisible)
             {
                 cairo_save(cr);
-                // cairo_surface_t *surface = lay->surface ? lay->surface : lay->surface;
                 cairo_scale(cr, lay->scale_factor.x, lay->scale_factor.y);
+                cairo_surface_flush(lay->surface);
                 cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
                 cairo_paint(cr);
                 cairo_restore(cr);
@@ -512,6 +520,7 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
+    D_PRINT("after drawing\n", NULL);
     // cairo_destroy(cr);
     (void)user_data;
     (void)widget;
@@ -522,6 +531,7 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     GtkWidget *da = NULL;
+    GtkWidget *layout = NULL;
     GError *error = NULL;
     GMPF_LayerMngr *layermngr = NULL;
 
@@ -530,7 +540,7 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 
     GtkFlowBox *flowbox = NULL;
     flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
-    // flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layout = GET_UI(GtkWidget, "DrawingAreaLayout");
     layermngr = layermngr_get_layermngr(flowbox);
     layermngr_add_new_layer(flowbox, filename);
 
@@ -558,6 +568,8 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     layermngr->surface = gdk_cairo_surface_create_from_pixbuf(layermngr->image, 0, NULL);
 
     gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_widget_set_size_request(layout, max_width, max_height);
+    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
 
     D_PRINT("max_width: %d, max_height = %d\n", max_width, max_height);
 
