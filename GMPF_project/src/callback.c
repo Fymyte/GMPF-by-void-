@@ -371,6 +371,14 @@ gpointer user_data)
     layermngr->pos.x = -1;
     layermngr->pos.y = -1;
 
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+        return FALSE;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface (lay->surface, lay->pos.x, lay->pos.y,
+        lay->size.w, lay->size.h);
+
     widget = 0;
     event = 0;
 
@@ -488,9 +496,6 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
                 cairo_paint(cr);
                 cairo_restore(cr);
             }
-            g_object_unref(lay->image);
-            lay->image = gdk_pixbuf_get_from_surface (lay->surface, lay->pos.x, lay->pos.y,
-                                                                        lay->size.w, lay->size.h);
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
