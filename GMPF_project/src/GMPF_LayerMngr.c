@@ -122,6 +122,9 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
         Return the GMPF_Layer associated to the selected element in the flowbox.
     */
 
+    if (flowbox == NULL)
+        return NULL;
+
     GMPF_LayerMngr *layermngr =
         (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
