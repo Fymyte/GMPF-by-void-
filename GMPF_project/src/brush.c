@@ -25,6 +25,8 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
                 float scale_x, float scale_y, GMPF_LayerMngr *layermngr)
 {
     // float two_pi = 6.2831853070; // float pi = 3.1415926535;
+    float refreshx, refreshy;
+    int width, height;
     cairo_set_source_rgba (cr, red, green, blue, alpha);
     if (layermngr->pos.x != -1)
     {
@@ -32,30 +34,36 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
         cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND);
         cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
         cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-        cairo_move_to(cr, layermngr->pos.x, layermngr->pos.y);
-        cairo_line_to(cr, x, y);
+        cairo_move_to(cr, layermngr->pos.x / scale_x, layermngr->pos.y / scale_y);
+        cairo_line_to(cr, x / scale_x, y / scale_y);
         cairo_stroke(cr);
+
+        refreshx = (x < layermngr->pos.x ? x : layermngr->pos.x) - radius;
+        refreshy = (y < layermngr->pos.y ? y : layermngr->pos.y) - radius;
+        width = x - layermngr->pos.x + radius;
+        height = y - layermngr->pos.y + radius;
     }
     else
     {
         cairo_arc(cr, x / scale_x, y / scale_y, radius, 0.0, G_PI * 2);
         cairo_fill_preserve(cr);
+        refreshx = x - radius;
+        refreshy = y - radius;
+        width = 2 * radius;
+        height = 2 * radius;
     }
 
     // cairo_destroy (cr);
-    gtk_widget_queue_draw(widget);
-    float refreshx = x < layermngr->pos.x ? x : layermngr->pos.x;
-    float refreshy = y < layermngr->pos.y ? y : layermngr->pos.y;
-    int width = x - layermngr->pos.x;
-    int height = y - layermngr->pos.y;
+    // gtk_widget_queue_draw(widget);
+    D_PRINT("x: %f, y: %f, rx: %f, ry: %f, w: %d, h: %d, radius: %f\n", x, y, refreshx, refreshy, width, height, radius);
     if (width < 0)
-        width *= -1;
+        width = (width - 2 * radius) * -1;
     if (height < 0)
-        height *= -1;
+        height = (height - 2 * radius) * -1;
 
     layermngr->pos.x = x;
     layermngr->pos.y = y;
-
-    gtk_widget_queue_draw_area (widget, refreshx, refreshy,
-            width, height);
+    gtk_widget_queue_draw(da);
+    // gtk_widget_queue_draw_area (widget, refreshx, refreshy,
+    //         width, height);
 }

@@ -268,7 +268,6 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
 
     newlayer->surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
     newlayer->unscaled_surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
-    newlayer->cr = cairo_create(newlayer->surface);
     newlayer->size.w = gdk_pixbuf_get_width(newlayer->image);
     newlayer->size.h = gdk_pixbuf_get_height(newlayer->image);
 
@@ -296,11 +295,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
     list_append(&(layermngr->layer_list), &(newlayer->list));
     insertpos = 0;
 
-
-    D_PRINT("insertpos: %d\n", insertpos);
-    //gtk_container_add((GtkContainer *) flowbox, image);
     gtk_flow_box_insert (flowbox, image, insertpos);
-
 
     newlayer->UIElement =
         gtk_flow_box_get_child_at_index(flowbox, insertpos);
@@ -396,9 +391,6 @@ void layer_delete(GMPF_Layer *layer)
 
     if (layer->unscaled_surface != NULL)
         cairo_surface_destroy (layer->unscaled_surface);
-
-    if (layer->cr != NULL)
-        cairo_destroy(layer->cr);
 
     free(layer);
 }

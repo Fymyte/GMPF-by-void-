@@ -195,6 +195,7 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
     layout = GET_UI(GtkWidget, "DrawingAreaLayout");
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     layermngr = layermngr_get_layermngr(flowbox);
+    GMPF_Layer *selected_layer = layermngr_get_selected_layer(flowbox);
 
     double max_width = 0;
     double max_height = 0;
@@ -204,6 +205,8 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
+            if (lay == selected_layer)
+                cairo_surface_reference(lay->surface);
 
             lay->scale_factor.x = scale_x;
             lay->scale_factor.y = scale_y;
@@ -324,7 +327,6 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         //end brush zone
 
         cairo_destroy(lay->cr);
-        lay->cr = 0;
     }
 
     /* Now invalidate the affected region of the drawing area. */
@@ -356,7 +358,6 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
                     lay->scale_factor.x, lay->scale_factor.y, layermngr);
         //end brush zone
         cairo_destroy(lay->cr);
-        lay->cr = 0;
     }
 }
 
@@ -492,26 +493,22 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
     GMPF_LayerMngr *layermngr = NULL;
 
     flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    // gtk_flow_box_unselect_all(flowbox);
     layermngr = layermngr_get_layermngr(flowbox);
 
     cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 
     int cur_lay = 0; // Use this variable for debuging
-
-    D_PRINT("before drawing\n", NULL);
-
     if (layermngr->layer_list.next != NULL)
     {
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
-
-            D_PRINT("drawing layer %i\n", cur_lay);
+            cur_lay++;
             if (lay->isvisible)
             {
                 cairo_save(cr);
                 cairo_scale(cr, lay->scale_factor.x, lay->scale_factor.y);
-                cairo_surface_flush(lay->surface);
                 cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
                 cairo_paint(cr);
                 cairo_restore(cr);
@@ -520,8 +517,6 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
-    D_PRINT("after drawing\n", NULL);
-    // cairo_destroy(cr);
     (void)user_data;
     (void)widget;
 }
@@ -874,7 +869,7 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
     struct GMPF_Pos *pos = malloc(sizeof(struct GMPF_Pos));
     struct GMPF_Pixel *pixel = malloc(sizeof(struct GMPF_Pixel));
 
-    cairo_t *cr = cairo_create(lay -> surface);
+    lay->cr = cairo_create(lay -> surface);
 
     unsigned long grey;
     //lay -> cr = cairo_create(lay -> surface);
@@ -891,14 +886,14 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
 
 			grey = (pixel->R + pixel->G + pixel->B)/3;
 
-            cairo_set_source_rgba(cr, grey, grey, grey, pixel->A);
-            cairo_move_to(cr, i, j);
-            cairo_rel_line_to(cr, 0, 1);
-            cairo_stroke(cr);
+            cairo_set_source_rgba(lay->cr, grey, grey, grey, pixel->A);
+            cairo_move_to(lay->cr, i, j);
+            cairo_rel_line_to(lay->cr, 0, 1);
+            cairo_stroke(lay->cr);
         }
     }
     //lay -> cr = cr;
-    cairo_destroy(cr);
+    cairo_destroy(lay->cr);
     free(pos);
     free(pixel);
 }
