@@ -9,11 +9,6 @@
 
 #define INTERFACE_NAME "interface.glade"
 
-#define DEBUG 1 // Use for only print debuging info if true
-#define D_PRINT(fmt, ...) \
-        do { if (DEBUG) fprintf(stderr, "debug: %s:%d:%s(): " fmt, __FILE__, \
-                                __LINE__, __func__, __VA_ARGS__); } while (0)
-
 /*typedef struct
 {
     GtkBuilder *builder;
@@ -156,11 +151,15 @@ void callback_add_GMPF_Layer(GtkMenuItem *menuitem, gpointer user_data)
     layermngr_add_new_layer(flowbox, NULL);
 }
 
-void callback_remove_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data)
+void callback_remove_selected_layer(GtkMenuItem *menuitem, gpointer user_data)
 {
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
     GtkFlowBox *flowbox = NULL;
+    GtkWidget *da = NULL;
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    da = GET_UI(GtkWidget, "drawingArea");
     layermngr_delete_selected_layer(flowbox);
+    gtk_widget_queue_draw(da);
+
 }

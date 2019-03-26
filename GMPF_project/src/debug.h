@@ -12,28 +12,30 @@
 //
 
 // define it for the debug mode
-//#define GMPF_DEBUG
+#define GMPF_DEBUG
+
+
+#define GET_UI(_type, _name) \
+    (_type *) (gtk_builder_get_object(data->builder, _name));
 
 // print error
 #define PRINTERR fprintf(stderr, "[error] %s::%d %s", __FILE__, __LINE__, __func__);
 
 // safe malloc with error gestion - A FINIR
 #ifdef GMPF_DEBUG
-    #define SAFE_MALLOC(_type, _name, _err_ptr) \
+    #define SAFE_MALLOC(_type, _name, ...) \
             _type * _name = malloc(sizeof(_type)); \
             if (_name == NULL) \
             { \
                 PRINTERR; \
-                *_err_ptr == 1; \
-                return; \
+                return __VA_ARGS__; \
             }
 #else
-    #define SAFE_MALLOC(_type, _name, _err_ptr) \
+    #define SAFE_MALLOC(_type, _name, ...) \
             _type * _name = malloc(sizeof(_type)); \
             if (_name == NULL) \
             { \
-                *_err_ptr == 1; \
-                return; \
+                return __VA_ARGS__; \
             }
 #endif
 

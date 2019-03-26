@@ -665,7 +665,7 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Remove Layer</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_remove_GMPF_LayerMngr" swapped="no"/>
+                        <signal name="activate" handler="callback_remove_selected_layer" swapped="no"/>
                         <accelerator key="Delete" signal="activate"/>
                       </object>
                     </child>
@@ -884,6 +884,8 @@
                                 <signal name="button-release-event" handler="button_release_event_cb" swapped="no"/>
                                 <signal name="configure-event" handler="configure_event_cb" swapped="no"/>
                                 <signal name="draw" handler="on_draw_event" swapped="no"/>
+                                <signal name="enter-notify-event" handler="enter_notify_event_cb" swapped="no"/>
+                                <signal name="leave-notify-event" handler="leave_notify_event_cb" swapped="no"/>
                                 <signal name="motion-notify-event" handler="motion_notify_event_cb" swapped="no"/>
                               </object>
                             </child>
@@ -968,6 +970,7 @@
                         <property name="label" translatable="yes">Remonter le calque</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-go-up</property>
+                        <signal name="clicked" handler="callback_layer_move_up" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -982,6 +985,7 @@
                         <property name="label" translatable="yes">Descendre le calque</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-go-down</property>
+                        <signal name="clicked" handler="callback_layer_move_down" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1010,6 +1014,7 @@
                         <property name="label" translatable="yes">Retirer le calque</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-remove</property>
+                        <signal name="clicked" handler="callback_remove_selected_layer" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

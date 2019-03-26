@@ -11,6 +11,8 @@
 #include "GMPF_Struct.h"
 #include "list.h"
 
+#include "debug.h"
+
 
 // DEFINES
 #define LAYERMNGR_KEY_NAME "GMPF_layermngr"
@@ -36,6 +38,9 @@ void layermngr_set_to_flowbox(GtkFlowBox *flowbox, GMPF_LayerMngr *layermngr);
 void layermngr_initialization(GMPF_LayerMngr *layermngr); //ENDED
 void layermngr_clear(GtkFlowBox *flowbox); //ENDED
 void layermngr_delete(GtkFlowBox *flowbox); //ENDED
+
+void layermngr_move_down_selected_layer(GtkFlowBox *flowbox);
+void layermngr_move_up_selected_layer(GtkFlowBox *flowbox);
 
 
 //

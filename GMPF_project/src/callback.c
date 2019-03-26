@@ -75,6 +75,22 @@ void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
     D_PRINT("Unable to get selected layer", NULL);
 }
 
+void callback_layer_move_down(GtkWidget *widget, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData *)user_data;
+    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    layermngr_move_down_selected_layer(flowbox);
+    (void)widget;
+}
+
+void callback_layer_move_up(GtkWidget *widget, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData *)user_data;
+    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    layermngr_move_up_selected_layer(flowbox);
+    (void)widget;
+}
+
 void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
@@ -197,7 +213,6 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
     gtk_widget_queue_draw(da);
 }
 
-
 void clear_surface (gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
@@ -308,7 +323,6 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 }
 
 
-
 void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
@@ -407,14 +421,6 @@ gpointer        user_data)
     /* paranoia check, in case we haven't gotten a configure event */
     if (layermngr->surface == NULL)
         return FALSE;
-
-    // if (lay->cr)
-    //     cairo_destroy(lay->cr);
-    // lay->cr = cairo_create(lay->surface);
-    // // cairo_save (lay->cr);
-
-    // layermngr->pos.x = event->x;
-    // layermngr->pos.y = event->y;
 
     if (event->button == GDK_BUTTON_PRIMARY & cursor_state == 1)
         draw_brush (widget, event->x, event->y, user_data);
@@ -586,6 +592,25 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 
     int width = (lay -> size).w;
     int height = (lay -> size).h;
+    // int img_height = cairo_image_surface_get_height(lay->surface);
+    // int stride = cairo_image_surface_get_stride(lay->surface);
+    // unsigned char *buffer;
+    // buffer = cairo_image_surface_get_data(lay->surface);
+    // if (buffer)
+    //     D_PRINT("buffer content :%c\n", buffer[10]);
+    // for (int i = 0; i < img_height; i++)
+    //     for (int j = 0; j < stride * 4; j += 4)
+    //     {
+    //         D_PRINT("i: %d, j: %d\n", i, j);
+    //         buffer[i + j * stride] = 0xFF;
+    //         buffer[i + j * stride + 1] = 0xFF;
+    //         buffer[i + j * stride + 2] = 0xFF;
+    //         buffer[i + j * stride + 3] = 0xFF;
+    //     }
+    //
+    //
+    // lay->surface = cairo_image_surface_create_for_data(buffer, CAIRO_FORMAT_ARGB32, lay->size.w, lay->size.h, stride);
+    // g_free(buffer);
 
     struct GMPF_Pos *pos = malloc(sizeof(struct GMPF_Pos));
     struct GMPF_Pixel *pixel = malloc(sizeof(struct GMPF_Pixel));

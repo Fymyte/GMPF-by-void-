@@ -21,8 +21,7 @@ void layermngr_create(GtkFlowBox *flowbox)
     /*
         Initialize a new GMPF_LayerMngr and attach it to the flowbox.
     */
-
-    GMPF_LayerMngr *layermngr = malloc(sizeof(GMPF_LayerMngr));
+    SAFE_MALLOC(GMPF_LayerMngr, layermngr);
 
     layermngr_initialization(layermngr);
 
@@ -113,6 +112,87 @@ void layermngr_delete(GtkFlowBox *flowbox)
     layermngr->flowbox = NULL; // don't delete the flowbox to keep it
     free(layermngr);
 }
+
+
+void layermngr_move_up_selected_layer(GtkFlowBox *flowbox)
+{
+    GMPF_LayerMngr *layermngr =
+        (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
+    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    if (layer != NULL && list_move_up(&layer->list))
+    {
+        //GtkWidget *image = gtk_image_new();
+        gint insertpos = gtk_flow_box_child_get_index(layer->UIElement) - 1;
+        gtk_widget_destroy((GtkWidget *) layer->UIElement);
+
+
+        GtkWidget *image = gtk_image_new();
+        // Style of the image
+        gtk_widget_set_sensitive(image, TRUE);
+        gtk_widget_set_visible(image, TRUE);
+
+        gtk_widget_set_size_request(image, 160, 90); //size
+        gtk_widget_set_halign(image, GTK_ALIGN_START); // Alignement
+        gtk_widget_set_valign(image, GTK_ALIGN_START);
+        gtk_widget_set_margin_top(image, 5); // Margin
+        gtk_widget_set_margin_bottom(image, 5);
+        gtk_widget_set_margin_start(image, 5);
+        gtk_widget_set_margin_end(image, 5);
+
+        //gtk_container_add((GtkContainer *) flowbox, image);
+        D_PRINT("up insertpos: %d\n", insertpos);
+        gtk_flow_box_insert (flowbox, image, insertpos);
+
+
+        layer->UIElement =
+            gtk_flow_box_get_child_at_index(flowbox, insertpos);
+        g_object_set_data(G_OBJECT(layer->UIElement), LAYER_KEY_NAME, layer);
+        layer->UIIcon = (GtkImage *) image;
+        layer_icon_refresh(layer);
+        gtk_flow_box_select_child(flowbox, layer->UIElement);
+    }
+}
+
+
+void layermngr_move_down_selected_layer(GtkFlowBox *flowbox)
+{
+    GMPF_LayerMngr *layermngr =
+        (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
+    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    if (layer != NULL && list_move_down(&layer->list))
+    {
+//        //GtkWidget *image = gtk_image_new();
+        gint insertpos = gtk_flow_box_child_get_index(layer->UIElement) + 1;
+        gtk_widget_destroy((GtkWidget *) layer->UIElement);
+
+
+        GtkWidget *image = gtk_image_new();
+        // Style of the image
+        gtk_widget_set_sensitive(image, TRUE);
+        gtk_widget_set_visible(image, TRUE);
+
+        gtk_widget_set_size_request(image, 160, 90); //size
+        gtk_widget_set_halign(image, GTK_ALIGN_START); // Alignement
+        gtk_widget_set_valign(image, GTK_ALIGN_START);
+        gtk_widget_set_margin_top(image, 5); // Margin
+        gtk_widget_set_margin_bottom(image, 5);
+        gtk_widget_set_margin_start(image, 5);
+        gtk_widget_set_margin_end(image, 5);
+
+        //gtk_container_add((GtkContainer *) flowbox, image);
+        D_PRINT("down insertpos: %d\n", insertpos);
+        gtk_flow_box_insert (flowbox, image, insertpos);
+
+
+        layer->UIElement =
+            gtk_flow_box_get_child_at_index(flowbox, insertpos);
+        g_object_set_data(G_OBJECT(layer->UIElement), LAYER_KEY_NAME, layer);
+        layer->UIIcon = (GtkImage *) image;
+        layer_icon_refresh(layer);
+        gtk_flow_box_select_child(flowbox, layer->UIElement);
+    }
+}
+
 
 GMPF_LayerMngr *layermngr_get_layermngr(GtkFlowBox *flowbox)
 {
@@ -212,26 +292,12 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
 
     int insertpos;
     // add the layer in the list
-    if (layermngr->nb_layer == 0)
-    {
-        list_add_after(&(layermngr->layer_list), &(newlayer->list));
-        insertpos = 0;
-    }
-    else
-    {
-        GMPF_Layer *prevlayer = layermngr_get_selected_layer(flowbox);
-        if (prevlayer != NULL)
-        {
-            list_add_after(&(prevlayer->list), &(newlayer->list));
-            insertpos = gtk_flow_box_child_get_index(prevlayer->UIElement);
-        }
-        else
-        {
-            list_append(&(layermngr->layer_list), &(newlayer->list));
-            insertpos = layermngr->nb_layer;
-        }
-    }
 
+    list_add_after(&(layermngr->layer_list), &(newlayer->list));
+    insertpos = layermngr->nb_layer;
+
+
+    D_PRINT("insertpos: %d\n", insertpos);
     //gtk_container_add((GtkContainer *) flowbox, image);
     gtk_flow_box_insert (flowbox, image, insertpos);
 
