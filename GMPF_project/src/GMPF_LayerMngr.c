@@ -293,8 +293,8 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
     int insertpos;
     // add the layer in the list
 
-    list_add_after(&(layermngr->layer_list), &(newlayer->list));
-    insertpos = layermngr->nb_layer;
+    list_append(&(layermngr->layer_list), &(newlayer->list));
+    insertpos = 0;
 
 
     D_PRINT("insertpos: %d\n", insertpos);

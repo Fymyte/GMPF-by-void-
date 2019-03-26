@@ -79,7 +79,9 @@ void callback_layer_move_down(GtkWidget *widget, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData *)user_data;
     GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
     layermngr_move_down_selected_layer(flowbox);
+    gtk_widget_queue_draw(da);
     (void)widget;
 }
 
@@ -87,7 +89,9 @@ void callback_layer_move_up(GtkWidget *widget, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData *)user_data;
     GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
     layermngr_move_up_selected_layer(flowbox);
+    gtk_widget_queue_draw(da);
     (void)widget;
 }
 
