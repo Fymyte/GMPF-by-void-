@@ -40,8 +40,16 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
 
         refreshx = (x < layermngr->pos.x ? x : layermngr->pos.x) - radius;
         refreshy = (y < layermngr->pos.y ? y : layermngr->pos.y) - radius;
-        width = x - layermngr->pos.x + radius;
-        height = y - layermngr->pos.y + radius;
+        width = x - layermngr->pos.x;
+        height = y - layermngr->pos.y;
+        if (width < 0)
+            width = (width - radius) * -1;
+        else
+            width += radius;
+        if (height < 0)
+            height = (height - radius) * -1;
+        else
+            height += radius;
     }
     else
     {
@@ -56,14 +64,10 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
     // cairo_destroy (cr);
     // gtk_widget_queue_draw(widget);
     D_PRINT("x: %f, y: %f, rx: %f, ry: %f, w: %d, h: %d, radius: %f\n", x, y, refreshx, refreshy, width, height, radius);
-    if (width < 0)
-        width = (width - 2 * radius) * -1;
-    if (height < 0)
-        height = (height - 2 * radius) * -1;
 
     layermngr->pos.x = x;
     layermngr->pos.y = y;
-    gtk_widget_queue_draw(da);
-    // gtk_widget_queue_draw_area (widget, refreshx, refreshy,
-    //         width, height);
+    // gtk_widget_queue_draw(da);
+    gtk_widget_queue_draw_area (widget, refreshx, refreshy,
+            width, height);
 }

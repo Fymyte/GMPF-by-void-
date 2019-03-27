@@ -205,8 +205,8 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
-            if (lay == selected_layer)
-                cairo_surface_reference(lay->surface);
+            // if (lay == selected_layer)
+            //     cairo_surface_reference(lay->surface);
 
             lay->scale_factor.x = scale_x;
             lay->scale_factor.y = scale_y;
@@ -270,14 +270,11 @@ gboolean configure_event_cb (GtkWidget *widget,
         D_PRINT("unable to get layermngr", NULL);
 
 
-    GMPF_Layer *lay;
-    if((lay = layermngr_get_selected_layer(flowbox)) != NULL)
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if((lay) != NULL)
         layermngr->surface = lay->surface;
     else
         layermngr->surface = NULL;
-
-    if (layermngr->surface)
-        cairo_surface_destroy (layermngr->surface);
 
     cairo_content_t content =
         cairo_surface_get_content (cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1));
@@ -286,9 +283,6 @@ gboolean configure_event_cb (GtkWidget *widget,
     content,
     gtk_widget_get_allocated_width (widget),
     gtk_widget_get_allocated_height (widget));
-
-    /* Initialize the surface to white */
-    clear_surface (user_data);
     (void)event;
 
     /* We've handled the configure event, no need for further processing. */

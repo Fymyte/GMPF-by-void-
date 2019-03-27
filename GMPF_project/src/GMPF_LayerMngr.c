@@ -139,10 +139,7 @@ void layermngr_move_up_selected_layer(GtkFlowBox *flowbox)
         gtk_widget_set_margin_start(image, 5);
         gtk_widget_set_margin_end(image, 5);
 
-        //gtk_container_add((GtkContainer *) flowbox, image);
-        D_PRINT("up insertpos: %d\n", insertpos);
         gtk_flow_box_insert (flowbox, image, insertpos);
-
 
         layer->UIElement =
             gtk_flow_box_get_child_at_index(flowbox, insertpos);
@@ -179,8 +176,6 @@ void layermngr_move_down_selected_layer(GtkFlowBox *flowbox)
         gtk_widget_set_margin_start(image, 5);
         gtk_widget_set_margin_end(image, 5);
 
-        //gtk_container_add((GtkContainer *) flowbox, image);
-        D_PRINT("down insertpos: %d\n", insertpos);
         gtk_flow_box_insert (flowbox, image, insertpos);
 
 
