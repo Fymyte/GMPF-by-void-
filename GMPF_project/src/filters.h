@@ -8,5 +8,6 @@ void Greyscale(SGlobalData *data);
 void Negative(SGlobalData *data);
 void Binarize(SGlobalData *data);
 void BinarizeColor(SGlobalData *data);
+void Tinter(SGlobalData *data);
 
 #endif

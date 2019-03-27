@@ -740,7 +740,7 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
 // OK
 {
-    g_print("Greyscale\n");
+    g_print("Grayscale\n");
     (void)menuitem;
     SGlobalData *data = (SGlobalData*) user_data;
     Greyscale(data);
@@ -841,57 +841,9 @@ void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
 void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
 {
     g_print("Tinter\n");
-    menuitem = 0;
-    GtkColorChooser *colorChooser = NULL;
+    (void)menuitem;
     SGlobalData *data = (SGlobalData*) user_data;
-    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
-
-    GtkFlowBox *flowbox =
-        (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
-
-    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-
-    if (lay == NULL)
-        return;
-
-    g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
-
-    GdkPixbuf *imgPixbuf = lay->image;
-    guchar r, g, b, factor;
-    GdkRGBA rgba;
-
-    colorChooser = (GtkColorChooser *)(gtk_builder_get_object(data->builder, "ColorTinter"));
-    gtk_color_chooser_get_rgba (colorChooser, &rgba);
-    r = (guchar)(rgba.red * 255);
-    g = (guchar)(rgba.green * 255);
-    b = (guchar)(rgba.blue * 255);
-    factor = (guchar)(rgba.alpha * 100);
-
-    guchar red;
-    guchar green;
-    guchar blue, alpha;
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-            err(1, "pixbuf get pixels error");
-            red = red * (100 - factor) / 100 + r * factor / 100;
-            green = green * (100 - factor) / 100 + g * factor / 100;
-            blue = blue * (100 - factor) / 100 + b * factor / 100;
-            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
-        }
-    }
-    cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
-    gtk_widget_queue_draw(da);
+    Tinter(data);
 }
 
 /*
