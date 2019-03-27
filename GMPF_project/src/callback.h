@@ -23,6 +23,7 @@
 #include "brush.h"
 #include "Save.h"
 #include "debug.h"
+#include "filters.h"
 
 //callback functions
 
