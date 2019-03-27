@@ -649,7 +649,7 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 
     unsigned long grey;
     //lay -> cr = cairo_create(lay -> surface);
-    
+
     printf("Waiting for binarize...\n");
     for(int i = 0; i < width; i++)
     {
@@ -913,9 +913,9 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
 
             if (layer_get_pixel(lay, pos, pixel) != 0)
                 errx(EXIT_FAILURE, "error get pixel");
-            
+
             grey = pixel->R /3 + pixel->G /3+ pixel->B /3;
-            
+
             cairo_set_source_rgb(cr, grey, grey, grey);
             cairo_move_to(cr, i, j);
             cairo_rel_line_to(cr, 0, 0);
@@ -1023,23 +1023,12 @@ void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
 */
 
 void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
-    // NOT OK
 {
+    g_print("Tinter\n");
     menuitem = 0;
-    printf("Tinter, factor : 50\n");
-    
-    unsigned long r, g, b, factor;
+    GtkColorChooser *colorChooser = NULL;
     SGlobalData *data = (SGlobalData*) user_data;
-    GtkColorChooser *chooser = NULL;
-    GdkRGBA color;
-
-    chooser = (GtkColorChooser *)(gtk_builder_get_object(data->builder, "ColorTinter"));
-    gtk_color_chooser_get_rgba(chooser, &color);
-
-    r = color.red * 255;
-    g = color.green * 255;
-    b = color.blue * 255;
-    factor = 50;
+    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
 
     GtkFlowBox *flowbox =
         (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
@@ -1052,63 +1041,16 @@ void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
     g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
-    int width = (lay -> size).w;
-    int height = (lay -> size).h;
-
-    struct GMPF_Pos *pos = malloc(sizeof(struct GMPF_Pos));
-    struct GMPF_Pixel *pixel = malloc(sizeof(struct GMPF_Pixel));
-
-    cairo_t *cr = cairo_create(lay -> surface);
-
-    unsigned long red, green, blue;
-    //lay -> cr = cairo_create(lay -> surface);
-
-    printf("Waiting for tinter ...\n");
-    for(int i = 0; i < width; i++)
-    {
-        pos -> x = i;
-        for(int j = 0; j < height; j++)
-        {
-            pos -> y = j;
-
-            if (layer_get_pixel(lay, pos, pixel) != 0)
-                errx(EXIT_FAILURE, "error get pixel");
-            red = pixel -> R / 2 + r / 2;
-            green = pixel -> G / 2 + g / 2;
-            blue = pixel -> B / 2 + b / 2;
-            
-            printf("%3lu %3lu %3lu\n", red, green, blue);
-            cairo_set_source_rgb(cr, red, green, blue);
-            cairo_move_to(cr, i, j);
-            cairo_rel_line_to(cr, 0, 1);
-            cairo_stroke(cr);
-        }
-    }
-    printf("Tinter : OK !\n");
-    GtkWidget *w = GET_UI(GtkWidget, "drawingArea");
-    gtk_widget_queue_draw(w);
-    cairo_destroy(cr);
-    free(pos);
-    free(pixel);
-    /*g_print("Tinter\n");
-    menuitem = 0;
-
+    GdkPixbuf *imgPixbuf = lay->image;
     guchar r, g, b, factor;
-
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkWidget *da = NULL;
-    GtkColorChooser *colorChooser = NULL;
     GdkRGBA rgba;
-    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
+
     colorChooser = (GtkColorChooser *)(gtk_builder_get_object(data->builder, "ColorTinter"));
     gtk_color_chooser_get_rgba (colorChooser, &rgba);
     r = (guchar)(rgba.red * 255);
     g = (guchar)(rgba.green * 255);
     b = (guchar)(rgba.blue * 255);
     factor = (guchar)(rgba.alpha * 100);
-
-    struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = unchangedPixbuf;
 
     guchar red;
     guchar green;
@@ -1131,8 +1073,9 @@ void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
             put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
         }
     }
-    //layermngr->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
-    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);*/
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    gtk_widget_queue_draw(da);
 }
 
 /*
@@ -1184,12 +1127,11 @@ void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data)
 
 
 void callback_negative(GtkMenuItem *menuitem, gpointer user_data)
-// IS OK
-{   
-    menuitem = 0;
+{
     g_print("Negative\n");
-
+    menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
+    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
 
     GtkFlowBox *flowbox =
         (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
@@ -1202,43 +1144,30 @@ void callback_negative(GtkMenuItem *menuitem, gpointer user_data)
     g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
-    int width = (lay -> size).w;
-    int height = (lay -> size).h;
+    GdkPixbuf *imgPixbuf = lay->image;
 
-    struct GMPF_Pos *pos = malloc(sizeof(struct GMPF_Pos));
-    struct GMPF_Pixel *pixel = malloc(sizeof(struct GMPF_Pixel));
+    guchar red, green, blue, alpha;
 
-    cairo_t *cr = cairo_create(lay -> surface);
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
 
-    unsigned long red, green, blue;
-    //lay -> cr = cairo_create(lay -> surface);
-
-    printf("Waiting for negative ...\n");
     for(int i = 0; i < width; i++)
     {
-        pos -> x = i;
         for(int j = 0; j < height; j++)
         {
-            pos -> y = j;
-
-            if (layer_get_pixel(lay, pos, pixel) != 0)
-                errx(EXIT_FAILURE, "error get pixel");
-            red = 255 - pixel -> R;
-            green = 255 - pixel -> G;
-            blue = 255 - pixel -> B;
-             
-            cairo_set_source_rgba(cr, red, green, blue, pixel->A);
-            cairo_move_to(cr, i, j);
-            cairo_rel_line_to(cr, 0, 1);
-            cairo_stroke(cr);
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+            err(1, "pixbuf get pixels error");
+            red = 255 - red;
+            green = 255 - green;
+            blue = 255 - blue;
+            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
         }
     }
-    printf("Negative : OK !\n");
-    GtkWidget *w = GET_UI(GtkWidget, "drawingArea");
-    gtk_widget_queue_draw(w);
-    cairo_destroy(cr);
-    free(pos);
-    free(pixel);
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    gtk_widget_queue_draw(da);
 }
 
 /*
