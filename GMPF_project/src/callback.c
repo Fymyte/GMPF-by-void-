@@ -424,17 +424,19 @@ gpointer        user_data)
     if (layermngr->surface == NULL)
         return FALSE;
 
-    if (event->button == GDK_BUTTON_PRIMARY & cursor_state == 1)
+    GMPF_Tool tool = layermngr->tool;
+
+    if (event->button == GDK_BUTTON_PRIMARY & tool == PAINTER)
         draw_brush (widget, event->x, event->y, user_data);
 
-    else if (event->button == GDK_BUTTON_PRIMARY & cursor_state == 2)
+    else if (event->button == GDK_BUTTON_PRIMARY & tool == ERAISER)
         draw_rubber (widget, event->x, event->y, user_data);
 
-    else if (event->button == GDK_BUTTON_SECONDARY)
-    {
-        clear_surface (user_data);
-        gtk_widget_queue_draw (widget);
-    }
+    // else if (event->button == GDK_BUTTON_SECONDARY)
+    // {
+    //     clear_surface (user_data);
+    //     gtk_widget_queue_draw (widget);
+    // }
 
     /* We've handled the event, stop processing */
     return TRUE;
@@ -466,9 +468,11 @@ motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event,
     if (layermngr->surface == NULL)
         return FALSE;
 
-    if (cursor_state == 1 && (event->state & GDK_BUTTON1_MASK))
+    GMPF_Tool tool = layermngr->tool;
+
+    if (tool == PAINTER && (event->state & GDK_BUTTON1_MASK))
         draw_brush (widget, event->x, event->y, user_data);
-    if (cursor_state == 2 && (event->state & GDK_BUTTON1_MASK))
+    if (tool == ERAISER && (event->state & GDK_BUTTON1_MASK))
         draw_rubber (widget, event->x, event->y, user_data);
 
 
@@ -512,6 +516,28 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
     (void)widget;
 }
 
+void callback_select_tool(GtkWidget *widget, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData *)user_data;
+    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    gchar name = gtk_widget_get_name(widget)[0];
+    GMPF_Tool tool;
+    switch (name)
+    {
+        case '1': tool = PAINTER;
+                         break;
+        case '2': tool = ERAISER;
+                         break;
+        case '3': tool = COLOR_PICKER;
+                         break;
+        case '4': tool = SELECTOR;
+                         break;
+        default : tool = INCORECT_TOOL;
+        D_PRINT("Unknown tool\n", NULL);
+    }
+    layermngr->tool = tool;
+}
 
 void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 {
@@ -575,7 +601,6 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), user_data);
 }
 
-
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 // IS OK
 {
@@ -591,7 +616,7 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 
     if (lay == NULL)
         return;
-        
+
     g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 

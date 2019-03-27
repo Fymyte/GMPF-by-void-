@@ -991,13 +991,15 @@
                     <property name="toolbar_style">icons</property>
                     <property name="icon_size">4</property>
                     <child>
-                      <object class="GtkToolButton" id="PaintButton">
+                      <object class="GtkToolButton" id="1PaintButton">
+                        <property name="name">1</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Pinceau pour peindre sur le calque séléctionné de la couleur choisie</property>
                         <property name="label" translatable="yes">Pinceau</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-edit</property>
+                        <signal name="clicked" handler="callback_select_tool" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1005,13 +1007,15 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkToolButton" id="EraiserButton">
+                      <object class="GtkToolButton" id="2EraiserButton">
+                        <property name="name">2</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Gomme</property>
                         <property name="label" translatable="yes">Gomme</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-media-stop</property>
+                        <signal name="clicked" handler="callback_select_tool" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1019,13 +1023,30 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkToolButton" id="ColorPickerButton">
+                      <object class="GtkToolButton" id="3ColorPickerButton">
+                        <property name="name">3</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Définie la couleur d'après la valeur du pixel séléctionné</property>
                         <property name="label" translatable="yes">Pipette</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-color-picker</property>
+                        <signal name="clicked" handler="callback_select_tool" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolButton" id=" 4SelectButton">
+                        <property name="name">4</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Selection</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-select-all</property>
+                        <signal name="clicked" handler="callback_select_tool" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

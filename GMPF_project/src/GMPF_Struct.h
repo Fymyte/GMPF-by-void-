@@ -11,6 +11,7 @@
 
 
 // STRUCTURES
+typedef enum   GMPF_Tool GMPF_Tool;
 typedef struct GMPF_Pos GMPF_Pos;
 typedef struct GMPF_Size GMPF_Size;
 typedef struct GMPF_Scale GMPF_Scale;
@@ -18,6 +19,13 @@ typedef struct GMPF_Pixel GMPF_Pixel;
 typedef struct GMPF_Layer GMPF_Layer;
 typedef struct GMPF_LayerMngr GMPF_LayerMngr;
 
+enum GMPF_Tool {
+    INCORECT_TOOL = 0,
+    PAINTER = 1,
+    ERAISER = 2,
+    COLOR_PICKER = 3,
+    SELECTOR = 4,
+};
 
 struct GMPF_Pos {
     int x, y;
@@ -68,6 +76,7 @@ struct GMPF_LayerMngr {
     GMPF_Size size;
     GMPF_Pos pos;
     int nb_layer;
+    GMPF_Tool tool;
     GMPF_List layer_list;
 
     cairo_surface_t *surface;
