@@ -101,21 +101,21 @@ int GMPF_start()
                                 | GDK_LEAVE_NOTIFY_MASK);
 
     /* Use this to solve problems*/
-// #ifndef GTK2
-//      GdkWindow *gdk_window = gtk_widget_get_window(Main_window);
-//
-//      printf("Pointer to gdkwindow [%x]\n", gdk_window);
-//      printf("Event compresssion: %d\n", gdk_window_get_event_compression (gdk_window));
-// //    gdk_window_set_event_compression (gtk_widget_get_parent_window (window), FALSE);
-//       gdk_window_set_event_compression (gdk_window, FALSE);
-//      printf("Event compresssion: %d\n", gdk_window_get_event_compression (gdk_window));
-// #endif
     // g_free(gdk_window);
 
 
 
 
     gtk_widget_show_all (Main_window);
+    #ifndef GTK2
+    GdkWindow *gdk_window = gtk_widget_get_window(da);
+
+    printf("Pointer to gdkwindow [%x]\n", gdk_window);
+    printf("Event compresssion: %d\n", gdk_window_get_event_compression (gdk_window));
+    //    gdk_window_set_event_compression (gtk_widget_get_parent_window (window), FALSE);
+    gdk_window_set_event_compression (gdk_window, FALSE);
+    printf("Event compresssion: %d\n", gdk_window_get_event_compression (gdk_window));
+    #endif
 
     gtk_main();
 
