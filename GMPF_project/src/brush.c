@@ -24,7 +24,6 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
                 double radius, float red, float green, float blue, float alpha,
                 float scale_x, float scale_y, GMPF_LayerMngr *layermngr)
 {
-    // float two_pi = 6.2831853070; // float pi = 3.1415926535;
     float refreshx, refreshy;
     int width, height;
     cairo_set_source_rgba (cr, red, green, blue, alpha);
@@ -40,16 +39,16 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
 
         refreshx = (x < layermngr->pos.x ? x : layermngr->pos.x) - radius;
         refreshy = (y < layermngr->pos.y ? y : layermngr->pos.y) - radius;
-        width = x - layermngr->pos.x;
-        height = y - layermngr->pos.y;
+        width = (x - layermngr->pos.x) * 2;
+        height = (y - layermngr->pos.y) * 2;
         if (width < 0)
-            width = (width - radius) * -1;
+            width = (width - radius * 2) * -1;
         else
-            width += radius;
+            width += radius * 2;
         if (height < 0)
-            height = (height - radius) * -1;
+            height = (height - radius * 2) * -1;
         else
-            height += radius;
+            height += radius * 2;
     }
     else
     {
@@ -61,13 +60,9 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
         height = 2 * radius;
     }
 
-    // cairo_destroy (cr);
-    // gtk_widget_queue_draw(widget);
-    D_PRINT("x: %f, y: %f, rx: %f, ry: %f, w: %d, h: %d, radius: %f\n", x, y, refreshx, refreshy, width, height, radius);
-
     layermngr->pos.x = x;
     layermngr->pos.y = y;
-    // gtk_widget_queue_draw(da);
+
     gtk_widget_queue_draw_area (widget, refreshx, refreshy,
             width, height);
 }

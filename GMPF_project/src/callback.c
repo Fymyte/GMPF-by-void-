@@ -115,13 +115,11 @@ void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
     gtk_image_set_from_pixbuf(image, pixbuf);
 }
 
-
 void callback_hideWidget(GtkWidget *widget, gpointer user_data)
 {
     gtk_widget_hide(widget);
     user_data = 0;
 }
-
 
 void callback_about (GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -140,7 +138,6 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data)
     gtk_widget_destroy (dialog);
     menuitem = 0;
 }
-
 
 void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
 {
@@ -396,9 +393,9 @@ gpointer user_data)
     if (!lay)
         return FALSE;
 
-    g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface (lay->surface, lay->pos.x, lay->pos.y,
-        lay->size.w, lay->size.h);
+    // g_object_unref(lay->image);
+    // lay->image = gdk_pixbuf_get_from_surface (lay->surface, lay->pos.x, lay->pos.y,
+    //     lay->size.w, lay->size.h);
 
     widget = 0;
     event = 0;
@@ -594,6 +591,9 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 
     if (lay == NULL)
         return;
+        
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     int width = (lay -> size).w;
     int height = (lay -> size).h;
@@ -676,6 +676,9 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
 
     if (lay == NULL)
         return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     int width = (lay -> size).w;
     int height = (lay -> size).h;
