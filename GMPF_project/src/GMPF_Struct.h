@@ -41,7 +41,8 @@ struct GMPF_Scale {
 
 // TODO: complete the struct GMPF_Pixel
 struct GMPF_Pixel {
-    Uint8 R, G, B, A;
+    unsigned long R, G, B, A;
+    //Uint8 R, G, B, A;
 };
 
 // TODO: complete the struct GMPF_Layer

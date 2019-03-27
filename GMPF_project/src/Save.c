@@ -55,7 +55,7 @@ int export_cairo_to_png(SGlobalData *data)
         return -1;
     }
 
-    else if (status == CAIRO_STATUS_PNG_ERROR)
+    else if (status == CAIRO_STATUS_READ_ERROR)
     {
         printf("%s\n", cairo_status_to_string(status));
         return -1;

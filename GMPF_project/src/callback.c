@@ -649,7 +649,8 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
 
     unsigned long grey;
     //lay -> cr = cairo_create(lay -> surface);
-
+    
+    printf("Waiting for binarize...\n");
     for(int i = 0; i < width; i++)
     {
         pos -> x = i;
@@ -678,6 +679,7 @@ void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
             cairo_stroke(cr);
         }
     }
+    printf("Binarize : OK !\n");
     GtkWidget *w = GET_UI(GtkWidget, "drawingArea");
     gtk_widget_queue_draw(w);
     cairo_destroy(cr);
@@ -716,6 +718,7 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
     unsigned long red, green, blue;
     //lay -> cr = cairo_create(lay -> surface);
 
+    printf("Waiting for binarize color ...\n");
     for(int i = 0; i < width; i++)
     {
         pos -> x = i;
@@ -747,6 +750,9 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
             cairo_stroke(cr);
         }
     }
+    printf("Binarize : OK !\n");
+    GtkWidget *w = GET_UI(GtkWidget, "drawingArea");
+    gtk_widget_queue_draw(w);
     cairo_destroy(cr);
     free(pos);
     free(pixel);
@@ -885,17 +891,19 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
     if (lay == NULL)
         return;
 
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
     int width = (lay -> size).w;
     int height = (lay -> size).h;
 
     struct GMPF_Pos *pos = malloc(sizeof(struct GMPF_Pos));
     struct GMPF_Pixel *pixel = malloc(sizeof(struct GMPF_Pixel));
 
-    lay->cr = cairo_create(lay -> surface);
-
+    cairo_t *cr = cairo_create(lay -> surface);
     unsigned long grey;
-    //lay -> cr = cairo_create(lay -> surface);
 
+    printf("Waiting for grayscale ...\n");
     for(int i = 0; i < width; i++)
     {
         pos -> x = i;
@@ -905,19 +913,22 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
 
             if (layer_get_pixel(lay, pos, pixel) != 0)
                 errx(EXIT_FAILURE, "error get pixel");
-
-			grey = (pixel->R + pixel->G + pixel->B)/3;
-
-            cairo_set_source_rgba(lay->cr, grey, grey, grey, pixel->A);
-            cairo_move_to(lay->cr, i, j);
-            cairo_rel_line_to(lay->cr, 0, 1);
-            cairo_stroke(lay->cr);
+            
+            grey = pixel->R /3 + pixel->G /3+ pixel->B /3;
+            
+            cairo_set_source_rgb(cr, grey, grey, grey);
+            cairo_move_to(cr, i, j);
+            cairo_rel_line_to(cr, 0, 0);
+            cairo_stroke(cr);
         }
     }
-    //lay -> cr = cr;
-    cairo_destroy(lay->cr);
+    printf("Grayscale : OK !\n");
+    GtkWidget *w = GET_UI(GtkWidget, "drawingArea");
+    gtk_widget_queue_draw(w);
+    cairo_destroy(cr);
     free(pos);
     free(pixel);
+
 }
 
 
@@ -1009,8 +1020,8 @@ void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
     gtk_image_set_from_pixbuf(image, imgPixbuf);
     free_img_rgb(img);
 }
-
-
+*/
+/*
 void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
 {
     g_print("Tinter\n");
@@ -1056,9 +1067,9 @@ void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
     }
     layermngr->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
-}
+}*/
 
-
+/*
 void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data)
 {
     g_print("Colorfull\n");
@@ -1103,44 +1114,67 @@ void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data)
     }
     layermngr->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
     g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
-}
+}*/
 
 
 void callback_negative(GtkMenuItem *menuitem, gpointer user_data)
-{
-    g_print("Negative\n");
+{   
     menuitem = 0;
+    g_print("Negative\n");
+
     SGlobalData *data = (SGlobalData*) user_data;
-    GtkWidget *da = NULL;
-    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
 
-    struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = unchangedPixbuf;
+    GtkFlowBox *flowbox =
+        (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
 
-    guchar red, green, blue, alpha;
+    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
+    if (lay == NULL)
+        return;
 
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    int width = (lay -> size).w;
+    int height = (lay -> size).h;
+
+    struct GMPF_Pos *pos = malloc(sizeof(struct GMPF_Pos));
+    struct GMPF_Pixel *pixel = malloc(sizeof(struct GMPF_Pixel));
+
+    cairo_t *cr = cairo_create(lay -> surface);
+
+    unsigned long red, green, blue;
+    //lay -> cr = cairo_create(lay -> surface);
+
+    printf("Waiting for negative ...\n");
     for(int i = 0; i < width; i++)
     {
+        pos -> x = i;
         for(int j = 0; j < height; j++)
         {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-            err(1, "pixbuf get pixels error");
-            red = 255 - red;
-            green = 255 - green;
-            blue = 255 - blue;
-            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
+            pos -> y = j;
+
+            if (layer_get_pixel(lay, pos, pixel) != 0)
+                errx(EXIT_FAILURE, "error get pixel");
+            red = 255 - pixel -> R;
+            green = 255 - pixel -> G;
+            blue = 255 - pixel -> B;
+            
+            cairo_set_source_rgba(cr, red, green, blue, pixel->A);
+            cairo_move_to(cr, i, j);
+            cairo_rel_line_to(cr, 0, 1);
+            cairo_stroke(cr);
         }
     }
-    layermngr->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
-    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
+    printf("Negative : OK !\n");
+    GtkWidget *w = GET_UI(GtkWidget, "drawingArea");
+    gtk_widget_queue_draw(w);
+    cairo_destroy(cr);
+    free(pos);
+    free(pixel);
 }
 
-
+/*
 void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)
 {
     g_print("Mirror - Horizontal\n");
