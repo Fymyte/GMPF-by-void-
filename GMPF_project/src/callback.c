@@ -876,15 +876,14 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
 */
 
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
-// NOT OK
+// OK
 {
-    menuitem = 0;
-    g_print("Grayscale\n");
-
+    g_print("Greysclae\n");
+    (void)menuitem;
     SGlobalData *data = (SGlobalData*) user_data;
+    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
 
-    GtkFlowBox *flowbox =
-        (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
+    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
 
     struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
@@ -894,42 +893,31 @@ void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
     g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
-    int width = (lay -> size).w;
-    int height = (lay -> size).h;
+    GdkPixbuf *imgPixbuf = lay->image;
 
-    struct GMPF_Pos *pos = malloc(sizeof(struct GMPF_Pos));
-    struct GMPF_Pixel *pixel = malloc(sizeof(struct GMPF_Pixel));
+    guchar red, green, blue, alpha;
+    guchar grey;
 
-    cairo_t *cr = cairo_create(lay -> surface);
-    unsigned long grey;
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
 
-    printf("Waiting for grayscale ...\n");
     for(int i = 0; i < width; i++)
     {
-        pos -> x = i;
         for(int j = 0; j < height; j++)
         {
-            pos -> y = j;
-
-            if (layer_get_pixel(lay, pos, pixel) != 0)
-                errx(EXIT_FAILURE, "error get pixel");
-
-            grey = pixel->R /3 + pixel->G /3+ pixel->B /3;
-
-            cairo_set_source_rgb(cr, grey, grey, grey);
-            cairo_move_to(cr, i, j);
-            cairo_rel_line_to(cr, 0, 0);
-            cairo_stroke(cr);
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            grey = (red + green + blue)/3;
+            put_pixel(imgPixbuf, i, j, grey, grey, grey, alpha);
         }
     }
-    printf("Grayscale : OK !\n");
-    GtkWidget *w = GET_UI(GtkWidget, "drawingArea");
-    gtk_widget_queue_draw(w);
-    cairo_destroy(cr);
-    free(pos);
-    free(pixel);
-
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    gtk_widget_queue_draw(da);
 }
+
 
 
 void callback_brush(GtkMenuItem *menuitem, gpointer user_data)
