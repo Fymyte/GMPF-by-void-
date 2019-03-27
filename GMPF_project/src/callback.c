@@ -554,7 +554,12 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
     layout = GET_UI(GtkWidget, "DrawingAreaLayout");
     layermngr = layermngr_get_layermngr(flowbox);
-    layermngr_add_new_layer(flowbox, filename);
+    GtkEntry *entry = GET_UI(GtkEntry, "ScaleEntry");
+    GMPF_Layer *layer = layermngr_add_new_layer(flowbox, filename);
+    const gchar *s = gtk_entry_get_text (entry);
+    float scaleValue = atof(s) / 100;
+    layer->scale_factor.x = scaleValue;
+    layer->scale_factor.y = scaleValue;
 
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
     if(da == NULL)

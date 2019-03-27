@@ -37,8 +37,8 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
         cairo_line_to(cr, x / scale_x, y / scale_y);
         cairo_stroke(cr);
 
-        refreshx = (x < layermngr->pos.x ? x : layermngr->pos.x) - radius;
-        refreshy = (y < layermngr->pos.y ? y : layermngr->pos.y) - radius;
+        refreshx = (x < layermngr->pos.x ? x : layermngr->pos.x) - (radius * scale_x);
+        refreshy = (y < layermngr->pos.y ? y : layermngr->pos.y) - (radius * scale_y);
         width = (x - layermngr->pos.x) * 2;
         height = (y - layermngr->pos.y) * 2;
         if (width < 0)
@@ -54,8 +54,8 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
     {
         cairo_arc(cr, x / scale_x, y / scale_y, radius, 0.0, G_PI * 2);
         cairo_fill_preserve(cr);
-        refreshx = x - radius;
-        refreshy = y - radius;
+        refreshx = x - (radius * scale_x);
+        refreshy = y - (radius * scale_y);
         width = 2 * radius;
         height = 2 * radius;
     }
@@ -63,6 +63,6 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
     layermngr->pos.x = x;
     layermngr->pos.y = y;
 
-    gtk_widget_queue_draw_area (widget, refreshx, refreshy,
-            width, height);
+    gtk_widget_queue_draw_area (widget, refreshx - 10, refreshy - 10,
+            width * scale_x + 20, height * scale_y + 20);
 }
