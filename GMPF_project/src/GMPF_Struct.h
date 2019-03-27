@@ -56,11 +56,11 @@ struct GMPF_Layer {
     char isvisible; // Set to one if it has to be rendered
 
     GdkPixbuf *icon; // The icon displayed in the list of layer
-    GdkPixbuf *image;
+    GdkPixbuf *image; // The pixbuf associated with the layer->surface
 
     cairo_t *cr; // The cairo context of the surface attribut
 
-    cairo_surface_t *unscaled_surface;
+    // cairo_surface_t *unscaled_surface;
     cairo_surface_t *surface;
 
     // for the list
@@ -90,13 +90,6 @@ struct GMPF_LayerMngr {
     // get the element on the GUI
     GtkFlowBox *flowbox;
 };
-
-
-
-
-
-// FUNCTIONS
-
 
 
 

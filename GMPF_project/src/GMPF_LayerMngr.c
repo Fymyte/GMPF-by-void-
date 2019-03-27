@@ -231,7 +231,7 @@ GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox)
 }
 
 
-void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
+GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
 {
     /*
         Add a GMPF_Layer after the selected element in the flowbox.
@@ -262,7 +262,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
     }
 
     newlayer->surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
-    newlayer->unscaled_surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
+    // newlayer->unscaled_surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
     newlayer->size.w = gdk_pixbuf_get_width(newlayer->image);
     newlayer->size.h = gdk_pixbuf_get_height(newlayer->image);
 
@@ -300,7 +300,7 @@ void layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
 
     newlayer->UIIcon = (GtkImage *) image;
     layer_icon_refresh(newlayer);
-
+    return newlayer;
 }
 
 
@@ -356,7 +356,7 @@ GMPF_Layer * layer_initialization()
 
     layer->cr = NULL;
 
-    layer->unscaled_surface = NULL;
+    // layer->unscaled_surface = NULL;
     layer->surface = NULL;
 
     list_init(&(layer->list));
@@ -384,8 +384,8 @@ void layer_delete(GMPF_Layer *layer)
     if (layer->surface != NULL)
         cairo_surface_destroy (layer->surface);
 
-    if (layer->unscaled_surface != NULL)
-        cairo_surface_destroy (layer->unscaled_surface);
+    // if (layer->unscaled_surface != NULL)
+    //     cairo_surface_destroy (layer->unscaled_surface);
 
     free(layer);
 }
