@@ -130,7 +130,7 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="margin_top">5</property>
-                        <property name="rgba">rgb(0,0,0)</property>
+                        <property name="use_alpha">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1150,6 +1150,7 @@ effet :</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="title" translatable="yes"/>
+            <signal name="selection-changed" handler="callback_applyFilter" swapped="no"/>
             <signal name="selection-changed" handler="callback_image_cairo" swapped="no"/>
           </object>
           <packing>

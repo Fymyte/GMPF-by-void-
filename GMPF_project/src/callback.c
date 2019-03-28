@@ -891,3 +891,9 @@ void callback_saveFilter(GtkButton *btn, gpointer user_data)
     Save_filter(user_data);
     (void)btn;
 }
+
+void callback_applyFilter(GtkFileChooser *btn, gpointer user_data)
+{
+    //gchar *filename = gtk_file_chooser_get_filename(btn);
+    Apply_user_filter("test4.txt", user_data);
+}

@@ -391,6 +391,7 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_applyFilter" swapped="no"/>
                       </object>
                     </child>
                     <child>

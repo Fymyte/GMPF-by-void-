@@ -143,3 +143,60 @@ void Save_filter(gpointer user_data)
     g_free(filter_2);
     printf("Filter save done \n");
 }
+
+void Apply_user_filter(gchar *filename, gpointer user_data)
+{
+    SGlobalData *data = (SGlobalData *)user_data;
+    int fd = open(filename, O_RDONLY);
+
+    if (fd == -1)
+    {
+        printf("file open fail\n");
+        return;
+    }
+
+    void *buffer = calloc(35, sizeof(char));
+    int r = read(fd, buffer, 35);
+
+    if (strncmp("Grey", buffer, r) == 0)
+        Greyscale(data);
+
+    if (strncmp("Binarize", buffer, r) == 0)
+        Binarize(data);
+
+    if (strncmp("Binarize color", buffer, r) == 0)
+        BinarizeColor(data);
+
+    if (strncmp("Colorfull", buffer, r) == 0)
+        Colorfull(data);
+
+    if (strncmp("Blur", buffer, r) == 0) //TODO
+        Greyscale(data);
+
+    while(r > 0)
+    {
+        if (strncmp("Grey", buffer, r) == 0)
+            Greyscale(data);
+
+        if (strncmp("Binarize", buffer, r) == 0)
+            Binarize(data);
+
+        if (strncmp("Binarize color", buffer, r) == 0)
+            BinarizeColor(data);
+
+        if (strncmp("Colorfull", buffer, r) == 0)
+            Colorfull(data);
+
+        if (strncmp("Blur", buffer, r) == 0) //TODO
+            Greyscale(data);
+
+        r = read(fd, buffer, 35);
+    }
+
+    if (close(fd) == -1)
+    {
+        printf("file close fail\n");
+        return;
+    }
+    printf("user filter applied\n");
+}
