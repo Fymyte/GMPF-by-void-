@@ -11,6 +11,11 @@
 #include <err.h>
 #include <string.h>
 #include <cairo.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <string.h>
 #include <gtk-3.0/gtk/gtk.h>
 
 
@@ -24,6 +29,7 @@
 #include "Save.h"
 #include "debug.h"
 #include "filters.h"
+#include "fcreator.h"
 
 //callback functions
 

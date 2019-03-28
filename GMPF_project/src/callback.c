@@ -885,3 +885,9 @@ void reset_cursor(GtkMenuItem *menuitem, gpointer user_data)
     cursor_state = 0; // 0 ==> normal cursor
     (void)menuitem;
 }
+
+void callback_saveFilter(GtkButton *btn, gpointer user_data)
+{
+    Save_filter(user_data);
+    (void)btn;
+}
