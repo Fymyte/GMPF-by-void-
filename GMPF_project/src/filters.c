@@ -2,8 +2,8 @@
 
 void Greyscale(SGlobalData *data)
 {
-    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
-    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
     struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
@@ -40,8 +40,8 @@ void Greyscale(SGlobalData *data)
 
 void Negative(SGlobalData *data)
 {
-    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
-    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
     struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
@@ -79,8 +79,7 @@ void Negative(SGlobalData *data)
 
 void Binarize(SGlobalData *data)
 {
-    GtkFlowBox *flowbox =
-        (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
     struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
@@ -148,7 +147,7 @@ void Binarize(SGlobalData *data)
             cairo_stroke(cr);
         }
     }
-    GtkWidget *w = GET_UI(GtkWidget, "drawingArea");
+    GET_UI(GtkWidget, w, "drawingArea");
     gtk_widget_queue_draw(w);
     cairo_destroy(cr);
     free(pos);
@@ -157,10 +156,9 @@ void Binarize(SGlobalData *data)
 
 void BinarizeColor(SGlobalData *data)
 {
-    GtkFlowBox *flowbox =
-        (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
-    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
     if (lay == NULL)
         return;
@@ -171,8 +169,8 @@ void BinarizeColor(SGlobalData *data)
     int width = (lay -> size).w;
     int height = (lay -> size).h;
 
-    struct GMPF_Pos *pos = malloc(sizeof(struct GMPF_Pos));
-    struct GMPF_Pixel *pixel = malloc(sizeof(struct GMPF_Pixel));
+    GMPF_Pos *pos = malloc(sizeof(GMPF_Pos));
+    GMPF_Pixel *pixel = malloc(sizeof(GMPF_Pixel));
 
     cairo_t *cr = cairo_create(lay -> surface);
 
@@ -210,7 +208,7 @@ void BinarizeColor(SGlobalData *data)
             cairo_stroke(cr);
         }
     }
-    GtkWidget *w = GET_UI(GtkWidget, "drawingArea");
+    GET_UI(GtkWidget, w, "drawingArea");
     gtk_widget_queue_draw(w);
     cairo_destroy(cr);
     free(pos);
@@ -220,12 +218,11 @@ void BinarizeColor(SGlobalData *data)
 void Tinter(SGlobalData *data)
 {
     GtkColorChooser *colorChooser = NULL;
-    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
+    GET_UI(GtkWidget, da, "drawingArea");
 
-    GtkFlowBox *flowbox =
-        (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
-    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
     if (lay == NULL)
         return;
@@ -274,14 +271,12 @@ void Tinter(SGlobalData *data)
 void Colorfull(SGlobalData *data)
 {
     guchar r, g, b, factor;
-    GtkWidget *da = NULL;
-    GtkColorChooser *colorChooser = NULL;
     GdkRGBA rgba;
-    da = GET_UI(GtkWidget, "drawingArea");
-    colorChooser = GET_UI(GtkColorChooser, "ColorTinter");
-    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
-    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
     if (lay == NULL)
         return;
@@ -326,11 +321,10 @@ void Colorfull(SGlobalData *data)
 
 void Convolute(SGlobalData *data, double *mat)
 {
-    GtkWidget *da = NULL;
-    da = GET_UI(GtkWidget, "drawingArea");
-    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
-    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
     if (lay == NULL)
         return;

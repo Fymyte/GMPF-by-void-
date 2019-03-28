@@ -107,15 +107,10 @@ int GMPF_start()
 
 
     gtk_widget_show_all (Main_window);
-    #ifndef GTK2
-    GdkWindow *gdk_window = gtk_widget_get_window(da);
 
-    printf("Pointer to gdkwindow [%x]\n", gdk_window);
-    printf("Event compresssion: %d\n", gdk_window_get_event_compression (gdk_window));
-    //    gdk_window_set_event_compression (gtk_widget_get_parent_window (window), FALSE);
+/************************Uncompress the event from the drawing area************/
+    GdkWindow *gdk_window = gtk_widget_get_window(da);
     gdk_window_set_event_compression (gdk_window, FALSE);
-    printf("Event compresssion: %d\n", gdk_window_get_event_compression (gdk_window));
-    #endif
 
     gtk_main();
 
@@ -155,11 +150,8 @@ void callback_remove_selected_layer(GtkMenuItem *menuitem, gpointer user_data)
 {
     menuitem = 0;
     SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    GtkWidget *da = NULL;
-    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    da = GET_UI(GtkWidget, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
     layermngr_delete_selected_layer(flowbox);
     gtk_widget_queue_draw(da);
-
 }

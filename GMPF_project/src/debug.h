@@ -15,8 +15,18 @@
 #define GMPF_DEBUG
 
 
-#define GET_UI(_type, _name) \
-    (_type *) (gtk_builder_get_object(data->builder, _name));
+#define GET_UI(_type, _var, _name) \
+    _type * _var = (_type *) (gtk_builder_get_object(data->builder, _name));
+
+#define INIT_UI() \
+    SGlobalData *data = (SGlobalData *)user_data;
+
+#ifdef __GNUC__
+    #define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
+#else
+    #define UNUSED(x) UNUSED_ ## x
+#endif
+
 
 // print error
 #define PRINTERR fprintf(stderr, "[error] %s::%d %s", __FILE__, __LINE__, __func__);
@@ -47,8 +57,6 @@
 #else
     #define D_PRINT(_fmt, ...)
 #endif
-
-
 
 
 #endif /* DEBUG_H_ */
