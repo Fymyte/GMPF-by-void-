@@ -22,7 +22,7 @@
 #include "pixel_op.h"
 #include "brush.h"
 #include "Save.h"
-#include "debug.h"
+#include "macro.h"
 #include "filters.h"
 
 //callback functions

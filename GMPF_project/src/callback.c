@@ -31,9 +31,24 @@ int check(int width, int height, int i, int j)
     return 1;
 }
 
+void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    const gchar *s = gtk_entry_get_text (entry);
+    float angle = atof(s) / 100;
+    RAD_FROM_DEG(angle);
+    lay->cr = cairo_create(lay->surface);
+    cairo_rotate(lay->cr, angle);
+    cairo_paint(lay->cr);
+    cairo_destroy(lay->cr);
+    gtk_widget_queue_draw(da);
+}
+
 void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
 {
-
     SGlobalData *data = (SGlobalData*) user_data;
 
     GtkImage *image = NULL;

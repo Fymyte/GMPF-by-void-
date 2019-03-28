@@ -11,7 +11,7 @@
 #include "GMPF_Struct.h"
 #include "list.h"
 
-#include "debug.h"
+#include "macro.h"
 
 
 // DEFINES
