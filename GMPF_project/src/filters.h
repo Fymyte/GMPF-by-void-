@@ -9,5 +9,7 @@ void Negative(SGlobalData *data);
 void Binarize(SGlobalData *data);
 void BinarizeColor(SGlobalData *data);
 void Tinter(SGlobalData *data);
+void Colorfull(SGlobalData *data);
+void Convolute(SGlobalData *data,double *mat);
 
 #endif

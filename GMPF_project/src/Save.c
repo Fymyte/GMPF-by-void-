@@ -10,8 +10,8 @@ int export_cairo_to_png(SGlobalData *data)
 
     if (layermngr->layer_list.next == NULL)
         return -1; //save failed
-    
-    
+
+
 
 	GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
 
@@ -36,7 +36,7 @@ int export_cairo_to_png(SGlobalData *data)
         lay = container_of(lay->list.next, GMPF_Layer, list);
     }
 
-   
+
 	//get the surface from the context and save it
     final_surface = cairo_get_target(final_context);
     cairo_status_t status = cairo_surface_write_to_png (final_surface, "image.png");

@@ -319,10 +319,6 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 
         cairo_destroy(lay->cr);
     }
-
-    /* Now invalidate the affected region of the drawing area. */
-
-
 }
 
 
@@ -339,9 +335,7 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 
     if (lay != NULL) // NEW VERSION - AVAILABLE NOW
     {
-
         /* Paint to the surface, where we store our state */
-
         lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
@@ -554,12 +548,7 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
     layout = GET_UI(GtkWidget, "DrawingAreaLayout");
     layermngr = layermngr_get_layermngr(flowbox);
-    GtkEntry *entry = GET_UI(GtkEntry, "ScaleEntry");
-    GMPF_Layer *layer = layermngr_add_new_layer(flowbox, filename);
-    const gchar *s = gtk_entry_get_text (entry);
-    float scaleValue = atof(s) / 100;
-    layer->scale_factor.x = scaleValue;
-    layer->scale_factor.y = scaleValue;
+    layermngr_add_new_layer(flowbox, filename);
 
     da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
     if(da == NULL)
@@ -625,7 +614,7 @@ void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
     BinarizeColor(data);
 }
 
-/*
+
 void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
 {
     g_print("Convolution\n");
@@ -671,81 +660,16 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
         break;
     }
 
-    menuitem = 0;
+    (void)menuitem;
     SGlobalData *data = (SGlobalData*) user_data;
-    GtkImage *image = NULL;
-    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-
-    GdkPixbuf *imgPixbuf;
-    imgPixbuf = unchangedPixbuf;
-
-    double r, g, b, a;
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    int x = 3;
-    struct Img_rgb *img = init_img_rgb(width, height);
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            r = g = b = a = 0;
-
-            for (int k = -x / 2; k <= x/2; k++)
-            {
-                for(int l = -x / 2; l <= x/2; l++)
-                {
-                    if (check(width, height, i + k, j +l) == 1)
-                    {
-                        guchar red, green, blue, alpha;
-                        error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-                        if(!error)
-                        err(1, "pixbuf get pixels error");
-                        r += mat[l + x/2 + k + x/2] * (double)red;
-                        g += mat[l + x/2 + k + x/2] * (double)green;
-                        b += mat[l + x/2 + k + x/2] * (double)blue;
-                        a = alpha;
-                    }
-                }
-            }
-
-            if (r > 255)
-            r = 255;
-            else if (r < 0)
-            r = 0;
-
-            if (g > 255)
-            g = 255;
-            else if (g < 0)
-            g = 0;
-
-            if (b > 255)
-            b = 255;
-            else if (b < 0)
-            b = 0;
-
-            Matrix_val(img -> red, i, j, r);
-            Matrix_val(img -> green, i , j, g);
-            Matrix_val(img -> blue, i , j, b);
-            Matrix_val(img -> alpha, i, j, a);
-        }
-    }
-    Img_rgb_to_Image(imgPixbuf, img);
-    unchangedPixbuf = imgPixbuf;
-    gtk_image_set_from_pixbuf(image, imgPixbuf);
-
-    free_img_rgb(img);
-    free(mat);
+    Convolute(data, mat);
 }
-*/
+
 
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
 // OK
 {
-    g_print("Grayscale\n");
+    g_print("Greyscale\n");
     (void)menuitem;
     SGlobalData *data = (SGlobalData*) user_data;
     Greyscale(data);
@@ -846,32 +770,32 @@ void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
 void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
 {
     g_print("Tinter\n");
-    (void)menuitem;
-    SGlobalData *data = (SGlobalData*) user_data;
-    Tinter(data);
-}
-
-/*
-void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data)
-{
-    g_print("Colorfull\n");
     menuitem = 0;
-    guchar r, g, b, factor;
-
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkWidget *da = NULL;
     GtkColorChooser *colorChooser = NULL;
+    SGlobalData *data = (SGlobalData*) user_data;
+    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
+
+    GtkFlowBox *flowbox =
+        (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
+
+    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    if (lay == NULL)
+        return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+    guchar r, g, b, factor;
     GdkRGBA rgba;
-    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
+
     colorChooser = (GtkColorChooser *)(gtk_builder_get_object(data->builder, "ColorTinter"));
     gtk_color_chooser_get_rgba (colorChooser, &rgba);
     r = (guchar)(rgba.red * 255);
     g = (guchar)(rgba.green * 255);
     b = (guchar)(rgba.blue * 255);
-    factor = (guchar)(rgba.alpha * 255);
-
-    struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = unchangedPixbuf;
+    factor = (guchar)(rgba.alpha * 100);
 
     guchar red;
     guchar green;
@@ -894,9 +818,19 @@ void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data)
             put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
         }
     }
-    layermngr->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 0, NULL);
-    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), NULL);
-}*/
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    gtk_widget_queue_draw(da);
+}
+
+
+void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data)
+{
+    g_print("Colorfull\n");
+    (void)menuitem;
+    SGlobalData *data = (SGlobalData*) user_data;
+    Colorfull(data);
+}
 
 
 void callback_negative(GtkMenuItem *menuitem, gpointer user_data)
@@ -949,5 +883,5 @@ void reset_cursor(GtkMenuItem *menuitem, gpointer user_data)
     SGlobalData *data = (SGlobalData*) user_data;
     resetCursor(data);
     cursor_state = 0; // 0 ==> normal cursor
-    menuitem = 0;
+    (void)menuitem;
 }
