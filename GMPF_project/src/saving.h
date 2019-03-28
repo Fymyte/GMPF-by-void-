@@ -6,7 +6,7 @@
 #include "GMPF_LayerMngr.h"
 #include "GMPF_Struct.h"
 
-#include "debug.h"
+#include "macro.h"
 
 
 void save_project(GMPF_LayerMngr *layermngr, GtkFlowBox *flowbox, const char *filename, char *error);

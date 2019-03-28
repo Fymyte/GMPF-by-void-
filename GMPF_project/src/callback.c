@@ -31,6 +31,22 @@ int check(int width, int height, int i, int j)
     return 1;
 }
 
+void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    const gchar *s = gtk_entry_get_text (entry);
+    float angle = atof(s) / 100;
+    RAD_FROM_DEG(angle);
+    lay->cr = cairo_create(lay->surface);
+    cairo_rotate(lay->cr, angle);
+    cairo_paint(lay->cr);
+    cairo_destroy(lay->cr);
+    gtk_widget_queue_draw(da);
+}
+
 void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
@@ -56,8 +72,8 @@ void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
 
 void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData *)user_data;
-    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
     if (layer)
@@ -71,18 +87,17 @@ void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
 void callback_layer_move_down(GtkWidget *widget, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData *)user_data;
-    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
-    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
     layermngr_move_down_selected_layer(flowbox);
     gtk_widget_queue_draw(da);
-    (void)widget;
 }
 
 void callback_layer_move_up(GtkWidget *widget, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData *)user_data;
-    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
-    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
     layermngr_move_up_selected_layer(flowbox);
     gtk_widget_queue_draw(da);
     (void)widget;
@@ -92,9 +107,7 @@ void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
 
-    GtkImage *image = NULL;
-
-    image = GET_UI(GtkImage, "OriginalImage");
+     GET_UI(GtkImage, image, "OriginalImage");
 
     // image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
     GdkPixbuf *pixbuf;
@@ -115,10 +128,9 @@ void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
     gtk_image_set_from_pixbuf(image, pixbuf);
 }
 
-void callback_hideWidget(GtkWidget *widget, gpointer user_data)
+void callback_hideWidget(GtkWidget *widget, gpointer UNUSED(user_data))
 {
     gtk_widget_hide(widget);
-    user_data = 0;
 }
 
 void callback_about (GtkMenuItem *menuitem, gpointer user_data)
@@ -136,7 +148,6 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data)
 
     gtk_dialog_run (GTK_DIALOG (dialog));
     gtk_widget_destroy (dialog);
-    menuitem = 0;
 }
 
 void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
@@ -157,8 +168,7 @@ void callback_resize_brush(GtkEntry *entry, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     GMPF_LayerMngr *layermngr = NULL;
-    GtkFlowBox *flowbox = NULL;
-    flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     layermngr = layermngr_get_layermngr(flowbox);
 
     const gchar *s = gtk_entry_get_text (entry);
@@ -171,9 +181,7 @@ void callback_show_layer_window(GtkWidget *widget, gpointer user_data)
 {
     //variables definitions
     SGlobalData *data = (SGlobalData*)user_data;
-    GtkWidget *layer_window = NULL;
-
-    layer_window = GET_UI(GtkWidget, "LayerWindow");
+    GET_UI(GtkWidget, layer_window, "LayerWindow");
     //show the filter creator windowjust
     gtk_widget_show(layer_window);
     (void)widget;
@@ -183,14 +191,11 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
 
-    GtkWidget *da = NULL;
-    GtkWidget *layout = NULL;
-    GtkFlowBox *flowbox = NULL;
     GMPF_LayerMngr *layermngr = NULL;
 
-    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
-    layout = GET_UI(GtkWidget, "DrawingAreaLayout");
-    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     layermngr = layermngr_get_layermngr(flowbox);
     //GMPF_Layer *selected_layer = layermngr_get_selected_layer(flowbox);
 
@@ -324,13 +329,9 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 
 void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    GMPF_LayerMngr *layermngr = NULL;
-
-
-    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layermngr = layermngr_get_layermngr(flowbox);
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
     if (lay != NULL) // NEW VERSION - AVAILABLE NOW
@@ -350,8 +351,6 @@ gboolean enter_notify_event_cb (GtkWidget *widget, GdkEvent *event, gpointer use
 {
     SGlobalData *data = (SGlobalData *)user_data;
     callback_setCursor(data);
-    event = 0;
-    (void)widget;
     return TRUE;
 }
 
@@ -513,7 +512,7 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 void callback_select_tool(GtkWidget *widget, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData *)user_data;
-    GtkFlowBox *flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     gchar name = gtk_widget_get_name(widget)[0];
     GMPF_Tool tool;
@@ -536,21 +535,17 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
 void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
-    GtkWidget *da = NULL;
-    GtkWidget *layout = NULL;
     GError *error = NULL;
     GMPF_LayerMngr *layermngr = NULL;
 
     gchar *filename = gtk_file_chooser_get_filename(btn);
 
-
-    GtkFlowBox *flowbox = NULL;
-    flowbox = GET_UI(GtkFlowBox, "GMPF_flowbox");
-    layout = GET_UI(GtkWidget, "DrawingAreaLayout");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     layermngr = layermngr_get_layermngr(flowbox);
     layermngr_add_new_layer(flowbox, filename);
 
-    da = GTK_WIDGET(gtk_builder_get_object(data->builder, "drawingArea"));
+    GET_UI(GtkWidget, da, "drawingArea");
     if(da == NULL)
         D_PRINT("unable to get the drawingArea", NULL);
 
@@ -773,10 +768,9 @@ void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
     menuitem = 0;
     GtkColorChooser *colorChooser = NULL;
     SGlobalData *data = (SGlobalData*) user_data;
-    GtkWidget *da = GET_UI(GtkWidget, "drawingArea");
+    GET_UI(GtkWidget, da, "drawingArea");
 
-    GtkFlowBox *flowbox =
-        (GtkFlowBox*)(gtk_builder_get_object(data -> builder, "GMPF_flowbox"));
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
     struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 

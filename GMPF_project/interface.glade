@@ -847,6 +847,21 @@ effet :</property>
                 <property name="position">2</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkSpinButton" id="RotateDegreeSpinButton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="max_length">3</property>
+                <property name="progress_pulse_step">1</property>
+                <property name="input_purpose">digits</property>
+                <signal name="changed" handler="callback_rotate_angle" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
