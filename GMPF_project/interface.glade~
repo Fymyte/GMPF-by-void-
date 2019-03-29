@@ -376,6 +376,7 @@ effet :</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkMenuBar" id="menubar1">
+            <property name="name">menubar1</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
@@ -999,6 +1000,7 @@ effet :</property>
                         <property name="height">0</property>
                         <child>
                           <object class="GtkEventBox">
+                            <property name="name">event</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">center</property>

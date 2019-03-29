@@ -32,7 +32,8 @@ without any warranty.
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkMenuBar">
+          <object class="GtkMenuBar" id="menubar2">
+            <property name="name">menubar2</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
@@ -376,6 +377,7 @@ effet :</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkMenuBar" id="menubar1">
+            <property name="name">menubar1</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
