@@ -391,6 +391,7 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_applyFilter" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -846,6 +847,21 @@ effet :</property>
                 <property name="position">2</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkSpinButton" id="RotateDegreeSpinButton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="max_length">3</property>
+                <property name="progress_pulse_step">1</property>
+                <property name="input_purpose">digits</property>
+                <signal name="changed" handler="callback_rotate_angle" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -1150,7 +1166,6 @@ effet :</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="title" translatable="yes"/>
-            <signal name="selection-changed" handler="callback_applyFilter" swapped="no"/>
             <signal name="selection-changed" handler="callback_image_cairo" swapped="no"/>
           </object>
           <packing>

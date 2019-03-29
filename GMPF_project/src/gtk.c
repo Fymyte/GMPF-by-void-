@@ -103,6 +103,23 @@ int GMPF_start()
     /* Use this to solve problems*/
     // g_free(gdk_window);
 
+    GtkCssProvider *provider = gtk_css_provider_new();
+    //FILE css = fopen("main.css", "r");
+    //gtk_css_provider_load_from_path(provider, "main.css", &err);
+    //GdkDisplay *display = gdk_display_get_default();
+    const gchar *myFile = "main.css";
+
+    GdkScreen *screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data.builder, "MainWindow")));
+    gtk_css_provider_load_from_file(provider, g_file_new_for_path(myFile), &err);
+
+    gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider),
+                  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+    //GdkScreen *screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data.builder, "MainWindow")));
+    //gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider),
+    //            GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+    g_object_unref(provider);
 
 
 
