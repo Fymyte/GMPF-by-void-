@@ -1,3 +1,0 @@
-Grey
-Binarize
-rgba(237,24,24,0.0899281)

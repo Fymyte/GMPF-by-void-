@@ -1,3 +1,0 @@
-Binarize color
-Colorfull
-rgb(237,212,0)

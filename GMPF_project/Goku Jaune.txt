@@ -1,3 +1,0 @@
-Grey
-Colorfull
-rgb(252,233,79)
