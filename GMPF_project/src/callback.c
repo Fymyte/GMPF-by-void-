@@ -27,7 +27,7 @@ int cursor_state = 0;
 int check(int width, int height, int i, int j)
 {
     if (i < 0 || j < 0 || i > width || j > height)
-    return 0;
+        return 0;
     return 1;
 }
 
@@ -49,7 +49,7 @@ void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
 
 void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
 
     GtkImage *image = NULL;
 
@@ -57,7 +57,6 @@ void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
     GdkPixbuf *pixbuf;
 
     const char *menulabel = gtk_menu_item_get_label (menuitem);
-    D_PRINT("%s\n", menulabel);
 
     if (strcmp(menulabel, "Flip horizontal"))
     pixbuf = gdk_pixbuf_flip (unchangedPixbuf, TRUE);
@@ -93,21 +92,20 @@ void callback_layer_move_down(UNUSED GtkWidget *widget, gpointer user_data)
     gtk_widget_queue_draw(da);
 }
 
-void callback_layer_move_up(GtkWidget *widget, gpointer user_data)
+void callback_layer_move_up(UNUSED GtkWidget *widget, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData *)user_data;
+    INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
     layermngr_move_up_selected_layer(flowbox);
-    gtk_widget_queue_draw(da);
-    (void)widget;
+    gtk_widget_queue_draw(da);;
 }
 
 void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
 
-     GET_UI(GtkImage, image, "OriginalImage");
+    GET_UI(GtkImage, image, "OriginalImage");
 
     // image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
     GdkPixbuf *pixbuf;
@@ -136,15 +134,13 @@ void callback_hideWidget(GtkWidget *widget, UNUSED gpointer user_data)
 void callback_about (UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     /* Transtypage du pointeur user_data pour récupérer nos données. */
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkWidget *dialog = NULL;
-
-    dialog =  gtk_about_dialog_new ();
+    INIT_UI();
+    GtkWidget *dialog =  gtk_about_dialog_new ();
 
     /* Pour l'exemple on va rendre la fenêtre "À propos" modale par rapport à la */
     /* fenêtre principale. */
-    gtk_window_set_transient_for (GTK_WINDOW(dialog),
-    GTK_WINDOW(gtk_builder_get_object (data->builder, "MainWindow")));
+    GET_UI(GtkWindow, window, "MainWindow");
+    gtk_window_set_transient_for (GTK_WINDOW(dialog), window);
 
     gtk_dialog_run (GTK_DIALOG (dialog));
     gtk_widget_destroy (dialog);
@@ -157,16 +153,15 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     adjust_scale (scaleValue, scaleValue, user_data);
 }
 
-void callback_save(GtkMenuItem *menuitem, gpointer user_data)
+void callback_save(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     export_cairo_to_png(data);
-    (void)menuitem;
 }
 
 void callback_resize_brush(GtkEntry *entry, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     GMPF_LayerMngr *layermngr = NULL;
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     layermngr = layermngr_get_layermngr(flowbox);
@@ -177,26 +172,24 @@ void callback_resize_brush(GtkEntry *entry, gpointer user_data)
     // resizeCursor(data, (int)size);
 }
 
-void callback_show_layer_window(GtkWidget *widget, gpointer user_data)
+void callback_show_layer_window(UNUSED GtkWidget *widget, gpointer user_data)
 {
     //variables definitions
-    SGlobalData *data = (SGlobalData*)user_data;
+    INIT_UI();
     GET_UI(GtkWidget, layer_window, "LayerWindow");
     //show the filter creator windowjust
     gtk_widget_show(layer_window);
-    (void)widget;
 }
 
 void adjust_scale(double scale_x, double scale_y, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
 
-    GMPF_LayerMngr *layermngr = NULL;
 
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    layermngr = layermngr_get_layermngr(flowbox);
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     //GMPF_Layer *selected_layer = layermngr_get_selected_layer(flowbox);
 
     double max_width = 0;
@@ -230,47 +223,34 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
 
 void clear_surface (gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    GMPF_LayerMngr *layermngr = NULL;
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
-    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layermngr = layermngr_get_layermngr(flowbox);
-
-    GMPF_Layer *lay;
-    if((lay = layermngr_get_selected_layer(flowbox)) != NULL)
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if(lay)
         layermngr->surface = lay->surface;
     else
         layermngr->surface = NULL;
 
-    cairo_t *cr;
-
-    cr = cairo_create (layermngr->surface);
+    cairo_t *cr = cairo_create (layermngr->surface);
 
     cairo_set_source_rgba(cr, 0, 1, 0, 0);
     cairo_paint (cr);
 
     cairo_destroy (cr);
-
 }
 
     /* Create a new surface of the appropriate size to store our scribbles */
 gboolean configure_event_cb (GtkWidget *widget,
-    GdkEventConfigure *event,
+    UNUSED GdkEventConfigure *event,
     gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    GMPF_LayerMngr *layermngr = NULL;
-
-    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    if (!flowbox)
-        D_PRINT("unable to get flowbox", NULL);
-
-    layermngr = layermngr_get_layermngr(flowbox);
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     if (!layermngr)
         D_PRINT("unable to get layermngr", NULL);
-
 
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     if((lay) != NULL)
@@ -285,8 +265,6 @@ gboolean configure_event_cb (GtkWidget *widget,
     content,
     gtk_widget_get_allocated_width (widget),
     gtk_widget_get_allocated_height (widget));
-    (void)event;
-
     /* We've handled the configure event, no need for further processing. */
     return TRUE;
 }
@@ -295,16 +273,12 @@ gboolean configure_event_cb (GtkWidget *widget,
 /* Draw a rectangle on the surface at the given position */
 void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    GtkColorChooser *chooser = NULL;
+    INIT_UI();
     GdkRGBA color;
-    GMPF_LayerMngr *layermngr = NULL;
 
-
-    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    chooser = (GtkColorChooser *)(gtk_builder_get_object(data->builder, "ColorTinter"));
-    layermngr = layermngr_get_layermngr(flowbox);
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkColorChooser, chooser, "ColorTinter");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     gtk_color_chooser_get_rgba(chooser, &color);
 
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
@@ -371,12 +345,9 @@ gboolean leave_notify_event_cb (UNUSED GtkWidget *widget,
 gboolean button_release_event_cb(UNUSED GtkWidget *widget,
                         UNUSED GdkEventButton *event, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    GMPF_LayerMngr *layermngr = NULL;
-
-    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layermngr = layermngr_get_layermngr(flowbox);
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
     layermngr->pos.x = -1;
     layermngr->pos.y = -1;
@@ -396,15 +367,13 @@ gboolean button_press_event_cb (GtkWidget      *widget,
 GdkEventButton *event,
 gpointer        user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    GMPF_LayerMngr *layermngr = NULL;
+    INIT_UI();
 
-    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layermngr = layermngr_get_layermngr(flowbox);
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
-    GMPF_Layer *lay;
-    if((lay = layermngr_get_selected_layer(flowbox)) != NULL)
+    GMPF_Layer *lay =layermngr_get_selected_layer(flowbox);
+    if(lay)
         layermngr->surface = lay->surface;
     else
         layermngr->surface = NULL;
@@ -439,16 +408,13 @@ gboolean
 motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event,
     gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    GMPF_LayerMngr *layermngr = NULL;
+    INIT_UI();
 
-    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layermngr = layermngr_get_layermngr(flowbox);
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
-    GMPF_Layer *lay;
-
-    if((lay = layermngr_get_selected_layer(flowbox)) != NULL)
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if(lay)
         layermngr->surface = lay->surface;
     else
         layermngr->surface = NULL;
@@ -470,15 +436,12 @@ motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event,
 }
 
 
-void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
+void on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    GMPF_LayerMngr *layermngr = NULL;
+    INIT_UI();
 
-    flowbox = (GtkFlowBox *)(gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    // gtk_flow_box_unselect_all(flowbox);
-    layermngr = layermngr_get_layermngr(flowbox);
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
     cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 
@@ -501,13 +464,11 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
-    (void)user_data;
-    (void)widget;
 }
 
 void callback_select_tool(GtkWidget *widget, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData *)user_data;
+    INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     gchar name = gtk_widget_get_name(widget)[0];
@@ -530,21 +491,17 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
 
 void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     GError *error = NULL;
-    GMPF_LayerMngr *layermngr = NULL;
 
     gchar *filename = gtk_file_chooser_get_filename(btn);
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
-    layermngr = layermngr_get_layermngr(flowbox);
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     layermngr_add_new_layer(flowbox, filename);
 
     GET_UI(GtkWidget, da, "drawingArea");
-    if(da == NULL)
-        D_PRINT("unable to get the drawingArea", NULL);
-
     // layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
     int width, height;
     int max_width  = layermngr->size.w;
@@ -582,33 +539,28 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
         g_object_unref (layermngr->image);
         layermngr->image = i;
     }
-
-    g_signal_connect(G_OBJECT(da), "draw", G_CALLBACK(on_draw_event), user_data);
 }
 
-void callback_binarize(GtkMenuItem *menuitem, gpointer user_data)
+void callback_binarize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 // IS OK
 {
-    menuitem = 0;
-    g_print("Binarize\n");
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     Binarize(data);
 }
 
 
-void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data)
+void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 // IS OK
 {
-    menuitem = 0;
-    g_print("Binarize color\n");
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     BinarizeColor(data);
 }
 
 
-void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
+void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    g_print("Convolution\n");
+    INIT_UI();
+    D_PRINT("Convolution\n", NULL);
     int number;
     const char *menulabel = gtk_menu_item_get_label (menuitem);
     if (!strcmp(menulabel, "Bords"))
@@ -650,74 +602,61 @@ void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data)
         mat[0] = mat[1] = mat[2] = mat[3] = mat[4] = mat[5] = mat[6] = mat[7] = mat[8] = (double) 1/9;
         break;
     }
-
-    (void)menuitem;
-    SGlobalData *data = (SGlobalData*) user_data;
     Convolute(data, mat);
 }
 
 
-void callback_grey(GtkMenuItem *menuitem, gpointer user_data)
+void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 // OK
 {
-    g_print("Greyscale\n");
-    (void)menuitem;
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     Greyscale(data);
 }
 
 
 
-void callback_brush(GtkMenuItem *menuitem, gpointer user_data)
+void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    (void)menuitem;
     cursor_state = 1;
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     callback_setCursor(data);
 }
 
-void callback_rubber(GtkMenuItem *menuitem, gpointer user_data)
+void callback_rubber(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    (void)menuitem;
     cursor_state = 2;
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     callback_setCursor(data);
 }
 
-void callback_FC(GtkMenuItem *menuitem, gpointer user_data)
+void callback_FC(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     //variables definitions
-    SGlobalData *data = (SGlobalData*)user_data;
-    GtkWidget *FCWindow = NULL;
-    GtkImage *test_image = NULL;
+    INIT_UI();
     GError *err = NULL;
-    struct _GdkPixbuf *imgPixbuf = NULL;
-    imgPixbuf = gdk_pixbuf_new_from_file(
-    "image_test.jpg", &err);
-
+    GdkPixbuf *imgPixbuf = gdk_pixbuf_new_from_file("image_test.jpg", &err);
     if(err)
     {
         printf("Error : %s\n", err->message);
         g_error_free(err);
     }
 
-    FCWindow = GTK_WIDGET(gtk_builder_get_object(data->builder, "FilterCreator"));
-    test_image = GTK_IMAGE(gtk_builder_get_object(data->builder, "Image_test"));
+    GET_UI(GtkWidget, FCWindow, "FilterCreator");
+    GET_UI(GtkImage, image, "Image_test");
 
     //test image resize + setting
     int pixbuf_width = gdk_pixbuf_get_width(imgPixbuf) / 2;
     int pixbuf_height = gdk_pixbuf_get_height(imgPixbuf) / 2;
 
 
-    struct _GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf,
+    GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf,
     pixbuf_width, pixbuf_height, GDK_INTERP_BILINEAR);
 
-    gtk_image_clear(test_image);
-    gtk_image_set_from_pixbuf(test_image, img2);
+    gtk_image_clear(image);
+    gtk_image_set_from_pixbuf(image, img2);
 
     //show the filter creator windowjust
     gtk_widget_show(FCWindow);
-    menuitem = 0;
 }
 
 /*
@@ -758,17 +697,14 @@ void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
 }
 */
 
-void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
+void callback_tinter(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    g_print("Tinter\n");
-    menuitem = 0;
-    GtkColorChooser *colorChooser = NULL;
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
-
+    GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
-    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
     if (lay == NULL)
         return;
@@ -780,7 +716,6 @@ void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
     guchar r, g, b, factor;
     GdkRGBA rgba;
 
-    colorChooser = (GtkColorChooser *)(gtk_builder_get_object(data->builder, "ColorTinter"));
     gtk_color_chooser_get_rgba (colorChooser, &rgba);
     r = (guchar)(rgba.red * 255);
     g = (guchar)(rgba.green * 255);
@@ -814,11 +749,9 @@ void callback_tinter(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
-void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data)
+void callback_colorfull(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    g_print("Colorfull\n");
-    (void)menuitem;
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     Colorfull(data);
 }
 
