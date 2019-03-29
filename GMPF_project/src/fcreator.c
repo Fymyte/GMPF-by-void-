@@ -2,21 +2,17 @@
 
 void Save_filter(gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData *)user_data;
-    GtkColorChooser *chooser = NULL;
-    GtkEntry *filename = NULL;
-    GtkComboBoxText *effet_1 = NULL;
-    GtkComboBoxText *effet_2 = NULL;
+    INIT_UI();
     GdkRGBA color;
 
-    effet_1 = GET_UI(GtkComboBoxText, "effet1");
-    effet_2 = GET_UI(GtkComboBoxText, "effet2");
+    GET_UI(GtkComboBoxText, effet_1, "effet1");
+    GET_UI(GtkComboBoxText, effet_2, "effet2");
 
     gchar *filter_1 = gtk_combo_box_text_get_active_text (effet_1);
     gchar *filter_2 = gtk_combo_box_text_get_active_text (effet_2);
 
-    filename = GET_UI(GtkEntry, "FilterFilename");
-    chooser = GET_UI(GtkColorChooser, "FC_color");
+    GET_UI(GtkEntry, filename, "FilterFilename");
+    GET_UI(GtkColorChooser, chooser, "FC_color");
     gchar *s = (gchar*)gtk_entry_get_text (filename);
     s = strcat(s, ".txt");
 

@@ -84,7 +84,7 @@ void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
     D_PRINT("Unable to get selected layer", NULL);
 }
 
-void callback_layer_move_down(GtkWidget *widget, gpointer user_data)
+void callback_layer_move_down(UNUSED GtkWidget *widget, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData *)user_data;
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -128,12 +128,12 @@ void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
     gtk_image_set_from_pixbuf(image, pixbuf);
 }
 
-void callback_hideWidget(GtkWidget *widget, gpointer UNUSED(user_data))
+void callback_hideWidget(GtkWidget *widget, UNUSED gpointer user_data)
 {
     gtk_widget_hide(widget);
 }
 
-void callback_about (GtkMenuItem *menuitem, gpointer user_data)
+void callback_about (UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     /* Transtypage du pointeur user_data pour récupérer nos données. */
     SGlobalData *data = (SGlobalData*) user_data;
@@ -347,19 +347,19 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
     }
 }
 
-gboolean enter_notify_event_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
+gboolean enter_notify_event_cb (UNUSED GtkWidget *widget,
+                        UNUSED GdkEvent *event, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData *)user_data;
+    INIT_UI();
     callback_setCursor(data);
     return TRUE;
 }
 
-gboolean leave_notify_event_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
+gboolean leave_notify_event_cb (UNUSED GtkWidget *widget,
+                        UNUSED GdkEvent *event, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData *)user_data;
+    INIT_UI();
     resetCursor(data);
-    event = 0;
-    (void)widget;
     return TRUE;
 }
 /* Handle button press events by either drawing a rectangle
@@ -368,9 +368,8 @@ gboolean leave_notify_event_cb (GtkWidget *widget, GdkEvent *event, gpointer use
 * struct which contains this information.
 */
 
-gboolean button_release_event_cb(GtkWidget     *widget,
-GdkEventButton *event,
-gpointer user_data)
+gboolean button_release_event_cb(UNUSED GtkWidget *widget,
+                        UNUSED GdkEventButton *event, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData*) user_data;
     GtkFlowBox *flowbox = NULL;
@@ -389,9 +388,6 @@ gpointer user_data)
     // g_object_unref(lay->image);
     // lay->image = gdk_pixbuf_get_from_surface (lay->surface, lay->pos.x, lay->pos.y,
     //     lay->size.w, lay->size.h);
-
-    widget = 0;
-    event = 0;
 
     return TRUE;
 }
@@ -827,11 +823,9 @@ void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
-void callback_negative(GtkMenuItem *menuitem, gpointer user_data)
+void callback_negative(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    g_print("Negative\n");
-    (void)menuitem;
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     Negative(data);
 }
 
@@ -872,22 +866,19 @@ void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)
     free_img_rgb(img);
 }
 */
-void reset_cursor(GtkMenuItem *menuitem, gpointer user_data)
+void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     resetCursor(data);
     cursor_state = 0; // 0 ==> normal cursor
-    (void)menuitem;
 }
 
-void callback_saveFilter(GtkButton *btn, gpointer user_data)
+void callback_saveFilter(UNUSED GtkButton *btn, gpointer user_data)
 {
     Save_filter(user_data);
-    (void)btn;
 }
 
-void callback_applyFilter(GtkFileChooser *btn, gpointer user_data)
+void callback_applyFilter(UNUSED GtkFileChooser *btn, gpointer user_data)
 {
-    //gchar *filename = gtk_file_chooser_get_filename(btn);
     Apply_user_filter("test4.txt", user_data);
 }

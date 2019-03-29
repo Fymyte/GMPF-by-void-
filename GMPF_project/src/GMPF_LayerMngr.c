@@ -116,8 +116,6 @@ void layermngr_delete(GtkFlowBox *flowbox)
 
 void layermngr_move_up_selected_layer(GtkFlowBox *flowbox)
 {
-    GMPF_LayerMngr *layermngr =
-        (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
     if (layer != NULL && list_move_up(&layer->list))
     {
@@ -153,8 +151,6 @@ void layermngr_move_up_selected_layer(GtkFlowBox *flowbox)
 
 void layermngr_move_down_selected_layer(GtkFlowBox *flowbox)
 {
-    GMPF_LayerMngr *layermngr =
-        (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
     if (layer != NULL && list_move_down(&layer->list))
     {

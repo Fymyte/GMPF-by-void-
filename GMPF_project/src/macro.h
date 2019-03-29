@@ -31,9 +31,9 @@
     SGlobalData *data = (SGlobalData *)user_data;
 
 #ifdef __GNUC__
-    #define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
+    #define UNUSED __attribute__((__unused__))
 #else
-    #define UNUSED(x) UNUSED_ ## x
+    #define UNUSED
 #endif
 
 #define RAD_FROM_DEG(_x) _x = _x * G_PI / 180;
