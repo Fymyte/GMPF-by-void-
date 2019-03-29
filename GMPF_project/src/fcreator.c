@@ -2,11 +2,11 @@
 
 void Save_filter(gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData *)user_data;
+    INIT_UI();
     GdkRGBA color;
 
-     GET_UI(GtkComboBoxText, effet_1, "effet1");
-     GET_UI(GtkComboBoxText, effet_2, "effet2");
+    GET_UI(GtkComboBoxText, effet_1, "effet1");
+    GET_UI(GtkComboBoxText, effet_2, "effet2");
 
     gchar *filter_1 = gtk_combo_box_text_get_active_text (effet_1);
     gchar *filter_2 = gtk_combo_box_text_get_active_text (effet_2);
@@ -143,44 +143,56 @@ void Save_filter(gpointer user_data)
 void Apply_user_filter(gchar *filename, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData *)user_data;
-    FILE *filter = fopen(filename, "r");
+    int fd = open(filename, O_RDONLY);
 
-    if (filter == NULL)
+    if (fd == -1)
     {
         printf("file open fail\n");
         return;
     }
 
-    char *save = malloc(35 * sizeof(char));
-    char *line = NULL;
+    void *buffer = calloc(35, sizeof(char));
+    int r = read(fd, buffer, 35);
 
-    while((line = fgets(save, 20, filter)) != NULL)
+    if (strncmp("Grey", buffer, r) == 0)
+        Greyscale(data);
+
+    if (strncmp("Binarize", buffer, r) == 0)
+        Binarize(data);
+
+    if (strncmp("Binarize color", buffer, r) == 0)
+        BinarizeColor(data);
+
+    if (strncmp("Colorfull", buffer, r) == 0)
+        Colorfull(data);
+
+    if (strncmp("Blur", buffer, r) == 0) //TODO
+        Greyscale(data);
+
+    while(r > 0)
     {
-        printf("%s.\n", line);
-        if (strcmp("Grey\n", save) == 0)
+        if (strncmp("Grey", buffer, r) == 0)
             Greyscale(data);
 
-        if (strcmp("Binarize\n", save) == 0)
+        if (strncmp("Binarize", buffer, r) == 0)
             Binarize(data);
 
-        if (strcmp("Binarize color\n", save) == 0)
+        if (strncmp("Binarize color", buffer, r) == 0)
             BinarizeColor(data);
 
-        if (strcmp("Colorfull\n", save) == 0)
+        if (strncmp("Colorfull", buffer, r) == 0)
             Colorfull(data);
 
-        if (strcmp("Blur\n", save) == 0) //TODO
+        if (strncmp("Blur", buffer, r) == 0) //TODO
             Greyscale(data);
 
-        if (strcmp("Tinter\n", save) == 0) //TODO
-            Greyscale(data);
+        r = read(fd, buffer, 35);
     }
 
-    if (fclose(filter) == -1)
+    if (close(fd) == -1)
     {
         printf("file close fail\n");
         return;
     }
     printf("user filter applied\n");
-    free(save);
 }
