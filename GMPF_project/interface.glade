@@ -126,7 +126,7 @@ without any warranty.
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="toz">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Choisir une couleur :</property>
@@ -973,6 +973,7 @@ effet :</property>
                 </child>
                 <child>
                   <object class="GtkScrolledWindow">
+                    <property name="name">scroll</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hexpand">True</property>
@@ -998,6 +999,7 @@ effet :</property>
                         <property name="height">0</property>
                         <child>
                           <object class="GtkEventBox">
+                            <property name="name">event</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">center</property>

@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.1 
+
+Copyright (C) VOID*
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without any warranty.
+
+-->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <!-- interface-css-provider-path main.css -->
+  <!-- interface-license-type all_permissive -->
+  <!-- interface-name GMPF -->
+  <!-- interface-copyright VOID* -->
   <object class="GtkWindow" id="FilterCreator">
     <property name="name">Créateur de filtres</property>
     <property name="can_focus">False</property>
@@ -113,7 +126,7 @@
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="toz">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Choisir une couleur :</property>
@@ -960,6 +973,7 @@ effet :</property>
                 </child>
                 <child>
                   <object class="GtkScrolledWindow">
+                    <property name="name">scroll</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hexpand">True</property>
