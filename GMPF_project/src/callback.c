@@ -24,12 +24,12 @@ gdk_pixbuf_get_from_drawable (GdkPixbuf *dest,
                               */
 int cursor_state = 0;
 
-int check(int width, int height, int i, int j)
+/*int check(int width, int height, int i, int j)
 {
     if (i < 0 || j < 0 || i > width || j > height)
         return 0;
     return 1;
-}
+}*/
 
 void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
 {

@@ -79,7 +79,46 @@ void Negative(SGlobalData *data)
 
 void Binarize(SGlobalData *data)
 {
+    GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    if (lay == NULL)
+        return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+
+    guchar red, green, blue, alpha, grey;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+            err(1, "pixbuf get pixels error");
+            
+            grey = (red + green + blue) / 3;
+            if (grey > 127)
+                grey = 255;
+            else
+                grey = 0;
+            put_pixel(imgPixbuf, i, j, grey, grey, grey, alpha);
+        }
+    }
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    gtk_widget_queue_draw(da);
+
+    /*GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
     struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
@@ -134,13 +173,6 @@ void Binarize(SGlobalData *data)
                 grey = 255;
             else
                 grey = 0;
-
-            /*pixel -> R = grey;
-            pixel -> G = grey;
-            pixel -> B = grey;
-            if (layer_put_pixel(lay, pos, pixel) == 0)
-                printf("%d %d %d \n", pixel -> R, pixel -> G, pixel -> G);
-*/
             cairo_set_source_rgba(cr, grey,grey,grey, pixel->A);
             cairo_move_to(cr, i, j);
             cairo_rel_line_to(cr, 0, 1);
@@ -151,12 +183,61 @@ void Binarize(SGlobalData *data)
     gtk_widget_queue_draw(w);
     cairo_destroy(cr);
     free(pos);
-    free(pixel);
+    free(pixel);*/
 }
 
 void BinarizeColor(SGlobalData *data)
 {
+    GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    if (lay == NULL)
+        return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+
+    guchar red, green, blue, alpha;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            
+            if (red > 127)
+                red = 255;
+            else
+                red = 0;
+
+            if (green > 127)
+                green = 255;
+            else
+                green = 0;
+
+            if (blue > 127)
+                blue = 255;
+            else
+                blue = 0;
+            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
+        }
+    }
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    gtk_widget_queue_draw(da);
+
+
+    /*GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
@@ -212,7 +293,7 @@ void BinarizeColor(SGlobalData *data)
     gtk_widget_queue_draw(w);
     cairo_destroy(cr);
     free(pos);
-    free(pixel);
+    free(pixel);*/
 }
 
 void Tinter(SGlobalData *data)
@@ -317,6 +398,13 @@ void Colorfull(SGlobalData *data)
     lay->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 1, NULL);
     gtk_widget_queue_draw(da);
 
+}
+
+int check (int width, int height, int i, int j)
+{
+    if (i < 0 || j < 0 || i > width || j > height)
+        return 0;
+    return 1;
 }
 
 void Convolute(SGlobalData *data, double *mat)
