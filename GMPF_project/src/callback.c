@@ -610,6 +610,8 @@ void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 // OK
 {
     INIT_UI();
+    //Darkness(data);
+    //Lightness(data); 
     Greyscale(data);
 }
 

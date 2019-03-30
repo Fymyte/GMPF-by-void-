@@ -1,5 +1,111 @@
 #include "filters.h"
 
+void Lightness(SGlobalData *data)
+{
+    //printf("Lightness\n");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    if (lay == NULL)
+        return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+
+    guchar red, green, blue, alpha;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+            err(1, "pixbuf get pixels error");
+            
+            if (red > 230)
+                red = 255;
+            else
+                red += 25;
+            
+            if (green > 230)
+                green = 255;
+            else
+                green += 25;
+            
+            if (blue > 230)
+                blue = 255;
+            else
+                blue += 25;
+            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
+        }
+    }
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    gtk_widget_queue_draw(da);
+}
+
+void Darkness(SGlobalData *data)
+{
+    //printf("Lightness\n");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    if (lay == NULL)
+        return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+
+    guchar red, green, blue, alpha;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+            err(1, "pixbuf get pixels error");
+            
+            if (red < 25)
+                red = 0;
+            else
+                red -= 25;
+            
+            if (green < 25)
+                green = 0;
+            else
+                green -= 25;
+            
+            if (blue < 25)
+                blue = 0;
+            else
+                blue -= 25;
+            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
+        }
+    }
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    gtk_widget_queue_draw(da);
+}
+
+
+
 void Greyscale(SGlobalData *data)
 {
     GET_UI(GtkWidget, da, "drawingArea");
