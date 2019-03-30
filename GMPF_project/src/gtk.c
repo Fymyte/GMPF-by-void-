@@ -104,7 +104,7 @@ int GMPF_start()
     // g_free(gdk_window);
 
     GtkCssProvider *provider = gtk_css_provider_new();
-    const gchar *myFile = "main.css";
+    const gchar *myFile = "dark_theme.css";
 
     GdkScreen *screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data.builder, "MainWindow")));
     gtk_css_provider_load_from_file(provider, g_file_new_for_path(myFile), &err);

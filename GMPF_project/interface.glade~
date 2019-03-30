@@ -11,7 +11,7 @@ without any warranty.
 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <!-- interface-css-provider-path main.css -->
+  <!-- interface-css-provider-path white_theme.css -->
   <!-- interface-license-type all_permissive -->
   <!-- interface-name GMPF -->
   <!-- interface-copyright VOID* -->
@@ -897,6 +897,7 @@ effet :</property>
                 <property name="hexpand">True</property>
                 <child>
                   <object class="GtkToolbar">
+                    <property name="name">toolbar1</property>
                     <property name="width_request">20</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
