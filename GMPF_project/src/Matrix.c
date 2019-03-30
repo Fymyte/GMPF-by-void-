@@ -26,7 +26,7 @@ void InitializeMatrixZero(struct Matrix *m)
     {
         for (int j = 0; j < m -> cols; j++)
         {
-            *(m -> mat + i * m -> cols + j) = 50;
+            *(m -> mat + i * m -> cols + j) = 0;
         }
     }
 }
@@ -38,7 +38,7 @@ void PrintMatrix(struct Matrix *m)
 	{
 		for (int j = 0; j < m -> cols; j++)
 		{
-			printf("%i ",(int) *(m -> mat + i * m -> cols + j));
+			printf("%3f ", *(m -> mat + i * m -> cols + j));
 		}
 	printf("\n");
 	}

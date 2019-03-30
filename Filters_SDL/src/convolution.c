@@ -2,7 +2,7 @@
 
 int check(int width, int height, int i, int j)
 {
-    if (i < 0 || j < 0 || i > width || j > height)
+    if (i < 0 || j < 0 || i >= width || j >= height)
         return 0;
     return 1;
 }
@@ -14,6 +14,9 @@ void Convolute_f(SDL_Surface* image_surface , SDL_Surface* screen_surface, doubl
     int x = 3;
 
     struct Img_rgb *img = init_img_rgb(width, height);
+
+    //FILE *f;
+    //f = fopen("convolution.txt", "w");
 
 	for(int i = 0; i < width; i++)
 	{
@@ -55,11 +58,13 @@ void Convolute_f(SDL_Surface* image_surface , SDL_Surface* screen_surface, doubl
             
 			//Uint32 p = SDL_MapRGB(image_surface->format, r, g, b);
 			//put_pixel(image_surface, i, j, p);
+            //fprintf(f, "%i %i | %f\n",i, j, r);
 		    Matrix_val(img -> red, i, j, r);
             Matrix_val(img -> green, i , j, g);
             Matrix_val(img -> blue, i , j, b);
         }
 	}
+    //fclose(f);
     Img_rgb_to_Image(image_surface, img);
     free_img_rgb(img);
     update_surface(screen_surface, image_surface);

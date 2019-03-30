@@ -104,7 +104,7 @@ void Binarize(SGlobalData *data)
         {
             error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
             if(!error)
-            err(1, "pixbuf get pixels error");
+                err(1, "pixbuf get pixels error");
             
             grey = (red + green + blue) / 3;
             if (grey > 127)
@@ -402,7 +402,7 @@ void Colorfull(SGlobalData *data)
 
 int check (int width, int height, int i, int j)
 {
-    if (i < 0 || j < 0 || i > width || j > height)
+    if (i < 0 || j < 0 || i >= width || j >= height)
         return 0;
     return 1;
 }
@@ -436,7 +436,6 @@ void Convolute(SGlobalData *data, double *mat)
         for(int j = 0; j < height; j++)
         {
             r = g = b = a = 0;
-
             for (int k = -x / 2; k <= x/2; k++)
             {
                 for(int l = -x / 2; l <= x/2; l++)
@@ -444,36 +443,36 @@ void Convolute(SGlobalData *data, double *mat)
                     if (check(width, height, i + k, j +l) == 1)
                     {
                         guchar red, green, blue, alpha;
-                        error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+                        error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i + k, j + l, &red, &green, &blue, &alpha);
                             if(!error)
                         err(1, "pixbuf get pixels error");
                         r += mat[l + x/2 + k + x/2] * (double)red;
                         g += mat[l + x/2 + k + x/2] * (double)green;
                         b += mat[l + x/2 + k + x/2] * (double)blue;
                         a = alpha;
+                        //printf("%5f", a);
                     }
                 }
             }
-
             if (r > 255)
-            r = 255;
+                r = 255;
             else if (r < 0)
-            r = 0;
+                r = 0;
 
             if (g > 255)
-            g = 255;
+                g = 255;
             else if (g < 0)
-            g = 0;
+                g = 0;
 
             if (b > 255)
-            b = 255;
+                b = 255;
             else if (b < 0)
-            b = 0;
+                b = 0;
 
             Matrix_val(img -> red, i, j, r);
             Matrix_val(img -> green, i , j, g);
             Matrix_val(img -> blue, i , j, b);
-            Matrix_val(img -> alpha, i, j, a);
+            Matrix_val(img -> alpha, i, j, 255);
         }
     }
     Img_rgb_to_Image(imgPixbuf, img);
