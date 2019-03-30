@@ -32,7 +32,8 @@ without any warranty.
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkMenuBar">
+          <object class="GtkMenuBar" id="menubar2">
+            <property name="name">menubar2</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
@@ -1054,10 +1055,12 @@ effet :</property>
                     <property name="shadow_type">in</property>
                     <child>
                       <object class="GtkViewport">
+                        <property name="name">flowwin</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
                           <object class="GtkFlowBox" id="GMPF_flowbox">
+                            <property name="name">flow</property>
                             <property name="width_request">176</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
