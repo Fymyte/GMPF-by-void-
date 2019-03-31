@@ -29,17 +29,17 @@ void Lightness(SGlobalData *data)
             error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
             if(!error)
             err(1, "pixbuf get pixels error");
-            
+
             if (red > 230)
                 red = 255;
             else
                 red += 25;
-            
+
             if (green > 230)
                 green = 255;
             else
                 green += 25;
-            
+
             if (blue > 230)
                 blue = 255;
             else
@@ -81,17 +81,17 @@ void Darkness(SGlobalData *data)
             error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
             if(!error)
             err(1, "pixbuf get pixels error");
-            
+
             if (red < 25)
                 red = 0;
             else
                 red -= 25;
-            
+
             if (green < 25)
                 green = 0;
             else
                 green -= 25;
-            
+
             if (blue < 25)
                 blue = 0;
             else
@@ -211,7 +211,7 @@ void Binarize(SGlobalData *data)
             error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
             if(!error)
                 err(1, "pixbuf get pixels error");
-            
+
             grey = (red + green + blue) / 3;
             if (grey > 127)
                 grey = 255;
@@ -320,7 +320,7 @@ void BinarizeColor(SGlobalData *data)
             error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
             if(!error)
                 err(1, "pixbuf get pixels error");
-            
+
             if (red > 127)
                 red = 255;
             else
@@ -578,7 +578,7 @@ void Convolute(SGlobalData *data, double *mat)
             Matrix_val(img -> red, i, j, r);
             Matrix_val(img -> green, i , j, g);
             Matrix_val(img -> blue, i , j, b);
-            Matrix_val(img -> alpha, i, j, 255);
+            Matrix_val(img -> alpha, i, j, a);
         }
     }
     Img_rgb_to_Image(imgPixbuf, img);
