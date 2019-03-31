@@ -9,7 +9,7 @@
 #include "macro.h"
 
 
-void save_project(GMPF_LayerMngr *layermngr, GtkFlowBox *flowbox, const char *filename, char *error);
-GMPF_LayerMngr * load_project(GtkFlowBox *flowbox, const char *filename, char *error);
+char save_project(GtkFlowBox *flowbox, const char *filename);
+char load_project(GtkFlowBox *flowbox, const char *filename);
 
 #endif /* SAVING_H_ */

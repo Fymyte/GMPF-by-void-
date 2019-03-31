@@ -126,16 +126,7 @@ void layermngr_move_up_selected_layer(GtkFlowBox *flowbox)
 
         GtkWidget *image = gtk_image_new();
         // Style of the image
-        gtk_widget_set_sensitive(image, TRUE);
-        gtk_widget_set_visible(image, TRUE);
-
-        gtk_widget_set_size_request(image, 160, 90); //size
-        gtk_widget_set_halign(image, GTK_ALIGN_START); // Alignement
-        gtk_widget_set_valign(image, GTK_ALIGN_START);
-        gtk_widget_set_margin_top(image, 5); // Margin
-        gtk_widget_set_margin_bottom(image, 5);
-        gtk_widget_set_margin_start(image, 5);
-        gtk_widget_set_margin_end(image, 5);
+        INIT_LAYER_UI(image);
 
         gtk_flow_box_insert (flowbox, image, insertpos);
 
@@ -161,16 +152,7 @@ void layermngr_move_down_selected_layer(GtkFlowBox *flowbox)
 
         GtkWidget *image = gtk_image_new();
         // Style of the image
-        gtk_widget_set_sensitive(image, TRUE);
-        gtk_widget_set_visible(image, TRUE);
-
-        gtk_widget_set_size_request(image, 160, 90); //size
-        gtk_widget_set_halign(image, GTK_ALIGN_START); // Alignement
-        gtk_widget_set_valign(image, GTK_ALIGN_START);
-        gtk_widget_set_margin_top(image, 5); // Margin
-        gtk_widget_set_margin_bottom(image, 5);
-        gtk_widget_set_margin_start(image, 5);
-        gtk_widget_set_margin_end(image, 5);
+        INIT_LAYER_UI(image);
 
         gtk_flow_box_insert (flowbox, image, insertpos);
 
@@ -269,16 +251,7 @@ GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
     GtkWidget *image = gtk_image_new();
 
     // Style of the image
-    gtk_widget_set_sensitive(image, TRUE);
-    gtk_widget_set_visible(image, TRUE);
-
-    gtk_widget_set_size_request(image, 160, 90); //size
-    gtk_widget_set_halign(image, GTK_ALIGN_START); // Alignement
-    gtk_widget_set_valign(image, GTK_ALIGN_START);
-    gtk_widget_set_margin_top(image, 5); // Margin
-    gtk_widget_set_margin_bottom(image, 5);
-    gtk_widget_set_margin_start(image, 5);
-    gtk_widget_set_margin_end(image, 5);
+    INIT_LAYER_UI(image);
 
     int insertpos;
     // add the layer in the list
@@ -398,6 +371,8 @@ void layer_icon_refresh(GMPF_Layer *layer)
     else
         finalh = layer->size.h / ratio1;
 
+    if (layer->icon != NULL)
+        g_object_unref(layer->icon);
     layer->icon = gdk_pixbuf_scale_simple(layer->image, finalw, finalh,
                          GDK_INTERP_BILINEAR);
 

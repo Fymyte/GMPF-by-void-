@@ -49,7 +49,7 @@ struct GMPF_Pixel {
 // TODO: complete the struct GMPF_Layer
 struct GMPF_Layer {
 
-    char *name;
+    char *name; // USE A char[50] TAB FOR A SIMPLE SAVE
     // used variable
     GMPF_Pos pos; // Offset on the rendering
     GMPF_Scale scale_factor;

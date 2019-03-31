@@ -18,6 +18,20 @@
 #define LAYERMNGR_KEY_NAME "GMPF_layermngr"
 #define LAYER_KEY_NAME "GMPF_layer"
 
+#define INIT_LAYER_UI(_layerui) \
+    gtk_widget_set_sensitive(image, TRUE); \
+    gtk_widget_set_visible(image, TRUE);\
+    /*** Visual ***/ \
+    /* size */ \
+    gtk_widget_set_size_request(image, 160, 90); \
+    /* Alignement */ \
+    gtk_widget_set_halign(image, GTK_ALIGN_START); \
+    gtk_widget_set_valign(image, GTK_ALIGN_START); \
+    /* Margin */ \
+    gtk_widget_set_margin_top(image, 5); \
+    gtk_widget_set_margin_bottom(image, 5); \
+    gtk_widget_set_margin_start(image, 5); \
+    gtk_widget_set_margin_end(image, 5); \
 
 // STRUCTURES
 

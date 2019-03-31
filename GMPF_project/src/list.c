@@ -104,3 +104,13 @@ GMPF_List * list_get_at_pos(GMPF_List *list, int pos)
     }
     return getlist;
 }
+
+GMPF_List * list_get_last(GMPF_List *list)
+{
+    GMPF_List *getlist = list;
+    while (getlist != NULL)
+    {
+        getlist = getlist->next;
+    }
+    return getlist;
+}
