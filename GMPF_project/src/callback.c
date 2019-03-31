@@ -483,6 +483,8 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
                          break;
         case '4': tool = SELECTOR;
                          break;
+        case '5': tool = SELECTOR_FREE;
+                         break;
         default : tool = INCORECT_TOOL;
         D_PRINT("Unknown tool\n", NULL);
     }

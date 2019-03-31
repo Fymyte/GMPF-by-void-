@@ -1,6 +1,6 @@
 #menubar1 menuitem > label {
 	color: rgb(0, 255, 165);
-	
+
 }
 
 #menubar2 menuitem > label {
@@ -18,7 +18,8 @@
 
 /*change the eventbox background*/
 #event {
-    background-image: linear-gradient(45deg, rgb(0, 255, 165), rgb(0, 0, 0));
+    /* background-image: linear-gradient(45deg, rgb(0, 255, 165), rgb(0, 0, 0)); */
+    background-image: url("grille.png");
 }
 
 #flowwin, #scroll{

@@ -25,6 +25,7 @@ enum GMPF_Tool {
     ERAISER = 2,
     COLOR_PICKER = 3,
     SELECTOR = 4,
+    SELECTOR_FREE = 5,
 };
 
 struct GMPF_Pos {
