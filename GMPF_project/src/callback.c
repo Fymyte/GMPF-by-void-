@@ -135,7 +135,7 @@ void callback_about (UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     /* Transtypage du pointeur user_data pour récupérer nos données. */
     INIT_UI();
-    GtkWidget *dialog =  gtk_about_dialog_new ();
+    GET_UI(GtkWidget, dialog, "AboutWindow");
 
     /* Pour l'exemple on va rendre la fenêtre "À propos" modale par rapport à la */
     /* fenêtre principale. */
@@ -611,7 +611,7 @@ void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     //Darkness(data);
-    //Lightness(data); 
+    //Lightness(data);
     Greyscale(data);
 }
 

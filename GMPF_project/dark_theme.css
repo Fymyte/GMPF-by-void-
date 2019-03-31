@@ -16,6 +16,11 @@
     background-image: linear-gradient(45deg, rgb(150, 150, 150), rgb(0, 0, 0));
 }
 
+/*change the eventbox background*/
+#event {
+    background-image: linear-gradient(45deg, rgb(0, 255, 165), rgb(0, 0, 0));
+}
+
 #flowwin, #scroll{
 	background-color: transparent;
 	color: transparent;
