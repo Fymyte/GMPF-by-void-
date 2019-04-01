@@ -16,4 +16,6 @@ void Tinter(SGlobalData *data);
 void Colorfull(SGlobalData *data);
 void Convolute(SGlobalData *data,double *mat);
 
+void Equalize(SGlobalData *data);
+
 #endif

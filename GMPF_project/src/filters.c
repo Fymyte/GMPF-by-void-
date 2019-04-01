@@ -597,3 +597,86 @@ void Convolute(SGlobalData *data, double *mat)
     free_img_rgb(img);
     free(mat);
 }
+
+void Equalize(SGlobalData *data)
+{
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    if (lay == NULL)
+        return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+
+    guchar r, g, b, a, grey;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    double *counter = calloc(sizeof(double), 255);
+
+    for(int i = 0; i < width; i++)
+    { 
+        for(int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &r, &g, &b, &a);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            
+            grey = (r + g + b) / 3;
+            *(counter + grey) += 1;
+        }
+    }
+     
+    int nb = 0;
+    int cdfmin = 255;
+    double *cdf = calloc(sizeof(double), 255);
+    for (int i = 0; i < 255; i++)
+    {
+        nb += *(counter + i);
+        *(cdf + i) = nb;
+        if (*(cdf + i) < cdfmin)
+            cdfmin = cdf[i];
+    }
+    
+    int *h_v = calloc(sizeof(int), 255);
+    double MNcdfmin = height * width - cdfmin;
+    for (int i = 0; i < 255; i++)
+    {
+        *(h_v+i)=(int) (*(cdf+i) - cdfmin)/MNcdfmin * 255;
+    }
+
+    struct Img_rgb *img = init_img_rgb(width, height);
+    for (int i = 0; i < width; i ++)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &r, &g, &b, &a);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            
+            grey = (r + g + b) / 3;
+
+            Matrix_val(img -> red, i, j, *(h_v + grey));
+            Matrix_val(img -> green, i, j, *(h_v + grey));
+            Matrix_val(img -> blue, i, j, *(h_v + grey));
+            Matrix_val(img -> alpha, i, j, 255);
+        }
+    }
+
+    Img_rgb_to_Image(imgPixbuf, img);
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 1, NULL);
+    layer_icon_refresh(lay);
+    gtk_widget_queue_draw(da);
+    free_img_rgb(img);
+    free(counter);
+    free(cdf);
+    free(h_v);
+}

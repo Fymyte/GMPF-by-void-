@@ -762,6 +762,7 @@ void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     Greyscale(data);
+    //Equalize(data);
 }
 
 
