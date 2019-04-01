@@ -351,4 +351,17 @@ h3 {
 #Samory {}
 #Pierrick {}
 #Arnaud{}
+
+#Filters{}
+#Ressources{}
+
+/***********Tableau*********************/
+
+table { 
+  display: table;
+  border-collapse: separate;
+  border-spacing: 2px;
+  border-color: gray;
+}
+
 #Sabine {}
