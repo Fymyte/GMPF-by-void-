@@ -654,7 +654,7 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="callback_applyFilter" swapped="no"/>
+                        <signal name="activate" handler="callback_load_project" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -669,11 +669,12 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem">
-                        <property name="label">gtk-save-as</property>
+                        <property name="label">gtk-floppy</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_save_project" swapped="no"/>
+                        <accelerator key="s" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>

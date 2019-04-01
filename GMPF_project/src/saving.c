@@ -35,10 +35,12 @@ char save_layer(GMPF_Layer *layer, FILE *file)
 
     //if (fwrite(layer->image, sizeof(GdkPixbuf), 1, file) != 1)
     //    return 1;
-    unsigned int length;
-    guchar *image = gdk_pixbuf_get_pixels_with_length(layer->image, &length);
+    unsigned int rowstride = (unsigned int) gdk_pixbuf_get_rowstride(layer->image);
+    unsigned int length = layer->size.h * rowstride;
+    guchar *image = gdk_pixbuf_get_pixels(layer->image);
     if (fwrite(&length, sizeof(unsigned int), 1, file) != 1)
     { PRINTERR; return 1; }
+    D_PRINT("data: %s", image);
     if (fwrite(image, length, 1, file) != 1) { PRINTERR; return 1; }
 
     return 0;
@@ -46,6 +48,7 @@ char save_layer(GMPF_Layer *layer, FILE *file)
 
 char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
 {
+    D_PRINT("loading layer", NULL);
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
     if (layer == NULL) { PRINTERR; return 1; }
 
@@ -58,6 +61,7 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
         free(layer);
         return 1;
     }
+    D_PRINT("1)", NULL);
     unsigned int length;
     if (fread(&length, sizeof(unsigned int), 1, file) != 1)
     {
@@ -65,6 +69,7 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
         free(layer);
         return 1;
     }
+    D_PRINT("2)", NULL);
 
     unsigned int true_length = ((unsigned int) layer->size.w * ((unsigned int) layer->size.h << 2));
     if (length != true_length)
@@ -73,6 +78,7 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
         free(layer);
         return 1;
     }
+    D_PRINT("3)", NULL);
 
     guchar *data = malloc(length * sizeof(guchar));
     if (fread(data, length, 1, file) != 1)
@@ -82,14 +88,20 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
         free(layer);
         return 1;
     }
+    D_PRINT("4)", NULL);
 
-    layer->image = gdk_pixbuf_new_from_bytes ((GBytes *) data,
+    layer->image = gdk_pixbuf_new_from_data (data,
                            GDK_COLORSPACE_RGB, TRUE, 8,
                            layer->size.w, layer->size.h,
-                           layer->size.w << 2);
+                           layer->size.w << 2,
+                       NULL, NULL);
+    D_PRINT("%p", layer->image);
+
+    D_PRINT("4.5)", NULL);
 
     layer->surface = gdk_cairo_surface_create_from_pixbuf(layer->image, 0, NULL);
 
+    D_PRINT("4.5.1)", NULL);
     GtkWidget *image = gtk_image_new();
 
     // Style of the image
@@ -97,8 +109,9 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
 
     /*int insertpos;*/
     // add the layer in the list
-
+    D_PRINT("4.5.2)", NULL);
     list_append(&(layermngr->layer_list), &(layer->list));
+    D_PRINT("4.5.3)", NULL);
     /*insertpos = 0;*/
 
     gtk_flow_box_insert (flowbox, image, 0 /*insertpos*/);
@@ -112,6 +125,8 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
     layer->cr = NULL;
     layer->icon = NULL;
     layer_icon_refresh(layer);
+
+    D_PRINT("5)", NULL);
 
 
 
@@ -136,14 +151,17 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
 
     if (err) { fclose(file); PRINTERR; return 1; }
 
-    GMPF_List *list = list_get_last(&(layermngr->layer_list));
+    GMPF_List *list = layermngr->layer_list.next;
     GMPF_Layer *lay = container_of(list, GMPF_Layer, list);
     for (int i = 0; i < layermngr->nb_layer; i++)
     {
         err = save_layer(lay, file);
         if (err) { fclose(file); PRINTERR; return 1;}
-        lay = container_of(lay->list.prev, GMPF_Layer, list);
+        lay = container_of(lay->list.next, GMPF_Layer, list);
     }
+
+    long long dbg = 0;
+    fwrite(&dbg, sizeof(long long), 1, file);
 
     fclose(file);
     return 0;
@@ -152,20 +170,22 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
 char load_project(GtkFlowBox *flowbox, const char *filename)
 {
     // only read the file
+    D_PRINT("loading project...", NULL);
     FILE *file = fopen(filename, "rb"); // read as binary => rb
     if (file == NULL) { PRINTERR; return 1; }
 
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    if (layermngr == NULL) { fclose(file); PRINTERR; return 1; }
-
     char err = load_layermngr(flowbox, file);
     if (err) { fclose(file); PRINTERR; return 1; }
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    if (layermngr == NULL) { fclose(file); PRINTERR; return 1; }
 
     for (int i = 0; i < layermngr->nb_layer; i++)
     {
         err = load_layer(layermngr, file);
         if (err) { fclose(file); PRINTERR; return 1; }
     }
+    D_PRINT("loaded!", NULL);
 
     fclose(file);
     return 0;

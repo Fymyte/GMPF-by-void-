@@ -11,13 +11,13 @@
 
 #ifdef GMPF_DEBUG
     #define D_PRINT(_fmt, ...) \
-        fprintf(stderr, "[debug: %s::%d %s] " _fmt, \
+        fprintf(stderr, "[debug: %s::%d %s] " _fmt "\n", \
             __FILE__, __LINE__, __func__, __VA_ARGS__);
 #else
     #define D_PRINT(_fmt, ...)
 #endif
 
-#define PRINTERR fprintf(stderr, "[error] %s::%d %s", \
+#define PRINTERR fprintf(stderr, "[error] %s::%d %s\n", \
         __FILE__, __LINE__, __func__);
 
 

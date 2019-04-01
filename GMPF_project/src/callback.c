@@ -534,6 +534,84 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget, gpointer user_data)
     gtk_widget_hide(window);
 }
 
+void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWindow, window, "MainWindow");
+
+    GtkWidget *dialog;
+    GtkFileChooser *chooser;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+    gint res;
+
+    dialog = gtk_file_chooser_dialog_new ("Save File",
+                                          window,
+                                          action,
+                                          ("_Cancel"),
+                                          GTK_RESPONSE_CANCEL,
+                                          ("_Save"),
+                                          GTK_RESPONSE_ACCEPT,
+                                          NULL);
+    chooser = GTK_FILE_CHOOSER (dialog);
+
+    gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+
+    gtk_file_chooser_set_current_name (chooser,
+                                         ("Untitled document"));
+
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
+    if (res == GTK_RESPONSE_ACCEPT)
+    {
+        char *filename;
+
+        filename = gtk_file_chooser_get_filename (chooser);
+        char err = save_project(flowbox, (const char*)filename);
+        if (err)
+        {
+            D_PRINT("Unable to save project", NULL);
+        }
+        g_free (filename);
+    }
+
+    gtk_widget_destroy (dialog);
+}
+
+void callback_load_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWindow, window, "MainWindow");
+
+    GtkWidget *dialog;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    gint res;
+
+    dialog = gtk_file_chooser_dialog_new ("Open File",
+                                          window,
+                                          action,
+                                          ("_Cancel"),
+                                          GTK_RESPONSE_CANCEL,
+                                          ("_Open"),
+                                          GTK_RESPONSE_ACCEPT,
+                                          NULL);
+
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
+    if (res == GTK_RESPONSE_ACCEPT)
+    {
+        char *filename;
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+        filename = gtk_file_chooser_get_filename (chooser);
+        char err = load_project (flowbox, filename);
+        if (err)
+            D_PRINT("Uable to load project", NULL);
+        g_free (filename);
+    }
+
+    gtk_widget_destroy (dialog);
+
+}
+
 void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 {
     INIT_UI();
