@@ -48,8 +48,10 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
 {
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
     if (layer == NULL) { PRINTERR; return 1; }
-    
-    
+
+    GtkFlowBox *flowbox = layermngr->flowbox;
+    if (flowbox == NULL) { PRINTERR; return 1; }
+
     if (fread(layer, sizeof(GMPF_Layer), 1, file) != 1)
     { // restore the layer
         PRINTERR;
@@ -64,7 +66,8 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
         return 1;
     }
 
-    if (length != (layer->size.w * (layer->size.h << 2)))
+    unsigned int true_length = ((unsigned int) layer->size.w * ((unsigned int) layer->size.h << 2));
+    if (length != true_length)
     { // test if the length of the pixmap is good
         PRINTERR;
         free(layer);
@@ -84,14 +87,14 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
                            GDK_COLORSPACE_RGB, TRUE, 8,
                            layer->size.w, layer->size.h,
                            layer->size.w << 2);
-    
+
     layer->surface = gdk_cairo_surface_create_from_pixbuf(layer->image, 0, NULL);
-    
+
     GtkWidget *image = gtk_image_new();
 
     // Style of the image
     INIT_LAYER_UI(image);
-    
+
     /*int insertpos;*/
     // add the layer in the list
 
@@ -105,13 +108,13 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
     g_object_set_data(G_OBJECT(layer->UIElement), LAYER_KEY_NAME, layer);
 
     layer->UIIcon = (GtkImage *) image;
-    
+
     layer->cr = NULL;
     layer->icon = NULL;
     layer_icon_refresh(layer);
-    
-    
-    
+
+
+
     return 0;
 }
 
@@ -126,7 +129,7 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
 
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     if (layermngr == NULL) { PRINTERR; return 1; }
-    
+
     FILE *file = fopen(filename, "wb"); // write as binary => rb
 
     char err = save_layermngr(layermngr, file);
@@ -171,4 +174,3 @@ char load_project(GtkFlowBox *flowbox, const char *filename)
 //
 // PRIVATE FUNCTIONS
 //
-
