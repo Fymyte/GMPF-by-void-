@@ -370,11 +370,7 @@ gboolean button_release_event_cb(UNUSED GtkWidget *widget,
     if (!lay)
         return FALSE;
 
-    if (lay->image != NULL)
-        g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface (lay->surface, lay->pos.x, lay->pos.y,
-        lay->size.w, lay->size.h);
-    layer_icon_refresh(lay);
+    REFRESH_IMAGE(lay);
 
     return TRUE;
 }
@@ -735,8 +731,6 @@ void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 // OK
 {
     INIT_UI();
-    //Darkness(data);
-    //Lightness(data);
     Greyscale(data);
 }
 

@@ -160,6 +160,9 @@ char load_project(GtkFlowBox *flowbox, const char *filename)
     FILE *file = fopen(filename, "rb"); // read as binary => rb
     if (file == NULL) { PRINTERR; return 1; }
 
+    if (g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME) != NULL)
+        layermngr_delete(flowbox);
+
     char err = load_layermngr(flowbox, file);
     if (err) { fclose(file); PRINTERR; return 1; }
 

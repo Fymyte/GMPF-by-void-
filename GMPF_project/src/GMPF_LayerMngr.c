@@ -104,12 +104,12 @@ void layermngr_delete(GtkFlowBox *flowbox)
     // get data and set it to NULL
     GMPF_LayerMngr *layermngr =
         (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
-    g_object_set_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME, NULL);
 
 
     // delete the layermngr
     layermngr_clear(flowbox); // clear the layermngr before delete it
     layermngr->flowbox = NULL; // don't delete the flowbox to keep it
+    g_object_set_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME, NULL);
     free(layermngr);
 }
 

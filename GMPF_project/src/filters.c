@@ -49,6 +49,7 @@ void Lightness(SGlobalData *data)
     }
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
 }
 
@@ -101,6 +102,7 @@ void Darkness(SGlobalData *data)
     }
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
 }
 
@@ -141,6 +143,7 @@ void Greyscale(SGlobalData *data)
     }
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
 }
 
@@ -180,6 +183,7 @@ void Negative(SGlobalData *data)
     }
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
 }
 
@@ -222,6 +226,7 @@ void Binarize(SGlobalData *data)
     }
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
 
     /*GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -340,6 +345,7 @@ void BinarizeColor(SGlobalData *data)
     }
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
 
 
@@ -452,6 +458,7 @@ void Tinter(SGlobalData *data)
     }
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
 }
 
@@ -502,6 +509,7 @@ void Colorfull(SGlobalData *data)
     }
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 1, NULL);
+    layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
 
 }
@@ -584,6 +592,7 @@ void Convolute(SGlobalData *data, double *mat)
     Img_rgb_to_Image(imgPixbuf, img);
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 1, NULL);
+    layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
     free_img_rgb(img);
     free(mat);

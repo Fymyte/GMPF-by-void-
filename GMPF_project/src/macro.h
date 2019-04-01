@@ -63,6 +63,13 @@
             }
 #endif
 
+#define REFRESH_IMAGE(_layer) \
+    if (_layer->image) \
+        g_object_unref(_layer->image); \
+    _layer->image = gdk_pixbuf_get_from_surface(_layer->surface, 0, 0, \
+                    _layer->size.w, _layer->size.h); \
+    layer_icon_refresh(_layer);
+
 // debug print
 
 

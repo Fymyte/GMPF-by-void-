@@ -126,38 +126,34 @@ int GMPF_start()
 }
 
 
-void GMPFquit(GtkMenuItem *menuitem, gpointer user_data)
+void GMPFquit(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    menuitem = 0;
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    layermngr_delete(flowbox);
     resetCursor(data);
     gtk_main_quit();
 }
 
 
     // GMPF_LayerMngr
-void callback_clear_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data)
+void callback_clear_GMPF_LayerMngr(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    menuitem = 0;
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     layermngr_clear(flowbox);
 }
 
-void callback_add_GMPF_Layer(GtkMenuItem *menuitem, gpointer user_data)
+void callback_add_GMPF_Layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    menuitem = 0;
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkFlowBox *flowbox = NULL;
-    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     layermngr_add_new_layer(flowbox, NULL);
 }
 
-void callback_remove_selected_layer(GtkMenuItem *menuitem, gpointer user_data)
+void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    menuitem = 0;
-    SGlobalData *data = (SGlobalData*) user_data;
+    INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
     layermngr_delete_selected_layer(flowbox);
