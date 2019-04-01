@@ -177,7 +177,23 @@ void callback_show_layer_window(UNUSED GtkWidget *widget, gpointer user_data)
     //variables definitions
     INIT_UI();
     GET_UI(GtkWidget, layer_window, "LayerWindow");
-    //show the filter creator windowjust
+    GET_UI(GtkEntry, name, "LayerNameEntry");
+    GET_UI(GtkSpinButton, width, "LayerWidthSpinButton");
+    GET_UI(GtkSpinButton, height, "LayerHeightSpinButton");
+    GET_UI(GtkSpinButton, offsetX, "LayerOffsetXSpinButton");
+    GET_UI(GtkSpinButton, offsetY, "LayerOffsetYSpinButton");
+    GET_UI(GtkFileChooser, filename, "LayerImageFilename");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+
+    gtk_entry_set_text(name, "");
+    gtk_spin_button_set_value(width, layermngr->size.w);
+    gtk_spin_button_set_value(height, layermngr->size.h);
+    gtk_spin_button_set_value(offsetX, 0);
+    gtk_spin_button_set_value(offsetY, 0);
+    gtk_file_chooser_set_filename(filename, "gimp_log.png");
+
     gtk_widget_show(layer_window);
 }
 
@@ -269,7 +285,6 @@ gboolean configure_event_cb (GtkWidget *widget,
     return TRUE;
 }
 
-
 /* Draw a rectangle on the surface at the given position */
 void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
@@ -299,7 +314,6 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         cairo_destroy(lay->cr);
     }
 }
-
 
 void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
@@ -489,6 +503,35 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
         D_PRINT("Unknown tool\n", NULL);
     }
     layermngr->tool = tool;
+}
+
+void callback_add_custom_layer(UNUSED GtkWidget *widget, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkEntry, name, "LayerNameEntry");
+    GET_UI(GtkEntry, width, "LayerWidthSpinButton");
+    GET_UI(GtkEntry, height, "LayerHeightSpinButton");
+    GET_UI(GtkEntry, offsetX, "LayerOffsetXSpinButton");
+    GET_UI(GtkEntry, offsetY, "LayerOffsetYSpinButton");
+    GET_UI(GtkFileChooser, filename, "LayerImageFilename");
+    GET_UI(GtkWidget, window, "LayerWindow");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    const gchar *n = gtk_entry_get_text(name);
+    const gchar *w = gtk_entry_get_text(width);
+    const gchar *h = gtk_entry_get_text(height);
+    const gchar *x = gtk_entry_get_text(offsetX);
+    const gchar *y = gtk_entry_get_text(offsetY);
+    const gchar *f = gtk_file_chooser_get_filename(filename);
+
+    GMPF_Layer *lay = layermngr_add_new_layer(flowbox, f);
+    lay->name = (char*)n;
+    lay->size.w = atoi(w);
+    lay->size.h = atoi(h);
+    lay->pos.x = atoi(x);
+    lay->pos.y = atoi(y);
+
+    gtk_widget_hide(window);
 }
 
 void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
