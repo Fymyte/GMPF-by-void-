@@ -370,9 +370,11 @@ gboolean button_release_event_cb(UNUSED GtkWidget *widget,
     if (!lay)
         return FALSE;
 
-    // g_object_unref(lay->image);
-    // lay->image = gdk_pixbuf_get_from_surface (lay->surface, lay->pos.x, lay->pos.y,
-    //     lay->size.w, lay->size.h);
+    if (lay->image != NULL)
+        g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface (lay->surface, lay->pos.x, lay->pos.y,
+        lay->size.w, lay->size.h);
+    layer_icon_refresh(lay);
 
     return TRUE;
 }

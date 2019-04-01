@@ -40,7 +40,6 @@ char save_layer(GMPF_Layer *layer, FILE *file)
     guchar *image = gdk_pixbuf_get_pixels(layer->image);
     if (fwrite(&length, sizeof(unsigned int), 1, file) != 1)
     { PRINTERR; return 1; }
-    D_PRINT("data: %s", image);
     if (fwrite(image, length, 1, file) != 1) { PRINTERR; return 1; }
 
     return 0;
@@ -48,7 +47,6 @@ char save_layer(GMPF_Layer *layer, FILE *file)
 
 char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
 {
-    D_PRINT("loading layer", NULL);
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
     if (layer == NULL) { PRINTERR; return 1; }
 
@@ -61,7 +59,6 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
         free(layer);
         return 1;
     }
-    D_PRINT("1)", NULL);
     unsigned int length;
     if (fread(&length, sizeof(unsigned int), 1, file) != 1)
     {
@@ -69,7 +66,6 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
         free(layer);
         return 1;
     }
-    D_PRINT("2)", NULL);
 
     unsigned int true_length = ((unsigned int) layer->size.w * ((unsigned int) layer->size.h << 2));
     if (length != true_length)
@@ -78,7 +74,6 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
         free(layer);
         return 1;
     }
-    D_PRINT("3)", NULL);
 
     guchar *data = malloc(length * sizeof(guchar));
     if (fread(data, length, 1, file) != 1)
@@ -88,7 +83,6 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
         free(layer);
         return 1;
     }
-    D_PRINT("4)", NULL);
 
     layer->image = gdk_pixbuf_new_from_data (data,
                            GDK_COLORSPACE_RGB, TRUE, 8,
@@ -97,11 +91,8 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
                        NULL, NULL);
     D_PRINT("%p", layer->image);
 
-    D_PRINT("4.5)", NULL);
-
     layer->surface = gdk_cairo_surface_create_from_pixbuf(layer->image, 0, NULL);
 
-    D_PRINT("4.5.1)", NULL);
     GtkWidget *image = gtk_image_new();
 
     // Style of the image
@@ -109,9 +100,7 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
 
     /*int insertpos;*/
     // add the layer in the list
-    D_PRINT("4.5.2)", NULL);
     list_append(&(layermngr->layer_list), &(layer->list));
-    D_PRINT("4.5.3)", NULL);
     /*insertpos = 0;*/
 
     gtk_flow_box_insert (flowbox, image, 0 /*insertpos*/);
@@ -125,9 +114,6 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
     layer->cr = NULL;
     layer->icon = NULL;
     layer_icon_refresh(layer);
-
-    D_PRINT("5)", NULL);
-
 
 
     return 0;
