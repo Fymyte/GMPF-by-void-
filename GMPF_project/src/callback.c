@@ -556,7 +556,7 @@ void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
 
     gtk_file_chooser_set_current_name (chooser,
-                                         ("Untitled document"));
+                                         ("Untitled.gmpf"));
 
     res = gtk_dialog_run (GTK_DIALOG (dialog));
     if (res == GTK_RESPONSE_ACCEPT)
