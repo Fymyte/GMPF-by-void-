@@ -368,6 +368,12 @@ effet :</property>
       <pattern>*.jpg</pattern>
     </patterns>
   </object>
+  <object class="GtkAdjustment" id="LayerAngleAdjustment">
+    <property name="lower">-180</property>
+    <property name="upper">180</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkWindow" id="MainWindow">
     <property name="name">GMPF</property>
     <property name="width_request">700</property>
@@ -878,9 +884,11 @@ effet :</property>
               <object class="GtkSpinButton" id="RotateDegreeSpinButton">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="max_length">3</property>
+                <property name="max_length">4</property>
                 <property name="progress_pulse_step">1</property>
                 <property name="input_purpose">digits</property>
+                <property name="adjustment">LayerAngleAdjustment</property>
+                <property name="climb_rate">1</property>
                 <signal name="changed" handler="callback_rotate_angle" swapped="no"/>
               </object>
               <packing>

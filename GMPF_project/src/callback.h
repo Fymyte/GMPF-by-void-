@@ -41,6 +41,8 @@ void on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data);
 int check(int width, int height, int i, int j);
 
 void adjust_scale(double scale_x, double scale_y, gpointer user_data);
+void callback_rotate_angle_all(GtkEntry *entry, gpointer user_data);
+void layer_rotate_angle_all(int angle, GMPF_LayerMngr *layermngr);
 void callback_flip(GtkMenuItem *menuitem, gpointer user_data);
 void callback_rotate(GtkMenuItem *menuitem, gpointer user_data);
 void callback_hideWidget(GtkWidget *widget, gpointer user_data);

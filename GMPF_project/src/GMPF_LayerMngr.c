@@ -272,7 +272,6 @@ GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
     return newlayer;
 }
 
-
 void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
 {
     /*
@@ -295,14 +294,6 @@ void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
     }
 }
 
-
-
-
-
-
-//
-// for the GMPF_Layer
-//
 GMPF_Layer * layer_initialization()
 {
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
@@ -314,6 +305,8 @@ GMPF_Layer * layer_initialization()
 
     layer->size.h = 0;
     layer->size.w = 0;
+
+    layer->rotate_angle = 0;
 
     layer->isvisible = 1;
 
@@ -336,7 +329,6 @@ GMPF_Layer * layer_initialization()
     return layer;
 }
 
-
 void layer_delete(GMPF_Layer *layer)
 {
     list_remove(&(layer->list));
@@ -358,7 +350,6 @@ void layer_delete(GMPF_Layer *layer)
 
     free(layer);
 }
-
 
 void layer_icon_refresh(GMPF_Layer *layer)
 {

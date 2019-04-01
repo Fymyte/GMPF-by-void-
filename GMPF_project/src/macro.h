@@ -11,7 +11,7 @@
 
 #ifdef GMPF_DEBUG
     #define D_PRINT(_fmt, ...) \
-        fprintf(stderr, "[debug: %s::%d %s] " _fmt "\n", \
+        fprintf(stdout, "[debug: %s::%d %s] " _fmt "\n", \
             __FILE__, __LINE__, __func__, __VA_ARGS__);
 #else
     #define D_PRINT(_fmt, ...)
@@ -40,7 +40,7 @@
     #define UNUSED
 #endif
 
-#define RAD_FROM_DEG(_x) _x = _x * G_PI / 180;
+#define RAD_FROM_DEG(_x) (_x * G_PI / 180)
 
 
 // print error

@@ -54,6 +54,7 @@ struct GMPF_Layer {
     GMPF_Pos pos; // Offset on the rendering
     GMPF_Scale scale_factor;
     GMPF_Size size; // Size of the condained surface
+    int rotate_angle;
     char isvisible; // Set to one if it has to be rendered
 
     GdkPixbuf *icon; // The icon displayed in the list of layer

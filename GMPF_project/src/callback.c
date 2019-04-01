@@ -1,6 +1,6 @@
 #include "callback.h"
 
-struct _GdkPixbuf *unchangedPixbuf;
+// struct _GdkPixbuf *unchangedPixbuf;
 
 /* change the cursor
 values :
@@ -30,43 +30,68 @@ int cursor_state = 0;
         return 0;
     return 1;
 }*/
-
 void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
+
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-    const gchar *s = gtk_entry_get_text (entry);
-    float angle = atof(s) / 100;
-    RAD_FROM_DEG(angle);
-    lay->cr = cairo_create(lay->surface);
-    cairo_rotate(lay->cr, angle);
-    cairo_paint(lay->cr);
-    cairo_destroy(lay->cr);
+    if (!lay)
+        return;
+
+    lay->rotate_angle = atoi(gtk_entry_get_text(entry));
     gtk_widget_queue_draw(da);
 }
 
-void callback_flip(GtkMenuItem *menuitem, gpointer user_data)
+void callback_rotate_angle_all(GtkEntry *entry, gpointer user_data)
 {
     INIT_UI();
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
-    GtkImage *image = NULL;
+    const gchar *s = gtk_entry_get_text (entry);
+    layer_rotate_angle_all (atoi(s), layermngr_get_layermngr(flowbox));
 
-    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-    GdkPixbuf *pixbuf;
+    gtk_widget_queue_draw(da);
+}
 
-    const char *menulabel = gtk_menu_item_get_label (menuitem);
+void layer_rotate_angle_all(int angle, GMPF_LayerMngr *layermngr)
+{
+    if (layermngr->layer_list.next != NULL)
+    {
+        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+        while (lay != NULL)
+        {
+            lay->rotate_angle = angle;
 
-    if (strcmp(menulabel, "Flip horizontal"))
-    pixbuf = gdk_pixbuf_flip (unchangedPixbuf, TRUE);
+            if (!lay->list.next) break;
+            lay = container_of(lay->list.next, GMPF_Layer, list);
+        }
+    }
+}
 
-    else
-    pixbuf = gdk_pixbuf_flip (unchangedPixbuf, FALSE);
 
-    g_object_unref(unchangedPixbuf);
-    unchangedPixbuf = pixbuf;
-    gtk_image_set_from_pixbuf(image, pixbuf);
+void callback_flip(UNUSED GtkMenuItem *menuitem, UNUSED gpointer user_data)
+{
+    // INIT_UI();
+    //
+    // GtkImage *image = NULL;
+    //
+    // image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+    // GdkPixbuf *pixbuf;
+    //
+    // const char *menulabel = gtk_menu_item_get_label (menuitem);
+    //
+    // if (strcmp(menulabel, "Flip horizontal"))
+    // pixbuf = gdk_pixbuf_flip (unchangedPixbuf, TRUE);
+    //
+    // else
+    // pixbuf = gdk_pixbuf_flip (unchangedPixbuf, FALSE);
+    //
+    // g_object_unref(unchangedPixbuf);
+    // unchangedPixbuf = pixbuf;
+    // gtk_image_set_from_pixbuf(image, pixbuf);
 }
 
 void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
@@ -101,30 +126,30 @@ void callback_layer_move_up(UNUSED GtkWidget *widget, gpointer user_data)
     gtk_widget_queue_draw(da);;
 }
 
-void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
-{
-    INIT_UI();
-
-    GET_UI(GtkImage, image, "OriginalImage");
-
-    // image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-    GdkPixbuf *pixbuf;
-
-    const char *menulabel = gtk_menu_item_get_label (menuitem);
-    D_PRINT("%s\n", menulabel);
-    if (strcmp(menulabel, "Rotate left"))
-    {
-        pixbuf = gdk_pixbuf_rotate_simple(unchangedPixbuf, GDK_PIXBUF_ROTATE_CLOCKWISE);
-    }
-    else
-    {
-        pixbuf = gdk_pixbuf_rotate_simple(unchangedPixbuf, GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE);
-    }
-
-    g_object_unref(unchangedPixbuf);
-    unchangedPixbuf = pixbuf;
-    gtk_image_set_from_pixbuf(image, pixbuf);
-}
+// void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
+// {
+//     INIT_UI();
+//
+//     GET_UI(GtkImage, image, "OriginalImage");
+//
+//     // image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
+//     GdkPixbuf *pixbuf;
+//
+//     const char *menulabel = gtk_menu_item_get_label (menuitem);
+//     D_PRINT("%s", menulabel);
+//     if (strcmp(menulabel, "Rotate left"))
+//     {
+//         pixbuf = gdk_pixbuf_rotate_simple(unchangedPixbuf, GDK_PIXBUF_ROTATE_CLOCKWISE);
+//     }
+//     else
+//     {
+//         pixbuf = gdk_pixbuf_rotate_simple(unchangedPixbuf, GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE);
+//     }
+//
+//     g_object_unref(unchangedPixbuf);
+//     unchangedPixbuf = pixbuf;
+//     gtk_image_set_from_pixbuf(image, pixbuf);
+// }
 
 void callback_hideWidget(GtkWidget *widget, UNUSED gpointer user_data)
 {
@@ -468,6 +493,11 @@ void on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_d
             {
                 cairo_save(cr);
                 cairo_scale(cr, lay->scale_factor.x, lay->scale_factor.y);
+                // double tx = lay->rotate_angle < 90 ? lay->rotate_angle * lay->size.w / 90 : lay->size.w - (lay->rotate_angle * lay->size.w / 90);
+                // double ty = lay->rotate_angle < 90 ? 0 : lay->size.h - (lay->rotate_angle * lay->size.h / 90);;
+                cairo_translate(cr, lay->size.w / 2, lay->size.h / 2);
+                cairo_rotate(cr, RAD_FROM_DEG(lay->rotate_angle));
+                cairo_translate(cr, -lay->size.w / 2, -lay->size.h / 2);
                 cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
                 cairo_paint(cr);
                 cairo_restore(cr);
@@ -498,7 +528,7 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
         case '5': tool = SELECTOR_FREE;
                          break;
         default : tool = INCORECT_TOOL;
-        D_PRINT("Unknown tool\n", NULL);
+        D_PRINT("Unknown tool", NULL);
     }
     layermngr->tool = tool;
 }
@@ -646,11 +676,11 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     gtk_widget_set_size_request(layout, max_width, max_height);
     gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
 
-    D_PRINT("max_width: %d, max_height = %d\n", max_width, max_height);
+    D_PRINT("max_width: %d, max_height = %d", max_width, max_height);
 
     if(error)
     {
-        printf("Error : %s\n", error->message);
+        printf("Error : %s", error->message);
         g_error_free(error);
     }
 
@@ -681,7 +711,7 @@ void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    D_PRINT("Convolution\n", NULL);
+    D_PRINT("Convolution", NULL);
     int number;
     const char *menulabel = gtk_menu_item_get_label (menuitem);
     if (!strcmp(menulabel, "Bords"))
