@@ -704,7 +704,7 @@ void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 // IS OK
 {
     INIT_UI();
-    BinarizeColor(data);
+    Equalize(data);
 }
 
 
@@ -762,7 +762,7 @@ void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     Greyscale(data);
-    //Equalize(data);
+    //BinarizeColor(data);
 }
 
 
