@@ -982,8 +982,8 @@ void callback_applyFilter(UNUSED GtkFileChooser *btn, gpointer user_data)
 {
 	//a modifier -> recuprer le fichier du dialog
 	INIT_UI();
-	GET_UI(GtkEntry, entry, "FilterFilename");
-	gchar *filename = (gchar*)gtk_entry_get_text (entry);
+	GET_UI(GtkFileChooser, chooser, "filterChooser");
+	gchar *filename = gtk_file_chooser_get_filename(chooser);
     Apply_user_filter(filename, user_data);
     GET_UI(GtkWidget, filterchooser, "filterChooser");
     gtk_widget_hide(filterchooser);
