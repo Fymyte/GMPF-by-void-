@@ -680,3 +680,93 @@ void Equalize(SGlobalData *data)
     free(cdf);
     free(h_v);
 }
+
+void Verticale(SGlobalData *data)
+{
+	GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    if (lay == NULL)
+        return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+
+    guchar red, green, blue, alpha;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+    
+    struct Img_rgb *img = init_img_rgb(width, height);
+    
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+			Matrix_val(img -> red, width - i - 1, j, (double)red);
+            Matrix_val(img -> green, width - i - 1, j, (double)green);
+            Matrix_val(img -> blue, width - i - 1, j, (double)blue);
+            Matrix_val(img -> alpha, width - i - 1, j, (double)alpha);
+            //put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
+        }
+    }
+    Img_rgb_to_Image(imgPixbuf, img);
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
+    gtk_widget_queue_draw(da);
+    free_img_rgb(img);
+}
+
+void Horizontale(SGlobalData *data)
+{
+	GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    if (lay == NULL)
+        return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+
+    guchar red, green, blue, alpha;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+    
+    struct Img_rgb *img = init_img_rgb(width, height);
+    
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+			Matrix_val(img -> red, i, height - j - 1, (double)red);
+            Matrix_val(img -> green, i , height - j - 1, (double)green);
+            Matrix_val(img -> blue, i, height - j - 1, (double)blue);
+            Matrix_val(img -> alpha, i, height - j - 1, (double)alpha);
+            //put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
+        }
+    }
+    Img_rgb_to_Image(imgPixbuf, img);
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
+    gtk_widget_queue_draw(da);
+    free_img_rgb(img);
+}

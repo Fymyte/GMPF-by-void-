@@ -814,42 +814,13 @@ void callback_FC(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     gtk_widget_show(FCWindow);
 }
 
-void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
+void callback_verticale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+// OK
 {
-    g_print("Mirror - Vertical\n");
-    menuitem = 0;
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkImage *image = NULL;
-    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-
-    struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = gtk_image_get_pixbuf(image);
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    struct Img_rgb *img = init_img_rgb(width, height);
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            guchar red, green, blue, alpha;
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-            err(1, "pixbuf get pixels error");
-            Matrix_val(img -> red, width - i - 1, j, (double)red);
-            Matrix_val(img -> green, width - i - 1, j, (double)green);
-            Matrix_val(img -> blue, width - i - 1, j, (double)blue);
-            Matrix_val(img -> alpha, width - i - 1, j, (double)alpha);
-        }
-    }
-    Img_rgb_to_Image(imgPixbuf, img);
-    gtk_image_set_from_pixbuf(image, imgPixbuf);
-    free_img_rgb(img);
+    INIT_UI();
+    Verticale(data);
+    //BinarizeColor(data);
 }
-
 
 void callback_tinter(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -932,6 +903,12 @@ void callback_equalize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     Equalize(data);
+}
+
+void callback_horizontale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    Horizontale(data);
 }
 /*
 void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)

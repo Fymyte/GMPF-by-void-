@@ -17,5 +17,7 @@ void Colorfull(SGlobalData *data);
 void Convolute(SGlobalData *data,double *mat);
 
 void Equalize(SGlobalData *data);
+void Verticale(SGlobalData *data);
+void Horizontale(SGlobalData *data);
 
 #endif
