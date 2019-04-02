@@ -156,7 +156,7 @@ void callback_hideWidget(GtkWidget *widget, UNUSED gpointer user_data)
     gtk_widget_hide(widget);
 }
 
-void callback_hideParent(GtkWidget *widget, GtkWidget *parent)
+void callback_hideParent(UNUSED GtkWidget *widget, GtkWidget *parent)
 {
     gtk_widget_hide(parent);
 }
