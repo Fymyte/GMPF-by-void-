@@ -924,6 +924,11 @@ void callback_negative(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     Negative(data);
 }
 
+void callback_lightness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    Lightness(data);
+}
 /*
 void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)
 {

@@ -62,6 +62,7 @@ void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data);
 void reset_cursor(GtkMenuItem *menuitem, gpointer user_data);
 void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data);
 void callback_negative(GtkMenuItem *menuitem, gpointer user_data);
+void callback_lightness(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 
 //tools functions
 void callback_brush(GtkMenuItem *menuitem, gpointer user_data);
