@@ -126,8 +126,8 @@ void callback_layer_move_up(UNUSED GtkWidget *widget, gpointer user_data)
     gtk_widget_queue_draw(da);;
 }
 
-// void callback_rotate(GtkMenuItem *menuitem, gpointer user_data)
-// {
+void callback_rotate(UNUSED GtkMenuItem *menuitem, UNUSED gpointer user_data)
+{
 //     INIT_UI();
 //
 //     GET_UI(GtkImage, image, "OriginalImage");
@@ -149,7 +149,7 @@ void callback_layer_move_up(UNUSED GtkWidget *widget, gpointer user_data)
 //     g_object_unref(unchangedPixbuf);
 //     unchangedPixbuf = pixbuf;
 //     gtk_image_set_from_pixbuf(image, pixbuf);
-// }
+}
 
 void callback_hideWidget(GtkWidget *widget, UNUSED gpointer user_data)
 {
