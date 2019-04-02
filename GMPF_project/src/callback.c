@@ -702,8 +702,51 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     }
 }
 
+void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    cursor_state = 1;
+    INIT_UI();
+    callback_setCursor(data);
+}
+
+void callback_rubber(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    cursor_state = 2;
+    INIT_UI();
+    callback_setCursor(data);
+}
+
+void callback_FC(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    //variables definitions
+    INIT_UI();
+    GError *err = NULL;
+    GdkPixbuf *imgPixbuf = gdk_pixbuf_new_from_file("image_test.jpg", &err);
+    if(err)
+    {
+        printf("Error : %s\n", err->message);
+        g_error_free(err);
+    }
+
+    GET_UI(GtkWidget, FCWindow, "FilterCreator");
+    GET_UI(GtkImage, image, "Image_test");
+
+    //test image resize + setting
+    int pixbuf_width = gdk_pixbuf_get_width(imgPixbuf) / 2;
+    int pixbuf_height = gdk_pixbuf_get_height(imgPixbuf) / 2;
+
+
+    GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf,
+    pixbuf_width, pixbuf_height, GDK_INTERP_BILINEAR);
+
+    gtk_image_clear(image);
+    gtk_image_set_from_pixbuf(image, img2);
+
+    //show the filter creator windowjust
+    gtk_widget_show(FCWindow);
+}
+
 void callback_binarize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-// IS OK
 {
     INIT_UI();
     Binarize(data);
@@ -711,7 +754,6 @@ void callback_binarize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 
 
 void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-// IS OK
 {
     INIT_UI();
     Equalize(data);
@@ -761,116 +803,15 @@ void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 
 
 void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-// OK
 {
     INIT_UI();
     Greyscale(data);
-    //BinarizeColor(data);
-}
-
-
-
-void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-{
-    cursor_state = 1;
-    INIT_UI();
-    callback_setCursor(data);
-}
-
-void callback_rubber(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-{
-    cursor_state = 2;
-    INIT_UI();
-    callback_setCursor(data);
-}
-
-void callback_FC(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-{
-    //variables definitions
-    INIT_UI();
-    GError *err = NULL;
-    GdkPixbuf *imgPixbuf = gdk_pixbuf_new_from_file("image_test.jpg", &err);
-    if(err)
-    {
-        printf("Error : %s\n", err->message);
-        g_error_free(err);
-    }
-
-    GET_UI(GtkWidget, FCWindow, "FilterCreator");
-    GET_UI(GtkImage, image, "Image_test");
-
-    //test image resize + setting
-    int pixbuf_width = gdk_pixbuf_get_width(imgPixbuf) / 2;
-    int pixbuf_height = gdk_pixbuf_get_height(imgPixbuf) / 2;
-
-
-    GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf,
-    pixbuf_width, pixbuf_height, GDK_INTERP_BILINEAR);
-
-    gtk_image_clear(image);
-    gtk_image_set_from_pixbuf(image, img2);
-
-    //show the filter creator windowjust
-    gtk_widget_show(FCWindow);
-}
-
-void callback_verticale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-// OK
-{
-    INIT_UI();
-    Verticale(data);
-    //BinarizeColor(data);
 }
 
 void callback_tinter(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    GET_UI(GtkWidget, da, "drawingArea");
-    GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-
-    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-
-    if (lay == NULL)
-        return;
-
-    g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
-
-    GdkPixbuf *imgPixbuf = lay->image;
-    guchar r, g, b, factor;
-    GdkRGBA rgba;
-
-    gtk_color_chooser_get_rgba (colorChooser, &rgba);
-    r = (guchar)(rgba.red * 255);
-    g = (guchar)(rgba.green * 255);
-    b = (guchar)(rgba.blue * 255);
-    factor = (guchar)(rgba.alpha * 100);
-
-    guchar red;
-    guchar green;
-    guchar blue, alpha;
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-            err(1, "pixbuf get pixels error");
-            red = red * (100 - factor) / 100 + r * factor / 100;
-            green = green * (100 - factor) / 100 + g * factor / 100;
-            blue = blue * (100 - factor) / 100 + b * factor / 100;
-            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
-        }
-    }
-    cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
-    gtk_widget_queue_draw(da);
+    Tinter(data);
 }
 
 
@@ -910,43 +851,13 @@ void callback_horizontale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     INIT_UI();
     Horizontale(data);
 }
-/*
-void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data)
+
+void callback_verticale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    g_print("Mirror - Horizontal\n");
-    menuitem = 0;
-    SGlobalData *data = (SGlobalData*) user_data;
-    GtkImage *image = NULL;
-    image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-
-    struct _GdkPixbuf *imgPixbuf;
-    imgPixbuf = gtk_image_get_pixbuf(image);
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    struct Img_rgb *img = init_img_rgb(width, height);
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            guchar red, green, blue, alpha;
-            error= gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-            err(1, "pixbuf get pixels error");
-            Matrix_val(img -> red, i, height - j - 1, (double)red);
-            Matrix_val(img -> green, i , height - j - 1, (double)green);
-            Matrix_val(img -> blue, i, height - j - 1, (double)blue);
-            Matrix_val(img -> alpha, i, height - j - 1, (double)alpha);
-        }
-    }
-    Img_rgb_to_Image(imgPixbuf, img);
-    gtk_image_set_from_pixbuf(image, imgPixbuf);
-    free_img_rgb(img);
+    INIT_UI();
+    Verticale(data);
 }
-*/
+
 void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();

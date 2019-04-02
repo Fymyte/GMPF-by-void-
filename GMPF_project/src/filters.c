@@ -433,7 +433,7 @@ void Tinter(SGlobalData *data)
     g = (guchar)(rgba.green * 255);
     b = (guchar)(rgba.blue * 255);
     //factor = (guchar)(rgba.alpha * 100);
-    factor = 25;
+    factor = 50;
 
     guchar red;
     guchar green;
