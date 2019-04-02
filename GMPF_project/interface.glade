@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 
+<!-- Generated with glade 3.20.0 
 
 Copyright (C) VOID*
 
@@ -23,9 +23,6 @@ without any warranty.
     <property name="default_height">300</property>
     <property name="icon_name">address-book-new</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
-    <child>
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -384,9 +381,6 @@ effet :</property>
     <property name="has_resize_grip">True</property>
     <signal name="destroy" handler="GMPFquit" swapped="no"/>
     <child>
-      <placeholder/>
-    </child>
-    <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -544,26 +538,26 @@ effet :</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Darkness">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">darkness</property>
+                        <property name="label" translatable="yes">Darkness</property>
                         <property name="use_underline">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Lightness">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">equalize greyscale</property>
+                        <property name="label" translatable="yes">Lightness</property>
                         <property name="use_underline">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Equalize grayscale">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">lightness</property>
+                        <property name="label" translatable="yes">Equalize grayscale</property>
                         <property name="use_underline">True</property>
                       </object>
                     </child>
@@ -577,25 +571,25 @@ effet :</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Binarise color">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">binarize color</property>
+                        <property name="label" translatable="yes">Binarize color</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_binarize_color" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Tinter">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">tinter</property>
+                        <property name="label" translatable="yes">Tinter</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_tinter" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Negatif">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Negatif</property>
@@ -604,27 +598,27 @@ effet :</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Grayscale">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Grey filtre</property>
-                        <property name="label" translatable="yes">grey</property>
+                        <property name="label" translatable="yes">Niveaux de gris</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_grey" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Binarize">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Binarise to black and white </property>
-                        <property name="label" translatable="yes">binarise</property>
+                        <property name="label" translatable="yes">Binarise</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_binarize" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Colorfull">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Colorfull</property>
@@ -1327,9 +1321,6 @@ Arnaud CASSEZ
 Pierrick GUILLAUME
 Samory DIABY</property>
     <property name="logo">GMPF.png</property>
-    <child>
-      <placeholder/>
-    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -1380,9 +1371,6 @@ Samory DIABY</property>
     <property name="window_position">center</property>
     <property name="type_hint">menu</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -1605,14 +1593,14 @@ Samory DIABY</property>
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkFileChooserDialog" id="exportWindow">
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
     <property name="action">save</property>
-    <child>
-      <placeholder/>
-    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -1666,9 +1654,6 @@ Samory DIABY</property>
   <object class="GtkFileChooserDialog" id="filterChooser">
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
-    <child>
-      <placeholder/>
-    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
