@@ -51,17 +51,20 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data);
 void callback_image(GtkFileChooser *filebtn, gpointer user_data);
 void callback_image(GtkFileChooser *filebtn, gpointer user_data);
 void callback_image_cairo(GtkFileChooser *btn, gpointer user_data);
+
+
+void callback_FC(GtkMenuItem *menuitem, gpointer user_data);
+void reset_cursor(GtkMenuItem *menuitem, gpointer user_data);
+
 void callback_binarize(GtkMenuItem *menuitem, gpointer user_data);
 void callback_binarize_color(GtkMenuItem *menuitem, gpointer user_data);
-void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data);
 void callback_grey(GtkMenuItem *menuitem, gpointer user_data);
-void callback_FC(GtkMenuItem *menuitem, gpointer user_data);
-void callback_vertical(GtkMenuItem *menuitem, gpointer user_data);
 void callback_tinter(GtkMenuItem *menuitem, gpointer user_data);
 void callback_colorfull(GtkMenuItem *menuitem, gpointer user_data);
-void reset_cursor(GtkMenuItem *menuitem, gpointer user_data);
-void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data);
 void callback_negative(GtkMenuItem *menuitem, gpointer user_data);
+void callback_convolute_f(GtkMenuItem *menuitem, gpointer user_data);
+void callback_horizontal(GtkMenuItem *menuitem, gpointer user_data);
+void callback_vertical(GtkMenuItem *menuitem, gpointer user_data);
 void callback_lightness(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 void callback_darkness(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 void callback_equalize(UNUSED GtkMenuItem *menuitem, gpointer user_data);

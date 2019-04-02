@@ -736,13 +736,6 @@ void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     {
         number = 2;
     }
-    // printf("Waiting for a number....\n");
-    // printf("0 : Edge Enhance\n");
-    // printf("1 : Sharpen\n");
-    // printf("2 : Blur\n");
-    // if (scanf("%i", &number) == EOF)
-    //     errx(1, "Error, scanf()");
-
 
     double *mat = malloc(sizeof(double) * 9);
     switch (number)
@@ -821,7 +814,6 @@ void callback_FC(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     gtk_widget_show(FCWindow);
 }
 
-/*
 void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
 {
     g_print("Mirror - Vertical\n");
@@ -857,7 +849,7 @@ void callback_vertical(GtkMenuItem *menuitem, gpointer user_data)
     gtk_image_set_from_pixbuf(image, imgPixbuf);
     free_img_rgb(img);
 }
-*/
+
 
 void callback_tinter(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
