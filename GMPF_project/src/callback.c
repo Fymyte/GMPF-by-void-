@@ -783,18 +783,15 @@ void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     switch (number)
     {
         case 0 :
-        printf("Edge Enhance\n");
         mat[0] = mat[1] = mat[2] = mat[3] = mat[5] = mat[6] = mat[7] = mat[8] = -1;
         mat[4] = 8;
         break;
         case 1 :
-        printf("Sharpen\n");
         mat[0] = mat[2] = mat[6] = mat[8] = 0;
         mat[1] = mat[3] = mat[5] = mat[7] = -1;
         mat[4] = 5;
         break;
         default :
-        printf("Blur\n");
         mat[0] = mat[1] = mat[2] = mat[3] = mat[4] = mat[5] = mat[6] = mat[7] = mat[8] = (double) 1/9;
         break;
     }

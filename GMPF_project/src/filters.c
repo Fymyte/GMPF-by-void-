@@ -2,7 +2,6 @@
 
 void Lightness(SGlobalData *data)
 {
-    //printf("Lightness\n");
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
@@ -55,7 +54,6 @@ void Lightness(SGlobalData *data)
 
 void Darkness(SGlobalData *data)
 {
-    //printf("Lightness\n");
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
@@ -347,65 +345,6 @@ void BinarizeColor(SGlobalData *data)
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
     layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
-
-
-    /*GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-
-    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-
-    if (lay == NULL)
-        return;
-
-    g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
-
-    int width = (lay -> size).w;
-    int height = (lay -> size).h;
-
-    GMPF_Pos *pos = malloc(sizeof(GMPF_Pos));
-    GMPF_Pixel *pixel = malloc(sizeof(GMPF_Pixel));
-
-    cairo_t *cr = cairo_create(lay -> surface);
-
-    unsigned long red, green, blue;
-    //lay -> cr = cairo_create(lay -> surface);
-
-    for(int i = 0; i < width; i++)
-    {
-        pos -> x = i;
-        for(int j = 0; j < height; j++)
-        {
-            pos -> y = j;
-
-            if (layer_get_pixel(lay, pos, pixel) != 0)
-                errx(EXIT_FAILURE, "error get pixel");
-
-			if (pixel -> R > 127)
-				red = 255;
-			else
-				red = 0;
-
-			if (pixel -> B > 127)
-				blue = 255;
-			else
-				blue = 0;
-
-			if (pixel -> G > 127)
-				green = 255;
-			else
-				green = 0;
-
-            cairo_set_source_rgba(cr, red, green, blue, pixel->A);
-            cairo_move_to(cr, i, j);
-            cairo_rel_line_to(cr, 0, 1);
-            cairo_stroke(cr);
-        }
-    }
-    GET_UI(GtkWidget, w, "drawingArea");
-    gtk_widget_queue_draw(w);
-    cairo_destroy(cr);
-    free(pos);
-    free(pixel);*/
 }
 
 void Tinter(SGlobalData *data)
@@ -564,7 +503,6 @@ void Convolute(SGlobalData *data, double *mat)
                         g += mat[l + x/2 + k + x/2] * (double)green;
                         b += mat[l + x/2 + k + x/2] * (double)blue;
                         a = alpha;
-                        //printf("%5f", a);
                     }
                 }
             }
@@ -666,7 +604,7 @@ void Equalize(SGlobalData *data)
             Matrix_val(img -> red, i, j, *(h_v + grey));
             Matrix_val(img -> green, i, j, *(h_v + grey));
             Matrix_val(img -> blue, i, j, *(h_v + grey));
-            Matrix_val(img -> alpha, i, j, 255);
+            Matrix_val(img -> alpha, i, j, a);
         }
     }
 
@@ -760,8 +698,7 @@ void Horizontale(SGlobalData *data)
             Matrix_val(img -> green, i , height - j - 1, (double)green);
             Matrix_val(img -> blue, i, height - j - 1, (double)blue);
             Matrix_val(img -> alpha, i, height - j - 1, (double)alpha);
-            //put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
-        }
+	}
     }
     Img_rgb_to_Image(imgPixbuf, img);
     cairo_surface_destroy(lay->surface);
@@ -865,7 +802,7 @@ void Equalize_color(SGlobalData *data)
             Matrix_val(img -> red, i, j, *(h_v_red + r));
             Matrix_val(img -> green, i, j, *(h_v_green + g));
             Matrix_val(img -> blue, i, j, *(h_v_blue + b));
-            Matrix_val(img -> alpha, i, j, 255);
+            Matrix_val(img -> alpha, i, j, a);
         }
     }
 
