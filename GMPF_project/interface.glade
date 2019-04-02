@@ -543,6 +543,7 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Darkness</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_darkness" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -560,6 +561,7 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Equalize grayscale</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_equalize" swapped="no"/>
                       </object>
                     </child>
                     <child>

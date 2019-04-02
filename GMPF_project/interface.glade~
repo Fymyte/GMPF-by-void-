@@ -551,6 +551,7 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Lightness</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_lightness" swapped="no"/>
                       </object>
                     </child>
                     <child>
