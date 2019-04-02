@@ -330,7 +330,7 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
-        circular_brush(widget, lay->cr, x, y, layermngr->brush_size,
+        circular_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,lay->pos.x, lay->pos.y, layermngr->brush_size,
             (float)color.red, (float)color.green, (float)color.blue,
             (float)color.alpha, lay->scale_factor.x, lay->scale_factor.y,
             layermngr);
@@ -353,7 +353,7 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
-        circular_brush(widget, lay->cr, x, y, layermngr->brush_size, 0, 0, 0, 0.0,
+        circular_brush(widget, lay->cr, x + lay->pos.x, y + lay->pos.y,lay->pos.x, lay->pos.y, layermngr->brush_size, 0, 0, 0, 0.0,
                     lay->scale_factor.x, lay->scale_factor.y, layermngr);
         //end brush zone
         cairo_destroy(lay->cr);

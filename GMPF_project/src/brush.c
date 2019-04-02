@@ -20,7 +20,7 @@ void square_brush(GtkWidget *widget, cairo_t *cr, int x, int y, int size,
     gtk_widget_queue_draw_area (widget, nx, ny, size, size);
 }
 
-void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
+void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y, double rx, double ry,
                 double radius, float red, float green, float blue, float alpha,
                 float scale_x, float scale_y, GMPF_LayerMngr *layermngr)
 {
@@ -63,6 +63,6 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y,
     layermngr->pos.x = x;
     layermngr->pos.y = y;
 
-    gtk_widget_queue_draw_area (widget, refreshx - 10, refreshy - 10,
+    gtk_widget_queue_draw_area (widget, refreshx - 10 + rx, refreshy - 10 + ry,
             width * scale_x + 20, height * scale_y + 20);
 }
