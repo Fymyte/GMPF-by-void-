@@ -11,7 +11,7 @@ without any warranty.
 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <!-- interface-css-provider-path white_theme.css -->
+  <!-- interface-css-provider-path main.css -->
   <!-- interface-license-type all_permissive -->
   <!-- interface-name GMPF -->
   <!-- interface-copyright VOID* -->
@@ -573,7 +573,7 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">filtre personnalise</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_showDialog" swapped="no"/>
+                        <signal name="activate" handler="callback_showDialog" object="filterChooser" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -827,7 +827,8 @@ effet :</property>
           </packing>
         </child>
         <child>
-          <object class="GtkBox">
+          <object class="GtkBox" id="main_toolbar">
+            <property name="name">main_toolbar</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
@@ -969,6 +970,8 @@ effet :</property>
                     <child>
                       <object class="GtkToolButton" id="1PaintButton">
                         <property name="name">1</property>
+                        <property name="width_request">40</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Pinceau pour peindre sur le calque séléctionné de la couleur choisie</property>
@@ -985,6 +988,8 @@ effet :</property>
                     <child>
                       <object class="GtkToolButton" id="2EraiserButton">
                         <property name="name">2</property>
+                        <property name="width_request">40</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Gomme</property>
@@ -1001,6 +1006,8 @@ effet :</property>
                     <child>
                       <object class="GtkToolButton" id="3ColorPickerButton">
                         <property name="name">3</property>
+                        <property name="width_request">40</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Définie la couleur d'après la valeur du pixel séléctionné</property>
@@ -1016,6 +1023,7 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkSeparatorToolItem">
+                        <property name="width_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -1027,6 +1035,8 @@ effet :</property>
                     <child>
                       <object class="GtkToolButton" id=" 4SelectButton">
                         <property name="name">4</property>
+                        <property name="width_request">40</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Selection</property>
@@ -1041,6 +1051,8 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkToolButton" id="5FreeSelectionButton">
+                        <property name="width_request">40</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Sélection libre</property>
@@ -1052,6 +1064,9 @@ effet :</property>
                         <property name="homogeneous">True</property>
                       </packing>
                     </child>
+                    <style>
+                      <class name="VerticalToolBar"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1173,6 +1188,8 @@ effet :</property>
                     <property name="icon_size">4</property>
                     <child>
                       <object class="GtkToolButton" id="AddLayerButton">
+                        <property name="width_request">40</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Ajoute un nouveau calque à la liste</property>
@@ -1188,6 +1205,8 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkToolButton" id="MoveUpButton">
+                        <property name="width_request">40</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Remonte le calque séléctionné d'un rang dans la liste</property>
@@ -1203,6 +1222,8 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkToolButton" id="MoveDownButton">
+                        <property name="width_request">40</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Descend le calque séléctionner d'un rang dans la liste</property>
@@ -1218,6 +1239,8 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkToolButton" id="CopyLayerButton">
+                        <property name="width_request">40</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Duplique le calque séléctionné et ajoute la copie à la liste</property>
@@ -1232,6 +1255,8 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkToolButton" id="RemoveLayerButton">
+                        <property name="width_request">40</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Supprime le calque séléctionné de la liste</property>
@@ -1245,6 +1270,9 @@ effet :</property>
                         <property name="homogeneous">True</property>
                       </packing>
                     </child>
+                    <style>
+                      <class name="HorizontalToolBar"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1268,6 +1296,8 @@ effet :</property>
         </child>
         <child>
           <object class="GtkFileChooserButton" id="LoadImageChooser">
+            <property name="name">LoadImageChooser</property>
+            <property name="height_request">40</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="filter">ImageFilter</property>
