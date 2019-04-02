@@ -917,7 +917,7 @@ void Color_balance(SGlobalData *data, guchar r, guchar g, guchar b)
             error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
             if(!error)
                 err(1, "pixbuf get pixels error");
-
+				
 			if ((255 / r) * red > 255)
 				red = 255;
 			else
