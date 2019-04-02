@@ -183,11 +183,9 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     adjust_scale (scaleValue, scaleValue, user_data);
 }
 
-void callback_showSaveWindow(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_showDialog(UNUSED GtkMenuItem *menuitem, GtkWidget *dialog)
 {
-	INIT_UI();
-	GET_UI(GtkWidget, saveWindow, "exportWindow");
-	gtk_dialog_run(GTK_DIALOG(saveWindow));
+	gtk_dialog_run(GTK_DIALOG(dialog));
 }
 
 void callback_save(UNUSED GtkMenuItem *menuitem, gpointer user_data)
@@ -977,5 +975,11 @@ void callback_saveFilter(UNUSED GtkButton *btn, gpointer user_data)
 
 void callback_applyFilter(UNUSED GtkFileChooser *btn, gpointer user_data)
 {
-    Apply_user_filter("test4.txt", user_data);
+	//a modifier -> recuprer le fichier du dialog
+	INIT_UI();
+	GET_UI(GtkEntry, entry, "FilterFilename");
+	gchar *filename = (gchar*)gtk_entry_get_text (entry);
+    Apply_user_filter(filename, user_data);
+    GET_UI(GtkWidget, filterchooser, "filterChooser");
+    gtk_widget_hide(filterchooser);
 }
