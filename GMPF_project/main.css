@@ -1,6 +1,7 @@
 /*@define-color gmpf_pink rgb(255, 0, 90);*/
 
 @define-color ui_text_color rgb(0, 255, 165);
+@define-color ui_text_color2 rgb(255, 255, 255);
 
 @define-color ui_button_color rgb(150, 150, 150);
 @define-color ui_button_hover_color rgb(0, 255, 165);
@@ -9,75 +10,135 @@
 @define-color ui_window_background rgb(110, 110, 110);
 
 /* WINDOW */
-window, menubar {
+window, window > grid, menubar {
     background-color: @ui_window_background;
 }
 
 window label {
-    color: white;
+    color: @ui_text_color2;
 }
 
-/* COMBOBOX & ENTRY */
-
-combobox, spinbutton {
-    border-radius: 5px;
+/*menuitem {
+    box-shadow: none;
+    background-image: none;
+    background-color: transparent;
     border-width: 0px;
-    border-style: solid;
-    border-color: @ui_button_pressed_color;
+    border-style: hidden;
+
+    border-radius: 20px;
+}*/
+
+menuitem:hover {
+    box-shadow: none;
+    background-image: none;
+    background-color: @ui_button_pressed_color;
+    border-width: 0px;
+    border-style: hidden;
 }
 
+menubar > menuitem:hover {
+    border-radius: 20px;
+}
+
+
+/* spinbutton */
 spinbutton {
+    border-width: 0px;
+    border-style: hidden;
+    border-color: @ui_button_pressed_color;
+    background-image: none;
+    background-color: transparent;
     color: @ui_text_color;
+}
+spinbutton > button {
+    border-radius: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 
-entry {
-    border-radius: 5px 0px 0px 5px;
-    border-width: 1px;
-    background-color: @ui_button_color;
-    color: @ui_text_color;
+spinbutton > entry {
+    border-radius: 20px 0px 0px 20px;
 }
+
+spinbutton :last-child {
+    border-radius: 0px 20px 20px 0px;
+}
+
+
+
+
+
+
 
 /* BUTTON */
 button {
-    color: white;
-    border: none;
+    border-radius: 20px;
+    box-shadow: none;
+    color: @ui_text_color2;
+    border: hidden;
     background-image: none;
     background-color: @ui_button_color;
 }
 
-#LoadImageChooser > button {
-
+.colorbutton {
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
 button:hover {
+    background-image: none;
     background-color: @ui_button_hover_color;
 }
 
 button:active {
+    background-image: none;
     background-color: @ui_button_pressed_color;
 }
 
-toolbar button, #LoadImageChooser > button {
+toolbar.VerticalToolBar button, #LoadImageChooser > button {
     border-radius: 20px;
     margin: 4px;
-    border-style: hidden;
+    /*border-style: hidden;*/
 }
 
 toolbar separator {
     margin-top: 4px;
 }
 
-/* toolbar.VerticalToolBar button {
-    margin-top: 4px;
+.HorizontalToolBar {
+    margin: 0px;
+    padding: 0px;
+    margin-right: 4px;
 }
 
-toolbar.HorizontalToolBar button {
-    margin-left: 2px;
-    margin-right: 2px;
-} */
+.HorizontalToolBar button {
+    margin: 4px;
+    border-radius: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.HorizontalToolBar :first-child button {
+    border-radius: 20px 0px 0px 20px;
+}
+
+.HorizontalToolBar :last-child button {
+    border-radius: 0px 20px 20px 0px;
+}
+
+.layer {
+    box-shadow: none;
+    border-width: 0px;
+    border-left-width: 2px;
+    border-color: @ui_button_hover_color;
+}
+
+#flow *:selected {
+    background-color: @ui_button_pressed_color;
+}
 
 window button label {
-    color: white;
+    color: @ui_text_color2;
 }
 
 /* MENUITEM, TOOLBAR */
@@ -97,3 +158,47 @@ window menuitem > label {
 #event {
 	background-image: url("grille.png");
 }
+
+/* COMBOBOX & ENTRY */
+
+combobox {
+    border-radius: 20px;
+    border-width: 0px;
+    border-color: @ui_button_pressed_color;
+}
+
+entry {
+    border-radius: 20px;
+    border-width: 0px;
+    background-color: @ui_button_color;
+    color: @ui_text_color;
+}
+
+combobox {
+    border-radius:20px;
+}
+
+combobox button:last-child {
+    border-radius: 0px 20px 20px 0px;
+}
+
+combobox button:first-child, combobox entry {
+    background-color: @ui_button_color;
+    /*border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;*/
+    border-bottom-left-radius: 20px;
+    border-top-left-radius: 20px;
+}
+
+combobox :first-child entry {
+    border-radius: 20px 0px 0px 20px;
+}
+
+combobox menu {
+    border-color: red;
+    border-radius: 0px;
+    color: @ui_text_color;
+    background-color:transparent;
+}
+
+

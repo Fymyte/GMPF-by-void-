@@ -25,7 +25,7 @@
     /* size */ \
     gtk_widget_set_size_request(image, 160, 90); \
     /* Alignement */ \
-    gtk_widget_set_halign(image, GTK_ALIGN_START); \
+    gtk_widget_set_halign(image, GTK_ALIGN_CENTER); \
     gtk_widget_set_valign(image, GTK_ALIGN_START); \
     /* Margin */ \
     gtk_widget_set_margin_top(image, 5); \
