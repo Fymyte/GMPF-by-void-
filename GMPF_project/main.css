@@ -1,15 +1,16 @@
 /*@define-color gmpf_pink rgb(255, 0, 90);*/
 
-@define-color text_color rgb(0, 255, 165);
+@define-color ui_text_color rgb(0, 255, 165);
 
-@define-color button_color rgb(150, 150, 150);
-@define-color button_pressed_color rgb(180, 180, 180);
+@define-color ui_button_color rgb(150, 150, 150);
+@define-color ui_button_hover_color rgb(0, 255, 165);
+@define-color ui_button_pressed_color rgb(180, 180, 180);
 
-@define-color window_background rgb(110, 110, 110);
+@define-color ui_window_background rgb(110, 110, 110);
 
 /* WINDOW */
-window {
-    background-color: @window_background;
+window, menubar {
+    background-color: @ui_window_background;
 }
 
 window label {
@@ -22,18 +23,18 @@ combobox, spinbutton {
     border-radius: 5px;
     border-width: 0px;
     border-style: solid;
-    border-color: @button_pressed_color;
+    border-color: @ui_button_pressed_color;
 }
 
 spinbutton {
-    color: @text_color;
+    color: @ui_text_color;
 }
 
 entry {
     border-radius: 5px 0px 0px 5px;
     border-width: 1px;
-    background-color: @button_color;
-    color: @text_color;
+    background-color: @ui_button_color;
+    color: @ui_text_color;
 }
 
 /* BUTTON */
@@ -41,46 +42,51 @@ button {
     color: white;
     border: none;
     background-image: none;
-    background-color: @button_color;
+    background-color: @ui_button_color;
 }
 
 #LoadImageChooser > button {
-    margin: 10px;
-    border-style: hidden;
+
 }
 
 button:hover {
-    background-color: @text_color;
+    background-color: @ui_button_hover_color;
 }
 
 button:active {
-    background-color: @button_pressed_color;
+    background-color: @ui_button_pressed_color;
 }
 
 toolbar button, #LoadImageChooser > button {
     border-radius: 20px;
+    margin: 4px;
+    border-style: hidden;
 }
 
-toolbar.VerticalToolBar button {
+toolbar separator {
+    margin-top: 4px;
+}
+
+/* toolbar.VerticalToolBar button {
     margin-top: 4px;
 }
 
 toolbar.HorizontalToolBar button {
     margin-left: 2px;
     margin-right: 2px;
-}
+} */
 
-button label {
+window button label {
     color: white;
 }
 
 /* MENUITEM, TOOLBAR */
 menuitem, toolbar {
-    background-color: @window_background;
+    background-color: @ui_window_background;
 }
 
-menuitem > label {
-	color: @text_color;
+window menuitem > label {
+	color: @ui_text_color;
 }
 
 #main_toolbar > * {
@@ -91,7 +97,3 @@ menuitem > label {
 #event {
 	background-image: url("grille.png");
 }
-
-
-
-
