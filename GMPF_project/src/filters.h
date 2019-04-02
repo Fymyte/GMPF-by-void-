@@ -21,4 +21,6 @@ void Equalize_color(SGlobalData *data);
 void Verticale(SGlobalData *data);
 void Horizontale(SGlobalData *data);
 
+void Color_balance(SGlobalData *data, guchar r, guchar g, guchar b);
+
 #endif

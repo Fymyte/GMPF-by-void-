@@ -69,6 +69,9 @@ void callback_lightness(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 void callback_darkness(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 void callback_equalize(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 void callback_equalize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data);
+void callback_warm(UNUSED GtkMenuItem *menuitem, gpointer user_data);
+void callback_green(UNUSED GtkMenuItem *menuitem, gpointer user_data);
+void callback_cold(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 
 //tools functions
 void callback_brush(GtkMenuItem *menuitem, gpointer user_data);

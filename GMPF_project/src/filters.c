@@ -888,3 +888,56 @@ void Equalize_color(SGlobalData *data)
     free(h_v_green);
     free(h_v_blue);
 }
+
+void Color_balance(SGlobalData *data, guchar r, guchar g, guchar b)
+{
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    if (lay == NULL)
+        return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+
+    guchar red, green, blue, alpha;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+
+			if ((255 / r) * red > 255)
+				red = 255;
+			else
+				red = (255 / r) * red;
+			
+			if ((255 / g) * green > 255)
+				green = 255;
+			else 
+				green = (255 / g) * green;
+				
+			if ((255 / b) * blue > 255)
+				blue = 255;
+			else
+				blue = (255 / b) * blue;
+			
+            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
+        }
+    }
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
+    gtk_widget_queue_draw(da);
+}

@@ -648,10 +648,10 @@ effet :</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Filtre personnalise">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">filtre personnalise</property>
+                        <property name="label" translatable="yes">Filtre personnalise</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_showDialog" object="filterChooser" swapped="no"/>
                       </object>

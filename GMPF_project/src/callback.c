@@ -756,7 +756,7 @@ void callback_binarize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Equalize(data);
+    BinarizeColor(data);
 }
 
 
@@ -874,6 +874,24 @@ void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 void callback_saveFilter(UNUSED GtkButton *btn, gpointer user_data)
 {
     Save_filter(user_data);
+}
+
+void callback_warm(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+	Color_balance(data, 100, 255, 255);
+}
+
+void callback_green(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+	Color_balance(data, 255, 100, 255);
+}
+
+void callback_cold(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+	Color_balance(data, 255, 255, 100);
 }
 
 void callback_applyFilter(UNUSED GtkFileChooser *btn, gpointer user_data)
