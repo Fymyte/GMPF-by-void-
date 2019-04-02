@@ -4,9 +4,13 @@ int export_cairo_to_png(SGlobalData *data)
 {
     GMPF_LayerMngr *layermngr = NULL;
     GtkFlowBox *flowbox = NULL;
+    GtkFileChooser *chooser;
+    gchar *filename = NULL;
 
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
     layermngr = layermngr_get_layermngr(flowbox);
+    chooser = GTK_FILE_CHOOSER (gtk_builder_get_object(data->builder, "exportWindow"));
+	filename = gtk_file_chooser_get_filename(chooser);
 
     if (layermngr->layer_list.next == NULL)
         return -1; //save failed
@@ -36,10 +40,12 @@ int export_cairo_to_png(SGlobalData *data)
         lay = container_of(lay->list.next, GMPF_Layer, list);
     }
 
+	//add th epng extension
+	filename = strcat(filename, ".png");
 
 	//get the surface from the context and save it
     final_surface = cairo_get_target(final_context);
-    cairo_status_t status = cairo_surface_write_to_png (final_surface, "image.png");
+    cairo_status_t status = cairo_surface_write_to_png (final_surface, filename);
     cairo_destroy(final_context);
     cairo_surface_destroy(final_surface);
 
@@ -62,5 +68,7 @@ int export_cairo_to_png(SGlobalData *data)
     }
 
     //save succeed
+    gtk_widget_hide(GTK_WIDGET(chooser));
+    g_free(filename);
     return 0;
 }

@@ -156,6 +156,11 @@ void callback_hideWidget(GtkWidget *widget, UNUSED gpointer user_data)
     gtk_widget_hide(widget);
 }
 
+void callback_hideParent(GtkWidget *widget, GtkWidget *parent)
+{
+    gtk_widget_hide(parent);
+}
+
 void callback_about (UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     /* Transtypage du pointeur user_data pour récupérer nos données. */
@@ -176,6 +181,13 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     const gchar *s = gtk_entry_get_text (entry);
     float scaleValue = atof(s) / 100;
     adjust_scale (scaleValue, scaleValue, user_data);
+}
+
+void callback_showSaveWindow(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+	INIT_UI();
+	GET_UI(GtkWidget, saveWindow, "exportWindow");
+	gtk_dialog_run(GTK_DIALOG(saveWindow));
 }
 
 void callback_save(UNUSED GtkMenuItem *menuitem, gpointer user_data)
