@@ -846,6 +846,12 @@ void callback_equalize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     Equalize(data);
 }
 
+void callback_equalize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    Equalize_color(data);
+}
+
 void callback_horizontale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();

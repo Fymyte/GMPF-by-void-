@@ -564,6 +564,44 @@ effet :</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
+                      <object class="GtkMenuItem" id="Binarize">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Binarise to black and white </property>
+                        <property name="label" translatable="yes">Binarise</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_binarize" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="Binarise color">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Binarise color</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_binarize_color" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="Bords">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Mets les bords en évidence</property>
+                        <property name="label" translatable="yes">Bords</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_convolute_f" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="Colorfull">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Colorfull</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_colorfull" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkMenuItem" id="Darkness">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -573,12 +611,12 @@ effet :</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="Lightness">
+                      <object class="GtkMenuItem" id="Epine">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Lightness</property>
+                        <property name="label" translatable="yes">Epine</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_lightness" swapped="no"/>
+                        <signal name="activate" handler="callback_convolute_f" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -591,6 +629,25 @@ effet :</property>
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem" id="Equalize color">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Equalize color</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_equalize_color" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="Flou">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Ajoute du flou à l'image</property>
+                        <property name="label" translatable="yes">Flou</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_convolute_f" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -600,21 +657,12 @@ effet :</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="Binarise color">
+                      <object class="GtkMenuItem" id="Lightness">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Binarize color</property>
+                        <property name="label" translatable="yes">Lightness</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_binarize_color" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="Tinter">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Tinter</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_tinter" swapped="no"/>
+                        <signal name="activate" handler="callback_lightness" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -637,51 +685,12 @@ effet :</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="Binarize">
+                      <object class="GtkMenuItem" id="Tinter">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Binarise to black and white </property>
-                        <property name="label" translatable="yes">Binarise</property>
+                        <property name="label" translatable="yes">Tinter</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_binarize" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="Colorfull">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Colorfull</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_colorfull" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="Bords">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Mets les bords en évidence</property>
-                        <property name="label" translatable="yes">Bords</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_convolute_f" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="Epine">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Epine</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_convolute_f" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="Flou">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Ajoute du flou à l'image</property>
-                        <property name="label" translatable="yes">Flou</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_convolute_f" swapped="no"/>
+                        <signal name="activate" handler="callback_tinter" swapped="no"/>
                       </object>
                     </child>
                   </object>

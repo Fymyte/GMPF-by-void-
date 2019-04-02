@@ -619,7 +619,7 @@ void Equalize(SGlobalData *data)
     int height = gdk_pixbuf_get_height(imgPixbuf);
     gboolean error = FALSE;
 
-    double *counter = calloc(sizeof(double), 255);
+    double *counter = calloc(sizeof(double), 256);
 
     for(int i = 0; i < width; i++)
     { 
@@ -636,8 +636,8 @@ void Equalize(SGlobalData *data)
      
     int nb = 0;
     int cdfmin = 255;
-    double *cdf = calloc(sizeof(double), 255);
-    for (int i = 0; i < 255; i++)
+    double *cdf = calloc(sizeof(double), 256);
+    for (int i = 0; i < 256; i++)
     {
         nb += *(counter + i);
         *(cdf + i) = nb;
@@ -645,9 +645,9 @@ void Equalize(SGlobalData *data)
             cdfmin = cdf[i];
     }
     
-    int *h_v = calloc(sizeof(int), 255);
+    int *h_v = calloc(sizeof(int), 256);
     double MNcdfmin = height * width - cdfmin;
-    for (int i = 0; i < 255; i++)
+    for (int i = 0; i < 256; i++)
     {
         *(h_v+i)=(int) (*(cdf+i) - cdfmin)/MNcdfmin * 255;
     }
@@ -769,4 +769,122 @@ void Horizontale(SGlobalData *data)
     layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
     free_img_rgb(img);
+}
+
+void Equalize_color(SGlobalData *data)
+{
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    if (lay == NULL)
+        return;
+
+    g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+
+    guchar r, g, b, a;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    gboolean error = FALSE;
+
+    double *counter_red = calloc(sizeof(double), 256);
+	double *counter_green = calloc(sizeof(double), 256);
+	double *counter_blue = calloc(sizeof(double), 256);
+
+    for(int i = 0; i < width; i++)
+    { 
+        for(int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &r, &g, &b, &a);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            
+            *(counter_red + r) += 1;
+            *(counter_green + g) += 1;
+            *(counter_blue + b) += 1;
+        }
+    }
+    
+    int nb_red = 0;
+    int nb_green = 0;
+    int nb_blue = 0;
+    
+    int cdfmin_red = 255;
+    int cdfmin_green = 255;
+    int cdfmin_blue = 255;
+    
+    double *cdf_red = calloc(sizeof(double), 256);
+    double *cdf_green = calloc(sizeof(double), 256);
+    double *cdf_blue = calloc(sizeof(double), 256);
+    for (int i = 0; i < 256; i++)
+    {
+        nb_red += *(counter_red + i);
+        nb_green += *(counter_green + i);
+        nb_blue += *(counter_blue + i);
+        
+        *(cdf_red + i) = nb_red;
+        *(cdf_green + i) = nb_green;
+        *(cdf_blue + i) = nb_blue;
+        
+        if (*(cdf_red + i) < cdfmin_red)
+            cdfmin_red = cdf_red[i];
+        if (*(cdf_green + i) < cdfmin_green)
+            cdfmin_green = cdf_green[i];
+        if (*(cdf_blue + i) < cdfmin_blue)
+            cdfmin_blue = cdf_blue[i];
+    }
+    
+    int *h_v_red = calloc(sizeof(int), 256);
+    int *h_v_green = calloc(sizeof(int), 256);
+    int *h_v_blue = calloc(sizeof(int), 256);
+    
+    double MNcdfmin_red = height * width - cdfmin_red;
+    double MNcdfmin_green = height * width - cdfmin_green;
+    double MNcdfmin_blue = height * width - cdfmin_blue;
+    for (int i = 0; i < 256; i++)
+    {
+        *(h_v_red + i)= (int) (*(cdf_red+i) - cdfmin_red)/MNcdfmin_red * 255;
+        *(h_v_green + i)= (int) (*(cdf_green+i) - cdfmin_green)/MNcdfmin_green * 255;
+        *(h_v_blue + i)= (int) (*(cdf_blue+i) - cdfmin_blue)/MNcdfmin_blue * 255;
+    }
+
+    struct Img_rgb *img = init_img_rgb(width, height);
+    for (int i = 0; i < width; i ++)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &r, &g, &b, &a);
+            if(!error)
+                err(1, "pixbuf get pixels error");
+            
+            Matrix_val(img -> red, i, j, *(h_v_red + r));
+            Matrix_val(img -> green, i, j, *(h_v_green + g));
+            Matrix_val(img -> blue, i, j, *(h_v_blue + b));
+            Matrix_val(img -> alpha, i, j, 255);
+        }
+    }
+
+    Img_rgb_to_Image(imgPixbuf, img);
+    cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 1, NULL);
+    layer_icon_refresh(lay);
+    gtk_widget_queue_draw(da);
+    free_img_rgb(img);
+    
+    free(counter_red);
+    free(counter_green);
+    free(counter_blue);
+    
+    free(cdf_red);
+    free(cdf_green);
+    free(cdf_blue);
+    
+    free(h_v_red);
+    free(h_v_green);
+    free(h_v_blue);
 }

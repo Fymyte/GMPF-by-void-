@@ -541,7 +541,7 @@ effet :</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="Mirror Verticale">
+                      <object class="GtkMenuItem" id="Mirror Vertical">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Mirror Verticale</property>
