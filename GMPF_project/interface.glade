@@ -532,10 +532,10 @@ effet :</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkMenuItem" id="Mirror Horizontale">
+                      <object class="GtkMenuItem" id="Mirror Horizontal">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Mirror Horizontale</property>
+                        <property name="label" translatable="yes">Miroir Horizontal</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_horizontale" swapped="no"/>
                       </object>
@@ -544,7 +544,7 @@ effet :</property>
                       <object class="GtkMenuItem" id="Mirror Vertical">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Mirror Verticale</property>
+                        <property name="label" translatable="yes">Miroir Vertical</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_verticale" swapped="no"/>
                       </object>
@@ -623,7 +623,8 @@ effet :</property>
                       <object class="GtkMenuItem" id="Equalize grayscale">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Equalize grayscale</property>
+                        <property name="tooltip_text" translatable="yes">Egalisation en niveau de gris.</property>
+                        <property name="label" translatable="yes">Egalisation</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_equalize" swapped="no"/>
                       </object>
@@ -632,7 +633,8 @@ effet :</property>
                       <object class="GtkMenuItem" id="Equalize color">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Equalize color</property>
+                        <property name="tooltip_text" translatable="yes">Egalisation en couleurs.</property>
+                        <property name="label" translatable="yes">Egalisation colorée</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_equalize_color" swapped="no"/>
                       </object>
@@ -641,7 +643,7 @@ effet :</property>
                       <object class="GtkMenuItem" id="Filtre personnalise">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Filtre personnalise</property>
+                        <property name="label" translatable="yes">Filtre personnalisé</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_showDialog" object="filterChooser" swapped="no"/>
                       </object>
@@ -669,7 +671,7 @@ effet :</property>
                       <object class="GtkMenuItem" id="Lightness">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Luminiosité +</property>
+                        <property name="label" translatable="yes">Luminosité +</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_lightness" swapped="no"/>
                       </object>
@@ -678,7 +680,7 @@ effet :</property>
                       <object class="GtkMenuItem" id="Darkness">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Luminiosité -</property>
+                        <property name="label" translatable="yes">Luminosité -</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_darkness" swapped="no"/>
                       </object>
@@ -696,7 +698,7 @@ effet :</property>
                       <object class="GtkMenuItem" id="Grayscale">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Grey filtre</property>
+                        <property name="tooltip_text" translatable="yes">Grey filter</property>
                         <property name="label" translatable="yes">Niveaux de gris</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_grey" swapped="no"/>
