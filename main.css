@@ -181,7 +181,7 @@ nav > ul > li:hover a{
 /*******Menu mobile*****/
 nav input[type=checkbox] {
     display: none;
-    
+
 }
 
 .menu-mobile {
@@ -202,11 +202,11 @@ nav input[type=checkbox]:checked ~ ul {
         padding: 0px;
         z-index: 1000;
     }
-    
+
     .menu-presentations .subsection li:hover{
         background-color: rgb(255, 255, 255);
     }
-    
+
     .menu-presentations .subsection li {
         border-bottom: 1px solid rgb(192, 192, 192);
         border-left: 1px solid rgb(192, 192, 192);
@@ -238,11 +238,11 @@ nav input[type=checkbox]:checked ~ ul {
         display: block;
         position: relative;
     }
-    
+
     .subsection li {
         border-left: 1px solid rgb(192, 192, 192);
         border-right: 1px solid rgb(192, 192, 192);
-    }    
+    }
 }
 
 /*******Container*******/
@@ -254,7 +254,7 @@ nav input[type=checkbox]:checked ~ ul {
 
 #content{
 	border:dashed 2px #000000;
-	padding: 20px 65px 30px 65px; 
+	padding: 20px 65px 30px 65px;
 	background-color: RGBa(230, 230, 250, 0.75);
 }
 
@@ -296,7 +296,7 @@ nav input[type=checkbox]:checked ~ ul {
  	top: 50%;
 	width: 8em;
  	margin-top: -2.5em;
-	
+
 	background-color : rgba(66, 69, 88, 0.7);
 	border: solid rgba(66, 69, 88, 0.5);
 	border-right: none;
@@ -320,7 +320,7 @@ nav input[type=checkbox]:checked ~ ul {
 	margin-left: 40px;
 }
 
-text1{	
+text1{
 	font-size: 15px;
 	color: #000080;
 }
@@ -330,7 +330,7 @@ text2{
 	color: black;
 	text-decoration: none;
 	text-align: center;
-	
+
 }
 
 h2 {
@@ -344,6 +344,59 @@ h3 {
 	font-size: 20px;
 	margin: 15px 400px 0px 0px;
 	border-bottom: solid 1px black;
+}
+
+.description {
+    font-size: 20px;
+    font-style: bold;
+}
+
+/* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+.flip-card {
+  background-color: transparent;
+  float: left;
+  margin: 20px;
+  margin-left: 40px;
+  width: 300px;
+  height: 400px;
+  border: 1px solid #f1f1f1;
+  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+}
+
+/* This container is needed to position the front and back side */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.3s;
+  transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Position the front and back side */
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.flip-card-front {
+  background-color: #bbb;
+  color: black;
+}
+
+/* Style the back side */
+.flip-card-back {
+  background-color:  RoyalBlue;
+  color: white;
+  transform: rotateY(180deg);
 }
 
 /***********Presentations***************/
