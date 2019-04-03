@@ -120,6 +120,7 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
 }
 
 
+
 //
 // MAIN FUNCTIONS
 //
@@ -132,6 +133,7 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
     if (layermngr == NULL) { PRINTERR; return 1; }
 
     FILE *file = fopen(filename, "wb"); // write as binary => rb
+    if (file == NULL) { PRINTERR; return 1; }
 
     char err = save_layermngr(layermngr, file);
 
@@ -156,7 +158,6 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
 char load_project(GtkFlowBox *flowbox, const char *filename)
 {
     // only read the file
-    D_PRINT("loading project...", NULL);
     FILE *file = fopen(filename, "rb"); // read as binary => rb
     if (file == NULL) { PRINTERR; return 1; }
 
@@ -174,12 +175,44 @@ char load_project(GtkFlowBox *flowbox, const char *filename)
         err = load_layer(layermngr, file);
         if (err) { fclose(file); PRINTERR; return 1; }
     }
-    D_PRINT("loaded!", NULL);
 
     fclose(file);
     return 0;
 }
 
-//
-// PRIVATE FUNCTIONS
-//
+char saving_layer(GtkFlowBox *flowbox, const char *filename)
+{
+    // write the file / delete it if it already exists
+    //FILE *tmpFile = tmpfile(void)
+
+    FILE *file = fopen(filename, "wb"); // write as binary => rb
+    if (file == NULL) { PRINTERR; return 1; }
+
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+        return 1;
+    char err = save_layer(lay, file);
+    if (err) { fclose(file); PRINTERR; return 1;}
+
+    long long dbg = 0;
+    fwrite(&dbg, sizeof(long long), 1, file);
+
+    fclose(file);
+    return 0;
+}
+
+char loading_layer(GtkFlowBox *flowbox, const char *filename)
+{
+    // only read the file
+    FILE *file = fopen(filename, "rb"); // read as binary => rb
+    if (file == NULL) { PRINTERR; return 1; }
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    if (layermngr == NULL) { fclose(file); PRINTERR; return 1; }
+
+    char err = load_layer(layermngr, file);
+    if (err) { fclose(file); PRINTERR; return 1; }
+
+    fclose(file);
+    return 0;
+}

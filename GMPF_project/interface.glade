@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 
+<!-- Generated with glade 3.22.1 
 
 Copyright (C) VOID*
 
@@ -23,6 +23,9 @@ without any warranty.
     <property name="default_height">300</property>
     <property name="icon_name">address-book-new</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -384,6 +387,9 @@ effet :</property>
     <property name="has_resize_grip">True</property>
     <signal name="destroy" handler="GMPFquit" swapped="no"/>
     <child>
+      <placeholder/>
+    </child>
+    <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -410,6 +416,22 @@ effet :</property>
                         <property name="label" translatable="yes">exporter vers png</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_showDialog" object="exportWindow" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Enregistrer le calque</property>
+                        <signal name="activate" handler="callback_save_layer" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Charger le calque</property>
+                        <signal name="activate" handler="callback_load_layer" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -442,10 +464,9 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem">
-                        <property name="label">gtk-floppy</property>
+                        <property name="label">gtk-save-as</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="callback_save_project" swapped="no"/>
                         <accelerator key="s" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
@@ -1408,6 +1429,9 @@ Arnaud CASSEZ
 Pierrick GUILLAUME
 Samory DIABY</property>
     <property name="logo">GMPF.png</property>
+    <child>
+      <placeholder/>
+    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -1458,6 +1482,9 @@ Samory DIABY</property>
     <property name="window_position">center</property>
     <property name="type_hint">menu</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -1679,9 +1706,6 @@ Samory DIABY</property>
           <placeholder/>
         </child>
       </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
     </child>
   </object>
   <object class="GtkFileChooserDialog" id="exportWindow">

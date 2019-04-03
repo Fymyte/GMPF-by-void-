@@ -12,4 +12,7 @@
 char save_project(GtkFlowBox *flowbox, const char *filename);
 char load_project(GtkFlowBox *flowbox, const char *filename);
 
+char saving_layer(GtkFlowBox *flowbox, const char *filename);
+char loading_layer(GtkFlowBox *flowbox, const char *filename);
+
 #endif /* SAVING_H_ */
