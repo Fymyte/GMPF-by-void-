@@ -870,7 +870,10 @@ void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 
 void callback_saveFilter(UNUSED GtkButton *btn, gpointer user_data)
 {
+    INIT_UI();
     Save_filter(user_data);
+    GET_UI(GtkWidget, parent, "FilterCreator");
+    gtk_widget_hide(parent);
 }
 
 void callback_warm(UNUSED GtkMenuItem *menuitem, gpointer user_data)

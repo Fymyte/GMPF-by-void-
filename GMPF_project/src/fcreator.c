@@ -15,7 +15,7 @@ void Save_filter(gpointer user_data)
     GET_UI(GtkEntry, filename, "FilterFilename");
     GET_UI(GtkColorChooser, chooser, "FC_color");
     gchar *s = (gchar*)gtk_entry_get_text (filename);
-    s = strcat(s, ".txt");
+    s = strcat(s, ".ftr");
 
     int fd = creat(s, S_IRWXU);
 
@@ -73,6 +73,15 @@ void Save_filter(gpointer user_data)
         }
     }
 
+    if (strcmp(filter_1, "Tinter") == 0 || strcmp(filter_2, "Tinter") == 0)
+    {
+        if(write(fd, "Tinter\n", 15) == -1)
+        {
+            printf("write fail\n");
+            return;
+        }
+    }
+
     //filter color save
     gtk_color_chooser_get_rgba(chooser, &color);
     gchar *savedColor = gdk_rgba_to_string (&color);
@@ -111,7 +120,6 @@ void Apply_user_filter(gchar *filename, gpointer user_data)
 
     while((line = fgets(save, 20, filter)) != NULL)
     {
-        printf("%s.\n", line);
         if (strcmp("Grey\n", save) == 0)
             Greyscale(data);
 
@@ -128,7 +136,7 @@ void Apply_user_filter(gchar *filename, gpointer user_data)
             Greyscale(data);
 
         if (strcmp("Tinter\n", save) == 0) //TODO
-            Greyscale(data);
+            Tinter(data);
     }
 
     if (fclose(filter) == -1)
