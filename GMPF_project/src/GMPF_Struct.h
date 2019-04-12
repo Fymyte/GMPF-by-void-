@@ -82,6 +82,8 @@ struct GMPF_LayerMngr {
     GMPF_Tool tool;
     GMPF_List layer_list;
 
+    char *filename;
+
     cairo_surface_t *surface;
     float brush_size;
 

@@ -264,7 +264,6 @@ void adjust_scale(double scale_x, double scale_y, gpointer user_data)
 {
     INIT_UI();
 
-
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -604,7 +603,26 @@ void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    if (layermngr->filename == NULL)
+        callback_save_under_project(NULL, user_data);
+    else
+    {
+        char err = save_project(flowbox, (const char*)layermngr->filename);
+        if (err)
+        {
+            D_PRINT("Unable to save project", NULL);
+        }
+    }
+}
+
+void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWindow, window, "MainWindow");
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
     GtkWidget *dialog;
     GtkFileChooser *chooser;
@@ -629,14 +647,14 @@ void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     res = gtk_dialog_run (GTK_DIALOG (dialog));
     if (res == GTK_RESPONSE_ACCEPT)
     {
-        char *filename;
-
-        filename = gtk_file_chooser_get_filename (chooser);
+        char *filename = gtk_file_chooser_get_filename (chooser);
+        layermngr->filename = malloc(sizeof(char) * (strlen(filename) + 1));
         char err = save_project(flowbox, (const char*)filename);
         if (err)
         {
             D_PRINT("Unable to save project", NULL);
         }
+        layermngr->filename = strcpy(layermngr->filename, filename);
         g_free (filename);
     }
 
@@ -648,6 +666,10 @@ void callback_load_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWindow, window, "MainWindow");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
     GtkWidget *dialog;
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
@@ -673,6 +695,14 @@ void callback_load_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
             D_PRINT("Uable to load project", NULL);
         g_free (filename);
     }
+
+    int max_width = layermngr->size.w;
+    int max_height = layermngr->size.h;
+
+    gtk_widget_set_size_request(layout, max_width, max_height);
+    gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
+    gtk_widget_queue_draw(da);
 
     gtk_widget_destroy (dialog);
 }
