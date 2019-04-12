@@ -106,7 +106,7 @@ void Save_filter(gpointer user_data)
 
 void Apply_user_filter(gchar *filename, gpointer user_data)
 {
-    SGlobalData *data = (SGlobalData *)user_data;
+    INIT_UI();
     FILE *filter = fopen(filename, "r");
 
     if (filter == NULL)
@@ -118,25 +118,30 @@ void Apply_user_filter(gchar *filename, gpointer user_data)
     char *save = malloc(35 * sizeof(char));
     char *line = NULL;
 
+    GET_UI(GtkColorChooser, chooser, "ColorTinter");
+
     while((line = fgets(save, 20, filter)) != NULL)
     {
         if (strcmp("Grey\n", save) == 0)
-            Greyscale(data);
+            GMPF_filter_apply_to_selected_layer(Greyscale, data);
 
         if (strcmp("Binarize\n", save) == 0)
-            Binarize(data);
+            GMPF_filter_apply_to_selected_layer(Binarize, data);
 
         if (strcmp("Binarize color\n", save) == 0)
-            BinarizeColor(data);
-
-        if (strcmp("Colorfull\n", save) == 0)
-            Colorfull(data);
+            GMPF_filter_apply_to_selected_layer(BinarizeColor, data);
 
         if (strcmp("Blur\n", save) == 0) //TODO
-            Greyscale(data);
+            GMPF_filter_apply_to_selected_layer(Greyscale, data);
+
+        GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+        GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+        if (strcmp("Colorfull\n", save) == 0)
+            Colorfull(lay, chooser);
 
         if (strcmp("Tinter\n", save) == 0) //TODO
-            Tinter(data);
+            Tinter(lay, chooser);
     }
 
     if (fclose(filter) == -1)

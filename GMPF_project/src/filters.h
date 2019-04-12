@@ -5,21 +5,25 @@
 
 //file that contain the prototypes for the GMPF filters functions
 
-void Lightness(SGlobalData *data);
-void Darkness(SGlobalData *data);
+void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*), gpointer user_data);
+void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*), gpointer user_data);
 
-void Greyscale(SGlobalData *data);
-void Negative(SGlobalData *data);
-void Binarize(SGlobalData *data);
-void BinarizeColor(SGlobalData *data);
-void Tinter(SGlobalData *data);
-void Colorfull(SGlobalData *data);
+void Colorfull(GMPF_Layer *lay, GtkColorChooser *chooser);
+void Tinter(GMPF_Layer *lay, GtkColorChooser *chooser);
+
+void Lightness(GMPF_Layer *lay);
+void Darkness(GMPF_Layer *lay);
+
+void Greyscale(GMPF_Layer *lay);
+void Negative(GMPF_Layer *lay);
+void Binarize(GMPF_Layer *lay);
+void BinarizeColor(GMPF_Layer *lay);
 void Convolute(SGlobalData *data,double *mat);
 
-void Equalize(SGlobalData *data);
-void Equalize_color(SGlobalData *data);
-void Verticale(SGlobalData *data);
-void Horizontale(SGlobalData *data);
+void Equalize(GMPF_Layer *lay);
+void Equalize_color(GMPF_Layer *lay);
+void Verticale(GMPF_Layer *lay);
+void Horizontale(GMPF_Layer *lay);
 
 void Color_balance(SGlobalData *data, guchar r, guchar g, guchar b);
 

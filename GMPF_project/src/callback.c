@@ -184,15 +184,42 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     adjust_scale (scaleValue, scaleValue, user_data);
 }
 
-void callback_showDialog(UNUSED GtkMenuItem *menuitem, GtkWidget *dialog)
-{
-	gtk_dialog_run(GTK_DIALOG(dialog));
-}
-
-void callback_save(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_save(UNUSED GtkWidget *menuitem, gpointer user_data)
 {
     INIT_UI();
-    export_cairo_to_png(data);
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWindow, window, "MainWindow");
+
+    GtkWidget *dialog;
+    GtkFileChooser *chooser;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+    gint res;
+
+    dialog = gtk_file_chooser_dialog_new ("Save File",
+                                          window,
+                                          action,
+                                          ("_Cancel"),
+                                          GTK_RESPONSE_CANCEL,
+                                          ("_Save"),
+                                          GTK_RESPONSE_ACCEPT,
+                                          NULL);
+    chooser = GTK_FILE_CHOOSER (dialog);
+
+    gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+
+    gtk_file_chooser_set_current_name (chooser,
+                                         ("Untitled.png"));
+
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
+    if (res == GTK_RESPONSE_ACCEPT)
+    {
+        char *filename;
+        filename = gtk_file_chooser_get_filename (chooser);
+        export_cairo_to_png(filename, user_data);
+        g_free(filename);
+    }
+
+    gtk_widget_destroy (dialog);
 }
 
 void callback_resize_brush(GtkEntry *entry, gpointer user_data)
@@ -648,7 +675,6 @@ void callback_load_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     }
 
     gtk_widget_destroy (dialog);
-
 }
 
 void callback_save_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
@@ -828,14 +854,14 @@ void callback_FC(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 void callback_binarize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Binarize(data);
+    GMPF_filter_apply_to_selected_layer(Binarize, data);
 }
 
 
 void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    BinarizeColor(data);
+    GMPF_filter_apply_to_selected_layer(BinarizeColor, data);
 }
 
 
@@ -881,63 +907,69 @@ void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Greyscale(data);
+    GMPF_filter_apply_to_selected_layer(Greyscale, data);
 }
 
 void callback_tinter(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Tinter(data);
+    GET_UI(GtkColorChooser, chooser, "ColorTinter");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    Tinter(lay, chooser);
 }
 
 
 void callback_colorfull(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Colorfull(data);
+    GET_UI(GtkColorChooser, chooser, "ColorTinter");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    Colorfull(lay, chooser);
 }
 
 
 void callback_negative(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Negative(data);
+    GMPF_filter_apply_to_selected_layer(Negative, data);
 }
 
 void callback_darkness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Darkness(data);
+    GMPF_filter_apply_to_selected_layer(Darkness, data);
 }
 
 void callback_lightness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Lightness(data);
+    GMPF_filter_apply_to_selected_layer(Lightness, data);
 }
 
 void callback_equalize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Equalize(data);
+    GMPF_filter_apply_to_selected_layer(Equalize, data);
 }
 
 void callback_equalize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Equalize_color(data);
+    GMPF_filter_apply_to_selected_layer(Equalize_color, data);
 }
 
 void callback_horizontale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Horizontale(data);
+    GMPF_filter_apply_to_selected_layer(Horizontale, data);
 }
 
 void callback_verticale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-    Verticale(data);
+    GMPF_filter_apply_to_selected_layer(Verticale, data);
 }
 
 void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
@@ -973,13 +1005,35 @@ void callback_cold(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 	Color_balance(data, 255, 255, 100);
 }
 
-void callback_applyFilter(UNUSED GtkFileChooser *btn, gpointer user_data)
+void callback_applyFilter(UNUSED GtkWidget *btn, gpointer user_data)
 {
-	//a modifier -> recuprer le fichier du dialog
-	INIT_UI();
-	GET_UI(GtkFileChooser, chooser, "filterChooser");
-	gchar *filename = gtk_file_chooser_get_filename(chooser);
-    Apply_user_filter(filename, user_data);
-    GET_UI(GtkWidget, filterchooser, "filterChooser");
-    gtk_widget_hide(filterchooser);
+    //a modifier -> recuprer le fichier du dialog
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWindow, window, "MainWindow");
+
+    GtkWidget *dialog;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    gint res;
+
+    dialog = gtk_file_chooser_dialog_new ("Choisir un filtre",
+                                          window,
+                                          action,
+                                          ("Annuler"),
+                                          GTK_RESPONSE_CANCEL,
+                                          ("Ouvrir"),
+                                          GTK_RESPONSE_ACCEPT,
+                                          NULL);
+
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
+    if (res == GTK_RESPONSE_ACCEPT)
+    {
+        char *filename;
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+        filename = gtk_file_chooser_get_filename (chooser);
+        Apply_user_filter(filename, user_data);
+        g_free (filename);
+    }
+
+    gtk_widget_destroy (dialog);
 }
