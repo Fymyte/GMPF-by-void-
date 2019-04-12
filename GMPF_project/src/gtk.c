@@ -158,6 +158,16 @@ void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem, gpointer user_
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     layermngr_delete_selected_layer(flowbox);
+    if (!layermngr->layer_list.next)
+    {
+        layermngr->size.w = 0;
+        layermngr->size.h = 0;
+        gtk_widget_set_size_request(layout, 0, 0);
+        gtk_widget_set_size_request(da, 0, 0);
+        gtk_layout_set_size((GtkLayout *)layout, 0, 0);
+    }
     gtk_widget_queue_draw(da);
 }

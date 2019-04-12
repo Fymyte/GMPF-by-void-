@@ -50,6 +50,7 @@ struct GMPF_Pixel {
 struct GMPF_Layer {
 
     char *name; // USE A char[50] TAB FOR A SIMPLE SAVE
+    char *filename; // null if it is not based on an image
     // used variable
     GMPF_Pos pos; // Offset on the rendering
     GMPF_Scale scale_factor;

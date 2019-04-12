@@ -174,7 +174,7 @@ void callback_about (UNUSED GtkMenuItem *menuitem, gpointer user_data)
     gtk_window_set_transient_for (GTK_WINDOW(dialog), window);
 
     gtk_dialog_run (GTK_DIALOG (dialog));
-    gtk_widget_destroy (dialog);
+    gtk_widget_hide (dialog);
 }
 
 void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
@@ -255,7 +255,7 @@ void callback_show_layer_window(UNUSED GtkWidget *widget, gpointer user_data)
     gtk_spin_button_set_value(height, layermngr->size.h);
     gtk_spin_button_set_value(offsetX, 0);
     gtk_spin_button_set_value(offsetY, 0);
-    gtk_file_chooser_set_filename(filename, "gimp_log.png");
+    gtk_file_chooser_set_filename(filename, NULL);
 
     gtk_widget_show(layer_window);
 }
@@ -390,8 +390,9 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
         lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
-        circular_brush(widget, lay->cr, x + lay->pos.x, y + lay->pos.y,lay->pos.x, lay->pos.y, layermngr->brush_size, 0, 0, 0, 0.0,
-                    lay->scale_factor.x, lay->scale_factor.y, layermngr);
+        circular_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,lay->pos.x, lay->pos.y, layermngr->brush_size,
+            0, 0, 0, 0, lay->scale_factor.x, lay->scale_factor.y,
+            layermngr);
         //end brush zone
         cairo_destroy(lay->cr);
     }
@@ -448,7 +449,9 @@ gpointer        user_data)
 
     GMPF_Layer *lay =layermngr_get_selected_layer(flowbox);
     if(lay)
+    {
         layermngr->surface = lay->surface;
+    }
     else
         layermngr->surface = NULL;
 
@@ -508,7 +511,6 @@ motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event,
     /* We've handled it, stop processing */
     return TRUE;
 }
-
 
 void on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_data)
 {
@@ -595,6 +597,23 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget, gpointer user_data)
     lay->size.h = atoi(h);
     lay->pos.x = atoi(x);
     lay->pos.y = atoi(y);
+    if (!lay->filename)
+    {
+        lay->image = new_pixbuf_standardized(&lay->size);
+        lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 0, NULL);
+        REFRESH_IMAGE(lay);
+    }
+    else
+    {
+        cairo_surface_t *surface = cairo_surface_create_similar_image(lay->surface,
+                                CAIRO_FORMAT_ARGB32, lay->size.w, lay->size.h);
+        cairo_t *cr = cairo_create(surface);
+        cairo_set_source_surface(cr, lay->surface, 0, 0);
+        cairo_paint(cr);
+        cairo_surface_destroy(lay->surface);
+        lay->surface = surface;
+        REFRESH_IMAGE(lay);
+    }
 
     gtk_widget_hide(window);
 }
@@ -791,6 +810,8 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     GError *error = NULL;
 
     gchar *filename = gtk_file_chooser_get_filename(btn);
+    if (!filename)
+        return;
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
@@ -806,6 +827,7 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     layermngr->image  = gdk_pixbuf_new_from_file(filename, &error);
     width  = gdk_pixbuf_get_width  (layermngr->image);
     height = gdk_pixbuf_get_height (layermngr->image);
+    g_free(filename);
 
     if (width > max_width)
         max_width = width;
@@ -841,6 +863,9 @@ void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     cursor_state = 1;
     INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    layermngr->tool = PAINTER;
     callback_setCursor(data);
 }
 
@@ -848,6 +873,9 @@ void callback_rubber(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     cursor_state = 2;
     INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    layermngr->tool = ERAISER;
     callback_setCursor(data);
 }
 

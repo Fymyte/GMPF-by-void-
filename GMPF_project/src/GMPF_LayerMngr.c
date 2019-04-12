@@ -231,8 +231,13 @@ GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
         {
             printf("error: %s\n", gerror->message);
             g_error_free(gerror);
+            newlayer->image = NULL;
         }
-        pixbuf_standardized(&(newlayer->image));
+        else
+        {
+            newlayer->filename = (char *)filename;
+            pixbuf_standardized(&(newlayer->image));
+        }
     }
 
     if (newlayer->image == NULL)
@@ -240,6 +245,7 @@ GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
         GMPF_Size size = {.w=10, .h=10};
         newlayer->image = new_pixbuf_standardized(&size);
     }
+
 
     newlayer->surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
     // newlayer->unscaled_surface = gdk_cairo_surface_create_from_pixbuf(newlayer->image, 0, NULL);
@@ -301,6 +307,7 @@ GMPF_Layer * layer_initialization()
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
 
     layer->name = NULL;
+    layer->filename = NULL;
 
     layer->pos.x = 0;
     layer->pos.y = 0;
@@ -479,6 +486,7 @@ GdkPixbuf *new_pixbuf_standardized(GMPF_Size *size)
                 8, size->w, size->h);
     if (pixbuf_standardized(&pixbuf) == -1)
         return NULL;
+    gdk_pixbuf_fill(pixbuf, 0);
     return pixbuf;
 }
 

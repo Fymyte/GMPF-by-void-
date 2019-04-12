@@ -811,44 +811,6 @@ effet :</property>
                         <signal name="activate" handler="callback_brush" swapped="no"/>
                       </object>
                     </child>
-                    <child>
-                      <object class="GtkMenuItem" id="RotateLeft">
-                        <property name="name">MenuRotateLeft</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Rotate left</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_rotate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="RotateRight">
-                        <property name="name">MenuRotateLeft</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Rotate right</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_rotate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="FlipHorizontal">
-                        <property name="name">MenuRotateLeft</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Flip horizontal</property>
-                        <signal name="activate" handler="callback_flip" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="FlipVertical">
-                        <property name="name">MenuRotateLeft</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Flip Vertical</property>
-                        <signal name="activate" handler="callback_flip" swapped="no"/>
-                      </object>
-                    </child>
                   </object>
                 </child>
               </object>
@@ -1026,7 +988,7 @@ effet :</property>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="pack_type">end</property>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -1677,6 +1639,7 @@ Samory DIABY</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <signal name="clicked" handler="callback_hideParent" object="LayerWindow" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
