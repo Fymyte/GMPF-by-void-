@@ -40,6 +40,48 @@ void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*), gpointer user_d
     gtk_widget_queue_draw(da);
 }
 
+void GMPF_filter_apply_to_selected_layer_color(void (*filter)(GMPF_Layer*, guchar, guchar, guchar),
+                                    guchar r, guchar g, guchar b, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+    {
+        D_PRINT("Unable to get layer", NULL);
+        return;
+    }
+
+    filter(lay, r, g, b);
+
+    gtk_widget_queue_draw(da);
+}
+
+void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*, guchar, guchar, guchar),
+                                    guchar r, guchar g, guchar b, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    if (layermngr->layer_list.next != NULL)
+    {
+        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+        while (lay != NULL)
+        {
+            filter(lay, r, g, b);
+
+            if (!lay->list.next) break;
+            lay = container_of(lay->list.next, GMPF_Layer, list);
+        }
+    }
+
+    gtk_widget_queue_draw(da);
+}
+
 void Lightness(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -316,7 +358,7 @@ void Colorfull(GMPF_Layer *lay, GtkColorChooser *colorChooser)
 {
     if (!lay)
         return;
-        
+
     guchar r, g, b, factor;
     GdkRGBA rgba;
 
@@ -695,16 +737,8 @@ void Equalize_color(GMPF_Layer *lay)
     free(h_v_blue);
 }
 
-void Color_balance(SGlobalData *data, guchar r, guchar g, guchar b)
+void Color_balance(GMPF_Layer *lay, guchar r, guchar g, guchar b)
 {
-    GET_UI(GtkWidget, da, "drawingArea");
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-
-    struct GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-
-    if (lay == NULL)
-        return;
-
     g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
@@ -745,5 +779,4 @@ void Color_balance(SGlobalData *data, guchar r, guchar g, guchar b)
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
     layer_icon_refresh(lay);
-    gtk_widget_queue_draw(da);
 }

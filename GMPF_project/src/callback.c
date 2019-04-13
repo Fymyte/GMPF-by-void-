@@ -937,6 +937,11 @@ void callback_binarize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     GMPF_filter_apply_to_selected_layer(Binarize, data);
 }
 
+void callback_binarize_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer(Binarize, data);
+}
 
 void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -944,6 +949,11 @@ void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     GMPF_filter_apply_to_selected_layer(BinarizeColor, data);
 }
 
+void callback_binarize_color_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer(BinarizeColor, data);
+}
 
 void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
@@ -990,6 +1000,12 @@ void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     GMPF_filter_apply_to_selected_layer(Greyscale, data);
 }
 
+void callback_grey_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer(Greyscale, data);
+}
+
 void callback_tinter(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
@@ -1016,10 +1032,22 @@ void callback_negative(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     GMPF_filter_apply_to_selected_layer(Negative, data);
 }
 
+void callback_negative_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer(Negative, data);
+}
+
 void callback_darkness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Darkness, data);
+}
+
+void callback_darkness_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer(Darkness, data);
 }
 
 void callback_lightness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
@@ -1028,10 +1056,22 @@ void callback_lightness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     GMPF_filter_apply_to_selected_layer(Lightness, data);
 }
 
+void callback_lightness_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer(Lightness, data);
+}
+
 void callback_equalize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Equalize, data);
+}
+
+void callback_equalize_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer(Equalize, data);
 }
 
 void callback_equalize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
@@ -1040,16 +1080,34 @@ void callback_equalize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     GMPF_filter_apply_to_selected_layer(Equalize_color, data);
 }
 
+void callback_equalize_color_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer(Equalize_color, data);
+}
+
 void callback_horizontale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Horizontale, data);
 }
 
+void callback_horizontale_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer(Horizontale, data);
+}
+
 void callback_verticale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Verticale, data);
+}
+
+void callback_verticale_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer(Verticale, data);
 }
 
 void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
@@ -1072,19 +1130,37 @@ void callback_saveFilter(UNUSED GtkButton *btn, gpointer user_data)
 void callback_warm(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-	Color_balance(data, 100, 255, 255);
+	GMPF_filter_apply_to_selected_layer_color(Color_balance, 100, 255, 255, data);
+}
+
+void callback_warm_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+	GMPF_filter_apply_to_all_layer_color(Color_balance, 100, 255, 255, data);
 }
 
 void callback_green(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-	Color_balance(data, 255, 100, 255);
+	GMPF_filter_apply_to_selected_layer_color(Color_balance, 255, 100, 255, data);
+}
+
+void callback_green_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_filter_apply_to_all_layer_color(Color_balance, 255, 100, 255, data);
 }
 
 void callback_cold(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-	Color_balance(data, 255, 255, 100);
+	GMPF_filter_apply_to_selected_layer_color(Color_balance, 255, 255, 100, data);
+}
+
+void callback_cold_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+	GMPF_filter_apply_to_all_layer_color(Color_balance, 255, 255, 100, data);
 }
 
 void callback_applyFilter(UNUSED GtkWidget *btn, gpointer user_data)

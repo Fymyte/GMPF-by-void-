@@ -7,6 +7,10 @@
 
 void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*), gpointer user_data);
 void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*), gpointer user_data);
+void GMPF_filter_apply_to_selected_layer_color(void (*filter)(GMPF_Layer*, guchar, guchar, guchar),
+                                    guchar r, guchar g, guchar b, gpointer user_data);
+void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*, guchar, guchar, guchar),
+                                    guchar r, guchar g, guchar b, gpointer user_data);
 
 void Colorfull(GMPF_Layer *lay, GtkColorChooser *chooser);
 void Tinter(GMPF_Layer *lay, GtkColorChooser *chooser);
@@ -25,6 +29,6 @@ void Equalize_color(GMPF_Layer *lay);
 void Verticale(GMPF_Layer *lay);
 void Horizontale(GMPF_Layer *lay);
 
-void Color_balance(SGlobalData *data, guchar r, guchar g, guchar b);
+void Color_balance(GMPF_Layer *lay, guchar r, guchar g, guchar b);
 
 #endif
