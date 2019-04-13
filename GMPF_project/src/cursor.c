@@ -2,6 +2,24 @@
 //#include "GMPF_LayerMngr.h"
 //#include <gtk-3.0/gtk/gtk.h>
 
+void pick_color_on_screen(int x, int y, GtkColorChooser *colorChooser, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkWindow, window, "MainWindow");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    GdkPixbuf *pixbuf = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+    GdkRGBA *color = malloc(sizeof(GdkRGBA));
+    guchar r, g, b, a;
+    gdkpixbuf_get_colors_by_coordinates(pixbuf, x, y, &r, &g, &b, &a);
+    color->red = (gdouble)r / 255;
+    color->green = (gdouble)g / 255;
+    color->blue = (gdouble)b / 255;
+    color->alpha = (gdouble)a / 255;
+    gtk_color_chooser_set_rgba(colorChooser, color);
+    g_free(color);
+}
+
 void resetCursor(SGlobalData* data)
 {
     //init variables

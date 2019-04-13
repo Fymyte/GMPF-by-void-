@@ -22,7 +22,7 @@ gdk_pixbuf_get_from_drawable (GdkPixbuf *dest,
                               int width,
                               int height);
                               */
-int cursor_state = 0;
+// int cursor_state = 0;
 
 /*int check(int width, int height, int i, int j)
 {
@@ -398,6 +398,14 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
     }
 }
 
+void color_picker (UNUSED GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
+    pick_color_on_screen(x, y, colorChooser, data);
+}
+
 gboolean enter_notify_event_cb (UNUSED GtkWidget *widget,
                         UNUSED GdkEvent *event, gpointer user_data)
 {
@@ -466,6 +474,9 @@ gpointer        user_data)
 
     else if (event->button == GDK_BUTTON_PRIMARY & tool == ERAISER)
         draw_rubber (widget, event->x, event->y, user_data);
+
+    else if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_PICKER)
+        color_picker (widget, event->x, event->y, user_data);
 
     // else if (event->button == GDK_BUTTON_SECONDARY)
     // {
@@ -571,6 +582,8 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
     }
     layermngr->tool = tool;
 }
+
+
 
 void callback_add_custom_layer(UNUSED GtkWidget *widget, gpointer user_data)
 {
@@ -861,7 +874,6 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
 
 void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    cursor_state = 1;
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
@@ -871,7 +883,6 @@ void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 
 void callback_rubber(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
-    cursor_state = 2;
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
@@ -1034,7 +1045,9 @@ void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     resetCursor(data);
-    cursor_state = 0; // 0 ==> normal cursor
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    layermngr->tool = INCORECT_TOOL;
 }
 
 void callback_saveFilter(UNUSED GtkButton *btn, gpointer user_data)
