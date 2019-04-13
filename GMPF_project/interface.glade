@@ -1240,6 +1240,7 @@ effet :</property>
                             <property name="margin_left">4</property>
                             <property name="margin_right">4</property>
                             <property name="max_children_per_line">1</property>
+                            <signal name="selected-children-changed" handler="callback_adjust_rotate_value" swapped="no"/>
                             <style>
                               <class name="layer"/>
                             </style>

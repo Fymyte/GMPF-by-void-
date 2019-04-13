@@ -18,6 +18,7 @@ void pick_color_on_screen(int x, int y, GtkColorChooser *colorChooser, gpointer 
     color->alpha = (gdouble)a / 255;
     gtk_color_chooser_set_rgba(colorChooser, color);
     g_free(color);
+    g_object_unref(pixbuf);
 }
 
 void resetCursor(SGlobalData* data)

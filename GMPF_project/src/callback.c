@@ -523,6 +523,17 @@ motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event,
     return TRUE;
 }
 
+void callback_adjust_rotate_value(UNUSED GtkWidget *widget, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkSpinButton, button, "RotateDegreeSpinButton");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+        return;
+    gtk_spin_button_set_value(button, lay->rotate_angle);
+}
+
 void on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_data)
 {
     INIT_UI();
