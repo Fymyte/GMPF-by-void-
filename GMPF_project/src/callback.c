@@ -668,7 +668,6 @@ void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_dat
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
     GtkWidget *dialog;
-    GtkFileChooser *chooser;
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
     gint res;
 
@@ -680,17 +679,21 @@ void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_dat
                                           ("_Save"),
                                           GTK_RESPONSE_ACCEPT,
                                           NULL);
-    chooser = GTK_FILE_CHOOSER (dialog);
 
-    gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+    GtkFileChooser *fileChooser = GTK_FILE_CHOOSER(dialog);
+    GtkFileFilter *filter = gtk_file_filter_new ();
+    gtk_file_filter_add_pattern(filter, "*.gmpf");
+    gtk_file_chooser_set_filter(fileChooser, filter);
 
-    gtk_file_chooser_set_current_name (chooser,
+    gtk_file_chooser_set_do_overwrite_confirmation (fileChooser, TRUE);
+
+    gtk_file_chooser_set_current_name (fileChooser,
                                          ("Untitled.gmpf"));
 
     res = gtk_dialog_run (GTK_DIALOG (dialog));
     if (res == GTK_RESPONSE_ACCEPT)
     {
-        char *filename = gtk_file_chooser_get_filename (chooser);
+        char *filename = gtk_file_chooser_get_filename (fileChooser);
         layermngr->filename = malloc(sizeof(char) * (strlen(filename) + 1));
         char err = save_project(flowbox, (const char*)filename);
         if (err)
@@ -726,6 +729,10 @@ void callback_load_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
                                           ("_Open"),
                                           GTK_RESPONSE_ACCEPT,
                                           NULL);
+    GtkFileChooser *fileChooser = GTK_FILE_CHOOSER(dialog);
+    GtkFileFilter *filter = gtk_file_filter_new ();
+    gtk_file_filter_add_pattern(filter, "*.gmpf");
+    gtk_file_chooser_set_filter(fileChooser, filter);
 
     res = gtk_dialog_run (GTK_DIALOG (dialog));
     if (res == GTK_RESPONSE_ACCEPT)
@@ -770,6 +777,9 @@ void callback_save_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
                                           GTK_RESPONSE_ACCEPT,
                                           NULL);
     chooser = GTK_FILE_CHOOSER (dialog);
+    GtkFileFilter *filter = gtk_file_filter_new ();
+    gtk_file_filter_add_pattern(filter, "*.lay");
+    gtk_file_chooser_set_filter(chooser, filter);
 
     gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
 
@@ -812,6 +822,10 @@ void callback_load_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
                                           GTK_RESPONSE_ACCEPT,
                                           NULL);
 
+    GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+    GtkFileFilter *filter = gtk_file_filter_new ();
+    gtk_file_filter_add_pattern(filter, "*.lay");
+    gtk_file_chooser_set_filter(chooser, filter);
     res = gtk_dialog_run (GTK_DIALOG (dialog));
     if (res == GTK_RESPONSE_ACCEPT)
     {
