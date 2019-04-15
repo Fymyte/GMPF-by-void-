@@ -215,6 +215,7 @@ void callback_save(UNUSED GtkWidget *menuitem, gpointer user_data)
     {
         char *filename;
         filename = gtk_file_chooser_get_filename (chooser);
+        D_PRINT("f: %s, ext: %s, checked: %i", filename, "png", set_extension(&filename, "png"));
         export_cairo_to_png(filename, user_data);
         g_free(filename);
     }

@@ -8,6 +8,7 @@
 
 #include "macro.h"
 
+int set_extension(char **filename, char *extension);
 
 char save_project(GtkFlowBox *flowbox, const char *filename);
 char load_project(GtkFlowBox *flowbox, const char *filename);

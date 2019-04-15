@@ -3,6 +3,33 @@
 //
 // private functions declaration
 //
+int set_extension(char **filename, char *extension)
+{
+    char *c = NULL;
+    char *begin = *filename;
+    size_t filelen = strlen(extension) + 2;
+    for ( ; *begin != '\0'; begin++)
+    {
+        D_PRINT("f: %s", begin);
+        if (*begin == '.')
+        {
+            c = begin;
+        }
+        filelen++;
+    }
+    if (c != NULL && !strcmp(c + 1, extension))
+        return 0;
+    char *new = realloc(*filename, filelen * sizeof(char));
+    if (new == NULL)
+    {
+        PRINTERR;
+        return -1;
+    }
+    int res = sprintf(new, "%s.%s", *filename, extension);
+    *filename = new;
+    return 0;
+}
+
 char save_layermngr(GMPF_LayerMngr *layermngr, FILE *file)
 {
     if (fwrite(layermngr, sizeof(GMPF_LayerMngr), 1, file) != 1)
