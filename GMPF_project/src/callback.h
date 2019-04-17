@@ -26,7 +26,6 @@
 #include "Img_rgb.h"
 #include "pixel_op.h"
 #include "brush.h"
-#include "Save.h"
 #include "saving.h"
 #include "macro.h"
 #include "filters.h"

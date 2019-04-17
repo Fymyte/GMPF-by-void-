@@ -6,7 +6,7 @@
 #include "GMPF_LayerMngr.h"
 #include "GMPF_Struct.h"
 
-#include "macro.h"
+#include "callback.h"
 
 char *get_extension(char **filename);
 int check_extension(char **filename, char *extension);
