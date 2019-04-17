@@ -9,7 +9,7 @@
 #include "callback.h"
 
 char *get_extension(char *filename);
-int check_extension(char **filename, char *extension);
+int check_extension(char *filename, char *extension);
 int set_extension(char **filename, char *extension);
 
 char save_project(GtkFlowBox *flowbox, const char *filename);
