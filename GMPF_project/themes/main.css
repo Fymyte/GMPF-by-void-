@@ -156,7 +156,7 @@ window menuitem > label {
 
 /* DRAW SPACE */
 #event {
-	background-image: url("grille.png");
+	background-image: url("../images/grille.png");
 }
 
 /* COMBOBOX & ENTRY */
@@ -200,5 +200,3 @@ combobox menu {
     color: @ui_text_color;
     background-color:transparent;
 }
-
-

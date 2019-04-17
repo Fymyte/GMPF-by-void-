@@ -3,30 +3,53 @@
 //
 // private functions declaration
 //
-int set_extension(char **filename, char *extension)
+char *get_extension(char **filename)
 {
     char *c = NULL;
     char *begin = *filename;
-    size_t filelen = strlen(extension) + 2;
     for ( ; *begin != '\0'; begin++)
     {
-        D_PRINT("f: %s", begin);
         if (*begin == '.')
         {
             c = begin;
         }
-        filelen++;
     }
+
+    return c == NULL || c + 1 == NULL ? NULL : c + 1;
+}
+
+int check_extension(char **filename, char *extension)
+{
+    char *c = NULL;
+    char *begin = *filename;
+    for ( ; *begin != '\0'; begin++)
+    {
+        if (*begin == '.')
+        {
+            c = begin;
+        }
+    }
+
     if (c != NULL && !strcmp(c + 1, extension))
         return 0;
-    char *new = realloc(*filename, filelen * sizeof(char));
-    if (new == NULL)
+    return 1;
+}
+
+int set_extension(char **filename, char *extension)
+{
+    if (!check_extension(filename, extension))
+        return 0;
+    D_PRINT("check is false", NULL);
+    size_t filelen = strlen(*filename) + strlen(extension) + 3;
+    char *newfilename = malloc(sizeof(char) * filelen);
+    if (newfilename == NULL)
     {
         PRINTERR;
         return -1;
     }
-    int res = sprintf(new, "%s.%s", *filename, extension);
-    *filename = new;
+    sprintf(newfilename, "%s.%s", *filename, extension);
+    free(*filename);
+    *filename = newfilename;
     return 0;
 }
 
@@ -241,5 +264,68 @@ char loading_layer(GtkFlowBox *flowbox, const char *filename)
     if (err) { fclose(file); PRINTERR; return 1; }
 
     fclose(file);
+    return 0;
+}
+
+int export_cairo_to_png(gchar *filename, gpointer user_data)
+{
+    INIT_UI();
+    GMPF_LayerMngr *layermngr = NULL;
+    GtkFlowBox *flowbox = NULL;
+
+    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
+    layermngr = layermngr_get_layermngr(flowbox);
+
+    if (layermngr->layer_list.next == NULL)
+        return -1; //save failed
+
+	GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+
+	//create a new surface and context to store all the layer surfaces
+	cairo_surface_t *final_surface =
+		cairo_image_surface_create (CAIRO_FORMAT_ARGB32, lay->size.w, lay->size.h);
+	cairo_t *final_context = cairo_create(final_surface);
+
+	//write the surfaces on the new surface
+    while (lay != NULL)
+    {
+        if (lay->isvisible)
+        {
+            cairo_save(final_context);
+            // cairo_surface_t *surface = lay->surface ? lay->surface : lay->surface;
+            cairo_scale(final_context, lay->scale_factor.x, lay->scale_factor.y);
+            cairo_set_source_surface (final_context, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
+            cairo_paint(final_context);
+            cairo_restore(final_context);
+        }
+        if (!lay->list.next) break;
+        lay = container_of(lay->list.next, GMPF_Layer, list);
+    }
+
+	//add th epng extension
+
+	//get the surface from the context and save it
+    final_surface = cairo_get_target(final_context);
+    cairo_status_t status = cairo_surface_write_to_png (final_surface, filename);
+    cairo_destroy(final_context);
+    cairo_surface_destroy(final_surface);
+
+    if (status == CAIRO_STATUS_NO_MEMORY)
+    {
+        printf("%s\n", cairo_status_to_string(status));
+        return -1;
+    }
+
+    else if (status == CAIRO_STATUS_WRITE_ERROR)
+    {
+        printf("%s\n", cairo_status_to_string(status));
+        return -1;
+    }
+
+    else if (status == CAIRO_STATUS_READ_ERROR)
+    {
+        printf("%s\n", cairo_status_to_string(status));
+        return -1;
+    }
     return 0;
 }

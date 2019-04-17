@@ -50,7 +50,7 @@ void callback_about (GtkMenuItem *menuitem, gpointer user_data);
 void callback_adjust_scale(GtkEntry *entry, gpointer user_data);
 void callback_image(GtkFileChooser *filebtn, gpointer user_data);
 void callback_image(GtkFileChooser *filebtn, gpointer user_data);
-void callback_image_cairo(GtkFileChooser *btn, gpointer user_data);
+void load_image_cairo(char *filename, gpointer user_data);
 
 
 void callback_FC(GtkMenuItem *menuitem, gpointer user_data);
@@ -73,6 +73,7 @@ void callback_warm(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 void callback_green(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 void callback_cold(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 
+void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 
 //tools functions

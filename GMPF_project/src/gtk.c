@@ -9,7 +9,7 @@
 
 #define INTERFACE_NAME "interface.glade"
 
-#define CSSTHEME "main.css"
+#define CSSTHEME "themes/main.css"
 
 /*typedef struct
 {

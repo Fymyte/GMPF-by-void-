@@ -1,35 +1,106 @@
 #include "callback.h"
 
-// struct _GdkPixbuf *unchangedPixbuf;
 
-/* change the cursor
-values :
-0 ==> normal
-1 ==> draw_brush
-2 ==> rubber
-*/
-
-/*
-Use this to convert our imga with multiple layer in one pixbuf
-GdkPixbuf *
-gdk_pixbuf_get_from_drawable (GdkPixbuf *dest,
-                              GdkDrawable *src,
-                              GdkColormap *cmap,
-                              int src_x,
-                              int src_y,
-                              int dest_x,
-                              int dest_y,
-                              int width,
-                              int height);
-                              */
-// int cursor_state = 0;
-
-/*int check(int width, int height, int i, int j)
+int open_confirm_quit_without_saving_dialog(gpointer user_data)
 {
-    if (i < 0 || j < 0 || i > width || j > height)
-        return 0;
-    return 1;
-}*/
+    INIT_UI();
+    GET_UI(GtkWindow, window, "MainWindow");
+    GtkWidget *dialog;
+    gint res;
+
+    dialog = gtk_dialog_new_with_buttons(NULL,
+                                        window,
+                                        GTK_DIALOG_DESTROY_WITH_PARENT,
+                                        ("_Annuler"), 0,
+                                        ("_Sauvegarder"), 1,
+                                        ("_Confirmer"), 2,
+                                        NULL);
+    GtkWidget *content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget *label = gtk_label_new("Quitter sans sauvegarder ?");
+    gtk_container_add(GTK_CONTAINER(content), label);
+    gtk_widget_set_margin_start(label, 10);
+    gtk_widget_set_margin_end(label, 10);
+    gtk_widget_set_margin_top(label, 10);
+    gtk_widget_set_margin_bottom(label, 10);
+    gtk_window_set_decorated(GTK_WINDOW(dialog), FALSE);
+    gtk_widget_show_all(dialog);
+    res = gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+    return res;
+}
+
+void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWindow, window, "MainWindow");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    int confirm = open_confirm_quit_without_saving_dialog(user_data);
+
+    if (confirm == 0)
+    {
+        return;
+    }
+    else if (confirm == 1)
+    {
+        callback_save_project(NULL, user_data);
+    }
+
+
+
+    GtkWidget *dialog;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    gint res;
+
+    dialog = gtk_file_chooser_dialog_new ("Open File",
+                                          window,
+                                          action,
+                                          ("_Annuler"),
+                                          GTK_RESPONSE_CANCEL,
+                                          ("_Ouvrir"),
+                                          GTK_RESPONSE_ACCEPT,
+                                          NULL);
+    GtkFileChooser *fileChooser = GTK_FILE_CHOOSER(dialog);
+    GtkFileFilter *filter = gtk_file_filter_new ();
+    gtk_file_filter_add_pattern(filter, "*.gmpf");
+    gtk_file_filter_add_mime_type(filter, "image/*");
+    gtk_file_chooser_set_filter(fileChooser, filter);
+
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
+    if (res == GTK_RESPONSE_ACCEPT)
+    {
+        char *filename;
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+        filename = gtk_file_chooser_get_filename (chooser);
+        char *ext = get_extension(&filename);
+        if (!strcmp(ext, "gmpf"))
+        {
+
+            char err = load_project (flowbox, filename);
+            if (err)
+                D_PRINT("Uable to load project", NULL);
+        }
+        else
+        {
+            load_image_cairo(filename, user_data);
+        }
+        g_free (filename);
+    }
+
+    int max_width = layermngr->size.w;
+    int max_height = layermngr->size.h;
+
+    gtk_widget_set_size_request(layout, max_width, max_height);
+    gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
+    gtk_widget_queue_draw(da);
+
+    gtk_widget_destroy (dialog);
+}
+
 void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
 {
     INIT_UI();
@@ -184,7 +255,7 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
     adjust_scale (scaleValue, scaleValue, user_data);
 }
 
-void callback_save(UNUSED GtkWidget *menuitem, gpointer user_data)
+void callback_export(UNUSED GtkWidget *menuitem, gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -215,7 +286,8 @@ void callback_save(UNUSED GtkWidget *menuitem, gpointer user_data)
     {
         char *filename;
         filename = gtk_file_chooser_get_filename (chooser);
-        D_PRINT("f: %s, ext: %s, checked: %i", filename, "png", set_extension(&filename, "png"));
+        int res = set_extension(&filename, "png");
+        D_PRINT("f: %s, ext: %s, checked: %i", filename, "png", res);
         export_cairo_to_png(filename, user_data);
         g_free(filename);
     }
@@ -595,8 +667,6 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
     layermngr->tool = tool;
 }
 
-
-
 void callback_add_custom_layer(UNUSED GtkWidget *widget, gpointer user_data)
 {
     INIT_UI();
@@ -843,14 +913,10 @@ void callback_load_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 
 }
 
-void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
+void load_image_cairo(char *filename, gpointer user_data)
 {
     INIT_UI();
     GError *error = NULL;
-
-    gchar *filename = gtk_file_chooser_get_filename(btn);
-    if (!filename)
-        return;
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
@@ -866,7 +932,6 @@ void callback_image_cairo(GtkFileChooser *btn, gpointer user_data)
     layermngr->image  = gdk_pixbuf_new_from_file(filename, &error);
     width  = gdk_pixbuf_get_width  (layermngr->image);
     height = gdk_pixbuf_get_height (layermngr->image);
-    g_free(filename);
 
     if (width > max_width)
         max_width = width;

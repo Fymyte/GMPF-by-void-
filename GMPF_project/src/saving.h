@@ -8,6 +8,8 @@
 
 #include "macro.h"
 
+char *get_extension(char **filename);
+int check_extension(char **filename, char *extension);
 int set_extension(char **filename, char *extension);
 
 char save_project(GtkFlowBox *flowbox, const char *filename);
@@ -15,5 +17,7 @@ char load_project(GtkFlowBox *flowbox, const char *filename);
 
 char saving_layer(GtkFlowBox *flowbox, const char *filename);
 char loading_layer(GtkFlowBox *flowbox, const char *filename);
+
+int export_cairo_to_png(gchar *filename, gpointer user_data);
 
 #endif /* SAVING_H_ */

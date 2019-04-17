@@ -15,6 +15,80 @@ without any warranty.
   <!-- interface-license-type all_permissive -->
   <!-- interface-name GMPF -->
   <!-- interface-copyright VOID* -->
+  <object class="GtkMessageDialog" id="CancelDialog">
+    <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="urgency_hint">True</property>
+    <property name="deletable">False</property>
+    <property name="message_type">warning</property>
+    <property name="text" translatable="yes">Fermer sans enregister</property>
+    <property name="secondary_text" translatable="yes">Toute donnée non sauvegarder sera perdue </property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="margin_top">1</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="margin_left">68</property>
+            <property name="margin_right">5</property>
+            <property name="margin_bottom">5</property>
+            <property name="homogeneous">True</property>
+            <property name="baseline_position">top</property>
+            <property name="layout_style">center</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Enregister</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Confirmer</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkWindow" id="FilterCreator">
     <property name="name">Créateur de filtres</property>
     <property name="can_focus">False</property>
@@ -365,15 +439,8 @@ effet :</property>
   </object>
   <object class="GtkFileFilter" id="ImageFilter">
     <mime-types>
-      <mime-type>image</mime-type>
+      <mime-type>image/*</mime-type>
     </mime-types>
-    <patterns>
-      <pattern>png</pattern>
-      <pattern>jpg</pattern>
-      <pattern>jpeg</pattern>
-      <pattern>PNG</pattern>
-      <pattern>gif</pattern>
-    </patterns>
   </object>
   <object class="GtkAdjustment" id="LayerAngleAdjustment">
     <property name="lower">-180</property>
@@ -414,24 +481,45 @@ effet :</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="New">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">exporter vers png</property>
+                        <property name="label" translatable="yes">Nouveau</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_save" swapped="no"/>
+                        <accelerator key="n" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Open">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Enregistrer le calque</property>
-                        <signal name="activate" handler="callback_save_layer" swapped="no"/>
+                        <property name="label" translatable="yes">Ouvrir</property>
+                        <signal name="activate" handler="callback_open" swapped="no"/>
+                        <accelerator key="o" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem">
+                      <object class="GtkMenuItem" id="Save">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Enregistrer</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_save_project" swapped="no"/>
+                        <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="SaveUnder">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Enregistrer sous</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_save_under_project" swapped="no"/>
+                        <accelerator key="s" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="LoadLayer">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Charger le calque</property>
@@ -439,44 +527,20 @@ effet :</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
-                        <property name="label">gtk-new</property>
+                      <object class="GtkMenuItem" id="SaveLayer">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="label" translatable="yes">Enregistrer le calque</property>
+                        <signal name="activate" handler="callback_save_layer" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem">
-                        <property name="label">gtk-open</property>
+                      <object class="GtkMenuItem" id="ExportToPNG">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">exporter vers png</property>
                         <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                        <signal name="activate" handler="callback_load_project" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem">
-                        <property name="label">gtk-save</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                        <signal name="activate" handler="callback_save_project" swapped="no"/>
-                        <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem">
-                        <property name="label">gtk-save-as</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                        <signal name="activate" handler="callback_save_under_project" swapped="no"/>
-                        <accelerator key="s" signal="activate" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
+                        <signal name="activate" handler="callback_export" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -486,12 +550,11 @@ effet :</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="quit">
-                        <property name="label">gtk-quit</property>
+                      <object class="GtkMenuItem" id="Quit">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Quitter</property>
                         <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
                         <signal name="activate" handler="gtk_main_quit" swapped="no"/>
                       </object>
                     </child>
@@ -981,48 +1044,6 @@ effet :</property>
                 </child>
               </object>
             </child>
-            <child>
-              <object class="GtkMenuItem">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">GMPF LayerMngr</property>
-                <property name="use_underline">True</property>
-                <child type="submenu">
-                  <object class="GtkMenu">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkMenuItem">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Clear GMPF Manager</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_clear_GMPF_LayerMngr" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">New Layer</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_add_GMPF_Layer" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Remove Layer</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_remove_selected_layer" swapped="no"/>
-                        <accelerator key="Delete" signal="activate"/>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -1080,7 +1101,6 @@ effet :</property>
                     <property name="width_chars">5</property>
                     <property name="max_width_chars">3</property>
                     <property name="xalign">0.5</property>
-                    <property name="overwrite_mode">True</property>
                     <property name="placeholder_text" translatable="yes">4</property>
                     <property name="input_purpose">digits</property>
                     <signal name="changed" handler="callback_resize_brush" swapped="no"/>
@@ -1118,7 +1138,6 @@ effet :</property>
                     <property name="has_frame">False</property>
                     <property name="xalign">0.5</property>
                     <property name="shadow_type">none</property>
-                    <property name="overwrite_mode">True</property>
                     <property name="primary_icon_stock">gtk-zoom-out</property>
                     <property name="placeholder_text" translatable="yes">100</property>
                     <property name="input_purpose">digits</property>
@@ -1439,6 +1458,7 @@ effet :</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-go-up</property>
                         <signal name="clicked" handler="callback_layer_move_up" swapped="no"/>
+                        <accelerator key="KP_8" signal="clicked"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1456,6 +1476,7 @@ effet :</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-go-down</property>
                         <signal name="clicked" handler="callback_layer_move_down" swapped="no"/>
+                        <accelerator key="KP_2" signal="clicked"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1489,6 +1510,7 @@ effet :</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-remove</property>
                         <signal name="clicked" handler="callback_remove_selected_layer" swapped="no"/>
+                        <accelerator key="Delete" signal="clicked"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1520,11 +1542,12 @@ effet :</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton">
-            <property name="label" translatable="yes">Ouvrir</property>
+          <object class="GtkButton" id="LoadImageButton">
+            <property name="label" translatable="yes">Load an image</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <signal name="clicked" handler="callback_open" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -1821,6 +1844,7 @@ Samory DIABY</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_top">5</property>
+            <property name="filter">ImageFilter</property>
             <property name="title" translatable="yes"/>
           </object>
           <packing>
