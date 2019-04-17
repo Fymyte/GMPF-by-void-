@@ -553,6 +553,8 @@ gpointer        user_data)
     else if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_PICKER)
         color_picker (widget, event->x, event->y, user_data);
 
+    if (tool == COLOR_KILLER && (event->state & GDK_BUTTON1_MASK))
+        kill_color(widget, user_data);
     // else if (event->button == GDK_BUTTON_SECONDARY)
     // {
     //     clear_surface (user_data);
@@ -592,7 +594,6 @@ motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event,
         draw_brush (widget, event->x, event->y, user_data);
     if (tool == ERAISER && (event->state & GDK_BUTTON1_MASK))
         draw_rubber (widget, event->x, event->y, user_data);
-
 
     /* We've handled it, stop processing */
     return TRUE;
@@ -662,6 +663,8 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
         case '4': tool = SELECTOR;
                          break;
         case '5': tool = SELECTOR_FREE;
+                         break;
+        case '6': tool = COLOR_KILLER;
                          break;
         default : tool = INCORECT_TOOL;
         D_PRINT("Unknown tool", NULL);
@@ -971,6 +974,15 @@ void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     layermngr->tool = PAINTER;
+    callback_setCursor(data);
+}
+
+void callback_color_killer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    layermngr->tool = COLOR_KILLER;
     callback_setCursor(data);
 }
 

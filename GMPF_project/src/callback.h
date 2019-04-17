@@ -30,6 +30,7 @@
 #include "macro.h"
 #include "filters.h"
 #include "fcreator.h"
+#include "Channels.h"
 
 //callback functions
 

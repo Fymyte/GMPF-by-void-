@@ -11,10 +11,84 @@ without any warranty.
 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <!-- interface-css-provider-path themes/main.css -->
+  <!-- interface-css-provider-path main.css -->
   <!-- interface-license-type all_permissive -->
   <!-- interface-name GMPF -->
   <!-- interface-copyright VOID* -->
+  <object class="GtkMessageDialog" id="CancelDialog">
+    <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="urgency_hint">True</property>
+    <property name="deletable">False</property>
+    <property name="message_type">warning</property>
+    <property name="text" translatable="yes">Fermer sans enregister</property>
+    <property name="secondary_text" translatable="yes">Toute donnée non sauvegarder sera perdue </property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="margin_top">1</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="margin_left">68</property>
+            <property name="margin_right">5</property>
+            <property name="margin_bottom">5</property>
+            <property name="homogeneous">True</property>
+            <property name="baseline_position">top</property>
+            <property name="layout_style">center</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Enregister</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Confirmer</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkWindow" id="FilterCreator">
     <property name="name">Créateur de filtres</property>
     <property name="can_focus">False</property>
@@ -303,7 +377,7 @@ effet :</property>
                 <property name="width_request">300</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="pixbuf">images/GMPF.png</property>
+                <property name="pixbuf">GMPF.png</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -919,6 +993,15 @@ effet :</property>
                       <object class="GtkMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">supression</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_color_killer" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">reset cursor</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="reset_cursor" swapped="no"/>
@@ -984,7 +1067,7 @@ effet :</property>
                       <object class="GtkMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Canal</property>
+                        <property name="label" translatable="yes">Canaux</property>
                         <property name="use_underline">True</property>
                         <child type="submenu">
                           <object class="GtkMenu">
@@ -1549,7 +1632,7 @@ effet :</property>
 Arnaud CASSEZ
 Pierrick GUILLAUME
 Samory DIABY</property>
-    <property name="logo">images/GMPF.png</property>
+    <property name="logo">GMPF.png</property>
     <child>
       <placeholder/>
     </child>
