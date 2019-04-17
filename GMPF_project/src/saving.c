@@ -3,30 +3,30 @@
 //
 // private functions declaration
 //
-char *get_extension(char **filename)
+char *get_extension(char *filename)
 {
+    if (!filename)
+        return NULL;
     char *c = NULL;
-    char *begin = *filename;
-    for ( ; *begin != '\0'; begin++)
+    for ( ; *filename != '\0'; filename++)
     {
-        if (*begin == '.')
+        if (*filename == '.')
         {
-            c = begin;
+            c = filename;
         }
     }
 
     return c == NULL || c + 1 == NULL ? NULL : c + 1;
 }
 
-int check_extension(char **filename, char *extension)
+int check_extension(char *filename, char *extension)
 {
     char *c = NULL;
-    char *begin = *filename;
-    for ( ; *begin != '\0'; begin++)
+    for ( ; *filename != '\0'; filename++)
     {
-        if (*begin == '.')
+        if (*filename == '.')
         {
-            c = begin;
+            c = filename;
         }
     }
 
@@ -37,7 +37,7 @@ int check_extension(char **filename, char *extension)
 
 int set_extension(char **filename, char *extension)
 {
-    if (!check_extension(filename, extension))
+    if (!check_extension(*filename, extension))
         return 0;
     D_PRINT("check is false", NULL);
     size_t filelen = strlen(*filename) + strlen(extension) + 3;
@@ -139,7 +139,6 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
                            layer->size.w, layer->size.h,
                            layer->size.w << 2,
                        NULL, NULL);
-    D_PRINT("%p", layer->image);
 
     layer->surface = gdk_cairo_surface_create_from_pixbuf(layer->image, 0, NULL);
 
