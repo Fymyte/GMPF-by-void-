@@ -553,7 +553,7 @@ gpointer        user_data)
     else if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_PICKER)
         color_picker (widget, event->x, event->y, user_data);
 
-    if (tool == COLOR_KILLER && (event->state & GDK_BUTTON1_MASK))
+    if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_KILLER)
         kill_color(widget, user_data);
     // else if (event->button == GDK_BUTTON_SECONDARY)
     // {
