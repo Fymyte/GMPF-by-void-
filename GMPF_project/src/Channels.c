@@ -12,6 +12,7 @@ void kill_color(GtkWidget *widget, gpointer user_data)
     gtk_color_chooser_get_rgba(colorbtn, &color);
 
     guchar red, green, blue, alpha;
+    double k = 0.1; //tolerance de pixels
     gboolean error = FALSE;
 
     for (int i = 0; i < width; i++)
@@ -22,13 +23,16 @@ void kill_color(GtkWidget *widget, gpointer user_data)
             if(!error)
                 err(1, "pixbuf get pixels error");
 
-            if (red == color.red /*&& blue == color.blue && green == color.green && color.alpha == alpha*/)
-                put_pixel(layer->image, i, j, 255, 255, 255, 255);
+            if ((red <= ((color.red + k)*255) && red >= ((color.red - k)*255))
+                && (blue <= ((color.blue + k)*255) && blue >= ((color.blue - k)*255))
+                && (green <= ((color.green + k)*255) && green >= ((color.green - k)*255)))
+                {
+                    put_pixel(layer->image, i, j, red, green, blue, 0);
+                }
         }
     }
     cairo_surface_destroy(layer->surface);
     layer->surface = gdk_cairo_surface_create_from_pixbuf(layer->image, 1, NULL);
     layer_icon_refresh(layer);
     gtk_widget_queue_draw(widget);
-    printf("done\n");
 }
