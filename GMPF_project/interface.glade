@@ -11,7 +11,7 @@ without any warranty.
 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <!-- interface-css-provider-path main.css -->
+  <!-- interface-css-provider-path themes/main.css -->
   <!-- interface-license-type all_permissive -->
   <!-- interface-name GMPF -->
   <!-- interface-copyright VOID* -->
@@ -397,7 +397,18 @@ effet :</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <placeholder/>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="callback_load_theme" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <object class="GtkButtonBox">
@@ -1519,7 +1530,7 @@ effet :</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-go-up</property>
                         <signal name="clicked" handler="callback_layer_move_up" swapped="no"/>
-                        <accelerator key="KP_8" signal="clicked"/>
+                        <accelerator key="KP_8" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1537,7 +1548,7 @@ effet :</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-go-down</property>
                         <signal name="clicked" handler="callback_layer_move_down" swapped="no"/>
-                        <accelerator key="KP_2" signal="clicked"/>
+                        <accelerator key="KP_2" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

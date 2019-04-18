@@ -29,6 +29,21 @@ int open_confirm_quit_without_saving_dialog(gpointer user_data)
     return res;
 }
 
+void callback_load_theme(GtkWidget *widget, gpointer user_data)
+{
+    INIT_UI();
+    D_PRINT("loading theme", NULL);
+    GtkCssProvider *provider = gtk_css_provider_new();
+    const gchar *myFile = "themes/1theme.css";
+    GError *err = NULL;
+
+    GdkScreen *screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
+    gtk_css_provider_load_from_file(provider, g_file_new_for_path(myFile), &err);
+
+    gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider),
+                  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+}
+
 void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
 {
     INIT_UI();
@@ -164,30 +179,6 @@ void layer_rotate_angle_all(int angle, GMPF_LayerMngr *layermngr)
     }
 }
 
-
-void callback_flip(UNUSED GtkMenuItem *menuitem, UNUSED gpointer user_data)
-{
-    // INIT_UI();
-    //
-    // GtkImage *image = NULL;
-    //
-    // image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-    // GdkPixbuf *pixbuf;
-    //
-    // const char *menulabel = gtk_menu_item_get_label (menuitem);
-    //
-    // if (strcmp(menulabel, "Flip horizontal"))
-    // pixbuf = gdk_pixbuf_flip (unchangedPixbuf, TRUE);
-    //
-    // else
-    // pixbuf = gdk_pixbuf_flip (unchangedPixbuf, FALSE);
-    //
-    // g_object_unref(unchangedPixbuf);
-    // unchangedPixbuf = pixbuf;
-    // gtk_image_set_from_pixbuf(image, pixbuf);
-}
-
-
 void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
 {
     INIT_UI();
@@ -218,31 +209,6 @@ void callback_layer_move_up(UNUSED GtkWidget *widget, gpointer user_data)
     GET_UI(GtkWidget, da, "drawingArea");
     layermngr_move_up_selected_layer(flowbox);
     gtk_widget_queue_draw(da);;
-}
-
-void callback_rotate(UNUSED GtkMenuItem *menuitem, UNUSED gpointer user_data)
-{
-//     INIT_UI();
-//
-//     GET_UI(GtkImage, image, "OriginalImage");
-//
-//     // image = GTK_IMAGE(gtk_builder_get_object(data->builder, "OriginalImage"));
-//     GdkPixbuf *pixbuf;
-//
-//     const char *menulabel = gtk_menu_item_get_label (menuitem);
-//     D_PRINT("%s", menulabel);
-//     if (strcmp(menulabel, "Rotate left"))
-//     {
-//         pixbuf = gdk_pixbuf_rotate_simple(unchangedPixbuf, GDK_PIXBUF_ROTATE_CLOCKWISE);
-//     }
-//     else
-//     {
-//         pixbuf = gdk_pixbuf_rotate_simple(unchangedPixbuf, GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE);
-//     }
-//
-//     g_object_unref(unchangedPixbuf);
-//     unchangedPixbuf = pixbuf;
-//     gtk_image_set_from_pixbuf(image, pixbuf);
 }
 
 void callback_hideWidget(GtkWidget *widget, UNUSED gpointer user_data)
@@ -308,7 +274,10 @@ void callback_export(UNUSED GtkWidget *menuitem, gpointer user_data)
     {
         char *filename;
         filename = gtk_file_chooser_get_filename (chooser);
-        int res = set_extension(&filename, "png");
+        if (set_extension(&filename, "png"))
+        {
+            D_PRINT("Unable to set extension", NULL);
+        }
         export_cairo_to_png(filename, user_data);
         g_free(filename);
     }
