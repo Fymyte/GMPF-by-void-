@@ -76,18 +76,13 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
         GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
         filename = gtk_file_chooser_get_filename (chooser);
         char *ext = get_extension(filename);
-        D_PRINT("filechoose filename: %s, extension: %s", filename, ext);
         if (!strcmp(ext, "gmpf"))
         {
-            D_PRINT("loading project...", NULL);
+            if (layermngr->filename != NULL)
+                free(layermngr->filename);
             char err = load_project (flowbox, filename);
             if (err)
                 D_PRINT("Uable to load project", NULL);
-            D_PRINT("Project loaded !", NULL);
-            if (layermngr->filename != NULL)
-            {
-                free(layermngr->filename);
-            }
             layermngr->filename = filename;
         }
         else
@@ -314,7 +309,6 @@ void callback_export(UNUSED GtkWidget *menuitem, gpointer user_data)
         char *filename;
         filename = gtk_file_chooser_get_filename (chooser);
         int res = set_extension(&filename, "png");
-        D_PRINT("f: %s, ext: %s, checked: %i", filename, "png", res);
         export_cairo_to_png(filename, user_data);
         g_free(filename);
     }
@@ -755,7 +749,6 @@ void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
         callback_save_under_project(NULL, user_data);
     else
     {
-        D_PRINT("name: %s", layermngr->filename);
         char err = save_project(flowbox, (const char*)layermngr->filename);
         if (err)
         {
@@ -807,7 +800,6 @@ void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_dat
         {
             D_PRINT("Unable to save project", NULL);
         }
-        D_PRINT("filename after saved: %s", layermngr->filename);
     }
 
     gtk_widget_destroy (dialog);

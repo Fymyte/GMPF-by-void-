@@ -49,8 +49,7 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
     layermngr->pos.x = -1; // Keep the last position of the cairo
     layermngr->pos.y = -1; // So it can draw a line between eatch point
 
-    layermngr->filename = malloc(sizeof(char) * 5);
-    layermngr->filename = "/gmpf";
+    layermngr->filename = NULL;
 
 
     layermngr->nb_layer = 0;
