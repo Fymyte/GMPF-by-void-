@@ -51,6 +51,7 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
 
     layermngr->filename = NULL;
 
+
     layermngr->nb_layer = 0;
     list_init(&(layermngr->layer_list));
     // add if new variable

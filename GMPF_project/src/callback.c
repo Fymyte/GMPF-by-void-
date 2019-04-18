@@ -76,20 +76,20 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
         GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
         filename = gtk_file_chooser_get_filename (chooser);
         char *ext = get_extension(filename);
-        D_PRINT("filechoose filename: %s, extension: %s", filename, ext);
         if (!strcmp(ext, "gmpf"))
         {
-            D_PRINT("loading project...", NULL);
+            if (layermngr->filename != NULL)
+                free(layermngr->filename);
             char err = load_project (flowbox, filename);
             if (err)
                 D_PRINT("Uable to load project", NULL);
-            D_PRINT("Project loaded !", NULL);
+            layermngr->filename = filename;
         }
         else
         {
             load_image_cairo(filename, user_data);
+            g_free (filename);
         }
-        g_free (filename);
     }
 
     int max_width = layermngr->size.w;
@@ -114,6 +114,26 @@ void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
         return;
 
     lay->rotate_angle = atoi(gtk_entry_get_text(entry));
+    cairo_surface_t *surface = cairo_surface_create_similar_image(lay->surface,
+                                                            CAIRO_FORMAT_ARGB32,
+                                                            lay->size.w,
+                                                            lay->size.h);
+    lay->cr = cairo_create(surface);
+    cairo_save(lay->cr);
+    cairo_translate(lay->cr, lay->size.w / 2, lay->size.h / 2);
+    cairo_rotate(lay->cr, RAD_FROM_DEG(lay->rotate_angle));
+    cairo_translate(lay->cr, -lay->size.w / 2, -lay->size.h / 2);
+    gdk_cairo_set_source_pixbuf(lay->cr, lay->image, 0, 0);
+    cairo_paint(lay->cr);
+    cairo_restore(lay->cr);
+    cairo_destroy(lay->cr); lay->cr = NULL;
+    while (cairo_surface_get_reference_count(lay->surface) > 0)
+        cairo_surface_destroy(lay->surface);
+    lay->surface = surface;
+
+    // REFRESH_IMAGE(lay);
+    // lay->rotate_angle = 0;
+
     gtk_widget_queue_draw(da);
 }
 
@@ -289,7 +309,6 @@ void callback_export(UNUSED GtkWidget *menuitem, gpointer user_data)
         char *filename;
         filename = gtk_file_chooser_get_filename (chooser);
         int res = set_extension(&filename, "png");
-        D_PRINT("f: %s, ext: %s, checked: %i", filename, "png", res);
         export_cairo_to_png(filename, user_data);
         g_free(filename);
     }
@@ -507,6 +526,7 @@ gboolean button_release_event_cb(UNUSED GtkWidget *widget,
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkSpinButton, button, "RotateDegreeSpinButton");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
     layermngr->pos.x = -1;
@@ -517,6 +537,8 @@ gboolean button_release_event_cb(UNUSED GtkWidget *widget,
         return FALSE;
 
     REFRESH_IMAGE(lay);
+    lay->rotate_angle = 0;
+    gtk_spin_button_set_value(button, lay->rotate_angle);
 
     return TRUE;
 }
@@ -632,9 +654,9 @@ void on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_d
                 cairo_scale(cr, lay->scale_factor.x, lay->scale_factor.y);
                 // double tx = lay->rotate_angle < 90 ? lay->rotate_angle * lay->size.w / 90 : lay->size.w - (lay->rotate_angle * lay->size.w / 90);
                 // double ty = lay->rotate_angle < 90 ? 0 : lay->size.h - (lay->rotate_angle * lay->size.h / 90);;
-                cairo_translate(cr, lay->size.w / 2, lay->size.h / 2);
-                cairo_rotate(cr, RAD_FROM_DEG(lay->rotate_angle));
-                cairo_translate(cr, -lay->size.w / 2, -lay->size.h / 2);
+                // cairo_translate(cr, lay->size.w / 2, lay->size.h / 2);
+                // cairo_rotate(cr, RAD_FROM_DEG(lay->rotate_angle));
+                // cairo_translate(cr, -lay->size.w / 2, -lay->size.h / 2);
                 cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
                 cairo_paint(cr);
                 cairo_restore(cr);
@@ -727,7 +749,6 @@ void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
         callback_save_under_project(NULL, user_data);
     else
     {
-        D_PRINT("name: %s", layermngr->filename);
         char err = save_project(flowbox, (const char*)layermngr->filename);
         if (err)
         {
@@ -771,15 +792,14 @@ void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_dat
     if (res == GTK_RESPONSE_ACCEPT)
     {
         char *filename = gtk_file_chooser_get_filename (fileChooser);
-        layermngr->filename = malloc(sizeof(char) * (strlen(filename) + 1));
+        if (layermngr->filename)
+            free(layermngr->filename);
+        layermngr->filename = filename;
         char err = save_project(flowbox, (const char*)filename);
         if (err)
         {
             D_PRINT("Unable to save project", NULL);
         }
-        layermngr->filename = strcpy(layermngr->filename, filename);
-        D_PRINT("filename after saved: %s", layermngr->filename);
-        g_free (filename);
     }
 
     gtk_widget_destroy (dialog);
@@ -966,6 +986,7 @@ void load_image_cairo(char *filename, gpointer user_data)
         g_object_unref (layermngr->image);
         layermngr->image = i;
     }
+    layermngr->filename = NULL;
 }
 
 void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)

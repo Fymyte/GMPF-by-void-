@@ -377,7 +377,7 @@ effet :</property>
                 <property name="width_request">300</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="pixbuf">GMPF.png</property>
+                <property name="pixbuf">images/GMPF.png</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -1632,7 +1632,7 @@ effet :</property>
 Arnaud CASSEZ
 Pierrick GUILLAUME
 Samory DIABY</property>
-    <property name="logo">GMPF.png</property>
+    <property name="logo">images/GMPF.png</property>
     <child>
       <placeholder/>
     </child>

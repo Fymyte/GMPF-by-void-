@@ -73,6 +73,7 @@ char load_layermngr(GtkFlowBox *flowbox, FILE *file)
 
     layermngr->image = NULL;
     layermngr->display_image = NULL;
+    layermngr->filename = NULL;
 
     layermngr_set_to_flowbox(flowbox, layermngr);
     return 0;
@@ -162,6 +163,7 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
 
     layer->cr = NULL;
     layer->icon = NULL;
+    layer->filename = NULL;
     layer_icon_refresh(layer);
 
 
