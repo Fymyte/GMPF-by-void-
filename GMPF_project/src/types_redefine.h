@@ -14,6 +14,7 @@ typedef int32_t     Sint32; // long = 4 bytes = 32 bits
 typedef uint32_t    Uint32;
 typedef int64_t     Sint64; // long long = 8 bytes = 64 bits
 typedef uint64_t    Uint64;
+typedef gboolean    bool;
 
 
 

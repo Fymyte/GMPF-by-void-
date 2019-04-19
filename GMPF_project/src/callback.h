@@ -37,6 +37,7 @@
 //cairo image functions
 void draw_line(cairo_t *cr);
 void on_draw_event(GtkWidget * widget, cairo_t *cr, gpointer user_data);
+int open_confirm_quit_without_saving_dialog(gpointer user_data);
 
 int check(int width, int height, int i, int j);
 

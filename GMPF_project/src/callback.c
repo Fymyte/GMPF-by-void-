@@ -29,7 +29,7 @@ int open_confirm_quit_without_saving_dialog(gpointer user_data)
     return res;
 }
 
-void callback_load_theme(GtkWidget *widget, gpointer user_data)
+void callback_load_theme(UNUSED GtkWidget *widget, gpointer user_data)
 {
     INIT_UI();
     D_PRINT("loading theme", NULL);

@@ -64,7 +64,6 @@ struct GMPF_Layer {
 
     cairo_t *cr; // The cairo context of the surface attribut
 
-    // cairo_surface_t *unscaled_surface;
     cairo_surface_t *surface;
 
     // for the list
