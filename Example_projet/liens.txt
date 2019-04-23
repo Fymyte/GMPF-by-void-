@@ -1,4 +1,0 @@
-Example effet cairo http://zetcode.com/gfx/cairo/root/
-http://zetcode.com/gfx/cairo/cairoimages/
-doc cairo https://www.cairographics.org/manual/cairo-Transformations.html
-http://giv.sourceforge.net/gtk-image-viewer/gtkimageviewer_tutorial.html

@@ -116,6 +116,7 @@ int GMPF_start()
 
     g_object_unref(provider);
 
+    gtk_widget_hide_on_delete(Main_window);
     gtk_widget_show_all (Main_window);
 
 /************************Uncompress the event from the drawing area************/
@@ -127,16 +128,23 @@ int GMPF_start()
     return 0;
 }
 
+gboolean do_distroy_event(GtkWidget *widget, UNUSED GdkEvent *event, gpointer user_data)
+{
+    // gtk_widget_show(widget);
+    int confirm = open_confirm_quit_without_saving_dialog(user_data);
+    if (confirm == 0)
+    {
+        return TRUE;
+    }
+    else if (confirm == 1)
+        callback_save_project(NULL, user_data);
+    return FALSE;
+}
 
 void GMPFquit(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    int confirm = open_confirm_quit_without_saving_dialog(user_data);
-    if (confirm == 0)
-        return;
-    else if (confirm == 1)
-        callback_save_project(NULL, user_data);
     layermngr_delete(flowbox);
     resetCursor(data);
     gtk_main_quit();
