@@ -99,6 +99,11 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
             if (err)
                 D_PRINT("Uable to load project", NULL);
             layermngr->filename = filename;
+            int width = layermngr->size.w;
+            int height = layermngr->size.h;
+            char *title = malloc (sizeof(char) * (strlen(filename) + 30));
+            sprintf(title, "GMPF - %s : %d * %d", filename, width, height);
+            gtk_window_set_title(window, (const char*)title);
         }
         else
         {
@@ -916,18 +921,22 @@ void load_image_cairo(char *filename, gpointer user_data)
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+    GET_UI(GtkWindow, window, "MainWindow");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     layermngr_add_new_layer(flowbox, filename);
 
     GET_UI(GtkWidget, da, "drawingArea");
     // layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
-    int width, height;
     int max_width  = layermngr->size.w;
     int max_height = layermngr->size.h;
 
+    int width, height;
     layermngr->image  = gdk_pixbuf_new_from_file(filename, &error);
     width  = gdk_pixbuf_get_width  (layermngr->image);
     height = gdk_pixbuf_get_height (layermngr->image);
+    char *title = malloc (sizeof(char) * (strlen(filename) + 30));
+    sprintf(title, "GMPF - %s : %d * %d", filename, width, height);
+    gtk_window_set_title(window, (const char*)title);
 
     if (width > max_width)
         max_width = width;

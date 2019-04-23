@@ -8,10 +8,12 @@ void pick_color_on_screen(int x, int y, GtkColorChooser *colorChooser, gpointer 
     GET_UI(GtkWindow, window, "MainWindow");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    float scale_x = lay->scale_factor.x;
+    float scale_y = lay->scale_factor.y;
     GdkPixbuf *pixbuf = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
     GdkRGBA *color = malloc(sizeof(GdkRGBA));
     guchar r, g, b, a;
-    gdkpixbuf_get_colors_by_coordinates(pixbuf, x, y, &r, &g, &b, &a);
+    gdkpixbuf_get_colors_by_coordinates(pixbuf, x / scale_x, y / scale_y, &r, &g, &b, &a);
     color->red = (gdouble)r / 255;
     color->green = (gdouble)g / 255;
     color->blue = (gdouble)b / 255;

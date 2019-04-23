@@ -93,6 +93,7 @@ without any warranty.
     <property name="name">Créateur de filtres</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Createur de filtre</property>
+    <property name="modal">True</property>
     <property name="default_width">500</property>
     <property name="default_height">300</property>
     <property name="icon_name">address-book-new</property>
@@ -455,11 +456,11 @@ effet :</property>
     <property name="can_focus">False</property>
     <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
     <property name="title" translatable="yes">GMPF</property>
-    <property name="icon">../Example_projet/GMPF_white.png</property>
+    <property name="icon">images/GMPF_white.png</property>
     <property name="has_resize_grip">True</property>
     <signal name="delete-event" handler="do_distroy_event" after="yes" swapped="yes"/>
     <signal name="destroy" handler="GMPFquit" swapped="no"/>
-    <child>
+    <child type="titlebar">
       <placeholder/>
     </child>
     <child>
@@ -1685,6 +1686,7 @@ Samory DIABY</property>
   </object>
   <object class="GtkWindow" id="LayerWindow">
     <property name="can_focus">False</property>
+    <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">menu</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
