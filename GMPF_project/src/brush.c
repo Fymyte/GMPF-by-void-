@@ -66,3 +66,16 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y, double r
     gtk_widget_queue_draw_area (widget, refreshx - 10 + rx, refreshy - 10 + ry,
             width * scale_x + 20, height * scale_y + 20);
 }
+
+void selector(UNUSED GtkWidget *widget, double x, double y, GMPF_LayerMngr *layermngr)
+{
+    if (layermngr->pos.x == -1)
+    {
+        layermngr->pos.x = x;
+        layermngr->pos.y = y;
+    }
+    else
+    {
+
+    }
+}

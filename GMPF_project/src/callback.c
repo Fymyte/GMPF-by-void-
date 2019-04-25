@@ -1,6 +1,9 @@
 #include "callback.h"
 
-
+/*
+ * Open a dialog with 3 buttons: "Annuler", "Savegarder" and "Confirmer"
+ * (Return: 0 for "Annuler", 1 for "Sauverager" and 2 for "Confirmer")
+ */
 int open_confirm_quit_without_saving_dialog(gpointer user_data)
 {
     INIT_UI();
@@ -31,46 +34,47 @@ int open_confirm_quit_without_saving_dialog(gpointer user_data)
     return res;
 }
 
+
+/*
+ * Load a CSS styleSheet located at filename
+ * (Do nothing if filename is incorect)
+ */
+void load_theme(GdkScreen *screen, const char *filename)
+{
+    GError *error;
+    GtkCssProvider *provider = gtk_css_provider_new();
+    gtk_css_provider_load_from_file(provider, g_file_new_for_path(filename), &error);
+    if (error)
+    {
+        PRINTERR;
+        return;
+    }
+    gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider),
+                  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+}
+
+
+/*
+ * Callback to load a GTK-CSS theme
+ */
 void callback_load_theme(UNUSED GtkWidget *widget, gpointer user_data)
 {
     INIT_UI();
-    D_PRINT("loading theme", NULL);
-    GtkCssProvider *provider = gtk_css_provider_new();
+    GET_UI(GtkWindow, window, "MainWindow");
     const gchar *myFile = "themes/1theme.css";
-    GError *err = NULL;
-
-    GdkScreen *screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
-    gtk_css_provider_load_from_file(provider, g_file_new_for_path(myFile), &err);
-
-    gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider),
-                  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    load_theme(gtk_window_get_screen(window), myFile);
 }
 
-void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
+
+/*
+ * Open a new GMPF or IMAGE file
+ * (Open a Dialog and open the selected file)
+ */
+void open_new_file(GtkWindow *window,
+                   GMPF_LayerMngr *layermngr,
+                   GtkFlowBox *flowbox)
 {
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GET_UI(GtkWindow, window, "MainWindow");
-    GET_UI(GtkWidget, da, "drawingArea");
-    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
-
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    int confirm = 2;
-    if (!GMPF_saved_state_get_state(flowbox))
-        confirm = open_confirm_quit_without_saving_dialog(user_data);
-
-    if (confirm == 0)
-    {
-        return;
-    }
-    else if (confirm == 1)
-    {
-        if (!GMPF_save_project(user_data))
-            return;
-    }
-
-
-
     GtkWidget *dialog;
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
     gint res;
@@ -104,7 +108,7 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
             if (err)
                 D_PRINT("Uable to load project", NULL);
             layermngr->filename = filename;
-            GMPF_saved_state_set_state(flowbox, 1);
+            GMPF_saved_state_set_is_saved(flowbox, 1);
             int width = layermngr->size.w;
             int height = layermngr->size.h;
             char *title = malloc (sizeof(char) * (strlen(filename) + 30));
@@ -113,10 +117,42 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
         }
         else
         {
-            load_image_cairo(filename, user_data);
+            load_image_cairo(window, layermngr, flowbox, filename);
             g_free (filename);
         }
     }
+    gtk_widget_destroy(dialog);
+}
+
+
+/*
+ * Callback to open a new file
+ * (Check if the project is saved and open a confirm dialog if not)
+ */
+void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWindow, window, "MainWindow");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    int confirm = 2;
+    if (!GMPF_saved_state_get_is_saved(flowbox))
+        confirm = open_confirm_quit_without_saving_dialog(user_data);
+
+    if (confirm == 0)
+    {
+        return;
+    }
+    else if (confirm == 1)
+    {
+        if (!GMPF_save_project(user_data))
+            return;
+    }
+
+    open_new_file(window, layermngr, flowbox);
 
     int max_width = layermngr->size.w;
     int max_height = layermngr->size.h;
@@ -125,21 +161,15 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
     gtk_widget_set_size_request(da, max_width, max_height);
     gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
     gtk_widget_queue_draw(da);
-
-    gtk_widget_destroy (dialog);
 }
 
-void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
+
+/*
+ * Rotate the layer of "rotate_angle" degree
+ */
+void layer_rotate_angle(GMPF_Layer *lay, int rotate_angle)
 {
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GET_UI(GtkWidget, da, "drawingArea");
-
-    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-    if (!lay)
-        return;
-
-    lay->rotate_angle = atoi(gtk_entry_get_text(entry));
+    lay->rotate_angle = rotate_angle;
     cairo_surface_t *surface = cairo_surface_create_similar_image(lay->surface,
                                                             CAIRO_FORMAT_ARGB32,
                                                             lay->size.w,
@@ -156,25 +186,32 @@ void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
     while (cairo_surface_get_reference_count(lay->surface) > 0)
         cairo_surface_destroy(lay->surface);
     lay->surface = surface;
-
-    // REFRESH_IMAGE(lay);
-    // lay->rotate_angle = 0;
-
-    gtk_widget_queue_draw(da);
 }
 
-void callback_rotate_angle_all(GtkEntry *entry, gpointer user_data)
+
+/*
+ * Callback to rotate the selected layer of the given degree
+ * (Refresh the displayed surface after rotation)
+ */
+void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
 {
     INIT_UI();
-    GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
 
-    const gchar *s = gtk_entry_get_text (entry);
-    layer_rotate_angle_all (atoi(s), layermngr_get_layermngr(flowbox));
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+        return;
+
+    layer_rotate_angle(lay, atoi(gtk_entry_get_text(entry)));
 
     gtk_widget_queue_draw(da);
 }
 
+
+/*
+ * Rotate all the Layer from the LayerMngr's list of Layer from "angle" angle
+ */
 void layer_rotate_angle_all(int angle, GMPF_LayerMngr *layermngr)
 {
     if (layermngr->layer_list.next != NULL)
@@ -190,20 +227,72 @@ void layer_rotate_angle_all(int angle, GMPF_LayerMngr *layermngr)
     }
 }
 
+
+/*
+ * Callback to rotate all layer from the given angle
+ * (Refresh the displayed surface after rotation)
+ */
+void callback_rotate_angle_all(GtkEntry *entry, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    const gchar *s = gtk_entry_get_text (entry);
+    layer_rotate_angle_all (atoi(s), layermngr_get_layermngr(flowbox));
+
+    gtk_widget_queue_draw(da);
+}
+
+
+/*
+ * Callback to adjust the displayed rotate angle according to the selected Layer
+ */
+void callback_adjust_rotate_value(UNUSED GtkWidget *widget, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkSpinButton, button, "RotateDegreeSpinButton");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+    return;
+    gtk_spin_button_set_value(button, lay->rotate_angle);
+}
+
+
+/*
+ * Set if the layer is displayed on the surface or not
+ */
+void layer_set_visible (GMPF_Layer *lay, gboolean isvisible)
+{
+    lay->isvisible = isvisible;
+}
+
+
+/*
+ * Callback to set the visibility of the selected Layer
+ * (Do nothing if there is no selected Layer)
+ * (Refresh the displayed surface after rotation)
+ */
 void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
 
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
-    if (layer)
-    {
-        layer->isvisible = gtk_toggle_button_get_active(button);
-        return;
-    }
-    D_PRINT("Unable to get selected layer", NULL);
+    if (!layer)
+        D_PRINT("Unable to get selected layer", NULL);
+
+    layer_set_visible(layer, gtk_toggle_button_get_active(button));
+    gtk_widget_queue_draw(da);
 }
 
+
+/*
+ * Callback to move down the selected Layer in the list of Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_layer_move_down(UNUSED GtkWidget *widget, gpointer user_data)
 {
     SGlobalData *data = (SGlobalData *)user_data;
@@ -213,6 +302,11 @@ void callback_layer_move_down(UNUSED GtkWidget *widget, gpointer user_data)
     gtk_widget_queue_draw(da);
 }
 
+
+/*
+ * Callback to move up the selected Layer in the list of Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_layer_move_up(UNUSED GtkWidget *widget, gpointer user_data)
 {
     INIT_UI();
@@ -222,16 +316,28 @@ void callback_layer_move_up(UNUSED GtkWidget *widget, gpointer user_data)
     gtk_widget_queue_draw(da);;
 }
 
+
+/*
+ * Callback to hide the "widget" widget
+ */
 void callback_hideWidget(GtkWidget *widget, UNUSED gpointer user_data)
 {
     gtk_widget_hide(widget);
 }
 
+
+/*
+ * Callback to hide the "parent" widget
+ */
 void callback_hideParent(UNUSED GtkWidget *widget, GtkWidget *parent)
 {
     gtk_widget_hide(parent);
 }
 
+
+/*
+ * Callback to show the "A propos" dialod window
+ */
 void callback_about (UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     /* Transtypage du pointeur user_data pour récupérer nos données. */
@@ -247,13 +353,65 @@ void callback_about (UNUSED GtkMenuItem *menuitem, gpointer user_data)
     gtk_widget_hide (dialog);
 }
 
-void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
+
+/*
+ * Set the scale value of all Layer from the list of Layer
+ * (Return: The scaled size of the surface)
+ */
+GMPF_Size adjust_scale(double scale_x, double scale_y, GMPF_LayerMngr *layermngr)
 {
-    const gchar *s = gtk_entry_get_text (entry);
-    float scaleValue = atof(s) / 100;
-    adjust_scale (scaleValue, scaleValue, user_data);
+    GMPF_Size size = {.w = 0, .h = 0};
+
+    if (layermngr->layer_list.next != NULL)
+    {
+        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+        while (lay != NULL)
+        {
+            lay->scale_factor.x = scale_x;
+            lay->scale_factor.y = scale_y;
+
+            if (lay->size.w * scale_x > size.w)
+            size.w = lay->size.w * scale_x;
+            if (lay->size.h * scale_y > size.h)
+            size.h = lay->size.h * scale_y;
+
+            if (!lay->list.next) break;
+            lay = container_of(lay->list.next, GMPF_Layer, list);
+        }
+    }
+    return size;
 }
 
+
+/*
+ * Callback to adjust the scale value of all Layer from the list of Layer
+ * (Refresh the display after scaling)
+ */
+void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+
+    const gchar *s = gtk_entry_get_text (entry);
+    float scaleValue = atof(s) / 100;
+    GMPF_Size size = adjust_scale (scaleValue, scaleValue, layermngr);
+    int max_width = size.w;
+    int max_height = size.h;
+
+    gtk_widget_set_size_request(layout, max_width, max_height);
+    gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
+    gtk_widget_queue_draw(da);
+}
+
+
+/*
+ * Callback to export the project to PNG format
+ * (Open a dialog to choose the path for the file to save)
+ */
 void callback_export(UNUSED GtkWidget *menuitem, gpointer user_data)
 {
     INIT_UI();
@@ -296,6 +454,10 @@ void callback_export(UNUSED GtkWidget *menuitem, gpointer user_data)
     gtk_widget_destroy (dialog);
 }
 
+
+/*
+ * Callback to resize the brush size of the LayerMngr
+ */
 void callback_resize_brush(GtkEntry *entry, gpointer user_data)
 {
     INIT_UI();
@@ -306,9 +468,13 @@ void callback_resize_brush(GtkEntry *entry, gpointer user_data)
     const gchar *s = gtk_entry_get_text (entry);
     float size = atof(s);
     layermngr->brush_size = size;
-    // resizeCursor(data, (int)size);
 }
 
+
+/*
+ * Callback to show the "Ajouter un calque" window
+ * (Set all the fileds to there default value)
+ */
 void callback_show_layer_window(UNUSED GtkWidget *widget, gpointer user_data)
 {
     //variables definitions
@@ -334,45 +500,11 @@ void callback_show_layer_window(UNUSED GtkWidget *widget, gpointer user_data)
     gtk_widget_show(layer_window);
 }
 
-void adjust_scale(double scale_x, double scale_y, gpointer user_data)
-{
-    INIT_UI();
 
-    GET_UI(GtkWidget, da, "drawingArea");
-    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    //GMPF_Layer *selected_layer = layermngr_get_selected_layer(flowbox);
-
-    double max_width = 0;
-    double max_height = 0;
-
-    if (layermngr->layer_list.next != NULL)
-    {
-        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
-        while (lay != NULL)
-        {
-            // if (lay == selected_layer)
-            //     cairo_surface_reference(lay->surface);
-
-            lay->scale_factor.x = scale_x;
-            lay->scale_factor.y = scale_y;
-
-            if (lay->size.w * scale_x > max_width)
-                max_width = lay->size.w * scale_x;
-            if (lay->size.h * scale_y > max_height)
-                max_height = lay->size.h * scale_y;
-
-            if (!lay->list.next) break;
-            lay = container_of(lay->list.next, GMPF_Layer, list);
-        }
-    }
-    gtk_widget_set_size_request(layout, max_width, max_height);
-    gtk_widget_set_size_request(da, max_width, max_height);
-    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
-    gtk_widget_queue_draw(da);
-}
-
+/*
+ * Clear the LayerMngr surface
+ * (Set all pixel's alpha channel to zero)
+ */
 void clear_surface (gpointer user_data)
 {
     INIT_UI();
@@ -393,8 +525,11 @@ void clear_surface (gpointer user_data)
     cairo_destroy (cr);
 }
 
-    /* Create a new surface of the appropriate size to store our scribbles */
-gboolean configure_event_cb (GtkWidget *widget,
+
+/*
+ * Create a new surface of the appropriate size to store our scribbles
+ */
+gboolean configure_event_cb (UNUSED GtkWidget *widget,
     UNUSED GdkEventConfigure *event,
     gpointer user_data)
 {
@@ -404,24 +539,16 @@ gboolean configure_event_cb (GtkWidget *widget,
     if (!layermngr)
         D_PRINT("unable to get layermngr", NULL);
 
-    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-    if((lay) != NULL)
-        layermngr->surface = lay->surface;
-    else
-        layermngr->surface = NULL;
-
-    cairo_content_t content =
-        cairo_surface_get_content (cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 1, 1));
-
-    layermngr->surface = gdk_window_create_similar_surface (gtk_widget_get_window (widget),
-    content,
-    gtk_widget_get_allocated_width (widget),
-    gtk_widget_get_allocated_height (widget));
-    /* We've handled the configure event, no need for further processing. */
+    layermngr->surface = NULL;
     return TRUE;
 }
 
-/* Draw a rectangle on the surface at the given position */
+
+/*
+ * Draw a circle on the surface at the given position
+ * (The color will be take from the colorChooser of the interface)
+ * (The diameter of the circle will be taken from the brush size)
+ */
 void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
     INIT_UI();
@@ -451,6 +578,11 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
     }
 }
 
+
+/*
+ * Eraise the circle of pixels on the surface at the given position
+ * (The diameter of the circle will be taken from the brush size)
+ */
 void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
     INIT_UI();
@@ -472,6 +604,11 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
     }
 }
 
+
+/*
+ * Pick the color on surface at the given position
+ * (The picked color will be set to the colorChooser of the application)
+ */
 void color_picker (UNUSED GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
 {
     INIT_UI();
@@ -480,6 +617,11 @@ void color_picker (UNUSED GtkWidget *widget, gdouble x, gdouble y, gpointer user
     pick_color_on_screen(x, y, colorChooser, data);
 }
 
+
+/*
+ * Callback to set the cursor to the right icon
+ * (when the cursor enter the surface)
+ */
 gboolean enter_notify_event_cb (UNUSED GtkWidget *widget,
                         UNUSED GdkEvent *event, gpointer user_data)
 {
@@ -488,6 +630,11 @@ gboolean enter_notify_event_cb (UNUSED GtkWidget *widget,
     return TRUE;
 }
 
+
+/*
+ * Callback to set the cursor to the right icon
+ * (when the cursor leave the surface)
+ */
 gboolean leave_notify_event_cb (UNUSED GtkWidget *widget,
                         UNUSED GdkEvent *event, gpointer user_data)
 {
@@ -495,57 +642,21 @@ gboolean leave_notify_event_cb (UNUSED GtkWidget *widget,
     resetCursor(data);
     return TRUE;
 }
-/* Handle button press events by either drawing a rectangle
-* or clearing the surface, depending on which button was pressed.
-* The ::button-press signal handler receives a GdkEventButton
-* struct which contains this information.
-*/
 
-gboolean button_release_event_cb(UNUSED GtkWidget *widget,
-                        UNUSED GdkEventButton *event, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GET_UI(GtkSpinButton, button, "RotateDegreeSpinButton");
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
-    layermngr->pos.x = -1;
-    layermngr->pos.y = -1;
-    GMPF_Tool tool = layermngr->tool;
-    if (tool == PAINTER || tool == ERAISER)
-        GMPF_saved_state_set_state(flowbox, 0);
-    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-    if (!lay)
-        return FALSE;
-
-    REFRESH_IMAGE(lay);
-
-    lay->rotate_angle = 0;
-    gtk_spin_button_set_value(button, lay->rotate_angle);
-
-    return TRUE;
-}
-
-gboolean button_press_event_cb (GtkWidget      *widget,
-GdkEventButton *event,
-gpointer        user_data)
+/*
+ * Callback that handle the button pressed events
+ * (Call the right function depending of the selected tool from the LayerMngr)
+ */
+gboolean callback_button_press_event (GtkWidget *widget,
+                                GdkEventButton *event,
+                                gpointer user_data)
 {
     INIT_UI();
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
-    GMPF_Layer *lay =layermngr_get_selected_layer(flowbox);
-    if(lay)
-    {
-        layermngr->surface = lay->surface;
-    }
-    else
-        layermngr->surface = NULL;
-
-    /* paranoia check, in case we haven't gotten a configure event */
-    if (layermngr->surface == NULL)
-        return FALSE;
 
     GMPF_Tool tool = layermngr->tool;
 
@@ -558,40 +669,58 @@ gpointer        user_data)
     else if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_PICKER)
         color_picker (widget, event->x, event->y, user_data);
 
-    if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_KILLER)
+    else if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_KILLER)
         kill_color(widget, user_data);
-    // else if (event->button == GDK_BUTTON_SECONDARY)
-    // {
-    //     clear_surface (user_data);
-    //     gtk_widget_queue_draw (widget);
-    // }
 
     /* We've handled the event, stop processing */
     return TRUE;
 }
 
-/* Handle motion events by continuing to draw if button 1 is
-* still held down. The ::motion-notify signal handler receives
-* a GdkEventMotion struct which contains this information.
-*/
-gboolean
-motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event,
+
+/*
+ * Callback that handle the button realeased events
+ * (Reset the positon of the LayerMngr, update the SavedState of the project and
+ * refresh the icon of the selected Layer)
+ */
+gboolean callback_button_release_event(UNUSED GtkWidget *widget,
+                                 UNUSED GdkEventButton *event,
+                                 gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkSpinButton, button, "RotateDegreeSpinButton");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+
+    layermngr->pos.x = -1;
+    layermngr->pos.y = -1;
+    GMPF_Tool tool = layermngr->tool;
+    if (tool == PAINTER || tool == ERAISER)
+    GMPF_saved_state_set_is_saved(flowbox, 0);
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+    return FALSE;
+
+    REFRESH_IMAGE(lay);
+
+    lay->rotate_angle = 0;
+    gtk_spin_button_set_value(button, lay->rotate_angle);
+
+    return TRUE;
+}
+
+
+/*
+ * Handle motion events by continuing to draw if button 1 is
+ * still held down. The ::motion-notify signal handler receives
+ * a GdkEventMotion struct which contains this information.
+ */
+gboolean callback_motion_notify_event (GtkWidget *widget, GdkEventMotion *event,
     gpointer user_data)
 {
     INIT_UI();
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-
-    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-    if(lay)
-        layermngr->surface = lay->surface;
-    else
-        layermngr->surface = NULL;
-
-    /* paranoia check, in case we haven't gotten a configure event */
-    if (layermngr->surface == NULL)
-        return FALSE;
 
     GMPF_Tool tool = layermngr->tool;
 
@@ -604,18 +733,12 @@ motion_notify_event_cb (GtkWidget *widget, GdkEventMotion *event,
     return TRUE;
 }
 
-void callback_adjust_rotate_value(UNUSED GtkWidget *widget, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GET_UI(GtkSpinButton, button, "RotateDegreeSpinButton");
-    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-    if (!lay)
-        return;
-    gtk_spin_button_set_value(button, lay->rotate_angle);
-}
 
-void on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_data)
+/*
+ * Callback to redraw all Layer of the Layer list in the right order on top of
+ * eatch other
+ */
+void callback_on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_data)
 {
     INIT_UI();
 
@@ -635,11 +758,6 @@ void on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_d
             {
                 cairo_save(cr);
                 cairo_scale(cr, lay->scale_factor.x, lay->scale_factor.y);
-                // double tx = lay->rotate_angle < 90 ? lay->rotate_angle * lay->size.w / 90 : lay->size.w - (lay->rotate_angle * lay->size.w / 90);
-                // double ty = lay->rotate_angle < 90 ? 0 : lay->size.h - (lay->rotate_angle * lay->size.h / 90);;
-                // cairo_translate(cr, lay->size.w / 2, lay->size.h / 2);
-                // cairo_rotate(cr, RAD_FROM_DEG(lay->rotate_angle));
-                // cairo_translate(cr, -lay->size.w / 2, -lay->size.h / 2);
                 cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
                 cairo_paint(cr);
                 cairo_restore(cr);
@@ -648,8 +766,21 @@ void on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_d
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
+    if (layermngr->surface != NULL)
+    {
+        D_PRINT("layermngr->surface too", NULL);
+        cairo_save(cr);
+        cairo_set_source_surface (cr, layermngr->surface, 0, 0);
+        cairo_paint(cr);
+        cairo_restore(cr);
+    }
 }
 
+
+/*
+ * Calback to select the right tool according to the pressed button in the
+ * ToolBar
+ */
 void callback_select_tool(GtkWidget *widget, gpointer user_data)
 {
     INIT_UI();
@@ -677,6 +808,11 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
     layermngr->tool = tool;
 }
 
+
+/*
+ * Callback to add a new layer in the list from the "Ajouter un calque" window
+ * (Refresh the displayed image of the layer and hide the window)
+ */
 void callback_add_custom_layer(UNUSED GtkWidget *widget, gpointer user_data)
 {
     INIT_UI();
@@ -723,6 +859,11 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget, gpointer user_data)
     gtk_widget_hide(window);
 }
 
+
+/*
+ * Save the project at the saved filename of the LayerMngr and call the
+ * "GMPF_save_under_project()" if it is NULL
+ */
 gboolean GMPF_save_project(gpointer user_data)
 {
     INIT_UI();
@@ -736,19 +877,28 @@ gboolean GMPF_save_project(gpointer user_data)
         if (err)
         {
             D_PRINT("Unable to save project", NULL);
-            GMPF_saved_state_set_state(flowbox, 0);
+            GMPF_saved_state_set_is_saved(flowbox, 0);
             return FALSE;
         }
     }
-    GMPF_saved_state_set_state(flowbox, 1);
+    GMPF_saved_state_set_is_saved(flowbox, 1);
     return TRUE;
 }
 
+
+/*
+ * Callback to save the project
+ */
 void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     GMPF_save_project(user_data);
 }
 
+
+/*
+ * Save the project at the selected filename
+ * (Open a dialog to choose the path where to save the project)
+ */
 gboolean GMPF_save_under_project(gpointer user_data)
 {
     INIT_UI();
@@ -792,16 +942,20 @@ gboolean GMPF_save_under_project(gpointer user_data)
         if (err)
         {
             D_PRINT("Unable to save project", NULL);
-            GMPF_saved_state_set_state(flowbox, 0);
+            GMPF_saved_state_set_is_saved(flowbox, 0);
             return FALSE;
         }
-        GMPF_saved_state_set_state(flowbox, 1);
+        GMPF_saved_state_set_is_saved(flowbox, 1);
         return TRUE;
     }
     gtk_widget_destroy (dialog);
     return FALSE;
 }
 
+
+/*
+ * Callback to save the project at the selected filename
+ */
 void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     GMPF_save_under_project(user_data);
@@ -892,22 +1046,17 @@ void callback_load_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 
 }
 
-void load_image_cairo(char *filename, gpointer user_data)
+void load_image_cairo(GtkWindow *window,
+                      GMPF_LayerMngr *layermngr,
+                      GtkFlowBox *flowbox,
+                      char *filename)
 {
-    INIT_UI();
     GError *error = NULL;
-
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
-    GET_UI(GtkWindow, window, "MainWindow");
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     layermngr_add_new_layer(flowbox, filename);
 
-    GET_UI(GtkWidget, da, "drawingArea");
-    // layout = GTK_WIDGET(gtk_builder_get_object(data->builder, "Layout"));
     int max_width  = layermngr->size.w;
     int max_height = layermngr->size.h;
-
+    //
     int width, height;
     layermngr->image  = gdk_pixbuf_new_from_file(filename, &error);
     width  = gdk_pixbuf_get_width  (layermngr->image);
@@ -915,7 +1064,7 @@ void load_image_cairo(char *filename, gpointer user_data)
     char *title = malloc (sizeof(char) * (strlen(filename) + 30));
     sprintf(title, "GMPF - %s : %d * %d", filename, width, height);
     gtk_window_set_title(window, (const char*)title);
-    GMPF_saved_state_set_state(flowbox, 0);
+    GMPF_saved_state_set_is_saved(flowbox, 0);
 
     if (width > max_width)
         max_width = width;
@@ -926,10 +1075,6 @@ void load_image_cairo(char *filename, gpointer user_data)
     layermngr->size.h = max_height;
 
     layermngr->surface = gdk_cairo_surface_create_from_pixbuf(layermngr->image, 0, NULL);
-
-    gtk_widget_set_size_request(da, max_width, max_height);
-    gtk_widget_set_size_request(layout, max_width, max_height);
-    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
 
     if(error)
     {

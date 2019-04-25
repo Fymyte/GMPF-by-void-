@@ -134,7 +134,7 @@ void callback_quit(UNUSED GtkWidget *widget, gpointer user_data)
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     int confirm = 2;
-    if (!GMPF_saved_state_get_state(flowbox))
+    if (!GMPF_saved_state_get_is_saved(flowbox))
         confirm = open_confirm_quit_without_saving_dialog(user_data);
     if (confirm == 0)
     {
@@ -151,7 +151,7 @@ gboolean do_destroy_event(UNUSED GtkWidget *widget, UNUSED GdkEvent *event, gpoi
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     int confirm = 2;
-    if (!GMPF_saved_state_get_state(flowbox))
+    if (!GMPF_saved_state_get_is_saved(flowbox))
         confirm = open_confirm_quit_without_saving_dialog(user_data);
     if (confirm == 0)
     {

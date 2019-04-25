@@ -20,6 +20,7 @@ typedef struct GMPF_Pixel GMPF_Pixel;
 typedef struct GMPF_Layer GMPF_Layer;
 typedef struct GMPF_LayerMngr GMPF_LayerMngr;
 
+// Enumeration of the different tools for the application
 enum GMPF_Tool {
     INCORECT_TOOL = 0,
     PAINTER = 1,
@@ -28,6 +29,11 @@ enum GMPF_Tool {
     SELECTOR = 4,
     SELECTOR_FREE = 5,
     COLOR_KILLER = 6,
+};
+
+// Structure to store the state of the project
+struct GMPF_SavedState {
+    int state;
 };
 
 struct GMPF_Pos {
@@ -46,10 +52,6 @@ struct GMPF_Scale {
 struct GMPF_Pixel {
     unsigned long R, G, B, A;
     //Uint8 R, G, B, A;
-};
-
-struct GMPF_SavedState {
-    int state;
 };
 
 // TODO: complete the struct GMPF_Layer
@@ -82,20 +84,20 @@ struct GMPF_Layer {
 
 struct GMPF_LayerMngr {
     // basic variable
-    GMPF_Size size;
-    GMPF_Pos pos;
-    int nb_layer;
-    GMPF_Tool tool;
-    GMPF_List layer_list;
+    GMPF_Size size;       // The current size of the project
+    GMPF_Pos pos;         // To store the last position of the cursor before move
+    int nb_layer;         // The number of layer contained in the layer_list
+    GMPF_Tool tool;       // The current selected tool
+    GMPF_List layer_list; // The list of layer attached to the manager
 
-    char *filename;
+    char *filename;       // The name of the project's file
 
     cairo_surface_t *surface;
-    float brush_size;
+
+    float brush_size;     // The size of the brush for painter and eraiser tools
 
     GdkPixbuf *image; //unchungedPixbuf
     GdkPixbuf *display_image; //displayedPixbuf (with scale)
-
 
     // get the element on the GUI
     GtkFlowBox *flowbox;
