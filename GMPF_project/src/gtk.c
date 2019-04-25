@@ -92,6 +92,7 @@ int GMPF_start()
     layermngr_create(flowbox);
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     layermngr->brush_size = 4;
+    GMPF_saved_state_init(flowbox);
 
     GtkWidget *da = NULL;
     da = GTK_WIDGET(gtk_builder_get_object(data.builder, "drawingArea"));
@@ -130,7 +131,11 @@ int GMPF_start()
 
 void callback_quit(UNUSED GtkWidget *widget, gpointer user_data)
 {
-    int confirm = open_confirm_quit_without_saving_dialog(user_data);
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    int confirm = 2;
+    if (!GMPF_saved_state_get_state(flowbox))
+        confirm = open_confirm_quit_without_saving_dialog(user_data);
     if (confirm == 0)
     {
         return;
@@ -143,14 +148,20 @@ void callback_quit(UNUSED GtkWidget *widget, gpointer user_data)
 
 gboolean do_destroy_event(UNUSED GtkWidget *widget, UNUSED GdkEvent *event, gpointer user_data)
 {
-    int confirm = open_confirm_quit_without_saving_dialog(user_data);
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    int confirm = 2;
+    if (!GMPF_saved_state_get_state(flowbox))
+        confirm = open_confirm_quit_without_saving_dialog(user_data);
     if (confirm == 0)
     {
         return TRUE;
     }
     else if (confirm == 1)
+    {
         if (!GMPF_save_project(user_data))
             return TRUE;
+    }
     GMPFquit(user_data);
     return FALSE;
 }
@@ -160,6 +171,7 @@ void GMPFquit(gpointer user_data)
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     layermngr_delete(flowbox);
+    GMPF_saved_state_destroy(flowbox);
     resetCursor(data);
     gtk_main_quit();
 }

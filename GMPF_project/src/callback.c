@@ -55,7 +55,9 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
 
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    int confirm = open_confirm_quit_without_saving_dialog(user_data);
+    int confirm = 2;
+    if (!GMPF_saved_state_get_state(flowbox))
+        confirm = open_confirm_quit_without_saving_dialog(user_data);
 
     if (confirm == 0)
     {
@@ -102,8 +104,7 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
             if (err)
                 D_PRINT("Uable to load project", NULL);
             layermngr->filename = filename;
-
-            D_PRINT("filename: %s", filename);
+            GMPF_saved_state_set_state(flowbox, 1);
             int width = layermngr->size.w;
             int height = layermngr->size.h;
             char *title = malloc (sizeof(char) * (strlen(filename) + 30));
@@ -732,9 +733,11 @@ gboolean GMPF_save_project(gpointer user_data)
         if (err)
         {
             D_PRINT("Unable to save project", NULL);
+            GMPF_saved_state_set_state(flowbox, 0);
             return FALSE;
         }
     }
+    GMPF_saved_state_set_state(flowbox, 1);
     return TRUE;
 }
 
@@ -742,7 +745,6 @@ void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     GMPF_save_project(user_data);
 }
-
 
 gboolean GMPF_save_under_project(gpointer user_data)
 {
@@ -787,8 +789,10 @@ gboolean GMPF_save_under_project(gpointer user_data)
         if (err)
         {
             D_PRINT("Unable to save project", NULL);
+            GMPF_saved_state_set_state(flowbox, 0);
             return FALSE;
         }
+        GMPF_saved_state_set_state(flowbox, 1);
         return TRUE;
     }
     gtk_widget_destroy (dialog);
@@ -798,56 +802,6 @@ gboolean GMPF_save_under_project(gpointer user_data)
 void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     GMPF_save_under_project(user_data);
-}
-
-void callback_load_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GET_UI(GtkWindow, window, "MainWindow");
-    GET_UI(GtkWidget, da, "drawingArea");
-    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
-
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-
-    GtkWidget *dialog;
-    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
-    gint res;
-
-    dialog = gtk_file_chooser_dialog_new ("Open File",
-                                          window,
-                                          action,
-                                          ("_Cancel"),
-                                          GTK_RESPONSE_CANCEL,
-                                          ("_Open"),
-                                          GTK_RESPONSE_ACCEPT,
-                                          NULL);
-    GtkFileChooser *fileChooser = GTK_FILE_CHOOSER(dialog);
-    GtkFileFilter *filter = gtk_file_filter_new ();
-    gtk_file_filter_add_pattern(filter, "*.gmpf");
-    gtk_file_chooser_set_filter(fileChooser, filter);
-
-    res = gtk_dialog_run (GTK_DIALOG (dialog));
-    if (res == GTK_RESPONSE_ACCEPT)
-    {
-        char *filename;
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
-        filename = gtk_file_chooser_get_filename (chooser);
-        char err = load_project (flowbox, filename);
-        if (err)
-            D_PRINT("Uable to load project", NULL);
-        g_free (filename);
-    }
-
-    int max_width = layermngr->size.w;
-    int max_height = layermngr->size.h;
-
-    gtk_widget_set_size_request(layout, max_width, max_height);
-    gtk_widget_set_size_request(da, max_width, max_height);
-    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
-    gtk_widget_queue_draw(da);
-
-    gtk_widget_destroy (dialog);
 }
 
 void callback_save_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
@@ -958,6 +912,7 @@ void load_image_cairo(char *filename, gpointer user_data)
     char *title = malloc (sizeof(char) * (strlen(filename) + 30));
     sprintf(title, "GMPF - %s : %d * %d", filename, width, height);
     gtk_window_set_title(window, (const char*)title);
+    GMPF_saved_state_set_state(flowbox, 0);
 
     if (width > max_width)
         max_width = width;

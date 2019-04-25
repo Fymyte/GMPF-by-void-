@@ -12,6 +12,7 @@
 
 // STRUCTURES
 typedef enum   GMPF_Tool GMPF_Tool;
+typedef struct GMPF_SavedState GMPF_SavedState;
 typedef struct GMPF_Pos GMPF_Pos;
 typedef struct GMPF_Size GMPF_Size;
 typedef struct GMPF_Scale GMPF_Scale;
@@ -45,6 +46,10 @@ struct GMPF_Scale {
 struct GMPF_Pixel {
     unsigned long R, G, B, A;
     //Uint8 R, G, B, A;
+};
+
+struct GMPF_SavedState {
+    int state;
 };
 
 // TODO: complete the struct GMPF_Layer

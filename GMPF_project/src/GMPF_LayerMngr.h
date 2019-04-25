@@ -17,6 +17,7 @@
 // DEFINES
 #define LAYERMNGR_KEY_NAME "GMPF_layermngr"
 #define LAYER_KEY_NAME "GMPF_layer"
+#define SAVED_STATE_KEY_NAME "GMPF_saved_state"
 
 #define INIT_LAYER_UI(_layerui) \
     gtk_widget_set_sensitive(image, TRUE); \
@@ -38,8 +39,11 @@
 
 
 
-
-
+GMPF_SavedState *GMPF_saved_state_init(GtkFlowBox *flowbox);
+void GMPF_saved_state_destroy(GtkFlowBox *flowbox);
+int GMPF_saved_state_get_state(GtkFlowBox *flowbox);
+GMPF_SavedState *GMPF_saved_state_get_saved_state(GtkFlowBox *flowbox);
+void GMPF_saved_state_set_state(GtkFlowBox *flowbox, int state);
 
 // FUNCTIONS
 

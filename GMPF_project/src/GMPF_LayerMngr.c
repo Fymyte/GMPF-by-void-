@@ -9,6 +9,38 @@
 
 // CODE
 
+GMPF_SavedState *GMPF_saved_state_init(GtkFlowBox *flowbox)
+{
+    GMPF_SavedState *state = malloc (sizeof(GMPF_SavedState));
+    state->state = 1;
+    g_object_set_data(G_OBJECT(flowbox), SAVED_STATE_KEY_NAME, state);
+    return state;
+}
+
+void GMPF_saved_state_destroy(GtkFlowBox *flowbox)
+{
+    GMPF_SavedState *state = GMPF_saved_state_get_saved_state(flowbox);
+    if (!state)
+        return;
+    free(state);
+    g_object_set_data(G_OBJECT(flowbox), SAVED_STATE_KEY_NAME, NULL);
+}
+
+GMPF_SavedState *GMPF_saved_state_get_saved_state(GtkFlowBox *flowbox)
+{
+    return g_object_get_data(G_OBJECT(flowbox), SAVED_STATE_KEY_NAME);
+}
+
+int GMPF_saved_state_get_state(GtkFlowBox *flowbox)
+{
+    return GMPF_saved_state_get_saved_state(flowbox)->state;
+}
+
+void GMPF_saved_state_set_state(GtkFlowBox *flowbox, int state)
+{
+    GMPF_SavedState *saved_state = GMPF_saved_state_get_saved_state(flowbox);
+    saved_state->state = state;
+}
 
 
 
