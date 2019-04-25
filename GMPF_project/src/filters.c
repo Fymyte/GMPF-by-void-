@@ -14,6 +14,7 @@ void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*), gpointer u
     }
 
     filter(lay);
+    GMPF_saved_state_set_state(flowbox, 0);
 
     gtk_widget_queue_draw(da);
 }
@@ -36,6 +37,7 @@ void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*), gpointer user_d
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
+    GMPF_saved_state_set_state(flowbox, 0);
 
     gtk_widget_queue_draw(da);
 }
@@ -55,6 +57,7 @@ void GMPF_filter_apply_to_selected_layer_color(void (*filter)(GMPF_Layer*, gucha
     }
 
     filter(lay, r, g, b);
+    GMPF_saved_state_set_state(flowbox, 0);
 
     gtk_widget_queue_draw(da);
 }
@@ -78,6 +81,7 @@ void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*, guchar, gu
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
+    GMPF_saved_state_set_state(flowbox, 0);
 
     gtk_widget_queue_draw(da);
 }
@@ -416,6 +420,7 @@ void Convolute(SGlobalData *data, double *mat)
 
     if (lay == NULL)
         return;
+    GMPF_saved_state_set_state(flowbox, 0);
 
     g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
