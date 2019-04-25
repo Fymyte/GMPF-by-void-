@@ -136,7 +136,8 @@ void callback_quit(UNUSED GtkWidget *widget, gpointer user_data)
         return;
     }
     else if (confirm == 1)
-        callback_save_project(NULL, user_data);
+        if (!GMPF_save_project(user_data))
+            return;
      GMPFquit(user_data);
 }
 
@@ -148,7 +149,8 @@ gboolean do_destroy_event(UNUSED GtkWidget *widget, UNUSED GdkEvent *event, gpoi
         return TRUE;
     }
     else if (confirm == 1)
-        callback_save_project(NULL, user_data);
+        if (!GMPF_save_project(user_data))
+            return TRUE;
     GMPFquit(user_data);
     return FALSE;
 }

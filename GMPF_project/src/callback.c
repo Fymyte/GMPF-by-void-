@@ -63,7 +63,8 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
     }
     else if (confirm == 1)
     {
-        callback_save_project(NULL, user_data);
+        if (!GMPF_save_project(user_data))
+            return;
     }
 
 
@@ -718,24 +719,32 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget, gpointer user_data)
     gtk_widget_hide(window);
 }
 
-void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+gboolean GMPF_save_project(gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     if (layermngr->filename == NULL)
-        callback_save_under_project(NULL, user_data);
+        return GMPF_save_under_project(user_data);
     else
     {
         char err = save_project(flowbox, (const char*)layermngr->filename);
         if (err)
         {
             D_PRINT("Unable to save project", NULL);
+            return FALSE;
         }
     }
+    return TRUE;
 }
 
-void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    GMPF_save_project(user_data);
+}
+
+
+gboolean GMPF_save_under_project(gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -773,14 +782,22 @@ void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_dat
         if (layermngr->filename)
             free(layermngr->filename);
         layermngr->filename = filename;
+        gtk_widget_destroy (dialog);
         char err = save_project(flowbox, (const char*)filename);
         if (err)
         {
             D_PRINT("Unable to save project", NULL);
+            return FALSE;
         }
+        return TRUE;
     }
-
     gtk_widget_destroy (dialog);
+    return FALSE;
+}
+
+void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+{
+    GMPF_save_under_project(user_data);
 }
 
 void callback_load_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
