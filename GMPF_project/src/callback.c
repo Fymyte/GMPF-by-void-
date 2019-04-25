@@ -766,14 +766,14 @@ void callback_on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpoint
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
-    if (layermngr->surface != NULL)
-    {
-        D_PRINT("layermngr->surface too", NULL);
-        cairo_save(cr);
-        cairo_set_source_surface (cr, layermngr->surface, 0, 0);
-        cairo_paint(cr);
-        cairo_restore(cr);
-    }
+    // if (layermngr->surface != NULL)
+    // {
+    //     D_PRINT("layermngr->surface too", NULL);
+    //     cairo_save(cr);
+    //     cairo_set_source_surface (cr, layermngr->surface, 0, 0);
+    //     cairo_paint(cr);
+    //     cairo_restore(cr);
+    // }
 }
 
 
