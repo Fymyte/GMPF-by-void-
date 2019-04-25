@@ -511,12 +511,15 @@ gboolean button_release_event_cb(UNUSED GtkWidget *widget,
 
     layermngr->pos.x = -1;
     layermngr->pos.y = -1;
-
+    GMPF_Tool tool = layermngr->tool;
+    if (tool == PAINTER || tool == ERAISER)
+        GMPF_saved_state_set_state(flowbox, 0);
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     if (!lay)
         return FALSE;
 
     REFRESH_IMAGE(lay);
+
     lay->rotate_angle = 0;
     gtk_spin_button_set_value(button, lay->rotate_angle);
 
