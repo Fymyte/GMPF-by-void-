@@ -961,6 +961,11 @@ void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_dat
     GMPF_save_under_project(user_data);
 }
 
+
+/*
+ * Callback to save the selected layer in a specific file type
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_save_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
@@ -1007,6 +1012,11 @@ void callback_save_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     gtk_widget_destroy (dialog);
 }
 
+
+/*
+ * Callback to load the selected layer in the dialog
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_load_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
@@ -1046,6 +1056,11 @@ void callback_load_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 
 }
 
+
+/*
+ * Load an image from filename and ad it to the list of Layer
+ * (Do nothing if the filename is incorect)
+ */
 void load_image_cairo(GtkWindow *window,
                       GMPF_LayerMngr *layermngr,
                       GtkFlowBox *flowbox,
@@ -1091,33 +1106,38 @@ void load_image_cairo(GtkWindow *window,
     layermngr->filename = NULL;
 }
 
-void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    layermngr->tool = PAINTER;
-    callback_setCursor(data);
-}
+// void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+// {
+//     INIT_UI();
+//     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+//     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+//     layermngr->tool = PAINTER;
+//     callback_setCursor(data);
+// }
+//
+// void callback_color_killer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+// {
+//     INIT_UI();
+//     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+//     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+//     layermngr->tool = COLOR_KILLER;
+//     callback_setCursor(data);
+// }
+//
+// void callback_rubber(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+// {
+//     INIT_UI();
+//     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+//     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+//     layermngr->tool = ERAISER;
+//     callback_setCursor(data);
+// }
 
-void callback_color_killer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    layermngr->tool = COLOR_KILLER;
-    callback_setCursor(data);
-}
 
-void callback_rubber(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    layermngr->tool = ERAISER;
-    callback_setCursor(data);
-}
-
+/*
+ * Show the "Créateur de filtre" window
+ * (init all its variables to there default value)
+ */
 void callback_FC(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     //variables definitions
