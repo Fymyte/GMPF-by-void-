@@ -33,7 +33,7 @@ void callback_remove_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
 //                             guchar *alpha);
 
 //Other functions
-void GMPFquit(GtkMenuItem *menuitem, gpointer user_data);
+void GMPFquit(gpointer user_data);
 
 //static gboolean key_event(GtkWidget *widget, GdkEventKey *event);
 
@@ -128,9 +128,20 @@ int GMPF_start()
     return 0;
 }
 
-gboolean do_distroy_event(GtkWidget *widget, UNUSED GdkEvent *event, gpointer user_data)
+void callback_quit(UNUSED GtkWidget *widget, gpointer user_data)
 {
-    // gtk_widget_show(widget);
+    int confirm = open_confirm_quit_without_saving_dialog(user_data);
+    if (confirm == 0)
+    {
+        return;
+    }
+    else if (confirm == 1)
+        callback_save_project(NULL, user_data);
+     GMPFquit(user_data);
+}
+
+gboolean do_destroy_event(UNUSED GtkWidget *widget, UNUSED GdkEvent *event, gpointer user_data)
+{
     int confirm = open_confirm_quit_without_saving_dialog(user_data);
     if (confirm == 0)
     {
@@ -138,10 +149,11 @@ gboolean do_distroy_event(GtkWidget *widget, UNUSED GdkEvent *event, gpointer us
     }
     else if (confirm == 1)
         callback_save_project(NULL, user_data);
+    GMPFquit(user_data);
     return FALSE;
 }
 
-void GMPFquit(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void GMPFquit(gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");

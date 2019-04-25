@@ -17,7 +17,7 @@
     #define D_PRINT(_fmt, ...)
 #endif
 
-#define PRINTERR fprintf(stderr, "[error %s::%d %s\n]", \
+#define PRINTERR fprintf(stderr, "[error %s::%d %s]\n", \
         __FILE__, __LINE__, __func__);
 
 

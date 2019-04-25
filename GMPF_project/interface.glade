@@ -458,8 +458,9 @@ effet :</property>
     <property name="title" translatable="yes">GMPF</property>
     <property name="icon">images/GMPF_white.png</property>
     <property name="has_resize_grip">True</property>
-    <signal name="delete-event" handler="do_distroy_event" after="yes" swapped="yes"/>
-    <signal name="destroy" handler="GMPFquit" swapped="no"/>
+    <signal name="delete-event" handler="do_destroy_event" swapped="no"/>
+    <signal name="delete-event" handler="gtk_widget_hide_on_delete" swapped="no"/>
+    <signal name="delete-event" handler="gtk_widget_show" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -558,7 +559,7 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Quitter</property>
                         <property name="use_underline">True</property>
-                        <signal name="activate" handler="GMPFquit" swapped="no"/>
+                        <signal name="activate" handler="callback_quit" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -1316,6 +1317,19 @@ effet :</property>
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkToolButton" id="4DeleteColor">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Suppression de couleur</property>
+                        <property name="use_underline">True</property>
+                        <property name="icon_name">account-types-closed</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkSeparatorToolItem">
                         <property name="width_request">40</property>
                         <property name="visible">True</property>
@@ -1327,7 +1341,7 @@ effet :</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkToolButton" id=" 4SelectButton">
+                      <object class="GtkToolButton" id=" 5SelectButton">
                         <property name="name">4</property>
                         <property name="width_request">40</property>
                         <property name="height_request">40</property>
@@ -1344,7 +1358,7 @@ effet :</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkToolButton" id="5FreeSelectionButton">
+                      <object class="GtkToolButton" id="6FreeSelectionButton">
                         <property name="width_request">40</property>
                         <property name="height_request">40</property>
                         <property name="visible">True</property>

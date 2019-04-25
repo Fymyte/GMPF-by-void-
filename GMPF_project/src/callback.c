@@ -22,7 +22,9 @@ int open_confirm_quit_without_saving_dialog(gpointer user_data)
     gtk_widget_set_margin_end(label, 10);
     gtk_widget_set_margin_top(label, 10);
     gtk_widget_set_margin_bottom(label, 10);
-    gtk_window_set_decorated(GTK_WINDOW(dialog), FALSE);
+    gtk_window_set_title(GTK_WINDOW(dialog), "Attention");
+    gtk_window_set_deletable(GTK_WINDOW(dialog), FALSE);
+    // gtk_window_set_decorated(GTK_WINDOW(dialog), FALSE);
     gtk_widget_show_all(dialog);
     res = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
@@ -99,6 +101,8 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
             if (err)
                 D_PRINT("Uable to load project", NULL);
             layermngr->filename = filename;
+
+            D_PRINT("filename: %s", filename);
             int width = layermngr->size.w;
             int height = layermngr->size.h;
             char *title = malloc (sizeof(char) * (strlen(filename) + 30));
@@ -656,11 +660,11 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
                          break;
         case '3': tool = COLOR_PICKER;
                          break;
-        case '4': tool = SELECTOR;
+        case '4': tool = COLOR_KILLER;
                          break;
-        case '5': tool = SELECTOR_FREE;
+        case '5': tool = SELECTOR;
                          break;
-        case '6': tool = COLOR_KILLER;
+        case '6': tool = SELECTOR_FREE;
                          break;
         default : tool = INCORECT_TOOL;
         D_PRINT("Unknown tool", NULL);

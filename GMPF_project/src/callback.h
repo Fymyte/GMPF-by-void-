@@ -76,6 +76,8 @@ void callback_cold(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 
 void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data);
 void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_data);
+gboolean GMPF_save_project(gpointer user_data);
+gboolean GMPF_save_under_project(gpointer user_data);
 
 //tools functions
 void callback_brush(GtkMenuItem *menuitem, gpointer user_data);
