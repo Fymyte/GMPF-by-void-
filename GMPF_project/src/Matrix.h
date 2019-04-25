@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Struct.h"
+#include "GMPF_Struct.h"
 
 struct Matrix *init_matrix(int rows, int columns);
 

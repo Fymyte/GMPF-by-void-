@@ -6,7 +6,7 @@
 
 #include <gtk-3.0/gtk/gtk.h>
 
-#include "Struct.h"
+#include "GMPF_Struct.h"
 #include "Matrix.h"
 #include "pixel_op.h"
 

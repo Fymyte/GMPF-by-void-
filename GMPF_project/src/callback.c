@@ -529,7 +529,7 @@ void clear_surface (gpointer user_data)
 /*
  * Create a new surface of the appropriate size to store our scribbles
  */
-gboolean configure_event_cb (UNUSED GtkWidget *widget,
+gboolean callback_configure_event (UNUSED GtkWidget *widget,
     UNUSED GdkEventConfigure *event,
     gpointer user_data)
 {
@@ -622,7 +622,7 @@ void color_picker (UNUSED GtkWidget *widget, gdouble x, gdouble y, gpointer user
  * Callback to set the cursor to the right icon
  * (when the cursor enter the surface)
  */
-gboolean enter_notify_event_cb (UNUSED GtkWidget *widget,
+gboolean callback_enter_notify_event (UNUSED GtkWidget *widget,
                         UNUSED GdkEvent *event, gpointer user_data)
 {
     INIT_UI();
@@ -635,7 +635,7 @@ gboolean enter_notify_event_cb (UNUSED GtkWidget *widget,
  * Callback to set the cursor to the right icon
  * (when the cursor leave the surface)
  */
-gboolean leave_notify_event_cb (UNUSED GtkWidget *widget,
+gboolean callback_leave_notify_event (UNUSED GtkWidget *widget,
                         UNUSED GdkEvent *event, gpointer user_data)
 {
     INIT_UI();

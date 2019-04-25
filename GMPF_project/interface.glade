@@ -1425,13 +1425,13 @@ effet :</property>
                                 <property name="valign">center</property>
                                 <property name="hexpand">False</property>
                                 <property name="vexpand">False</property>
-                                <signal name="button-press-event" handler="button_press_event_cb" swapped="no"/>
+                                <signal name="button-press-event" handler="callback_button_press_event" swapped="no"/>
                                 <signal name="button-release-event" handler="callback_button_release_event" swapped="no"/>
                                 <signal name="configure-event" handler="callback_configure_event" swapped="no"/>
-                                <signal name="draw" handler="on_draw_event" swapped="no"/>
+                                <signal name="draw" handler="callback_on_draw_event" swapped="no"/>
                                 <signal name="enter-notify-event" handler="callback_enter_notify_event" swapped="no"/>
-                                <signal name="leave-notify-event" handler="leave_notify_event_cb" swapped="no"/>
-                                <signal name="motion-notify-event" handler="motion_notify_event_cb" swapped="no"/>
+                                <signal name="leave-notify-event" handler="callback_leave_notify_event" swapped="no"/>
+                                <signal name="motion-notify-event" handler="callback_motion_notify_event" swapped="no"/>
                               </object>
                             </child>
                           </object>

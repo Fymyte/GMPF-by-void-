@@ -21,7 +21,6 @@
 
 #include "cursor.h"
 #include "GMPF_LayerMngr.h"
-#include "Struct.h"
 #include "Matrix.h"
 #include "Img_rgb.h"
 #include "pixel_op.h"

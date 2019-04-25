@@ -31,28 +31,34 @@ enum GMPF_Tool {
     COLOR_KILLER = 6,
 };
 
+
 // Structure to store the state of the project
 struct GMPF_SavedState {
     int state;
 };
 
+
 struct GMPF_Pos {
     int x, y;
 };
+
 
 struct GMPF_Size {
     int h, w;
 };
 
+
 struct GMPF_Scale {
     float x, y;
 };
+
 
 // TODO: complete the struct GMPF_Pixel
 struct GMPF_Pixel {
     unsigned long R, G, B, A;
     //Uint8 R, G, B, A;
 };
+
 
 // TODO: complete the struct GMPF_Layer
 struct GMPF_Layer {
@@ -104,5 +110,23 @@ struct GMPF_LayerMngr {
 };
 
 
+struct Matrix
+{
+    int rows;
+    int cols;
+    double *mat;
+};
+
+
+struct Img_rgb
+{
+    int rows;
+    int cols;
+
+    struct Matrix *red;
+    struct Matrix *green;
+    struct Matrix *blue;
+    struct Matrix *alpha;
+};
 
 #endif /* GMPF_PIXEL_H */
