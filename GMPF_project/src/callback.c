@@ -1718,10 +1718,50 @@ gboolean do_destroy_event(UNUSED GtkWidget *widget,
 /*
  * Callback to edit selected layer's properties
  */
-void callback_edit_layer_properties(GtkWidget *widget,
-                                    gpointer   user_data)
+void callback_edit_layer_properties(UNUSED GtkWidget *widget,
+                                    gpointer          user_data)
 {
+    INIT_UI();
+    GET_UI(GtkEntry, name, "LayerNameEntry1");
+    GET_UI(GtkEntry, width, "LayerWidthSpinButton1");
+    GET_UI(GtkEntry, height, "LayerHeightSpinButton1");
+    GET_UI(GtkEntry, offsetX, "LayerOffsetXSpinButton1");
+    GET_UI(GtkEntry, offsetY, "LayerOffsetYSpinButton1");
+    GET_UI(GtkFileChooser, filename, "LayerImageFilename1");
+    GET_UI(GtkWidget, window, "EditLayerWindow");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
+    const gchar *n = gtk_entry_get_text(name);
+    const gchar *w = gtk_entry_get_text(width);
+    const gchar *h = gtk_entry_get_text(height);
+    const gchar *x = gtk_entry_get_text(offsetX);
+    const gchar *y = gtk_entry_get_text(offsetY);
+
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    lay->name = (char*)n;
+    lay->size.w = atoi(w);
+    lay->size.h = atoi(h);
+    lay->pos.x = atoi(x);
+    lay->pos.y = atoi(y);
+    // if (!lay->filename)
+    // {
+    //     lay->image = new_pixbuf_standardized(&lay->size);
+    //     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 0, NULL);
+    //     REFRESH_IMAGE(lay);
+    // }
+    // else
+    // {
+        cairo_surface_t *surface = cairo_surface_create_similar_image(lay->surface,
+                                CAIRO_FORMAT_ARGB32, lay->size.w, lay->size.h);
+        cairo_t *cr = cairo_create(surface);
+        cairo_set_source_surface(cr, lay->surface, 0, 0);
+        cairo_paint(cr);
+        cairo_surface_destroy(lay->surface);
+        lay->surface = surface;
+        REFRESH_IMAGE(lay);
+    // }
+
+    gtk_widget_hide(window);
 }
 
 
@@ -1746,7 +1786,7 @@ void callback_open_edit_layer_properties_window(UNUSED GtkWidget *widget,
     GET_UI(GtkSpinButton, offsetY, "LayerOffsetYSpinButton1");
     GET_UI(GtkFileChooser, filename, "LayerImageFilename1");
 
-    gtk_entry_set_text(name, lay->name);
+    gtk_entry_set_text(name, lay->name != NULL ? lay->name : "");
     gtk_spin_button_set_value(width, lay->size.w);
     gtk_spin_button_set_value(height, lay->size.h);
     gtk_spin_button_set_value(offsetX, lay->pos.x);

@@ -292,6 +292,7 @@ without any warranty.
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <signal name="clicked" handler="callback_edit_layer_properties" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1833,7 +1834,7 @@ effet :</property>
                         <property name="label" translatable="yes">Duplique le calque</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-convert</property>
-                        <signal name="clicked" handler="callback_edit_layer_properties" swapped="no"/>
+                        <signal name="clicked" handler="callback_open_edit_layer_properties_window" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
