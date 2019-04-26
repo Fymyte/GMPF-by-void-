@@ -53,9 +53,17 @@ struct GMPF_Pos {
     int x, y;
 };
 
+/*
+ * A structure to store the selection
+ * of the user
+ */
+struct GMPF_Selection {
+    GdkPixbuf *selection;
+    GMPF_Pos selec_origin;
+}
 
 /*
- * A structure to store a size
+ * A structure to store ar size
  * (width and height properties)
  */
 struct GMPF_Size {
@@ -128,6 +136,7 @@ struct GMPF_Layer {
  * A pos (GMPF_Pos): to store the last position of the cursor before move
  * A nb_layer (int): to store the number of Layer in the Layer list
  * A layer_list (GMPF_List): to store the list of Layer
+ * A Selection : to store the user's selection
  * A tool (GMPF_Tool): To store the current selected tool
  * A filename (char *): to store the name of the project's file
  * A brush_size (int): to store the current size of the brush
@@ -141,6 +150,7 @@ struct GMPF_LayerMngr {
     int nb_layer;
     GMPF_Tool tool;
     GMPF_List layer_list;
+    GMPF_Selection selection;
 
     char *filename;
 
