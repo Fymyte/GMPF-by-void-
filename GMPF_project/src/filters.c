@@ -517,12 +517,16 @@ void Convolute(SGlobalData *data, double *mat)
             {
                 for(int l = -x / 2; l <= x/2; l++)
                 {
-                    if (check(width, height, i + k, j +l) == 1)
+                    if (check(width, height, i + k, j +l))
                     {
                         guchar red, green, blue, alpha;
                         error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i + k, j + l, &red, &green, &blue, &alpha);
-                            if(!error)
-                        err(1, "pixbuf get pixels error");
+                        if(!error)
+                        {
+                            PRINTERR;
+                            D_PRINT("Unable to get pixel at coordinates (%i, %i)", i+k, j+l);
+                            return;
+                        }
                         r += mat[l + x/2 + k + x/2] * (double)red;
                         g += mat[l + x/2 + k + x/2] * (double)green;
                         b += mat[l + x/2 + k + x/2] * (double)blue;
