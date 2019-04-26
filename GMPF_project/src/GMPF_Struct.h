@@ -26,9 +26,9 @@ enum GMPF_Tool {
     PAINTER = 1,
     ERAISER = 2,
     COLOR_PICKER = 3,
-    SELECTOR = 4,
-    SELECTOR_FREE = 5,
-    COLOR_KILLER = 6,
+    COLOR_KILLER = 4,
+    SELECTOR = 5,
+    SELECTOR_FREE = 6,
 };
 
 

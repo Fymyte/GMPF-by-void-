@@ -1,18 +1,23 @@
 #include "Channels.h"
 
-void kill_color(GtkWidget *widget, gpointer user_data)
+/*
+ * function to eraise the selected color with the given tolerance
+ */
+void kill_color(GtkWidget *widget, double tolerance, gpointer user_data)
 {
     INIT_UI();
     GET_UI (GtkColorChooser, colorbtn, "ColorTinter");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    if (!layer)
+        return;
     int width = layer->size.w;
     int height = layer->size.h;
     GdkRGBA color;
     gtk_color_chooser_get_rgba(colorbtn, &color);
 
     guchar red, green, blue, alpha;
-    double k = 0.1; //tolerance de pixels
+    double k = tolerance; //tolerance de pixels
     gboolean error = FALSE;
 
     for (int i = 0; i < width; i++)

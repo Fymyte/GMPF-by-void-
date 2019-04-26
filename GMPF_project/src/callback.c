@@ -44,14 +44,14 @@ void load_theme(GdkScreen *screen, const char *filename)
     GError *error;
     GtkCssProvider *provider = gtk_css_provider_new();
     gtk_css_provider_load_from_file(provider, g_file_new_for_path(filename), &error);
-    if (error)
-    {
-        PRINTERR;
-        return;
-    }
+    // if (error)
+    // {
+    //     PRINTERR;
+    //     return;
+    // }
     gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider),
                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-
+    g_object_unref(provider);
 }
 
 
@@ -670,7 +670,7 @@ gboolean callback_button_press_event (GtkWidget *widget,
         color_picker (widget, event->x, event->y, user_data);
 
     else if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_KILLER)
-        kill_color(widget, user_data);
+        kill_color(widget, .2, user_data);
 
     /* We've handled the event, stop processing */
     return TRUE;
@@ -1422,6 +1422,7 @@ void callback_verticale_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Verticale, data);
 }
+
 
 void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {

@@ -1251,7 +1251,7 @@ effet :</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">3</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
@@ -1337,11 +1337,13 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkToolButton" id="4DeleteColor">
+                        <property name="name">4</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Suppression de couleur</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">account-types-closed</property>
+                        <signal name="clicked" handler="callback_select_tool" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1361,7 +1363,7 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkToolButton" id=" 5SelectButton">
-                        <property name="name">4</property>
+                        <property name="name">5</property>
                         <property name="width_request">40</property>
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
@@ -1378,6 +1380,7 @@ effet :</property>
                     </child>
                     <child>
                       <object class="GtkToolButton" id="6FreeSelectionButton">
+                        <property name="name">6</property>
                         <property name="width_request">40</property>
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
@@ -1385,6 +1388,7 @@ effet :</property>
                         <property name="label" translatable="yes">Sélection libre</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-stop</property>
+                        <signal name="clicked" handler="callback_select_tool" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

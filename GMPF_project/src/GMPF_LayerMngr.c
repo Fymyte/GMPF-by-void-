@@ -389,7 +389,7 @@ void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
 
 /*
  * Create a new Layer and init all its variables to there default value
- * (Return: The new layer, or null it unable to malloc)
+ * (Return: The new layer, or null if unable to malloc)
  */
 GMPF_Layer *layer_initialization()
 {
