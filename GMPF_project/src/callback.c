@@ -1736,33 +1736,6 @@ void callback_edit_layer_properties(UNUSED GtkWidget *widget,
     const gchar *h = gtk_entry_get_text(height);
     const gchar *x = gtk_entry_get_text(offsetX);
     const gchar *y = gtk_entry_get_text(offsetY);
-<<<<<<< HEAD
-
-    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-    lay->name = (char*)n;
-    lay->size.w = atoi(w);
-    lay->size.h = atoi(h);
-    lay->pos.x = atoi(x);
-    lay->pos.y = atoi(y);
-    // if (!lay->filename)
-    // {
-    //     lay->image = new_pixbuf_standardized(&lay->size);
-    //     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 0, NULL);
-    //     REFRESH_IMAGE(lay);
-    // }
-    // else
-    // {
-        cairo_surface_t *surface = cairo_surface_create_similar_image(lay->surface,
-                                CAIRO_FORMAT_ARGB32, lay->size.w, lay->size.h);
-        cairo_t *cr = cairo_create(surface);
-        cairo_set_source_surface(cr, lay->surface, 0, 0);
-        cairo_paint(cr);
-        cairo_surface_destroy(lay->surface);
-        lay->surface = surface;
-        REFRESH_IMAGE(lay);
-    // }
-
-=======
 
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     lay->name = (char*)n;
@@ -1781,7 +1754,6 @@ void callback_edit_layer_properties(UNUSED GtkWidget *widget,
     REFRESH_IMAGE(lay);
 
 
->>>>>>> Correction de l'edition des propriétés des layers
     gtk_widget_hide(window);
 }
 
