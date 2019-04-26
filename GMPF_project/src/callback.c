@@ -1106,33 +1106,6 @@ void load_image_cairo(GtkWindow *window,
     layermngr->filename = NULL;
 }
 
-// void callback_brush(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-// {
-//     INIT_UI();
-//     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-//     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-//     layermngr->tool = PAINTER;
-//     callback_setCursor(data);
-// }
-//
-// void callback_color_killer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-// {
-//     INIT_UI();
-//     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-//     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-//     layermngr->tool = COLOR_KILLER;
-//     callback_setCursor(data);
-// }
-//
-// void callback_rubber(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-// {
-//     INIT_UI();
-//     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-//     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-//     layermngr->tool = ERAISER;
-//     callback_setCursor(data);
-// }
-
 
 /*
  * Show the "Créateur de filtre" window
@@ -1168,30 +1141,54 @@ void callback_FC(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     gtk_widget_show(FCWindow);
 }
 
+
+/*
+ * Calback to apply "Binarisation" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_binarize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Binarize, data);
 }
 
+
+/*
+ * Calback to apply "Binarisation" filter to all Layer
+ */
 void callback_binarize_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Binarize, data);
 }
 
+
+/*
+ * Calback to apply "Binarisation Coloré" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(BinarizeColor, data);
 }
 
+
+/*
+ * Calback to apply "Binarisation Coloré" filter to the Layer
+ */
 void callback_binarize_color_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(BinarizeColor, data);
 }
 
+
+/*
+ * Calback to apply the correct convolution matrix according to the pressed
+ * button to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
@@ -1231,18 +1228,31 @@ void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
+/*
+ * Calback to apply "Niveau de gris" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Greyscale, data);
 }
 
+
+/*
+ * Calback to apply "Niveau de gris" filter to all Layer
+ */
 void callback_grey_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Greyscale, data);
 }
 
+
+/*
+ * Calback to apply "Teinture" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_tinter(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
@@ -1253,6 +1263,10 @@ void callback_tinter(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
+/*
+ * Calback to apply "Accentuation des couleurs" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_colorfull(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
@@ -1263,84 +1277,146 @@ void callback_colorfull(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
+/*
+ * Calback to apply "Négatif" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_negative(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Negative, data);
 }
 
+
+/*
+ * Calback to apply "Négatif" filter to the all Layer
+ */
 void callback_negative_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Negative, data);
 }
 
+
+/*
+ * Calback to apply "Luminosité-" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_darkness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Darkness, data);
 }
 
+
+/*
+ * Calback to apply "Luminosité-" filter to all Layer
+ */
 void callback_darkness_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Darkness, data);
 }
 
+
+/*
+ * Calback to apply "Luminosité+" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_lightness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Lightness, data);
 }
 
+
+/*
+ * Calback to apply "Luminosité+" filter to all Layer
+ */
 void callback_lightness_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Lightness, data);
 }
 
+
+/*
+ * Calback to apply "Egalisation" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_equalize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Equalize, data);
 }
 
+
+/*
+ * Calback to apply "Egalisation" filter to all Layer
+ */
 void callback_equalize_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Equalize, data);
 }
 
+
+/*
+ * Calback to apply "Egalisation Coloré" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_equalize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Equalize_color, data);
 }
 
+
+/*
+ * Calback to apply "Egalisation Coloré" filter to all Layer
+ */
 void callback_equalize_color_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Equalize_color, data);
 }
 
+
+/*
+ * Calback to apply "Mirroir Horizontal" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_horizontale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Horizontale, data);
 }
 
+
+/*
+ * Calback to apply "Mirroir Horizontal" filter to all Layer
+ */
 void callback_horizontale_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Horizontale, data);
 }
 
+
+/*
+ * Calback to apply "Mirroir Vertical" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_verticale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Verticale, data);
 }
 
+
+/*
+ * Calback to apply "Mirroir Vertical" filter to all Layer
+ */
 void callback_verticale_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
@@ -1356,6 +1432,11 @@ void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
     layermngr->tool = INCORECT_TOOL;
 }
 
+
+/*
+ * Callback to save the newly created filter using "Créatteur de Filtre" window
+ * (Do noting if no filter has been selected)
+ */
 void callback_saveFilter(UNUSED GtkButton *btn, gpointer user_data)
 {
     INIT_UI();
@@ -1364,42 +1445,75 @@ void callback_saveFilter(UNUSED GtkButton *btn, gpointer user_data)
     gtk_widget_hide(parent);
 }
 
+
+/*
+ * Calback to apply "Chauf" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_warm(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-	GMPF_filter_apply_to_selected_layer_color(Color_balance, 100, 255, 255, data);
+    GMPF_filter_apply_to_selected_layer_color(Color_balance, 100, 255, 255, data);
 }
 
+
+/*
+ * Calback to apply "chaud" filter to all Layer
+ */
 void callback_warm_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-	GMPF_filter_apply_to_all_layer_color(Color_balance, 100, 255, 255, data);
+    GMPF_filter_apply_to_all_layer_color(Color_balance, 100, 255, 255, data);
 }
 
+
+/*
+ * Calback to apply "Vert" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_green(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-	GMPF_filter_apply_to_selected_layer_color(Color_balance, 255, 100, 255, data);
+    GMPF_filter_apply_to_selected_layer_color(Color_balance, 255, 100, 255, data);
 }
 
+
+/*
+ * Calback to apply "Vert" filter to all Layer
+ */
 void callback_green_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer_color(Color_balance, 255, 100, 255, data);
 }
 
+
+/*
+ * Calback to apply "Froid" filter to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void callback_cold(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
-	GMPF_filter_apply_to_selected_layer_color(Color_balance, 255, 255, 100, data);
+    GMPF_filter_apply_to_selected_layer_color(Color_balance, 255, 255, 100, data);
 }
 
+
+/*
+ * Calback to apply "Froid" filter to all Layer
+ */
 void callback_cold_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 {
     INIT_UI();
 	GMPF_filter_apply_to_all_layer_color(Color_balance, 255, 255, 100, data);
 }
 
+
+/*
+ * Callback to apply the selected *.ftr file filter to the selcted Layer
+ * (Do nothing if there is no selected Layer)
+ * (Open a dialog to select the *.ftr file)
+ */
 void callback_applyFilter(UNUSED GtkWidget *btn, gpointer user_data)
 {
     //a modifier -> recuprer le fichier du dialog
