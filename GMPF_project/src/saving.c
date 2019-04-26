@@ -1,8 +1,9 @@
 #include "saving.h"
 
-//
-// private functions declaration
-//
+/*
+ * Return the extention of the given filename
+ * (Return: the extension, or NULL, if there is no extension or filename is invalid)
+ */
 char *get_extension(char *filename)
 {
     if (!filename)
@@ -19,6 +20,11 @@ char *get_extension(char *filename)
     return c == NULL || c + 1 == NULL ? NULL : c + 1;
 }
 
+
+/*
+ * Check if the extension of "filename" is right "extension"
+ * (Return: 1 if the extension is correct, else 0)
+ */
 int check_extension(char *filename, char *extension)
 {
     char *c = NULL;
@@ -30,11 +36,16 @@ int check_extension(char *filename, char *extension)
         }
     }
 
-    if (c != NULL && !strcmp(c + 1, extension))
+    if (c == NULL || !strcmp(c + 1, extension))
         return 0;
     return 1;
 }
 
+
+/*
+ * Set the extention of the given filename to "extension"
+ * (Return: 0 if there is no error, else -1)
+ */
 int set_extension(char **filename, char *extension)
 {
     if (!check_extension(*filename, extension))
@@ -53,6 +64,11 @@ int set_extension(char **filename, char *extension)
     return 0;
 }
 
+
+/*
+ * Save the given LayerMngr in File "file"
+ * (Return: 0 if there is no error, else 1)
+ */
 char save_layermngr(GMPF_LayerMngr *layermngr, FILE *file)
 {
     if (fwrite(layermngr, sizeof(GMPF_LayerMngr), 1, file) != 1)
@@ -60,6 +76,12 @@ char save_layermngr(GMPF_LayerMngr *layermngr, FILE *file)
     return 0;
 }
 
+
+/*
+ * Load the LayerMngr saved in the File "file" and associat it to the given
+ * flowbox
+ * (Return: 0 if there is no error, else 1)
+ */
 char load_layermngr(GtkFlowBox *flowbox, FILE *file)
 {
     GMPF_LayerMngr *layermngr = malloc(sizeof(GMPF_LayerMngr));
@@ -79,6 +101,11 @@ char load_layermngr(GtkFlowBox *flowbox, FILE *file)
     return 0;
 }
 
+
+/*
+ * Save the given Layer in File "file"
+ * (Return: 0 if there is no error, else 1)
+ */
 char save_layer(GMPF_Layer *layer, FILE *file)
 {
     if (fwrite(layer, sizeof(GMPF_Layer), 1, file) != 1)
@@ -96,6 +123,11 @@ char save_layer(GMPF_Layer *layer, FILE *file)
     return 0;
 }
 
+
+/*
+ * Load the Layer saved in the File "file" and associat it to the given flowbox
+ * (Return: 0 if there is no error, else 1)
+ */
 char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
 {
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
@@ -171,10 +203,10 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
 }
 
 
-
-//
-// MAIN FUNCTIONS
-//
+/*
+ * Save the project at the given filename
+ * (Return: 0 if there is no error, else 1)
+ */
 char save_project(GtkFlowBox *flowbox, const char *filename)
 {
     // write the file / delete it if it already exists
@@ -206,11 +238,18 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
     return 0;
 }
 
+
+/*
+ * Load the project at the given filename and associat it to the given flowbox
+ * (Return: 0 if there is no error, else 1)
+ */
 char load_project(GtkFlowBox *flowbox, const char *filename)
 {
     // only read the file
     FILE *file = fopen(filename, "rb"); // read as binary => rb
     if (file == NULL) { PRINTERR; return 1; }
+
+    if (!check_extension(filename, "gmpf")) { PRINTERR; return 1; }
 
     if (g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME) != NULL)
         layermngr_delete(flowbox);
@@ -231,6 +270,12 @@ char load_project(GtkFlowBox *flowbox, const char *filename)
     return 0;
 }
 
+
+/*
+ * Save the selected Layer at the given filename
+ * (Do nothing if there is no selected Layer)
+ * (Return: 0 if there is no error, 1 else of there is no selected Layer)
+ */
 char saving_layer(GtkFlowBox *flowbox, const char *filename)
 {
     // write the file / delete it if it already exists
@@ -252,6 +297,11 @@ char saving_layer(GtkFlowBox *flowbox, const char *filename)
     return 0;
 }
 
+
+/*
+ * Load the Layer at the given filename and append it to the Layer list
+ * (Return: 0 if there is no error, else 1)
+ */
 char loading_layer(GtkFlowBox *flowbox, const char *filename)
 {
     // only read the file
@@ -268,6 +318,11 @@ char loading_layer(GtkFlowBox *flowbox, const char *filename)
     return 0;
 }
 
+
+/*
+ * Export the project to a PNG image file at the given filename
+ * (Return: 0 if there is no error, else -1)
+ */
 int export_cairo_to_png(gchar *filename, gpointer user_data)
 {
     INIT_UI();

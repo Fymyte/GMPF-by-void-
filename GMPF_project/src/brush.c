@@ -1,5 +1,10 @@
 #include "brush.h"
 
+/*
+ * Make a square shape collored with "red", "green", "blue" and "alpha"
+ * parameters at the given position
+ * (affect only the surface associated with the given cairo context)
+ */
 void square_brush(GtkWidget *widget,
                   cairo_t   *cr,
                   int        x,
@@ -27,6 +32,14 @@ void square_brush(GtkWidget *widget,
     gtk_widget_queue_draw_area (widget, nx, ny, size, size);
 }
 
+
+/*
+ * Make a circle shape collored with "red", "green", "blue" and "alpha"
+ * parameters at the given position
+ * (If there is multiple points, draw a line between the LayerMngr's point and
+ * the given coordinates, update le LayerMngr's point to the given coordinates)
+ * (affect only the surface associated with the given cairo context)
+ */
 void circular_brush(GtkWidget      *widget,
                     cairo_t        *cr,
                     double          x,
@@ -85,6 +98,12 @@ void circular_brush(GtkWidget      *widget,
             width * scale_x + 20, height * scale_y + 20);
 }
 
+
+/*
+ * Copy the selected area inside of a new surface with it's given position on
+ * the surface and update the LayerMngr's point
+ */
+// TODO
 void selector(UNUSED GtkWidget *widget,
              double             x,
              double             y,

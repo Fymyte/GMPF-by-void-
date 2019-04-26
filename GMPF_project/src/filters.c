@@ -1,6 +1,12 @@
 #include "filters.h"
 
-void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*), gpointer user_data)
+
+/*
+ * Apply the "filter" function to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
+void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*),
+                                         gpointer       user_data)
 {
     INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
@@ -19,7 +25,12 @@ void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*), gpointer u
     gtk_widget_queue_draw(da);
 }
 
-void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*), gpointer user_data)
+
+/*
+ * Apply the "filter" function to all Layer
+ */
+void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*),
+                                    gpointer       user_data)
 {
     INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
@@ -42,8 +53,20 @@ void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*), gpointer user_d
     gtk_widget_queue_draw(da);
 }
 
-void GMPF_filter_apply_to_selected_layer_color(void (*filter)(GMPF_Layer*, guchar, guchar, guchar),
-                                    guchar r, guchar g, guchar b, gpointer user_data)
+
+/*
+ * Apply the "filter" function to the selected Layer with the given "red",
+ * "green" and "blue" parameters
+ * (Do nothing if there is no selected Layer)
+ */
+void GMPF_filter_apply_to_selected_layer_color(void (*filter)(GMPF_Layer*,
+                                                                        guchar,
+                                                                        guchar,
+                                                                        guchar),
+                                                              guchar   r,
+                                                              guchar   g,
+                                                              guchar   b,
+                                                              gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
@@ -62,8 +85,19 @@ void GMPF_filter_apply_to_selected_layer_color(void (*filter)(GMPF_Layer*, gucha
     gtk_widget_queue_draw(da);
 }
 
-void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*, guchar, guchar, guchar),
-                                    guchar r, guchar g, guchar b, gpointer user_data)
+
+/*
+ * Apply the "filter" function to all Layer with the given "red", "green" and
+ * "blue" parameters
+ */
+void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*,
+                                                                        guchar,
+                                                                        guchar,
+                                                                        guchar),
+                                                              guchar   r,
+                                                              guchar   g,
+                                                              guchar   b,
+                                                              gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
@@ -86,6 +120,10 @@ void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*, guchar, gu
     gtk_widget_queue_draw(da);
 }
 
+
+/*
+ * Apply "Luminosité+" filter to the given Layer
+ */
 void Lightness(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -129,6 +167,10 @@ void Lightness(GMPF_Layer *lay)
     layer_icon_refresh(lay);
 }
 
+
+/*
+ * Apply "Luminosité-" filter to the given Layer
+ */
 void Darkness(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -173,7 +215,9 @@ void Darkness(GMPF_Layer *lay)
 }
 
 
-
+/*
+ * Apply "Nuance de gris" filter to the given Layer
+ */
 void Greyscale(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -204,6 +248,10 @@ void Greyscale(GMPF_Layer *lay)
     layer_icon_refresh(lay);
 }
 
+
+/*
+ * Apply "Negatif" filter to the given Layer
+ */
 void Negative(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -235,6 +283,10 @@ void Negative(GMPF_Layer *lay)
     layer_icon_refresh(lay);
 }
 
+
+/*
+ * Apply "Binarisation" filter to the given Layer
+ */
 void Binarize(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -270,6 +322,10 @@ void Binarize(GMPF_Layer *lay)
 
 }
 
+
+/*
+ * Apply "Binarisation colorée" filter to the given Layer
+ */
 void BinarizeColor(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -313,7 +369,12 @@ void BinarizeColor(GMPF_Layer *lay)
     layer_icon_refresh(lay);
 }
 
-void Tinter(GMPF_Layer *lay, GtkColorChooser *colorChooser)
+
+/*
+ * Apply "Teinture" filter to the given Layer
+ */
+void Tinter(GMPF_Layer      *lay,
+            GtkColorChooser *colorChooser)
 {
     if (!lay)
         return;
@@ -358,7 +419,12 @@ void Tinter(GMPF_Layer *lay, GtkColorChooser *colorChooser)
     layer_icon_refresh(lay);
 }
 
-void Colorfull(GMPF_Layer *lay, GtkColorChooser *colorChooser)
+
+/*
+ * Apply "Coloré" filter to the given Layer
+ */
+void Colorfull(GMPF_Layer      *lay,
+               GtkColorChooser *colorChooser)
 {
     if (!lay)
         return;
@@ -404,6 +470,7 @@ void Colorfull(GMPF_Layer *lay, GtkColorChooser *colorChooser)
 
 }
 
+
 int check (int width, int height, int i, int j)
 {
     if (i < 0 || j < 0 || i >= width || j >= height)
@@ -411,6 +478,11 @@ int check (int width, int height, int i, int j)
     return 1;
 }
 
+
+/*
+ * Apply the given convolution matrix to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void Convolute(SGlobalData *data, double *mat)
 {
     GET_UI(GtkWidget, da, "drawingArea");
@@ -488,6 +560,10 @@ void Convolute(SGlobalData *data, double *mat)
     free(mat);
 }
 
+
+/*
+ * Apply "Egalisation" filter to the given Layer
+ */
 void Equalize(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -562,6 +638,10 @@ void Equalize(GMPF_Layer *lay)
     free(h_v);
 }
 
+
+/*
+ * Apply "Mirroir verticale" filter to the given Layer
+ */
 void Verticale(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -598,6 +678,10 @@ void Verticale(GMPF_Layer *lay)
     free_img_rgb(img);
 }
 
+
+/*
+ * Apply "Mirroir horizontale" filter to the given Layer
+ */
 void Horizontale(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -633,6 +717,10 @@ void Horizontale(GMPF_Layer *lay)
     free_img_rgb(img);
 }
 
+
+/*
+ * Apply "Egalisation colorée" filter to the given Layer
+ */
 void Equalize_color(GMPF_Layer *lay)
 {
     g_object_unref(lay->image);
@@ -742,6 +830,11 @@ void Equalize_color(GMPF_Layer *lay)
     free(h_v_blue);
 }
 
+
+/*
+ * Apply a balance filter with the given "r", "g" and "b" parameters to the
+ * given Layer
+ */
 void Color_balance(GMPF_Layer *lay, guchar r, guchar g, guchar b)
 {
     g_object_unref(lay->image);

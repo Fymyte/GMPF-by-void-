@@ -3,7 +3,9 @@
 /*
  * function to eraise the selected color with the given tolerance
  */
-void kill_color(GtkWidget *widget, double tolerance, gpointer user_data)
+void kill_color(GtkWidget *widget,
+                double     tolerance,
+                gpointer   user_data)
 {
     INIT_UI();
     GET_UI (GtkColorChooser, colorbtn, "ColorTinter");

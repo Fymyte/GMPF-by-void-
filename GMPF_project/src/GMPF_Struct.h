@@ -20,7 +20,11 @@ typedef struct GMPF_Pixel GMPF_Pixel;
 typedef struct GMPF_Layer GMPF_Layer;
 typedef struct GMPF_LayerMngr GMPF_LayerMngr;
 
-// Enumeration of the different tools for the application
+/*
+ * Enumeration of the different tools for the application
+ * (Incorect, Painter,Eraiser, Color Picker, Color Killer, Selector and
+ * Selector Free properties)
+ */
 enum GMPF_Tool {
     INCORECT_TOOL = 0,
     PAINTER = 1,
@@ -32,43 +36,75 @@ enum GMPF_Tool {
 };
 
 
-// Structure to store the state of the project
+/*
+ * Structure to store the state of the project
+ * (saved propertie)
+ */
 struct GMPF_SavedState {
     int state;
 };
 
 
+/*
+ * As structure to store a position
+ * (x and y position properties)
+ */
 struct GMPF_Pos {
     int x, y;
 };
 
 
+/*
+ * A structure to store a size
+ * (width and height properties)
+ */
 struct GMPF_Size {
     int h, w;
 };
 
 
+/*
+ * A structure to store a scale factor
+ * (x and y scale properties)
+ */
 struct GMPF_Scale {
     float x, y;
 };
 
 
-// TODO: complete the struct GMPF_Pixel
+/*
+ * A structure to store a pixel data
+ * (red, green, blue and alpha properties)
+ */
 struct GMPF_Pixel {
     unsigned long R, G, B, A;
     //Uint8 R, G, B, A;
 };
 
 
-// TODO: complete the struct GMPF_Layer
+/*
+ * A structure to store a Layer data
+ * A name (char *): the name of the Layer displayed in the Layer list
+ * A filename (char *): where the associated image is stored, or NULL if there is no one
+ * A scale factor (GMPF_Scale): to know the scale factor to apply when display it on the surface
+ * A size (GMPF_Size): to know the excact size of the Layer, indepemdently from the image's size
+ * A rotate angle (int): to know from how many degrees, the layer has been rotated
+ * A is visible (int): the boolean information to now if we have to diplay this Layer on the surface
+ * An icon (GdkPixbuf *): to show the surface in the top right corner, in the list of Layer
+ * An image (GdkPixbuf *): the pixbuf associated with the surface to display
+ * A cr (cairo_t *): to not create a new one eatch time
+ * A surface (cairo_surface_t *): to store all pixels data and diplay in on the Main surface
+ * A list (GMPF_List): to know it's position in the Layer list
+ * A UIElement (GtkFlowBoxChild *): to know the UI element this Layer is associated with
+ */
 struct GMPF_Layer {
 
-    char *name; // USE A char[50] TAB FOR A SIMPLE SAVE
-    char *filename; // null if it is not based on an image
-    // used variable
-    GMPF_Pos pos; // Offset on the rendering
+    char *name;
+    char *filename;
+
+    GMPF_Pos pos;
     GMPF_Scale scale_factor;
-    GMPF_Size size; // Size of the condained surface
+    GMPF_Size size;
     int rotate_angle;
     char isvisible; // Set to one if it has to be rendered
 
@@ -79,37 +115,50 @@ struct GMPF_Layer {
 
     cairo_surface_t *surface;
 
-    // for the list
-    GMPF_List list; // The position of the layer in the list
+    GMPF_List list;
 
-    // to know the UIElement that contains the layer
     GtkImage *UIIcon;
     GtkFlowBoxChild *UIElement;
 };
 
 
-struct GMPF_LayerMngr {
-    // basic variable
-    GMPF_Size size;       // The current size of the project
-    GMPF_Pos pos;         // To store the last position of the cursor before move
-    int nb_layer;         // The number of layer contained in the layer_list
-    GMPF_Tool tool;       // The current selected tool
-    GMPF_List layer_list; // The list of layer attached to the manager
+/*
+ * A structure to store a LayerMngr data
+ * A size (GMPF_Size): to store the current size of the project
+ * A pos (GMPF_Pos): to store the last position of the cursor before move
+ * A nb_layer (int): to store the number of Layer in the Layer list
+ * A layer_list (GMPF_List): to store the list of Layer
+ * A tool (GMPF_Tool): To store the current selected tool
+ * A filename (char *): to store the name of the project's file
+ * A brush_size (int): to store the current size of the brush
+ * A flowbox (GtkFlowBox): to store the UI element the LayerMngr is associated with+
+ */
 
-    char *filename;       // The name of the project's file
+struct GMPF_LayerMngr {
+
+    GMPF_Size size;
+    GMPF_Pos pos;
+    int nb_layer;
+    GMPF_Tool tool;
+    GMPF_List layer_list;
+
+    char *filename;
 
     cairo_surface_t *surface;
 
-    float brush_size;     // The size of the brush for painter and eraiser tools
+    float brush_size;
 
-    GdkPixbuf *image; //unchungedPixbuf
-    GdkPixbuf *display_image; //displayedPixbuf (with scale)
+    GdkPixbuf *image;
+    GdkPixbuf *display_image;
 
-    // get the element on the GUI
     GtkFlowBox *flowbox;
 };
 
 
+/*
+ * A matrix strcuture to store data inside of an array in a conveignant way
+ * (rows, cols and mat properties)
+ */
 struct Matrix
 {
     int rows;
@@ -118,6 +167,10 @@ struct Matrix
 };
 
 
+/*
+ * A structure to store and image composed of pixels inside of matrix structures
+ * (rows, cols, red, gree, blue and alpha properties)
+ */
 struct Img_rgb
 {
     int rows;

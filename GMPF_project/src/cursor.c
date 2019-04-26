@@ -2,7 +2,14 @@
 //#include "GMPF_LayerMngr.h"
 //#include <gtk-3.0/gtk/gtk.h>
 
-void pick_color_on_screen(int x, int y, GtkColorChooser *colorChooser, gpointer user_data)
+/*
+ * Take the color of the selected Layer at the given coordinates and put the
+ * taken color inside of the colorChooser's color parameter
+ */
+void pick_color_on_screen(int              x,
+                          int              y,
+                          GtkColorChooser *colorChooser,
+                          gpointer         user_data)
 {
     INIT_UI();
     GET_UI(GtkWindow, window, "MainWindow");
@@ -25,6 +32,10 @@ void pick_color_on_screen(int x, int y, GtkColorChooser *colorChooser, gpointer 
     g_object_unref(pixbuf);
 }
 
+
+/*
+ * Reset the cusror icon to it'sn system default icon
+ */
 void resetCursor(SGlobalData* data)
 {
     //init variables
@@ -48,7 +59,10 @@ void resetCursor(SGlobalData* data)
 }
 
 
- void callback_setCursor(SGlobalData* data)
+/*
+ * Set the cusror to a circle penta cursor icon
+ */
+void callback_setCursor(SGlobalData* data)
  {
       //init variables
 
@@ -89,6 +103,10 @@ void resetCursor(SGlobalData* data)
       gdk_window_set_cursor (win, cursor);
   }
 
+
+/*
+ * Resize the cursor to math the LayerMngr's cursor's size parameter
+ */
 void resizeCursor(SGlobalData* data, int size)
 {
     GdkWindow * win = NULL;
@@ -118,8 +136,3 @@ void resizeCursor(SGlobalData* data, int size)
 
     gdk_window_set_cursor(win, cursor);
 }
-/*
-void stayInWindow(SGlobalData* data)
-{
-    //TODO
-}*/

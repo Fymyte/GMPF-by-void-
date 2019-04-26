@@ -1,5 +1,9 @@
 #include "fcreator.h"
 
+/*
+ * Save the newly created filter into a *.ftr file type as text
+ * (Do nothing if the custom filter is incorect)
+ */
 void Save_filter(gpointer user_data)
 {
     INIT_UI();
@@ -15,7 +19,7 @@ void Save_filter(gpointer user_data)
     GET_UI(GtkEntry, filename, "FilterFilename");
     GET_UI(GtkColorChooser, chooser, "FC_color");
     gchar *s = (gchar*)gtk_entry_get_text (filename);
-    s = strcat(s, ".ftr");
+    set_extension(&s, "ftr");
 
     int fd = creat(s, S_IRWXU);
 
@@ -104,9 +108,18 @@ void Save_filter(gpointer user_data)
     printf("Filter save done \n");
 }
 
+
+/*
+ * Check that the extension of the filename is right ("lay"), return if not
+ * Then open the file at filename and apply the custom filter to the selected
+ * Layer
+ * (Do nothing if there is no selected Layer)
+ */
 void Apply_user_filter(gchar *filename, gpointer user_data)
 {
     INIT_UI();
+    if (!check_extension(filename, "lay"))
+        return;
     FILE *filter = fopen(filename, "r");
 
     if (filter == NULL)

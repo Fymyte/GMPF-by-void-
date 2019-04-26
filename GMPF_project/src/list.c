@@ -1,19 +1,21 @@
 #include "list.h"
 
 
-
-// FUNCTIONS
-
+/*
+ * Init a list with all parameters to NULL
+ (The list is already in the element)
+ */
 void list_init(GMPF_List *list)
 {
-    /*
-        Init a new list.
-        The list is already in the element.
-    */
     list->prev = NULL;
     list->next = NULL;
 }
 
+
+/*
+ * Add a new GMPF_List element at the given position in the list
+ * (Do nothing if the position is invalid)
+ */
 void list_add_at_pos(GMPF_List *list, GMPF_List *add, int pos)
 {
     GMPF_List *getlist = list_get_at_pos(list, pos);
@@ -21,6 +23,11 @@ void list_add_at_pos(GMPF_List *list, GMPF_List *add, int pos)
         list_add_after(getlist, add);
 }
 
+
+/*
+ * Add a new GMPF_List element after the given element
+ * (Do nothing if the list element is invalid)
+ */
 void list_add_after(GMPF_List *list, GMPF_List *add)
 {
     GMPF_List *nextlist = list->next;
@@ -31,6 +38,11 @@ void list_add_after(GMPF_List *list, GMPF_List *add)
         nextlist->prev = add;
 }
 
+
+/*
+ * Swap the two elements "a" and "b" in the list
+ * (Do nothing if one of the element is invalid)
+ */
 void list_swap(GMPF_List *a, GMPF_List *b)
 {
     GMPF_List *prevList = a->prev;
@@ -48,6 +60,11 @@ void list_swap(GMPF_List *a, GMPF_List *b)
     b->next = a;
 }
 
+
+/*
+ * Move the given element one place before in the list
+ * (Do nothing if the element is invalid or it is already at the first place)
+ */
 int list_move_up(GMPF_List *list)
 {
     if (!list->next)
@@ -57,6 +74,11 @@ int list_move_up(GMPF_List *list)
     return 1;
 }
 
+
+/*
+ * Move the given element one place after in the list
+ * (Do nothing if the element is invalid or it is already at the last place)
+ */
 int list_move_down(GMPF_List *list)
 {
     if (!list->prev || !list->prev->prev)
@@ -66,6 +88,11 @@ int list_move_down(GMPF_List *list)
     return 1;
 }
 
+
+/*
+ * Add an element at the end of the list
+ * (Do nothing if the element is invalid)
+ */
 void list_append(GMPF_List *list, GMPF_List *add)
 {
     while (list->next != NULL)
@@ -73,6 +100,11 @@ void list_append(GMPF_List *list, GMPF_List *add)
     list_add_after(list, add);
 }
 
+
+/*
+ * Remove the element at the given position in the list
+ * (Do nothing if the position or the list is invalid)
+ */
 void list_remove_at_pos(GMPF_List *list, int pos)
 {
     GMPF_List *getlist = list_get_at_pos(list, pos);
@@ -80,6 +112,11 @@ void list_remove_at_pos(GMPF_List *list, int pos)
         list_remove(getlist);
 }
 
+
+/*
+ * Remove the element of the list and free it
+ * (Do nothing if the element is invalid)
+ */
 void list_remove(GMPF_List *list)
 {
     GMPF_List *prevlist = list->prev;
@@ -92,6 +129,11 @@ void list_remove(GMPF_List *list)
     list->next = NULL;
 }
 
+
+/*
+ * Return the element at the given position in the list
+ * (Return: the element, or NULL if the position is invalid)
+ */
 GMPF_List * list_get_at_pos(GMPF_List *list, int pos)
 {
     if (pos < 0)
@@ -105,6 +147,12 @@ GMPF_List * list_get_at_pos(GMPF_List *list, int pos)
     return getlist;
 }
 
+
+/*
+ * Return the last element of the list
+ * (Return: the element (itself if it is the last element), or NULL if the
+ * list is invalid)
+ */
 GMPF_List * list_get_last(GMPF_List *list)
 {
     GMPF_List *getlist = list;

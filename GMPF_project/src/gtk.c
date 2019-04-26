@@ -12,7 +12,9 @@
 #define CSSTHEME "themes/main.css"
 
 
-
+/*
+ * Init all variables and UI element of the application and launch it
+ */
 int GMPF_start()
 {
     GtkWidget *Main_window = NULL;
