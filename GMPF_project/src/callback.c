@@ -42,17 +42,20 @@ int open_confirm_quit_without_saving_dialog(gpointer user_data)
 void load_theme(GdkScreen  *screen,
                 const char *filename)
 {
-    GError *error;
     GtkCssProvider *provider = gtk_css_provider_new();
-    gtk_css_provider_load_from_file(provider, g_file_new_for_path(filename), &error);
-    // if (error)
-    // {
-    //     PRINTERR;
-    //     return;
-    // }
-    gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider),
-                  GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(provider);
+    GError *err = NULL;
+    GFile *file = g_file_new_for_path(filename);
+
+    gtk_css_provider_load_from_file(provider, file, &err);
+    if (err)
+    {
+        PRINTERR;
+        D_PRINT("%s", err->message)
+        return;
+    }
+    gtk_style_context_add_provider_for_screen(screen,
+                                      GTK_STYLE_PROVIDER(provider),
+                                      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
 
 
@@ -64,8 +67,32 @@ void callback_load_theme(UNUSED GtkWidget *widget,
 {
     INIT_UI();
     GET_UI(GtkWindow, window, "MainWindow");
-    const gchar *myFile = "themes/1theme.css";
-    load_theme(gtk_window_get_screen(window), myFile);
+    GtkWidget *dialog;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    gint res;
+
+    dialog = gtk_file_chooser_dialog_new ("Open File",
+                                          window,
+                                          action,
+                                          ("_Annuler"),
+                                          GTK_RESPONSE_CANCEL,
+                                          ("_Ouvrir"),
+                                          GTK_RESPONSE_ACCEPT,
+                                          NULL);
+    GtkFileChooser *fileChooser = GTK_FILE_CHOOSER(dialog);
+    GtkFileFilter *filter = gtk_file_filter_new ();
+    gtk_file_filter_add_pattern(filter, "*.css");
+    gtk_file_chooser_set_filter(fileChooser, filter);
+
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
+    if (res == GTK_RESPONSE_ACCEPT)
+    {
+        char *filename;
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+        filename = gtk_file_chooser_get_filename (chooser);
+        load_theme(gtk_window_get_screen(window), filename);
+    }
+    gtk_widget_destroy(dialog);
 }
 
 
@@ -1687,6 +1714,47 @@ gboolean do_destroy_event(UNUSED GtkWidget *widget,
     return FALSE;
 }
 
+
+/*
+ * Callback to edit selected layer's properties
+ */
+void callback_edit_layer_properties(GtkWidget *widget,
+                                    gpointer   user_data)
+{
+
+}
+
+
+/*
+ * Callback to open the edit layer window and set the properties to their
+ * default value
+ * (Do nothing if there is no selected Layer)
+ */
+void callback_open_edit_layer_properties_window(UNUSED GtkWidget *widget,
+                                                gpointer   user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+        return;
+    GET_UI(GtkWidget, layer_window, "EditLayerWindow");
+    GET_UI(GtkEntry, name, "LayerNameEntry1");
+    GET_UI(GtkSpinButton, width, "LayerWidthSpinButton1");
+    GET_UI(GtkSpinButton, height, "LayerHeightSpinButton1");
+    GET_UI(GtkSpinButton, offsetX, "LayerOffsetXSpinButton1");
+    GET_UI(GtkSpinButton, offsetY, "LayerOffsetYSpinButton1");
+    GET_UI(GtkFileChooser, filename, "LayerImageFilename1");
+
+    gtk_entry_set_text(name, lay->name);
+    gtk_spin_button_set_value(width, lay->size.w);
+    gtk_spin_button_set_value(height, lay->size.h);
+    gtk_spin_button_set_value(offsetX, lay->pos.x);
+    gtk_spin_button_set_value(offsetY, lay->pos.y);
+    gtk_file_chooser_set_filename(filename, lay->filename);
+
+    gtk_widget_show(layer_window);
+}
 
 /*
  * Callback to clear the LayerMngr and reset it
