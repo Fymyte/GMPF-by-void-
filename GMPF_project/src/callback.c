@@ -39,7 +39,8 @@ int open_confirm_quit_without_saving_dialog(gpointer user_data)
  * Load a CSS styleSheet located at filename
  * (Do nothing if filename is incorect)
  */
-void load_theme(GdkScreen *screen, const char *filename)
+void load_theme(GdkScreen  *screen,
+                const char *filename)
 {
     GError *error;
     GtkCssProvider *provider = gtk_css_provider_new();
@@ -58,7 +59,8 @@ void load_theme(GdkScreen *screen, const char *filename)
 /*
  * Callback to load a GTK-CSS theme
  */
-void callback_load_theme(UNUSED GtkWidget *widget, gpointer user_data)
+void callback_load_theme(UNUSED GtkWidget *widget,
+                         gpointer          user_data)
 {
     INIT_UI();
     GET_UI(GtkWindow, window, "MainWindow");
@@ -71,9 +73,9 @@ void callback_load_theme(UNUSED GtkWidget *widget, gpointer user_data)
  * Open a new GMPF or IMAGE file
  * (Open a Dialog and open the selected file)
  */
-void open_new_file(GtkWindow *window,
+void open_new_file(GtkWindow      *window,
                    GMPF_LayerMngr *layermngr,
-                   GtkFlowBox *flowbox)
+                   GtkFlowBox     *flowbox)
 {
     GtkWidget *dialog;
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
@@ -129,7 +131,8 @@ void open_new_file(GtkWindow *window,
  * Callback to open a new file
  * (Check if the project is saved and open a confirm dialog if not)
  */
-void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
+void callback_open(UNUSED GtkMenuItem *menu,
+                   gpointer            user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -167,7 +170,8 @@ void callback_open(UNUSED GtkMenuItem *menu, gpointer user_data)
 /*
  * Rotate the layer of "rotate_angle" degree
  */
-void layer_rotate_angle(GMPF_Layer *lay, int rotate_angle)
+void layer_rotate_angle(GMPF_Layer *lay,
+                        int         rotate_angle)
 {
     lay->rotate_angle = rotate_angle;
     cairo_surface_t *surface = cairo_surface_create_similar_image(lay->surface,
@@ -193,7 +197,8 @@ void layer_rotate_angle(GMPF_Layer *lay, int rotate_angle)
  * Callback to rotate the selected layer of the given degree
  * (Refresh the displayed surface after rotation)
  */
-void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
+void callback_rotate_angle(GtkEntry *entry,
+                           gpointer  user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -212,7 +217,8 @@ void callback_rotate_angle(GtkEntry *entry, gpointer user_data)
 /*
  * Rotate all the Layer from the LayerMngr's list of Layer from "angle" angle
  */
-void layer_rotate_angle_all(int angle, GMPF_LayerMngr *layermngr)
+void layer_rotate_angle_all(int             angle,
+                            GMPF_LayerMngr *layermngr)
 {
     if (layermngr->layer_list.next != NULL)
     {
@@ -232,7 +238,8 @@ void layer_rotate_angle_all(int angle, GMPF_LayerMngr *layermngr)
  * Callback to rotate all layer from the given angle
  * (Refresh the displayed surface after rotation)
  */
-void callback_rotate_angle_all(GtkEntry *entry, gpointer user_data)
+void callback_rotate_angle_all(GtkEntry *entry,
+                               gpointer  user_data)
 {
     INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
@@ -248,7 +255,8 @@ void callback_rotate_angle_all(GtkEntry *entry, gpointer user_data)
 /*
  * Callback to adjust the displayed rotate angle according to the selected Layer
  */
-void callback_adjust_rotate_value(UNUSED GtkWidget *widget, gpointer user_data)
+void callback_adjust_rotate_value(UNUSED GtkWidget *widget,
+                                  gpointer          user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -263,7 +271,8 @@ void callback_adjust_rotate_value(UNUSED GtkWidget *widget, gpointer user_data)
 /*
  * Set if the layer is displayed on the surface or not
  */
-void layer_set_visible (GMPF_Layer *lay, gboolean isvisible)
+void layer_set_visible (GMPF_Layer *lay,
+                        gboolean    isvisible)
 {
     lay->isvisible = isvisible;
 }
@@ -274,7 +283,8 @@ void layer_set_visible (GMPF_Layer *lay, gboolean isvisible)
  * (Do nothing if there is no selected Layer)
  * (Refresh the displayed surface after rotation)
  */
-void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
+void callback_layer_set_visible(GtkToggleButton *button,
+                                gpointer         user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -293,7 +303,8 @@ void callback_layer_set_visible(GtkToggleButton *button, gpointer user_data)
  * Callback to move down the selected Layer in the list of Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_layer_move_down(UNUSED GtkWidget *widget, gpointer user_data)
+void callback_layer_move_down(UNUSED GtkWidget *widget,
+                              gpointer          user_data)
 {
     SGlobalData *data = (SGlobalData *)user_data;
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -307,7 +318,8 @@ void callback_layer_move_down(UNUSED GtkWidget *widget, gpointer user_data)
  * Callback to move up the selected Layer in the list of Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_layer_move_up(UNUSED GtkWidget *widget, gpointer user_data)
+void callback_layer_move_up(UNUSED GtkWidget *widget,
+                            gpointer          user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -320,7 +332,8 @@ void callback_layer_move_up(UNUSED GtkWidget *widget, gpointer user_data)
 /*
  * Callback to hide the "widget" widget
  */
-void callback_hideWidget(GtkWidget *widget, UNUSED gpointer user_data)
+void callback_hideWidget(GtkWidget      *widget,
+                         UNUSED gpointer user_data)
 {
     gtk_widget_hide(widget);
 }
@@ -329,7 +342,8 @@ void callback_hideWidget(GtkWidget *widget, UNUSED gpointer user_data)
 /*
  * Callback to hide the "parent" widget
  */
-void callback_hideParent(UNUSED GtkWidget *widget, GtkWidget *parent)
+void callback_hideParent(UNUSED GtkWidget *widget,
+                         GtkWidget        *parent)
 {
     gtk_widget_hide(parent);
 }
@@ -338,7 +352,8 @@ void callback_hideParent(UNUSED GtkWidget *widget, GtkWidget *parent)
 /*
  * Callback to show the "A propos" dialod window
  */
-void callback_about (UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_about (UNUSED GtkMenuItem *menuitem,
+                     gpointer            user_data)
 {
     /* Transtypage du pointeur user_data pour récupérer nos données. */
     INIT_UI();
@@ -358,7 +373,9 @@ void callback_about (UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Set the scale value of all Layer from the list of Layer
  * (Return: The scaled size of the surface)
  */
-GMPF_Size adjust_scale(double scale_x, double scale_y, GMPF_LayerMngr *layermngr)
+GMPF_Size adjust_scale(double          scale_x,
+                       double          scale_y,
+                       GMPF_LayerMngr *layermngr)
 {
     GMPF_Size size = {.w = 0, .h = 0};
 
@@ -387,7 +404,8 @@ GMPF_Size adjust_scale(double scale_x, double scale_y, GMPF_LayerMngr *layermngr
  * Callback to adjust the scale value of all Layer from the list of Layer
  * (Refresh the display after scaling)
  */
-void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
+void callback_adjust_scale(GtkEntry *entry,
+                           gpointer  user_data)
 {
     INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
@@ -412,7 +430,8 @@ void callback_adjust_scale(GtkEntry *entry, gpointer user_data)
  * Callback to export the project to PNG format
  * (Open a dialog to choose the path for the file to save)
  */
-void callback_export(UNUSED GtkWidget *menuitem, gpointer user_data)
+void callback_export(UNUSED GtkWidget *menuitem,
+                     gpointer          user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -458,7 +477,8 @@ void callback_export(UNUSED GtkWidget *menuitem, gpointer user_data)
 /*
  * Callback to resize the brush size of the LayerMngr
  */
-void callback_resize_brush(GtkEntry *entry, gpointer user_data)
+void callback_resize_brush(GtkEntry *entry,
+                           gpointer  user_data)
 {
     INIT_UI();
     GMPF_LayerMngr *layermngr = NULL;
@@ -475,7 +495,8 @@ void callback_resize_brush(GtkEntry *entry, gpointer user_data)
  * Callback to show the "Ajouter un calque" window
  * (Set all the fileds to there default value)
  */
-void callback_show_layer_window(UNUSED GtkWidget *widget, gpointer user_data)
+void callback_show_layer_window(UNUSED GtkWidget *widget,
+                                gpointer          user_data)
 {
     //variables definitions
     INIT_UI();
@@ -529,9 +550,9 @@ void clear_surface (gpointer user_data)
 /*
  * Create a new surface of the appropriate size to store our scribbles
  */
-gboolean callback_configure_event (UNUSED GtkWidget *widget,
-    UNUSED GdkEventConfigure *event,
-    gpointer user_data)
+gboolean callback_configure_event (UNUSED GtkWidget         *widget,
+                                   UNUSED GdkEventConfigure *event,
+                                   gpointer                  user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -549,7 +570,10 @@ gboolean callback_configure_event (UNUSED GtkWidget *widget,
  * (The color will be take from the colorChooser of the interface)
  * (The diameter of the circle will be taken from the brush size)
  */
-void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
+void draw_brush (GtkWidget *widget,
+                 gdouble    x,
+                 gdouble    y,
+                 gpointer   user_data)
 {
     INIT_UI();
     GdkRGBA color;
@@ -583,7 +607,10 @@ void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
  * Eraise the circle of pixels on the surface at the given position
  * (The diameter of the circle will be taken from the brush size)
  */
-void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
+void draw_rubber (GtkWidget *widget,
+                  gdouble    x,
+                  gdouble    y,
+                  gpointer   user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -609,7 +636,10 @@ void draw_rubber (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
  * Pick the color on surface at the given position
  * (The picked color will be set to the colorChooser of the application)
  */
-void color_picker (UNUSED GtkWidget *widget, gdouble x, gdouble y, gpointer user_data)
+void color_picker (UNUSED GtkWidget *widget,
+                   gdouble           x,
+                   gdouble           y,
+                   gpointer          user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -623,7 +653,8 @@ void color_picker (UNUSED GtkWidget *widget, gdouble x, gdouble y, gpointer user
  * (when the cursor enter the surface)
  */
 gboolean callback_enter_notify_event (UNUSED GtkWidget *widget,
-                        UNUSED GdkEvent *event, gpointer user_data)
+                                      UNUSED GdkEvent  *event,
+                                      gpointer          user_data)
 {
     INIT_UI();
     callback_setCursor(data);
@@ -636,7 +667,8 @@ gboolean callback_enter_notify_event (UNUSED GtkWidget *widget,
  * (when the cursor leave the surface)
  */
 gboolean callback_leave_notify_event (UNUSED GtkWidget *widget,
-                        UNUSED GdkEvent *event, gpointer user_data)
+                                      UNUSED GdkEvent   *event,
+                                      gpointer           user_data)
 {
     INIT_UI();
     resetCursor(data);
@@ -648,9 +680,9 @@ gboolean callback_leave_notify_event (UNUSED GtkWidget *widget,
  * Callback that handle the button pressed events
  * (Call the right function depending of the selected tool from the LayerMngr)
  */
-gboolean callback_button_press_event (GtkWidget *widget,
-                                GdkEventButton *event,
-                                gpointer user_data)
+gboolean callback_button_press_event (GtkWidget      *widget,
+                                      GdkEventButton *event,
+                                      gpointer        user_data)
 {
     INIT_UI();
 
@@ -682,9 +714,9 @@ gboolean callback_button_press_event (GtkWidget *widget,
  * (Reset the positon of the LayerMngr, update the SavedState of the project and
  * refresh the icon of the selected Layer)
  */
-gboolean callback_button_release_event(UNUSED GtkWidget *widget,
-                                 UNUSED GdkEventButton *event,
-                                 gpointer user_data)
+gboolean callback_button_release_event(UNUSED GtkWidget      *widget,
+                                       UNUSED GdkEventButton *event,
+                                       gpointer               user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -714,8 +746,9 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
  * still held down. The ::motion-notify signal handler receives
  * a GdkEventMotion struct which contains this information.
  */
-gboolean callback_motion_notify_event (GtkWidget *widget, GdkEventMotion *event,
-    gpointer user_data)
+gboolean callback_motion_notify_event (GtkWidget      *widget,
+                                       GdkEventMotion *event,
+                                       gpointer        user_data)
 {
     INIT_UI();
 
@@ -738,7 +771,9 @@ gboolean callback_motion_notify_event (GtkWidget *widget, GdkEventMotion *event,
  * Callback to redraw all Layer of the Layer list in the right order on top of
  * eatch other
  */
-void callback_on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpointer user_data)
+void callback_on_draw_event(UNUSED GtkWidget *widget,
+                            cairo_t *cr,
+                            UNUSED gpointer user_data)
 {
     INIT_UI();
 
@@ -781,7 +816,8 @@ void callback_on_draw_event(UNUSED GtkWidget *widget, cairo_t *cr, UNUSED gpoint
  * Calback to select the right tool according to the pressed button in the
  * ToolBar
  */
-void callback_select_tool(GtkWidget *widget, gpointer user_data)
+void callback_select_tool(GtkWidget *widget,
+                          gpointer   user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -813,7 +849,8 @@ void callback_select_tool(GtkWidget *widget, gpointer user_data)
  * Callback to add a new layer in the list from the "Ajouter un calque" window
  * (Refresh the displayed image of the layer and hide the window)
  */
-void callback_add_custom_layer(UNUSED GtkWidget *widget, gpointer user_data)
+void callback_add_custom_layer(UNUSED GtkWidget *widget,
+                               gpointer          user_data)
 {
     INIT_UI();
     GET_UI(GtkEntry, name, "LayerNameEntry");
@@ -889,7 +926,8 @@ gboolean GMPF_save_project(gpointer user_data)
 /*
  * Callback to save the project
  */
-void callback_save_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_save_project(UNUSED GtkMenuItem *menuitem,
+                           gpointer            user_data)
 {
     GMPF_save_project(user_data);
 }
@@ -956,7 +994,8 @@ gboolean GMPF_save_under_project(gpointer user_data)
 /*
  * Callback to save the project at the selected filename
  */
-void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_save_under_project(UNUSED GtkMenuItem *menuitem,
+                                 gpointer            user_data)
 {
     GMPF_save_under_project(user_data);
 }
@@ -966,7 +1005,8 @@ void callback_save_under_project(UNUSED GtkMenuItem *menuitem, gpointer user_dat
  * Callback to save the selected layer in a specific file type
  * (Do nothing if there is no selected Layer)
  */
-void callback_save_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_save_layer(UNUSED GtkMenuItem *menuitem,
+                         gpointer            user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -1017,7 +1057,8 @@ void callback_save_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Callback to load the selected layer in the dialog
  * (Do nothing if there is no selected Layer)
  */
-void callback_load_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_load_layer(UNUSED GtkMenuItem *menuitem,
+                         gpointer            user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -1111,7 +1152,8 @@ void load_image_cairo(GtkWindow *window,
  * Show the "Créateur de filtre" window
  * (init all its variables to there default value)
  */
-void callback_FC(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_FC(UNUSED GtkMenuItem *menuitem,
+                 gpointer            user_data)
 {
     //variables definitions
     INIT_UI();
@@ -1146,7 +1188,8 @@ void callback_FC(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Binarisation" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_binarize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_binarize(UNUSED GtkMenuItem *menuitem,
+                       gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Binarize, data);
@@ -1156,7 +1199,8 @@ void callback_binarize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Binarisation" filter to all Layer
  */
-void callback_binarize_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_binarize_all(UNUSED GtkMenuItem *menuitem,
+                           gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Binarize, data);
@@ -1167,7 +1211,8 @@ void callback_binarize_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Binarisation Coloré" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_binarize_color(UNUSED GtkMenuItem *menuitem,
+                             gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(BinarizeColor, data);
@@ -1177,7 +1222,8 @@ void callback_binarize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Binarisation Coloré" filter to the Layer
  */
-void callback_binarize_color_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_binarize_color_all(UNUSED GtkMenuItem *menuitem,
+                                 gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(BinarizeColor, data);
@@ -1189,7 +1235,8 @@ void callback_binarize_color_all(UNUSED GtkMenuItem *menuitem, gpointer user_dat
  * button to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_convolute_f(UNUSED GtkMenuItem *menuitem,
+                          gpointer            user_data)
 {
     INIT_UI();
     D_PRINT("Convolution", NULL);
@@ -1232,7 +1279,8 @@ void callback_convolute_f(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Niveau de gris" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_grey(UNUSED GtkMenuItem *menuitem,
+                   gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Greyscale, data);
@@ -1242,7 +1290,8 @@ void callback_grey(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Niveau de gris" filter to all Layer
  */
-void callback_grey_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_grey_all(UNUSED GtkMenuItem *menuitem,
+                       gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Greyscale, data);
@@ -1253,7 +1302,8 @@ void callback_grey_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Teinture" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_tinter(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_tinter(UNUSED GtkMenuItem *menuitem,
+                     gpointer            user_data)
 {
     INIT_UI();
     GET_UI(GtkColorChooser, chooser, "ColorTinter");
@@ -1267,7 +1317,8 @@ void callback_tinter(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Accentuation des couleurs" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_colorfull(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_colorfull(UNUSED GtkMenuItem *menuitem,
+                        gpointer            user_data)
 {
     INIT_UI();
     GET_UI(GtkColorChooser, chooser, "ColorTinter");
@@ -1281,7 +1332,8 @@ void callback_colorfull(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Négatif" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_negative(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_negative(UNUSED GtkMenuItem *menuitem,
+                       gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Negative, data);
@@ -1291,7 +1343,8 @@ void callback_negative(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Négatif" filter to the all Layer
  */
-void callback_negative_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_negative_all(UNUSED GtkMenuItem *menuitem,
+                           gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Negative, data);
@@ -1302,7 +1355,8 @@ void callback_negative_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Luminosité-" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_darkness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_darkness(UNUSED GtkMenuItem *menuitem,
+                      gpointer             user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Darkness, data);
@@ -1312,7 +1366,8 @@ void callback_darkness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Luminosité-" filter to all Layer
  */
-void callback_darkness_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_darkness_all(UNUSED GtkMenuItem *menuitem,
+                           gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Darkness, data);
@@ -1323,7 +1378,8 @@ void callback_darkness_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Luminosité+" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_lightness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_lightness(UNUSED GtkMenuItem *menuitem,
+                        gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Lightness, data);
@@ -1333,7 +1389,8 @@ void callback_lightness(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Luminosité+" filter to all Layer
  */
-void callback_lightness_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_lightness_all(UNUSED GtkMenuItem *menuitem,
+                            gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Lightness, data);
@@ -1344,7 +1401,8 @@ void callback_lightness_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Egalisation" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_equalize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_equalize(UNUSED GtkMenuItem *menuitem,
+                       gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Equalize, data);
@@ -1354,7 +1412,8 @@ void callback_equalize(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Egalisation" filter to all Layer
  */
-void callback_equalize_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_equalize_all(UNUSED GtkMenuItem *menuitem,
+                           gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Equalize, data);
@@ -1365,7 +1424,8 @@ void callback_equalize_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Egalisation Coloré" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_equalize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_equalize_color(UNUSED GtkMenuItem *menuitem,
+                             gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Equalize_color, data);
@@ -1375,7 +1435,8 @@ void callback_equalize_color(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Egalisation Coloré" filter to all Layer
  */
-void callback_equalize_color_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_equalize_color_all(UNUSED GtkMenuItem *menuitem,
+                                 gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Equalize_color, data);
@@ -1386,7 +1447,8 @@ void callback_equalize_color_all(UNUSED GtkMenuItem *menuitem, gpointer user_dat
  * Calback to apply "Mirroir Horizontal" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_horizontale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_horizontale(UNUSED GtkMenuItem *menuitem,
+                          gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Horizontale, data);
@@ -1396,7 +1458,8 @@ void callback_horizontale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Mirroir Horizontal" filter to all Layer
  */
-void callback_horizontale_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_horizontale_all(UNUSED GtkMenuItem *menuitem,
+                              gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Horizontale, data);
@@ -1407,7 +1470,8 @@ void callback_horizontale_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Mirroir Vertical" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_verticale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_verticale(UNUSED GtkMenuItem *menuitem,
+                        gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer(Verticale, data);
@@ -1417,14 +1481,16 @@ void callback_verticale(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Mirroir Vertical" filter to all Layer
  */
-void callback_verticale_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_verticale_all(UNUSED GtkMenuItem *menuitem,
+                            gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer(Verticale, data);
 }
 
 
-void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void reset_cursor(UNUSED GtkMenuItem *menuitem,
+                  gpointer            user_data)
 {
     INIT_UI();
     resetCursor(data);
@@ -1438,7 +1504,8 @@ void reset_cursor(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Callback to save the newly created filter using "Créatteur de Filtre" window
  * (Do noting if no filter has been selected)
  */
-void callback_saveFilter(UNUSED GtkButton *btn, gpointer user_data)
+void callback_saveFilter(UNUSED GtkButton *btn,
+                         gpointer          user_data)
 {
     INIT_UI();
     Save_filter(user_data);
@@ -1451,7 +1518,8 @@ void callback_saveFilter(UNUSED GtkButton *btn, gpointer user_data)
  * Calback to apply "Chauf" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_warm(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_warm(UNUSED GtkMenuItem *menuitem,
+                   gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer_color(Color_balance, 100, 255, 255, data);
@@ -1461,7 +1529,8 @@ void callback_warm(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "chaud" filter to all Layer
  */
-void callback_warm_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_warm_all(UNUSED GtkMenuItem *menuitem,
+                       gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer_color(Color_balance, 100, 255, 255, data);
@@ -1472,7 +1541,8 @@ void callback_warm_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Vert" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_green(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_green(UNUSED GtkMenuItem *menuitem,
+                    gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer_color(Color_balance, 255, 100, 255, data);
@@ -1482,7 +1552,8 @@ void callback_green(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Vert" filter to all Layer
  */
-void callback_green_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_green_all(UNUSED GtkMenuItem *menuitem,
+                        gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_all_layer_color(Color_balance, 255, 100, 255, data);
@@ -1493,7 +1564,8 @@ void callback_green_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * Calback to apply "Froid" filter to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_cold(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_cold(UNUSED GtkMenuItem *menuitem,
+                   gpointer            user_data)
 {
     INIT_UI();
     GMPF_filter_apply_to_selected_layer_color(Color_balance, 255, 255, 100, data);
@@ -1503,7 +1575,8 @@ void callback_cold(UNUSED GtkMenuItem *menuitem, gpointer user_data)
 /*
  * Calback to apply "Froid" filter to all Layer
  */
-void callback_cold_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
+void callback_cold_all(UNUSED GtkMenuItem *menuitem,
+                       gpointer            user_data)
 {
     INIT_UI();
 	GMPF_filter_apply_to_all_layer_color(Color_balance, 255, 255, 100, data);
@@ -1515,7 +1588,8 @@ void callback_cold_all(UNUSED GtkMenuItem *menuitem, gpointer user_data)
  * (Do nothing if there is no selected Layer)
  * (Open a dialog to select the *.ftr file)
  */
-void callback_applyFilter(UNUSED GtkWidget *btn, gpointer user_data)
+void callback_applyFilter(UNUSED GtkWidget *btn,
+                          gpointer          user_data)
 {
     //a modifier -> recuprer le fichier du dialog
     INIT_UI();
@@ -1546,4 +1620,106 @@ void callback_applyFilter(UNUSED GtkWidget *btn, gpointer user_data)
     }
 
     gtk_widget_destroy (dialog);
+}
+
+
+/*
+ * Quit the application, free all element and close all window
+ */
+void GMPFquit(gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    layermngr_delete(flowbox);
+    GMPF_saved_state_destroy(flowbox);
+    resetCursor(data);
+    gtk_main_quit();
+}
+
+
+/*
+ * Callback to quit the application
+ * (Ask confirmation before quit)
+ */
+void callback_quit(UNUSED GtkWidget *widget,
+                   gpointer          user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    int confirm = 2;
+    if (!GMPF_saved_state_get_is_saved(flowbox))
+        confirm = open_confirm_quit_without_saving_dialog(user_data);
+    if (confirm == 0)
+    {
+        return;
+    }
+    else if (confirm == 1)
+        if (!GMPF_save_project(user_data))
+            return;
+     GMPFquit(user_data);
+}
+
+
+/*
+ * Callback ask the user if he want to quit the application with the cross
+ * icon on the top right corner of the window
+ * (Ask confirmation before quit)
+ */
+gboolean do_destroy_event(UNUSED GtkWidget *widget,
+                          UNUSED GdkEvent * event,
+                          gpointer          user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    int confirm = 2;
+    if (!GMPF_saved_state_get_is_saved(flowbox))
+        confirm = open_confirm_quit_without_saving_dialog(user_data);
+    if (confirm == 0)
+    {
+        return TRUE;
+    }
+    else if (confirm == 1)
+    {
+        if (!GMPF_save_project(user_data))
+            return TRUE;
+    }
+    GMPFquit(user_data);
+    return FALSE;
+}
+
+
+/*
+ * Callback to clear the LayerMngr and reset it
+ */
+void callback_clear_GMPF_LayerMngr(UNUSED GtkMenuItem *menuitem,
+                                   gpointer            user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    layermngr_clear(flowbox);
+}
+
+
+/*
+ * Callback to remove the selected Layer from the Layer list
+ * (Do nothing if there is no selected Layer)
+ */
+void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem,
+                                    gpointer            user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    layermngr_delete_selected_layer(flowbox);
+    if (!layermngr->layer_list.next)
+    {
+        layermngr->size.w = 0;
+        layermngr->size.h = 0;
+        gtk_widget_set_size_request(layout, 0, 0);
+        gtk_widget_set_size_request(da, 0, 0);
+        gtk_layout_set_size((GtkLayout *)layout, 0, 0);
+    }
+    gtk_widget_queue_draw(da);
 }

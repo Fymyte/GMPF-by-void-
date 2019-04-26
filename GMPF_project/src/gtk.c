@@ -11,35 +11,7 @@
 
 #define CSSTHEME "themes/main.css"
 
-/*typedef struct
-{
-    GtkBuilder *builder;
-    gpointer user_data;
-} SGlobalData;
-*/
 
-    // GMPF_LayerMngr
-void callback_clear_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
-void callback_add_GMPF_Layer(GtkMenuItem *menuitem, gpointer user_data);
-void callback_remove_GMPF_LayerMngr(GtkMenuItem *menuitem, gpointer user_data);
-
-
-
-//pixels operations functions
-// void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green,
-//                             guchar blue, guchar alpha);
-// gboolean gdkpixbuf_get_colors_by_coordinates(GdkPixbuf *pixbuf, gint x,
-//                             gint y, guchar *red, guchar *green, guchar *blue,
-//                             guchar *alpha);
-
-//Other functions
-void GMPFquit(gpointer user_data);
-
-//static gboolean key_event(GtkWidget *widget, GdkEventKey *event);
-
-// struct _GdkPixbuf *imgPixbuf;
-// struct _GdkPixbuf *unchangedPixbuf;
-// const char *interface_file = "interface.glade";
 
 int GMPF_start()
 {
@@ -127,86 +99,4 @@ int GMPF_start()
     gtk_main();
 
     return 0;
-}
-
-void callback_quit(UNUSED GtkWidget *widget, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    int confirm = 2;
-    if (!GMPF_saved_state_get_is_saved(flowbox))
-        confirm = open_confirm_quit_without_saving_dialog(user_data);
-    if (confirm == 0)
-    {
-        return;
-    }
-    else if (confirm == 1)
-        if (!GMPF_save_project(user_data))
-            return;
-     GMPFquit(user_data);
-}
-
-gboolean do_destroy_event(UNUSED GtkWidget *widget, UNUSED GdkEvent *event, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    int confirm = 2;
-    if (!GMPF_saved_state_get_is_saved(flowbox))
-        confirm = open_confirm_quit_without_saving_dialog(user_data);
-    if (confirm == 0)
-    {
-        return TRUE;
-    }
-    else if (confirm == 1)
-    {
-        if (!GMPF_save_project(user_data))
-            return TRUE;
-    }
-    GMPFquit(user_data);
-    return FALSE;
-}
-
-void GMPFquit(gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    layermngr_delete(flowbox);
-    GMPF_saved_state_destroy(flowbox);
-    resetCursor(data);
-    gtk_main_quit();
-}
-
-
-    // GMPF_LayerMngr
-void callback_clear_GMPF_LayerMngr(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    layermngr_clear(flowbox);
-}
-
-void callback_add_GMPF_Layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    layermngr_add_new_layer(flowbox, NULL);
-}
-
-void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem, gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GET_UI(GtkWidget, da, "drawingArea");
-    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    layermngr_delete_selected_layer(flowbox);
-    if (!layermngr->layer_list.next)
-    {
-        layermngr->size.w = 0;
-        layermngr->size.h = 0;
-        gtk_widget_set_size_request(layout, 0, 0);
-        gtk_widget_set_size_request(da, 0, 0);
-        gtk_layout_set_size((GtkLayout *)layout, 0, 0);
-    }
-    gtk_widget_queue_draw(da);
 }

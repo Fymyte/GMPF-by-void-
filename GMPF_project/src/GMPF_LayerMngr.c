@@ -65,7 +65,8 @@ int GMPF_saved_state_get_is_saved(GtkFlowBox *flowbox)
 /*
  * Set the state of the SavedState attached to the flowbox to "state"
  */
-void GMPF_saved_state_set_is_saved(GtkFlowBox *flowbox, int state)
+void GMPF_saved_state_set_is_saved(GtkFlowBox *flowbox,
+                                   int         state)
 {
     GMPF_SavedState *saved_state = GMPF_saved_state_get_saved_state(flowbox);
     saved_state->state = state;
@@ -94,7 +95,8 @@ void layermngr_create(GtkFlowBox *flowbox)
 /*
  * Attach the LayerMngr to the flowbox
  */
-void layermngr_set_to_flowbox(GtkFlowBox *flowbox, GMPF_LayerMngr *layermngr)
+void layermngr_set_to_flowbox(GtkFlowBox     *flowbox,
+                              GMPF_LayerMngr *layermngr)
 {
     layermngr->flowbox = flowbox;
     g_object_set_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME, layermngr);
@@ -293,7 +295,8 @@ GMPF_Layer *layermngr_get_selected_layer(GtkFlowBox *flowbox)
  * (Return: The new layer with the associated image, or image set to NULL if
  * unable to load image at filename)
  */
-GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename)
+GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox,
+                                    const char *filename)
 {
     GMPF_Layer *newlayer = layer_initialization();
     GMPF_LayerMngr *layermngr =
@@ -533,44 +536,3 @@ int pixbuf_standardized(GdkPixbuf **pixbuf)
 
     return is_error;
 }
-//
-// int layer_get_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
-// {
-    //     GdkPixbuf *pixbuf = layer->image;
-    //     guchar *p;
-    //
-    //     if (IS_NOT_IN_LAYER(layer->size, pos))
-    //         return -1;
-    //
-    //     int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-    //     p = gdk_pixbuf_get_pixels (pixbuf);
-    //
-    //     p += pos->y * rowstride + (pos->x << 2);
-    //         // pixels + y * rowstride + x * nb_channels
-    //         // nb_channels is always 4.
-    //     pixel->R = p[0];
-    //     pixel->G = p[1];
-    //     pixel->B = p[2];
-    //     pixel->A = p[3];
-    //     return 0;
-    // }
-//
-// int layer_put_pixel(GMPF_Layer *layer, GMPF_Pos *pos, GMPF_Pixel *pixel)
-// {
-    //     GdkPixbuf *pixbuf = layer->image;
-    //     guchar *pixels, *p;
-    //
-    //     if (IS_NOT_IN_LAYER(layer->size, pos))
-    //         return -1;
-    //
-    //     int rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-    //     pixels = gdk_pixbuf_get_pixels (pixbuf);
-    //
-    //     p = pixels + pos->y * rowstride + (pos->x << 2);
-    //         // pixels + y * rowstride + x * nb_channels
-    //     p[0] = pixel->R;
-    //     p[1] = pixel->G;
-    //     p[2] = pixel->B;
-    //     p[3] = pixel->A;
-    //     return 0;
-        // }

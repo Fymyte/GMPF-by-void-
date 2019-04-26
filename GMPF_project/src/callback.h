@@ -40,11 +40,18 @@ void load_image_cairo(GtkWindow *window,
                       GtkFlowBox *flowbox,
                       char *filename);
 
-void reset_cursor(GtkMenuItem *menuitem, gpointer user_data);
+void reset_cursor(GtkMenuItem *menuitem,
+                  gpointer     user_data);
 
 //drawing functions
-void draw_brush (GtkWidget *widget, gdouble x, gdouble y, gpointer user_data);
-void draw_rubber (GtkWidget *widget, gdouble x, gdouble y,gpointer user_data);
+void draw_brush (GtkWidget  *widget,
+                 gdouble    x,
+                 gdouble    y,
+                 gpointer   user_data);
+void draw_rubber (GtkWidget *widget,
+                  gdouble     x,
+                  gdouble     y,
+                  gpointer    user_data);
 
 
 #endif

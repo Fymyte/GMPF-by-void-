@@ -1,7 +1,14 @@
 #include "brush.h"
 
-void square_brush(GtkWidget *widget, cairo_t *cr, int x, int y, int size,
-                        float red, float green, float blue, float alpha)
+void square_brush(GtkWidget *widget,
+                  cairo_t   *cr,
+                  int        x,
+                  int        y,
+                  int        size,
+                  float      red,
+                  float      green,
+                  float      blue,
+                  float      alpha)
 {
     int semi_size = size >> 1;
     int nx = x - semi_size;
@@ -20,9 +27,20 @@ void square_brush(GtkWidget *widget, cairo_t *cr, int x, int y, int size,
     gtk_widget_queue_draw_area (widget, nx, ny, size, size);
 }
 
-void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y, double rx, double ry,
-                double radius, float red, float green, float blue, float alpha,
-                float scale_x, float scale_y, GMPF_LayerMngr *layermngr)
+void circular_brush(GtkWidget      *widget,
+                    cairo_t        *cr,
+                    double          x,
+                    double          y,
+                    double          rx,
+                    double          ry,
+                    double          radius,
+                    float           red,
+                    float           green,
+                    float           blue,
+                    float           alpha,
+                    float           scale_x,
+                    float           scale_y,
+                    GMPF_LayerMngr *layermngr)
 {
     float refreshx, refreshy;
     int width, height;
@@ -67,7 +85,10 @@ void circular_brush(GtkWidget *widget, cairo_t *cr, double x, double y, double r
             width * scale_x + 20, height * scale_y + 20);
 }
 
-void selector(UNUSED GtkWidget *widget, double x, double y, GMPF_LayerMngr *layermngr)
+void selector(UNUSED GtkWidget *widget,
+             double             x,
+             double             y,
+             GMPF_LayerMngr    *layermngr)
 {
     if (layermngr->pos.x == -1)
     {
