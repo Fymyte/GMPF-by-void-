@@ -126,7 +126,8 @@ void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*,
  */
 void Lightness(GMPF_Layer *lay)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -173,7 +174,8 @@ void Lightness(GMPF_Layer *lay)
  */
 void Darkness(GMPF_Layer *lay)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -220,7 +222,8 @@ void Darkness(GMPF_Layer *lay)
  */
 void Greyscale(GMPF_Layer *lay)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -254,7 +257,8 @@ void Greyscale(GMPF_Layer *lay)
  */
 void Negative(GMPF_Layer *lay)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -289,7 +293,8 @@ void Negative(GMPF_Layer *lay)
  */
 void Binarize(GMPF_Layer *lay)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -328,7 +333,8 @@ void Binarize(GMPF_Layer *lay)
  */
 void BinarizeColor(GMPF_Layer *lay)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -379,7 +385,8 @@ void Tinter(GMPF_Layer      *lay,
     if (!lay)
         return;
 
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -432,7 +439,8 @@ void Colorfull(GMPF_Layer      *lay,
     guchar r, g, b, factor;
     GdkRGBA rgba;
 
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -494,7 +502,8 @@ void Convolute(SGlobalData *data, double *mat)
         return;
     GMPF_saved_state_set_is_saved(flowbox, 0);
 
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -570,7 +579,8 @@ void Convolute(SGlobalData *data, double *mat)
  */
 void Equalize(GMPF_Layer *lay)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -648,7 +658,8 @@ void Equalize(GMPF_Layer *lay)
  */
 void Verticale(GMPF_Layer *lay)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -688,7 +699,8 @@ void Verticale(GMPF_Layer *lay)
  */
 void Horizontale(GMPF_Layer *lay)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -727,7 +739,8 @@ void Horizontale(GMPF_Layer *lay)
  */
 void Equalize_color(GMPF_Layer *lay)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;
@@ -841,7 +854,8 @@ void Equalize_color(GMPF_Layer *lay)
  */
 void Color_balance(GMPF_Layer *lay, guchar r, guchar g, guchar b)
 {
-    g_object_unref(lay->image);
+    if (lay->image)
+        g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
     GdkPixbuf *imgPixbuf = lay->image;

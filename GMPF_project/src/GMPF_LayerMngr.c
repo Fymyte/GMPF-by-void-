@@ -18,7 +18,10 @@ GMPF_Selection *GMPF_selection_init(GtkFlowBox *flowbox)
     if (!selection)
         return NULL;
     selection->surface = NULL;
-    selection->pos = {.x = 0, .y = 0};
+    selection->size.w = 0;
+    selection->size.h = 0;
+    selection->pos.x = 0;
+    selection->pos.y = 0;
     g_object_set_data(G_OBJECT(flowbox), SELECTION_KEY_NAME, selection);
     return selection;
 }
@@ -80,6 +83,7 @@ cairo_surface_t *GMPF_selection_get_surface(GtkFlowBox *flowbox)
 
 /*
  * Set the surface of the Selection attached to the flowbox
+ * (Be carfull: destroy the older surface)
  * (Return: 0 if there is no error, 1 if it is unable to get the selection)
  */
 int GMPF_selection_set_surface(GtkFlowBox      *flowbox,
@@ -89,6 +93,8 @@ int GMPF_selection_set_surface(GtkFlowBox      *flowbox,
                                                         SELECTION_KEY_NAME);
     if (!selection)
         return 1;
+    if (selection->surface)
+        cairo_surface_destroy(selection->surface);
     selection->surface = surface;
     return 0;
 }
@@ -98,11 +104,11 @@ int GMPF_selection_set_surface(GtkFlowBox      *flowbox,
  * Return the Position of the Selection attached to the flowbox
  * (Return: the position of the selection, or NULL if Selection is invalid)
  */
-GMPF_Pos GMPF_selection_get_pos(GtkFlowBox *flowbox)
+GMPF_Pos *GMPF_selection_get_pos(GtkFlowBox *flowbox)
 {
-    GMPF_Selection *selection = g_object_get_data((G_OBJECT(flowbox),
-                                                        SELECTION_KEY_NAME));
-    return selection ? selection->pos : NULL;
+    GMPF_Selection *selection = g_object_get_data(G_OBJECT(flowbox),
+                                                        SELECTION_KEY_NAME);
+    return selection ? &selection->pos : NULL;
 }
 
 
@@ -112,14 +118,42 @@ GMPF_Pos GMPF_selection_get_pos(GtkFlowBox *flowbox)
 */
 int GMPF_selection_set_pos(GtkFlowBox *flowbox,
                            GMPF_Pos    pos)
-    {
-        GMPF_Selection *selection = g_object_get_data(G_OBJECT(flowbox),
-        SELECTION_KEY_NAME);
-        if (!selection)
+{
+    GMPF_Selection *selection = g_object_get_data(G_OBJECT(flowbox),
+                                                        SELECTION_KEY_NAME);
+    if (!selection)
         return 1;
-        selection->pos = pos;
-        return 0;
-    }
+    selection->pos = pos;
+    return 0;
+}
+
+
+/*
+ * Return the Size of the Selection attached to the flowbox
+ * (Return: the size of the selection, or NULL if Selection is invalid)
+ */
+GMPF_Size *GMPF_selection_get_size(GtkFlowBox *flowbox)
+{
+    GMPF_Selection *selection = g_object_get_data(G_OBJECT(flowbox),
+                                                        SELECTION_KEY_NAME);
+    return selection ? &selection->size : NULL;
+}
+
+
+/*
+* Set the Size of the Selection attached to the flowbox
+* (Return: 0 if there is no error, 1 if it is unable to get the selection)
+*/
+int GMPF_selection_set_size(GtkFlowBox *flowbox,
+                           GMPF_Size    size)
+{
+    GMPF_Selection *selection = g_object_get_data(G_OBJECT(flowbox),
+                                                        SELECTION_KEY_NAME);
+    if (!selection)
+        return 1;
+    selection->size = size;
+    return 0;
+}
 
 /**************************End of Selected Surface*****************************/
 
@@ -561,7 +595,8 @@ void layer_delete(GMPF_Layer *layer)
     list_remove(&(layer->list));
 
     // remove and free the GtkFlowBoxChild from the GtkFlowBox
-    gtk_widget_destroy((GtkWidget *) layer->UIElement);
+    if (layer->UIElement)
+        gtk_widget_destroy((GtkWidget *) layer->UIElement);
 
     if (layer->icon != NULL)
         g_object_unref(layer->icon);
@@ -581,6 +616,8 @@ void layer_delete(GMPF_Layer *layer)
  */
 void layer_icon_refresh(GMPF_Layer *layer)
 {
+    if (!layer->UIIcon)
+        return;
     float ratio1 = layer->size.w / 160.0;
     float ratio2 = layer->size.h / 90.0;
     int finalh = 90;
@@ -594,7 +631,6 @@ void layer_icon_refresh(GMPF_Layer *layer)
         g_object_unref(layer->icon);
     layer->icon = gdk_pixbuf_scale_simple(layer->image, finalw, finalh,
                          GDK_INTERP_BILINEAR);
-
     gtk_image_set_from_pixbuf(layer->UIIcon, layer->icon);
 }
 

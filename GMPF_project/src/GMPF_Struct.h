@@ -54,14 +54,6 @@ struct GMPF_Pos {
     int x, y;
 };
 
-/*
- * A structure to store the selection
- * of the user
- */
-struct GMPF_Selection {
-    cairo_surface_t *surface;
-    GMPF_Pos pos;
-};
 
 /*
  * A structure to store ar size
@@ -69,6 +61,17 @@ struct GMPF_Selection {
  */
 struct GMPF_Size {
     int h, w;
+};
+
+
+/*
+* A structure to store the selection
+* of the user
+*/
+struct GMPF_Selection {
+    cairo_surface_t *surface;
+    GMPF_Size size;
+    GMPF_Pos pos;
 };
 
 
@@ -86,8 +89,7 @@ struct GMPF_Scale {
  * (red, green, blue and alpha properties)
  */
 struct GMPF_Pixel {
-    unsigned long R, G, B, A;
-    //Uint8 R, G, B, A;
+    unsigned char R, G, B, A;
 };
 
 

@@ -1,8 +1,13 @@
 #include "callback.h"
 
+
 /*
- * Open a dialog with 3 buttons: "Annuler", "Savegarder" and "Confirmer"
- * (Return: 0 for "Annuler", 1 for "Sauverager" and 2 for "Confirmer")
+ * PURPOSE : Open a dialog with 3 buttons: "Annuler", "Savegarder" and "Confirmer"
+ *  PARAMS : gpointer user_data -
+ * RETURNS : int - 0 for "Annuler"
+ *                 1 for "Sauvegarder"
+ *                 2 for "Confirmer"
+ *   NOTES :
  */
 int open_confirm_quit_without_saving_dialog(gpointer user_data)
 {
@@ -36,8 +41,11 @@ int open_confirm_quit_without_saving_dialog(gpointer user_data)
 
 
 /*
- * Load a CSS styleSheet located at filename
- * (Do nothing if filename is incorect)
+ * PURPOSE : Load a CSS styleSheet located at filename
+ *  PARAMS : GdkScreen  *screen - The Screen to apply the theme
+ *           const char *filename - The location of the theme's file
+ * RETURNS : None
+ *   NOTES : Do nothing if filename is incorect
  */
 void load_theme(GdkScreen  *screen,
                 const char *filename)
@@ -60,7 +68,11 @@ void load_theme(GdkScreen  *screen,
 
 
 /*
- * Callback to load a GTK-CSS theme
+ * PURPOSE : Open a dialog to choose the CSS theme to load
+ *  PARAMS : UNUSED GtkWidget *widget - UNUSED
+ *           gpointer          user_data - contain the builder
+ * RETURNS : None
+ *   NOTES :
  */
 void callback_load_theme(UNUSED GtkWidget *widget,
                          gpointer          user_data)
@@ -97,8 +109,12 @@ void callback_load_theme(UNUSED GtkWidget *widget,
 
 
 /*
- * Open a new GMPF or IMAGE file
- * (Open a Dialog and open the selected file)
+ * PURPOSE : Open a Dialog and open the selected file
+ *  PARAMS : GtkWindow      *window - the window to transient the dialog
+ *           GMPF_LayerMngr *layermngr - the LayerMngr with the last filename
+ *           GtkFlowBox     *flowbox - the flowbox used to laod an image
+ * RETURNS : None
+ *   NOTES : Use to open a new GMPF or IMAGE file
  */
 void open_new_file(GtkWindow      *window,
                    GMPF_LayerMngr *layermngr,
@@ -731,6 +747,9 @@ gboolean callback_button_press_event (GtkWidget      *widget,
     else if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_KILLER)
         kill_color(widget, .2, user_data);
 
+    else if(event->button == GDK_BUTTON_PRIMARY & tool == SELECTOR)
+        { layermngr->pos.x = event->x; layermngr->pos.y = event->y; }
+
     /* We've handled the event, stop processing */
     return TRUE;
 }
@@ -741,23 +760,76 @@ gboolean callback_button_press_event (GtkWidget      *widget,
  * (Reset the positon of the LayerMngr, update the SavedState of the project and
  * refresh the icon of the selected Layer)
  */
-gboolean callback_button_release_event(UNUSED GtkWidget      *widget,
-                                       UNUSED GdkEventButton *event,
-                                       gpointer               user_data)
+gboolean callback_button_release_event(UNUSED GtkWidget *widget,
+                                       GdkEventButton   *event,
+                                       gpointer          user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkSpinButton, button, "RotateDegreeSpinButton");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (layermngr->tool == SELECTOR)
+    {
+        GMPF_Pos pos = { .x = layermngr->pos.x, .y = layermngr->pos.y };
+        GMPF_Pos npos = { .x = event->x, .y = event->y };
+        GMPF_Size size = { .w = 0, .h = 0};
+        layermngr->pos.x = -1;
+        layermngr->pos.y = -1;
+
+        if (pos.x == npos.x || pos.y == npos.y)
+            return TRUE;
+
+        if (pos.x < npos.x)
+        {
+            size.w = npos.x - pos.x;
+        }
+        else
+        {
+            pos.x = npos.x;
+            size.w = pos.x - npos.x;
+        }
+        if (pos.y < npos.y)
+        {
+            size.h = npos.y - pos.y;
+        }
+        else
+        {
+            pos.y = npos.y;
+            size.h = pos.y - npos.y;
+        }
+        GMPF_selection_set_pos(flowbox, pos);
+        GMPF_selection_set_size(flowbox, size);
+        if (!lay)
+            return FALSE;
+        cairo_surface_t *new_surf = cairo_surface_create_similar_image(lay->surface,
+                                                            CAIRO_FORMAT_ARGB32,
+                                                            size.w,
+                                                            size.h);
+        cairo_t *cr = cairo_create(new_surf);
+        D_PRINT("pos: (%i, %i)", pos.x, pos.y);
+        cairo_set_source_surface(cr, lay->surface, pos.x, pos.y);
+        cairo_paint(cr);
+        GMPF_selection_set_surface(flowbox, new_surf);
+        GMPF_Layer *selec_lay = layer_initialization();
+        selec_lay->surface = new_surf;
+        selec_lay->size.w = size.w;
+        selec_lay->size.h = size.h;
+        Binarize(selec_lay);
+        GMPF_selection_set_surface(flowbox, selec_lay->surface);
+        if (selec_lay->image)
+            g_object_unref(selec_lay->image);
+        free(selec_lay);
+        return TRUE;
+    }
 
     layermngr->pos.x = -1;
     layermngr->pos.y = -1;
     GMPF_Tool tool = layermngr->tool;
     if (tool == PAINTER || tool == ERAISER)
-    GMPF_saved_state_set_is_saved(flowbox, 0);
-    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+        GMPF_saved_state_set_is_saved(flowbox, 0);
     if (!lay)
-    return FALSE;
+        return FALSE;
 
     REFRESH_IMAGE(lay);
 
@@ -827,6 +899,16 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
+    }
+    cairo_surface_t *selec_surface = GMPF_selection_get_surface(flowbox);
+    if (selec_surface)
+    {
+        GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+        D_PRINT("printing selection at pos (%i, %i)", pos.x, pos.y);
+        cairo_save(cr);
+        cairo_set_source_surface(cr, selec_surface, 0, 0);
+        cairo_paint(cr);
+        cairo_restore(cr);
     }
     // if (layermngr->surface != NULL)
     // {

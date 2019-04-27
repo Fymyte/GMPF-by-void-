@@ -1,9 +1,19 @@
 #include "brush.h"
 
+
 /*
- * Make a square shape collored with "red", "green", "blue" and "alpha"
- * parameters at the given position
- * (affect only the surface associated with the given cairo context)
+ * PURPOSE : Make a square collored shape collored at the given position
+ *  PARAMS : GtkWidget *widget -
+ *           cairo_t   *cr - cairo context associated with the surface to paint on
+ *           int        x - x position to paint
+ *           int        y - y position to paint
+ *           int        size - size of the brush
+ *           float      red - red channel for brush
+ *           float      green - green channel for brush
+ *           float      blue - blue channel for brush
+ *           float      alpha - alpha channel for brush
+ * RETURNS : None
+ *   NOTES : affect only the surface associated with the given cairo context
  */
 void square_brush(GtkWidget *widget,
                   cairo_t   *cr,
@@ -99,15 +109,21 @@ void circular_brush(GtkWidget      *widget,
 }
 
 
-/*
- * Copy the selected area inside of a new surface with it's given position on
- * the surface and update the LayerMngr's point
- */
 // TODO
+/*
+ * PURPOSE : Copy the selected area inside of a new surface with it's given
+ * position on the surface and update the LayerMngr's point
+ *  PARAMS : UNUSED GtkWidget *widget -
+ *           double             x - x positon to select
+ *           double             y - y position to select
+ *           GMPF_LayerMngr    *layermngr -
+ * RETURNS : None
+ *   NOTES :
+ */
 void selector(UNUSED GtkWidget *widget,
-             double             x,
-             double             y,
-             GMPF_LayerMngr    *layermngr)
+              double             x,
+              double             y,
+              GMPF_LayerMngr    *layermngr)
 {
     if (layermngr->pos.x == -1)
     {
@@ -116,6 +132,6 @@ void selector(UNUSED GtkWidget *widget,
     }
     else
     {
-        
+
     }
 }

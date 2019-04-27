@@ -45,9 +45,12 @@ GMPF_Selection *GMPF_selection_set_selection(GtkFlowBox     *flowbox,
 cairo_surface_t *GMPF_selection_get_surface(GtkFlowBox *flowbox);
 int GMPF_selection_set_surface(GtkFlowBox      *flowbox,
                                cairo_surface_t *surface);
-GMPF_Pos GMPF_selection_get_pos(GtkFlowBox *flowbox);
+GMPF_Pos *GMPF_selection_get_pos(GtkFlowBox *flowbox);
 int GMPF_selection_set_pos(GtkFlowBox *flowbox,
                            GMPF_Pos    pos);
+GMPF_Size *GMPF_selection_get_size(GtkFlowBox *flowbox);
+int GMPF_selection_set_size(GtkFlowBox *flowbox,
+                           GMPF_Size    size);
 
 /*************************End of Selection functions***************************/
 
