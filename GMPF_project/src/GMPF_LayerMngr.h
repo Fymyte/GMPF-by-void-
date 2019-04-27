@@ -18,6 +18,7 @@
 #define LAYERMNGR_KEY_NAME "GMPF_layermngr"
 #define LAYER_KEY_NAME "GMPF_layer"
 #define SAVED_STATE_KEY_NAME "GMPF_saved_state"
+#define SELECTION_KEY_NAME "GMPF_selection"
 
 #define INIT_LAYER_UI(_layerui) \
     gtk_widget_set_sensitive(image, TRUE); \
@@ -34,6 +35,21 @@
     gtk_widget_set_margin_start(image, 5); \
     gtk_widget_set_margin_end(image, 5); \
 
+/*****************************Selection functions******************************/
+
+GMPF_Selection *GMPF_selection_init(GtkFlowBox *flowbox);
+void GMPF_selection_destroy(GtkFlowBox *flowbox);
+GMPF_Selection *GMPF_selection_get_selection(GtkFlowBox *flowbox);
+GMPF_Selection *GMPF_selection_set_selection(GtkFlowBox     *flowbox,
+                                             GMPF_Selection *selection);
+cairo_surface_t *GMPF_selection_get_surface(GtkFlowBox *flowbox);
+int GMPF_selection_set_surface(GtkFlowBox      *flowbox,
+                               cairo_surface_t *surface);
+GMPF_Pos GMPF_selection_get_pos(GtkFlowBox *flowbox);
+int GMPF_selection_set_pos(GtkFlowBox *flowbox,
+                           GMPF_Pos    pos);
+
+/*************************End of Selection functions***************************/
 
 /****************************Saved State functions*****************************/
 

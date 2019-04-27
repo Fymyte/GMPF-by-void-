@@ -1659,6 +1659,7 @@ void GMPFquit(gpointer user_data)
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     layermngr_delete(flowbox);
     GMPF_saved_state_destroy(flowbox);
+    GMPF_selection_destroy(flowbox);
     resetCursor(data);
     gtk_main_quit();
 }

@@ -59,8 +59,8 @@ struct GMPF_Pos {
  * of the user
  */
 struct GMPF_Selection {
-    GdkPixbuf *selection;
-    GMPF_Pos selec_origin;
+    cairo_surface_t *surface;
+    GMPF_Pos pos;
 };
 
 /*
@@ -151,7 +151,6 @@ struct GMPF_LayerMngr {
     int nb_layer;
     GMPF_Tool tool;
     GMPF_List layer_list;
-    GMPF_Selection selection;
 
     char *filename;
 

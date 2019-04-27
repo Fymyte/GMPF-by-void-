@@ -6,6 +6,123 @@
        (pos->x < 0 || pos->x >= size.w || \
         pos->y < 0 || pos->y >= size.h )
 
+/***************************Selected Surface Code******************************/
+
+/*
+ * Init a new Selection structure and attached it to the flowbox
+ * (Return: the selection, or NULL if in can't malloc)
+ */
+GMPF_Selection *GMPF_selection_init(GtkFlowBox *flowbox)
+{
+    GMPF_Selection *selection = malloc (sizeof(GMPF_Selection));
+    if (!selection)
+        return NULL;
+    selection->surface = NULL;
+    selection->pos = {.x = 0, .y = 0};
+    g_object_set_data(G_OBJECT(flowbox), SELECTION_KEY_NAME, selection);
+    return selection;
+}
+
+
+/*
+ * Destroy the Selection attached to the flowbox and free it
+ */
+void GMPF_selection_destroy(GtkFlowBox *flowbox)
+{
+    GMPF_Selection *selection = GMPF_selection_get_selection(flowbox);
+    if (!selection)
+        return;
+    if (selection->surface)
+        cairo_surface_destroy(selection->surface);
+    free(selection);
+    g_object_set_data(G_OBJECT(flowbox), SELECTION_KEY_NAME, NULL);
+}
+
+
+/*
+ * Return the Selection attached to the flowbox
+ * (Return: The Selection, or NULL if there is no Selection attached to the
+ * flowbox)
+ */
+GMPF_Selection *GMPF_selection_get_selection(GtkFlowBox *flowbox)
+{
+    return g_object_get_data(G_OBJECT(flowbox), SELECTION_KEY_NAME);
+}
+
+
+/*
+ * Return the previous Selection attached to the flowbox and set the given
+ * Selection as the new Selection attached to the flowbox
+ * (Return: the previous Selection, or NULL if they were no one before)
+ */
+GMPF_Selection *GMPF_selection_set_selection(GtkFlowBox     *flowbox,
+                                             GMPF_Selection *selection)
+{
+    GMPF_Selection *prev_selec = g_object_get_data(G_OBJECT(flowbox),
+                                                        SELECTION_KEY_NAME);
+    g_object_set_data(G_OBJECT(flowbox), SELECTION_KEY_NAME, selection);
+    return prev_selec;
+}
+
+
+/*
+ * Return the surface of the Selection attached to the flowbox
+ * (Return: the surface of the selection, or NULL if Selection is invalid or
+ * if there is no surface attached to the selection)
+ */
+cairo_surface_t *GMPF_selection_get_surface(GtkFlowBox *flowbox)
+{
+    GMPF_Selection *selection = g_object_get_data(G_OBJECT(flowbox),
+                                                        SELECTION_KEY_NAME);
+    return selection ? selection->surface : NULL;
+}
+
+
+/*
+ * Set the surface of the Selection attached to the flowbox
+ * (Return: 0 if there is no error, 1 if it is unable to get the selection)
+ */
+int GMPF_selection_set_surface(GtkFlowBox      *flowbox,
+                               cairo_surface_t *surface)
+{
+    GMPF_Selection *selection = g_object_get_data(G_OBJECT(flowbox),
+                                                        SELECTION_KEY_NAME);
+    if (!selection)
+        return 1;
+    selection->surface = surface;
+    return 0;
+}
+
+
+/*
+ * Return the Position of the Selection attached to the flowbox
+ * (Return: the position of the selection, or NULL if Selection is invalid)
+ */
+GMPF_Pos GMPF_selection_get_pos(GtkFlowBox *flowbox)
+{
+    GMPF_Selection *selection = g_object_get_data((G_OBJECT(flowbox),
+                                                        SELECTION_KEY_NAME));
+    return selection ? selection->pos : NULL;
+}
+
+
+/*
+* Set the Position of the Selection attached to the flowbox
+* (Return: 0 if there is no error, 1 if it is unable to get the selection)
+*/
+int GMPF_selection_set_pos(GtkFlowBox *flowbox,
+                           GMPF_Pos    pos)
+    {
+        GMPF_Selection *selection = g_object_get_data(G_OBJECT(flowbox),
+        SELECTION_KEY_NAME);
+        if (!selection)
+        return 1;
+        selection->pos = pos;
+        return 0;
+    }
+
+/**************************End of Selected Surface*****************************/
+
 
 /******************************Saved State Code********************************/
 
