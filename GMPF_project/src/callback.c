@@ -767,6 +767,7 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkSpinButton, button, "RotateDegreeSpinButton");
+    GET_UI(GtkWidget, da, "drawingArea");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     if (layermngr->tool == SELECTOR)
@@ -776,6 +777,10 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
         GMPF_Size size = { .w = 0, .h = 0};
         layermngr->pos.x = -1;
         layermngr->pos.y = -1;
+        D_PRINT("pos: (%i, %i)", pos.x, pos.y);
+        D_PRINT("npos: (%i, %i)", npos.x, npos.y);
+        if (!lay)
+            return FALSE;
 
         if (pos.x == npos.x || pos.y == npos.y)
             return TRUE;
@@ -786,8 +791,8 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
         }
         else
         {
-            pos.x = npos.x;
             size.w = pos.x - npos.x;
+            pos.x = npos.x;
         }
         if (pos.y < npos.y)
         {
@@ -795,28 +800,31 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
         }
         else
         {
-            pos.y = npos.y;
             size.h = pos.y - npos.y;
+            pos.y = npos.y;
         }
+        D_PRINT("size: .w = %d, .h = %d", size.w, size.h);
         GMPF_selection_set_pos(flowbox, pos);
         GMPF_selection_set_size(flowbox, size);
-        if (!lay)
-            return FALSE;
-        cairo_surface_t *new_surf = cairo_surface_create_similar_image(lay->surface,
-                                                            CAIRO_FORMAT_ARGB32,
-                                                            size.w,
-                                                            size.h);
+
+        cairo_surface_t *new_surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                                                                size.w,
+                                                                size.h);
         cairo_t *cr = cairo_create(new_surf);
-        D_PRINT("pos: (%i, %i)", pos.x, pos.y);
-        cairo_set_source_surface(cr, lay->surface, pos.x, pos.y);
+        cairo_set_source_surface(cr, lay->surface, -pos.x, -pos.y);
         cairo_paint(cr);
-        GMPF_selection_set_surface(flowbox, new_surf);
         GMPF_Layer *selec_lay = layer_initialization();
         selec_lay->surface = new_surf;
         selec_lay->size.w = size.w;
         selec_lay->size.h = size.h;
+
+        selec_lay->pos.x = pos.x;
+        selec_lay->pos.y = pos.y;
+
+
         Binarize(selec_lay);
         GMPF_selection_set_surface(flowbox, selec_lay->surface);
+        gtk_widget_queue_draw(da);
         if (selec_lay->image)
             g_object_unref(selec_lay->image);
         free(selec_lay);
@@ -906,7 +914,7 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
         GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
         D_PRINT("printing selection at pos (%i, %i)", pos.x, pos.y);
         cairo_save(cr);
-        cairo_set_source_surface(cr, selec_surface, 0, 0);
+        cairo_set_source_surface(cr, selec_surface, pos.x, pos.y);
         cairo_paint(cr);
         cairo_restore(cr);
     }
