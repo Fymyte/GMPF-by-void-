@@ -18,6 +18,7 @@ typedef struct GMPF_Size GMPF_Size;
 typedef struct GMPF_Scale GMPF_Scale;
 typedef struct GMPF_Pixel GMPF_Pixel;
 typedef struct GMPF_Layer GMPF_Layer;
+typedef struct GMPF_Selection GMPF_Selection;
 typedef struct GMPF_LayerMngr GMPF_LayerMngr;
 
 /*
@@ -60,7 +61,7 @@ struct GMPF_Pos {
 struct GMPF_Selection {
     GdkPixbuf *selection;
     GMPF_Pos selec_origin;
-}
+};
 
 /*
  * A structure to store ar size
