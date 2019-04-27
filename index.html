@@ -1,29 +1,702 @@
+<!DOCTYPE html>
 <html>
-	<head>
-		<title>GMPF by void*</title>
-		<link href="main.css" rel="stylesheet"/>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, intitial-scale=1">
-	</head>
-	<index>
-	<p><br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/></p>
-	<div style="text-align:center">
-			<a href="accueil.html"><img src="images/GMPF_grd.png" class="center_index"></a>
-	</div>
+<title>GMPF by void*</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="images/GMPF_white.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .mySlides {display:none}
+    .w3-tag, .fa {cursor:pointer}
+    .w3-tag {height:15px;width:15px;padding:0;margin-top:6px}
+</style>
+<body id="myPage">
 
-	
-</index>
+<!-- Slideshow on click -->
+<div id="mySlideShow" class="w3-modal">
+  <div class="w3-modal-content w3-card-4 w3-animate-top">
+    <header class="w3-container w3-teal w3-display-container">
+      <span onclick="document.getElementById('mySlideShow').style.display='none';" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
+      <h4>Plus d'images</h4>
+    </header>
+    <div class="w3-container" style="padding: 0%">
+      <div class="w3-display-container mySlides2">
+        <img src="Modified_images/1.png" style="width:100%">
+        <div class="w3-display-topleft w3-container w3-padding-32">
+          <span class="w3-white w3-padding-large w3-animate-bottom">Image original</span>
+        </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/2.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Nuances de gris</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/3.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Négatif</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/4.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Luminosité-</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/5.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Luminosité+</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/6.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Egalisation colorée</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/7.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Egalisation</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/8.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Accentuation des couleurs</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/9.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Froid</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/10.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Chaud</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/11.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Bords</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/12.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Epine</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/13.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Flou</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/14.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Binarisation colorée</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides2">
+          <img src="Modified_images/15.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Binarisation</span>
+          </div>
+      </div>
+
+      <!-- Slideshow next/previous buttons -->
+      <div class="w3-container w3-dark-grey w3-padding w3-xlarge">
+        <div class="w3-left" onclick="plusDivs2(-1)"><i class="fa fa-arrow-circle-left w3-hover-text-teal"></i></div>
+        <div class="w3-right" onclick="plusDivs2(1)"><i class="fa fa-arrow-circle-right w3-hover-text-teal"></i></div>
+
+        <div class="w3-center">
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(1)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(2)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(3)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(4)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(5)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(6)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(7)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(8)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(9)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(10)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(11)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(12)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(13)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(14)"></span>
+          <span class="w3-tag demodots2 w3-border w3-transparent w3-hover-white" onclick="currentDiv2(15)"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navbar -->
+<div class="w3-top">
+ <div class="w3-bar w3-theme-d2 w3-left-align">
+  <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-hover-white w3-theme-d2" href="javascript:void(0);" onclick="openElementById('smallNavBar')"><i class="fa fa-bars"></i></a>
+  <a href="#" class="w3-bar-item w3-button w3-teal"><i class="fa fa-home w3-margin-right"></i>GMPF</a>
+  <a href="#team" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Equipe</a>
+  <a href="#project" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Projet</a>
+  <a href="#download" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Télecharger</a>
+  <a href="#news" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Actualités</a>
+  <a href="#contact" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Contact</a>
+  <div class="w3-dropdown-hover w3-hide-small">
+    <button class="w3-button" title="Notifications">Dropdown <i class="fa fa-caret-down"></i></button>
+    <div class="w3-dropdown-content w3-card-4 w3-bar-block">
+      <a href="#" class="w3-bar-item w3-button">Link</a>
+      <a href="#" class="w3-bar-item w3-button">Link</a>
+      <a href="#" class="w3-bar-item w3-button">Link</a>
+    </div>
+  </div>
+ </div>
+
+  <!-- Navbar on small screens -->
+  <div id="smallNavBar" class="w3-bar-block w3-theme-d2 w3-hide w3-hide-large w3-hide-medium">
+    <a href="#team" class="w3-bar-item w3-button">Equipe</a>
+    <a href="#project" class="w3-bar-item w3-button">Projet</a>
+    <a href="#download" class="w3-bar-item w3-button">Télechargement</a>
+    <a href="#news" class="w3-bar-item w3-button">Actualités</a>
+    <a href="#contact" class="w3-bar-item w3-button">Contact</a>
+  </div>
+</div>
+
+<!-- Header Image -->
+<div class="w3-display-container w3-animate-opacity">
+  <img src="images/photography2.png" alt="boat" style="width:100%;min-height:100px;">
+  <div class="w3-container w3-display-bottomleft w3-margin-bottom">
+    <button onclick="document.getElementById('ProjectDesc').style.display='block'" class="w3-button w3-xlarge w3-theme w3-hover-teal" title="About GMPF">Void *</button>
+  </div>
+</div>
+
+<!-- Project's description (inside modal window) -->
+<div id="ProjectDesc" class="w3-modal">
+  <div class="w3-modal-content w3-card-4 w3-animate-top">
+    <header class="w3-container w3-teal w3-display-container">
+      <span onclick="document.getElementById('ProjectDesc').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
+      <h4>A propos de GMPF</h4>
+    </header>
+    <div class="w3-container">
+      <p style="text-align: justifys">
+          Le projet GMPF, Graphic Maestro Photo Formaat, sera réalisé par un groupe composé de quatre étudiants de deuxième année d'EPITA sur une période de cinq mois.
+          Ce site internet permettra de voir la progression du projet (rubrique "actualités") ainsi que les liens que nous avons utilisés. Ce projet permettra à chacun d'acquérir
+          de nouvelles connaissances et une meilleure maîtrise du langage C.
+      </p>
+      <p>©2019. void*, Inc. Graphic Maestro Photo FormaatTM, GMPFTM and all logos are registered trademark of void*, Inc. All rights reserved.</p>
+    </div>
+    <footer class="w3-container w3-teal">
+      <p></p>
+    </footer>
+  </div>
+</div>
+
+<!-- Samory's Personnal description (inside modal window) -->
+<div id="SamoryDesc" class="w3-modal">
+  <div class="w3-modal-content w3-card-4 w3-animate-top">
+    <header class="w3-container w3-teal w3-display-container">
+      <span onclick="document.getElementById('SamoryDesc').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
+      <h4>Samory Diaby</h4>
+    </header>
+    <div class="w3-container">
+      <p style="text-align: justifys">
+          Je m’intéresse beaucoup au domaine de la robotique que j’apprécie particulièrement, et qui m’a poussé à construire quelques montages et petits robots à l’aide
+          de la plate-forme arduino. Je pratique également différentes activités sportives comme le tennis ou le basketball, car selon moi, il est important de toujours
+          pratiquer une activité physique.
+      </p>
+    </div>
+    <footer class="w3-container w3-teal">
+      <p></p>
+    </footer>
+  </div>
+</div>
+
+<!-- Pierrick's Personnal description (inside modal window) -->
+<div id="PierrickDesc" class="w3-modal">
+  <div class="w3-modal-content w3-card-4 w3-animate-top">
+    <header class="w3-container w3-teal w3-display-container">
+      <span onclick="document.getElementById('PierrickDesc').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
+      <h4>Pierrick Guillaume</h4>
+    </header>
+    <div class="w3-container">
+      <p style="text-align: justify">
+          J’espère réaliser durant ce quatrième semestre mon dernier projet en cycle préparatoire. L’année dernière, j’ai eu la chance de faire un projet de groupe.
+          Nous devions réaliser un jeu Snake en trois dimensions, grâce à l’outil Unity. Cette année, l’objectif sera de créer une application de retouche d’images
+          similaire à Photoshop ou GIMP mais en un peu plus simple. En effet, ces logiciels ont été développés par des professionnels et sur plusieurs années.
+          J’espère réussir à travailler de manière efficace avec les membres de mon groupe afin de travailler main dans la main vers un but commun et aboutir à une application
+          efficace et simple d’utilisation.
+      </p>
+      <p style="text-align: justify">
+          Le projet de l’année dernière m’a montré comment il pouvait être difficile de coordonner les efforts dans un groupe pour obtenir un projet respectant au mieux
+          le cahier des charges initiale. Je m’étais retrouvé chef de projet et il avait fallu que je motive les membres de mon groupe à plusieurs reprise au cours de l’année.
+      </p>
+    </div>
+    <footer class="w3-container w3-teal">
+      <p></p>
+    </footer>
+  </div>
+</div>
+
+<!-- Arnaud's Personnal description (inside modal window) -->
+<div id="ArnaudDesc" class="w3-modal">
+  <div class="w3-modal-content w3-card-4 w3-animate-top">
+    <header class="w3-container w3-teal w3-display-container">
+      <span onclick="document.getElementById('ArnaudDesc').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
+      <h4>Arnaud Cassez</h4>
+    </header>
+    <div class="w3-container">
+      <p style="text-align: justify">
+          Avant d’entrer à Epita, je n’avais jamais vraiment codé. J’ai pu, l’an dernier, progresser grâce au projet et aux cours de programmation.
+          Cette année, le projet est de bien plus grande envergure et s’annonce comme un défi encore plus grand que l’an passé et je compte donner le meilleur de moi-même
+          pour aider le groupe.
+      </p>
+      <p style="text-align: justify">
+          L’idée de faire un logiciel d’édition d’images m’inspire beaucoup. J’espère en apprendre encore plus sur le langage C au cours de ce projet et renforcer
+          les connaissances acquises lors des cours de programmation.
+      </p>
+    </div>
+    <footer class="w3-container w3-teal">
+      <p></p>
+    </footer>
+  </div>
+</div>
+
+<!-- Sabine's Personnal description (inside modal window) -->
+<div id="SabineDesc" class="w3-modal">
+  <div class="w3-modal-content w3-card-4 w3-animate-top">
+    <header class="w3-container w3-teal w3-display-container">
+      <span onclick="document.getElementById('SabineDesc').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
+      <h4>Arnaud Cassez</h4>
+    </header>
+    <div class="w3-container">
+      <p style="text-align: justify">
+          Durant ces derniers mois, j’ai eu l’occasion de réaliser deux projets en groupe : un jeu vidéo ainsi qu’un logiciel de reconnaissance de caractères.
+          Grâce à ces deux projets, j’ai acquis de nombreuses connaissances qui me sont très utiles. En effet, lors de la réalisation du jeu, j’ai pu découvrir comment
+          réaliser un site et lors du second projet, j’ai implémenté un réseau de neurones capable de reconnaître des caractères.
+      </p>
+      <p style="text-align: justify">
+          Le projet GMPF, un logiciel de retouche d’images, est une fois plus une occasion à saisir pour travailler en groupe. Ayant déjà réalisé un projet avec certains coéquipiers,
+          j’ai entièrement confiance en eux pour à au mieux ce nouveau projet. De mon côté, j’espère acquérir de connaissances durant ces prochains mois.
+      </p>
+    </div>
+    <footer class="w3-container w3-teal">
+      <p></p>
+    </footer>
+  </div>
+</div>
+
+<!-- Team Container -->
+<div class="w3-container w3-padding-64 w3-center" id="team">
+  <h2>NOTRE EQUIPE</h2>
+  <p>Rencontrer nos développeurs confirmés</p>
+
+  <div class="w3-row"><br>
+
+    <!-- Samory's face -->
+    <div class="w3-quarter">
+      <input type="image" src="images/samory.diaby_square.png" style="width:45%" class="w3-circle w3-hover-opacity"
+            onclick="document.getElementById('SamoryDesc').style.display='block'"/>
+      <h3>Samory Diaby</h3>
+      <p>Chef de projet</p>
+    </div>
+
+    <!-- Pierrick's face -->
+    <div class="w3-quarter">
+        <input type="image" src="images/pierrick.guillaume_square.png" style="width:45%" class="w3-circle w3-hover-opacity"
+              onclick="document.getElementById('PierrickDesc').style.display='block'"/>
+      <h3>Pierrick Guillaume</h3>
+      <p>Larbin</p>
+    </div>
+
+    <!-- Arnaud's face -->
+    <div class="w3-quarter">
+        <input type="image" src="images/arnaud.cassez_square.png" style="width:45%" class="w3-circle w3-hover-opacity"
+              onclick="document.getElementById('ArnaudDesc').style.display='block'"/>
+      <h3>Arnaud Cassez</h3>
+      <p>Larbin</p>
+    </div>
+
+    <!-- Sabine's face -->
+    <div class="w3-quarter">
+        <input type="image" src="images/sabine.hu_square.png" style="width:45%" class="w3-circle w3-hover-opacity"
+              onclick="document.getElementById('SabineDesc').style.display='block'"/>
+      <h3>Sabine Hu</h3>
+      <p>Larbin</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Project's description (with imgaes to show filters) -->
+<div class="w3-row-padding w3-padding-64 w3-theme-l1" id="project">
+
+  <div class="w3-third">
+  <h2 style="text-decoration: underline">Notre projet</h2>
+  <p style="text-align: justify">
+      Notre projet est, comme dit précédemment, un logiciel de retouche et d’édition d'images. Il permettra donc d’interagir avec des photos grâce à l’application de filtres,
+      de fusion d’images, de rotations sur ces dernières, etc. Le principe du projet est de pouvoir facilement et intuitivement apporter des modifications à ses images grâce
+      aux outils que nous fournirons avec une interface graphique.
+      Il permettra donc de charger des images et de les sauvegarder, ainsi que sauvegarder les modifications intermédiaires dans des fichiers spécifiques à notre application
+      pour pouvoir reprendre la modification plus tard.
+  </p>
+  <br>
+  <h2 style="text-decoration: underline">Intérêt</h2>
+  <p style="text-align: justify">
+      L'intérêt de ce projet pour le groupe est de travailler avec la gestion de la mémoire et d'approfondir nos connaissances en C. En effet, bien qu'il ne s'agit pour
+      aucun d'entre nous du premier projet à réaliser en groupe, cela reste toujours aussi bénéfique d'avoir l'occasion de réaliser un projet en équipe.
+      Ce projet devrait nous apporter à chacun une meilleure maîtrise du langage C. De plus, nous aurons l'occasion de découvrir de nouvelles notions concernant la conception
+      d'interface graphique et le traitement d'images afin d'approfondir les connaissances que nous avons acquises en réalisant le projet du semestre précédent
+      (Reconnaissance de caractères).
+  </p>
+  </div>
+  <!-- Image Slideshow (to show filters examples) -->
+  <div class="w3-twothird">
+    <!-- Slideshow -->
+    <div class="w3-container">
+      <div class="w3-display-container mySlides">
+        <img src="Modified_images/1.png" style="width:100%">
+        <div class="w3-display-topleft w3-container w3-padding-32">
+          <span class="w3-white w3-padding-large w3-animate-bottom">Image original</span>
+        </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/2.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Nuances de gris</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/3.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Négatif</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/4.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Luminosité-</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/5.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Luminosité+</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/6.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Egalisation colorée</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/7.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Egalisation</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/8.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Accentuation des couleurs</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/9.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Froid</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/10.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Chaud</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/11.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Bords</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/12.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Epine</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/13.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Flou</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/14.png" style="width:100%">
+          <div class="w3-display-topright w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Binarisation colorée</span>
+          </div>
+      </div>
+      <div class="w3-display-container mySlides">
+          <img src="Modified_images/15.png" style="width:100%">
+          <div class="w3-display-topleft w3-container w3-padding-32">
+            <span class="w3-white w3-padding-large w3-animate-bottom">Binarisation</span>
+          </div>
+      </div>
+
+      <!-- Slideshow next/previous buttons -->
+      <div class="w3-container w3-dark-grey w3-padding w3-xlarge">
+        <div class="w3-left" onclick="plusDivs(-1)"><i class="fa fa-arrow-circle-left w3-hover-text-teal"></i></div>
+        <div class="w3-right" onclick="plusDivs(1)"><i class="fa fa-arrow-circle-right w3-hover-text-teal"></i></div>
+
+        <div class="w3-center">
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(1)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(2)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(3)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(4)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(5)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(6)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(7)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(8)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(9)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(10)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(11)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(12)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(13)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(14)"></span>
+          <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(15)"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Button to display sidebar -->
+<div class="w3-container" style="position:relative">
+  <button onclick="showDivs2(1);document.getElementById('mySlideShow').style.display='block'" class="w3-button w3-xlarge w3-circle w3-teal"
+  style="position:absolute;top:-28px;right:24px">+</a>
+</div>
+
+<!-- Download Section -->
+<div class="w3-row-padding w3-center w3-padding-64" id="download">
+  <h2>TELECHARGEMENT</h2>
+  <p>Télécharger la version la plus récente du projet GMPF</p><br>
+  <div class="w3-half w3-margin-top">
+    <a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.5.zip" class="w3-btn w3-teal w3-padding-64"
+        style="width: 75%;"><i class="fa fa-download"></i> Dernière version</a>
+  </div>
+  <div class="w3-container w3-half w3-margin-top" style="padding-right:64px;padding-left:64px">
+    <table class="w3-table w3-bordered w3-padding-right">
+      <tr>
+        <th>Version</th>
+        <th>Date</th>
+        <th>Télécharger</th>
+      </tr>
+      <tr>
+        <td>v0.0.1</td>
+        <td>Février 2019</td>
+        <td><a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.1.zip">(zip)</a> /
+            <a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.1.tar.gz">(tar.gz)</a></td>
+      </tr>
+      <tr>
+        <td>v0.0.1b</td>
+        <td>Février 2019</td>
+        <td><a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.1b.zip">(zip)</a> /
+            <a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.1b.tar.gz">(tar.gz)</a></td>
+      </tr>
+      <tr>
+        <td>v0.0.1c</td>
+        <td>Février 2019</td>
+        <td><a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.1c.zip">(zip)</a> /
+            <a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.1c.tar.gz">(tar.gz)</a></td>
+      </tr>
+      <tr>
+        <td>v0.0.2</td>
+        <td>Février 2019</td>
+        <td><a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.2.zip">(zip)</a> /
+            <a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.2.tar.gz">(tar.gz)</a></td>
+      </tr>
+      <tr>
+        <td>v0.0.5</td>
+        <td>Février 2019</td>
+        <td><a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.5.zip">(zip)</a> /
+            <a href="https://github.com/Fymyte/GMPF-by-void-/archive/v0.0.5.tar.gz">(tar.gz)</a></td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- News section -->
+<div class="w3-container w3-paddind-64 w3-center w3-theme-l2 w3-padding" id="news">
+  <h2>ACTUALITES</h2>
+  <p>Toutes les dernières nouveauté sur GMPF</p><br>
+  <button onclick="openElementById('December')" class="w3-button w3-block w3-left-align w3-border">Décembre 2018</button>
+  <div class="w3-container w3-hide" id="December">
+    <ul class="w3-ul w3-teal w3-left-align">
+      <li>Formation du groupe.</li>
+      <li>Rendu du synopsis (disponible dans la rubrique "Liens").</li>
+    </ul>
+  </div>
+  <button onclick="openElementById('January')" class="w3-button w3-block w3-left-align w3-border">Janvier 2019</button>
+  <div class="w3-container w3-hide" id="January">
+    <ul class="w3-ul w3-teal w3-left-align">
+      <li>Rendu du cahier des charges.</li>
+      <li>Création du site internet.</li>
+      <li>Création de l'interface.</li>
+    </ul>
+  </div>
+  <button onclick="openElementById('February')" class="w3-button w3-block w3-left-align w3-border">Février 2019</button>
+  <div class="w3-container w3-hide" id="February">
+    <ul class="w3-ul w3-teal w3-left-align">
+      <li>Améliorations de l'interface.</li>
+      <li>Création des calques.</li>
+      <li>Création de filtres.</li>
+      <li>Première soutenance. (20 février)</li>
+    </ul>
+  </div>
+  <button onclick="openElementById('March')" class="w3-button w3-block w3-left-align w3-border">Mars 2019</button>
+  <div class="w3-container w3-hide" id="March">
+    <ul class="w3-ul w3-teal w3-left-align">
+      <li>Améliorations de l'interface.</li>
+      <li>Avancées des calques : suppression, création de calques.</li>
+      <li>Ajout d'images dans les images défilantes</li>
+      <li>Possibilité de dessiner et effacer.</li>
+    </ul>
+  </div>
+  <button onclick="openElementById('April')" class="w3-button w3-block w3-left-align w3-border">Avril 2019</button>
+  <div class="w3-container w3-hide" id="April">
+    <ul class="w3-ul w3-teal w3-left-align">
+      <li>Création de nouveaux filtres.</li>
+      <li>Ajout des filtres et calques à l'interface.</li>
+      <li>Ajout de couleurs à l'interface.</li>
+      <li>Avancées des calques.</li>
+      <li>Sauvegarde complète du projet</li>
+      <li>Ajout de la possibilité d'ajouter des calques proprement au projet</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Contact Container -->
+<div class="w3-container w3-padding-64 w3-theme-l5" id="contact">
+  <div class="w3-row w3-padding-64">
+    <div class="w3-half w3-center">
+    <div class="w3-padding-16"><span class="w3-xlarge w3-border-teal w3-bottombar">Nous contacter</span></div>
+      <h3>Address</h3>
+      <p><i class="fa fa-map-marker w3-text-teal w3-xlarge"></i>  Epita Villejuif, France (94800)</p>
+      <p><i class="fa fa-envelope-o w3-text-teal w3-xlarge"></i>  gmpf_project@gmail.com</p>
+    </div>
+    <div class="w3-half w3-center">
+      <a href="https://discord.gg/R4h7CTE" class="w3-btn w3-teal w3-padding-64"
+          style="width: 75%;"><i class="fa fa-download"></i> Rejoindre notre discord</a>
+    </div>
+  </div>
+</div>
+
+<!-- Image of location/map -->
+<img src="images/map.png" class="w3-image w3-greyscale-min" style="width:100%;">
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-32 w3-theme-d1 w3-center">
+  <h4>Retrouvez nous sur</h4>
+  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Facebook"><i class="fa fa-facebook"></i></a>
+  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Twitter"><i class="fa fa-twitter"></i></a>
+  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Google +"><i class="fa fa-google-plus"></i></a>
+  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Instagram"><i class="fa fa-instagram"></i></a>
+  <a class="w3-button w3-large w3-teal w3-hide-small" href="javascript:void(0)" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+  <p>GMPF, 2019</p>
+
+  <div style="position:relative;bottom:100px;z-index:1;" class="w3-tooltip w3-right">
+    <span class="w3-text w3-padding w3-teal w3-hide-small">Go To Top</span>
+    <a class="w3-button w3-theme" href="#myPage"><span class="w3-xlarge">
+    <i class="fa fa-chevron-circle-up"></i></span></a>
+  </div>
+</footer>
+
+<script>
+var slideIndex = 1;
+var slideIndex2 = 1
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function plusDivs2(n) {
+  showDivs2(slideIndex2 += n);
+}
+
+function currentDiv(n) {
+    showDivs(slideIndex = n)
+}
+
+function currentDiv2(n) {
+    showDivs2(slideIndex2 = n)
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("demodots");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length} ;
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-white", "");
+  }
+  x[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " w3-white";
+}
+
+function showDivs2(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides2");
+  var dots = document.getElementsByClassName("demodots2");
+  if (n > x.length) {slideIndex2 = 1}
+  if (n < 1) {slideIndex2 = x.length} ;
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-white", "");
+  }
+  x[slideIndex2-1].style.display = "block";
+  dots[slideIndex2-1].className += " w3-white";
+}
+// Script for side navigation
+function w3_open() {
+  var x = document.getElementById("mySidebar2");
+  x.style.width = "300px";
+  x.style.paddingTop = "10%";
+  x.style.display = "block";
+}
+
+// Close side navigation
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+
+// Used to toggle the menu on smaller screens when clicking on the menu button
+function openElementById(id) {
+  var x = document.getElementById(id);
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else {
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+</script>
+
+</body>
 </html>
