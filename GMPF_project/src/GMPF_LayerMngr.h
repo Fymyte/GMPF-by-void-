@@ -19,6 +19,7 @@
 #define LAYER_KEY_NAME "GMPF_layer"
 #define SAVED_STATE_KEY_NAME "GMPF_saved_state"
 #define SELECTION_KEY_NAME "GMPF_selection"
+#define BUFFER_KEY_NAME "GMPF_buffer"
 
 #define INIT_LAYER_UI(_layerui) \
     gtk_widget_set_sensitive(image, TRUE); \
