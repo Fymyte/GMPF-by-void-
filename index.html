@@ -151,9 +151,9 @@
   <a href="#news" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Actualités</a>
   <a href="#contact" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Contact</a>
   <div class="w3-dropdown-hover w3-hide-small">
-    <button class="w3-button" title="Notifications">Dropdown <i class="fa fa-caret-down"></i></button>
+    <button class="w3-button" title="Notifications">Images <i class="fa fa-caret-down"></i></button>
     <div class="w3-dropdown-content w3-card-4 w3-bar-block">
-      <a href="#" class="w3-bar-item w3-button">Link</a>
+      <a href="#" class="w3-bar-item w3-button" onclick="document.getElementById('Image1').style.display='block'">Image 1</a>
       <a href="#" class="w3-bar-item w3-button">Link</a>
       <a href="#" class="w3-bar-item w3-button">Link</a>
     </div>
@@ -167,6 +167,23 @@
     <a href="#download" class="w3-bar-item w3-button">Télechargement</a>
     <a href="#news" class="w3-bar-item w3-button">Actualités</a>
     <a href="#contact" class="w3-bar-item w3-button">Contact</a>
+  </div>
+</div>
+
+
+<!-- Modificated images -->
+<div id="Image1" class="w3-modal">
+  <div class="w3-modal-content w3-card-4 w3-animate-top">
+    <header class="w3-container w3-teal w3-display-container">
+      <span onclick="document.getElementById('Image1').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
+      <h4>Image 1</h4>
+    </header>
+    <div class="w3-container">
+	<img src="Modified_images/9.png" style="width:100%"> <!-- Change image -->
+    </div>
+    <footer class="w3-container w3-teal">
+      <p></br></p>
+    </footer>
   </div>
 </div>
 
@@ -341,7 +358,7 @@
   <div class="w3-third">
   <h2 style="text-decoration: underline">Notre projet</h2>
   <p style="text-align: justify">
-      Notre projet est, comme dit précédemment, un logiciel de retouche et d’édition d'images. Il permettra donc d’interagir avec des photos grâce à l’application de filtres,
+      Notre projet est un logiciel de retouche et d’édition d'images. Il permettra donc d’interagir avec des photos grâce à l’application de filtres,
       de fusion d’images, de rotations sur ces dernières, etc. Le principe du projet est de pouvoir facilement et intuitivement apporter des modifications à ses images grâce
       aux outils que nous fournirons avec une interface graphique.
       Il permettra donc de charger des images et de les sauvegarder, ainsi que sauvegarder les modifications intermédiaires dans des fichiers spécifiques à notre application
@@ -544,7 +561,7 @@
   <div class="w3-container w3-hide" id="December">
     <ul class="w3-ul w3-teal w3-left-align">
       <li>Formation du groupe.</li>
-      <li>Rendu du synopsis (disponible dans la rubrique "Liens").</li>
+      <li>Rendu du synopsis.</li>
     </ul>
   </div>
   <button onclick="openElementById('January')" class="w3-button w3-block w3-left-align w3-border">Janvier 2019</button>
@@ -582,6 +599,15 @@
       <li>Avancées des calques.</li>
       <li>Sauvegarde complète du projet.</li>
       <li>Ajout de la possibilité d'ajouter des calques proprement au projet.</li>
+      <li>Modification du site internet.</li>
+    </ul>
+  </div>
+  <button onclick="openElementById('May')" class="w3-button w3-block w3-left-align w3-border">Mai 2019</button>
+  <div class="w3-container w3-hide" id="May">
+    <ul class="w3-ul w3-teal w3-left-align">
+      <li>Modification du site internet.</li>
+      <li>Ajout de la sélection.</li>
+      <li>Ajout de thèmes.</li>
     </ul>
   </div>
 </div>
@@ -608,11 +634,11 @@
 <!-- Footer -->
 <footer class="w3-container w3-padding-32 w3-theme-d1 w3-center">
   <h4>Retrouvez nous sur</h4>
-  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Facebook"><i class="fa fa-facebook"></i></a>
-  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Twitter"><i class="fa fa-twitter"></i></a>
-  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Google +"><i class="fa fa-google-plus"></i></a>
-  <a class="w3-button w3-large w3-teal" href="javascript:void(0)" title="Instagram"><i class="fa fa-instagram"></i></a>
-  <a class="w3-button w3-large w3-teal w3-hide-small" href="javascript:void(0)" title="Linkedin"><i class="fa fa-linkedin"></i></a>
+  <a class="w3-button w3-large w3-teal" href="https://www.facebook.com" title="Facebook"><i class="fa fa-facebook"></i></a>
+  <a class="w3-button w3-large w3-teal" href="https://www.twitter.com" title="Twitter"><i class="fa fa-twitter"></i></a>
+  <a class="w3-button w3-large w3-teal" href="https://www.google.com" title="Google +"><i class="fa fa-google-plus"></i></a>
+  <a class="w3-button w3-large w3-teal" href="https://www.instagram.com" title="Instagram"><i class="fa fa-instagram"></i></a>
+  <a class="w3-button w3-large w3-teal w3-hide-small" href="https://fr.linkedin.com" title="Linkedin"><i class="fa fa-linkedin"></i></a>
   <p>GMPF, 2019</p>
 
   <div style="position:relative;bottom:100px;z-index:1;" class="w3-tooltip w3-right">
