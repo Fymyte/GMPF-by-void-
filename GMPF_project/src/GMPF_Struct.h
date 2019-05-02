@@ -58,8 +58,7 @@ enum GMPF_Tool {
  */
 enum GMPF_Action {
     INCORECT_ACTION,
-    MOVE_UP,
-    MOVE_DOWN,
+    MOVE,
     MODIF_IMAGE,
     CHANGE_NAME,
     DELETE,

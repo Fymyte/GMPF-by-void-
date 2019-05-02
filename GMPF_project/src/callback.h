@@ -16,7 +16,10 @@
 
 /**************************Includes from Personal Files************************/
 #include "cursor.h"
+#include "gtk.h"
+#include "buffer.h"
 #include "GMPF_LayerMngr.h"
+#include "GMPF_Struct.h"
 #include "Matrix.h"
 #include "Img_rgb.h"
 #include "pixel_op.h"

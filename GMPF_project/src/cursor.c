@@ -36,7 +36,7 @@ void pick_color_on_screen(int              x,
 /*
  * Reset the cusror icon to it'sn system default icon
  */
-void resetCursor(SGlobalData* data)
+void resetCursor(GtkWindow *window)
 {
     //init variables
     GdkDisplay *display = NULL;
@@ -45,7 +45,7 @@ void resetCursor(SGlobalData* data)
     GdkWindow * win = NULL;
 
     //set variables
-    screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
+    screen = gtk_window_get_screen(window);
     display = gdk_screen_get_display(screen);
 
     //create the new cursor

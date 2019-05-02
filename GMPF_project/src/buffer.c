@@ -54,8 +54,8 @@ GMPF_Buffer *GMPF_buffer_get_buffer(GtkFlowBox *flowbox)
  * Associate the given Buffer to the given flowbox
  * (Return: the previous Buffer, or NULL if they were no one)
  */
-GMPF_Buffer *GMPF_buffer_set_buffer(GtkFlowBox        *flowbox,
-                                          GMPF_Buffer *buffer)
+GMPF_Buffer *GMPF_buffer_set_buffer(GtkFlowBox  *flowbox,
+                                    GMPF_Buffer *buffer)
 {
     GMPF_Buffer *prev_buf = GMPF_buffer_get_buffer(flowbox);
 
@@ -67,7 +67,70 @@ GMPF_Buffer *GMPF_buffer_set_buffer(GtkFlowBox        *flowbox,
     }
 
     g_object_set_data(G_OBJECT(flowbox), BUFFER_KEY_NAME, buffer);
+
     return prev_buf;
+}
+
+
+int GMPF_buffer_undo(GtkFlowBox *flowbox)
+{
+    GMPF_Buffer *buffer = GMPF_buffer_get_buffer(flowbox);
+    if (!buffer)
+    {
+        PRINTERR("Unable to get buffer");
+        return 1;
+    }
+
+    GMPF_BufferElement *element = buffer_get_current_element(buffer);
+    GMPF_Action action = buffer_undo(buffer);
+
+    switch (action) {
+        case INCORECT_ACTION: PRINTERR("Enconter an incorect action");
+        case MOVE: D_PRINT("MOVE ACTION", NULL);
+                   break;
+        case MODIF_IMAGE: D_PRINT("MODIF_IMAGE ACTION", NULL);
+                          break;
+        case CHANGE_NAME: D_PRINT("CHANGE_NAME ACTION", NULL);
+                          break;
+        case DELETE: D_PRINT("DELETE ACTION", NULL);
+                     break;
+        case ADD: D_PRINT("ADD ACTION", NULL);
+                  break;
+        default: D_PRINT("UNKNOWN ACTION", NULL);
+    }
+
+    return 0;
+}
+
+
+int GMPF_buffer_redo(GtkFlowBox *flowbox)
+{
+    GMPF_Buffer *buffer = GMPF_buffer_get_buffer(flowbox);
+    if (!buffer)
+    {
+        PRINTERR("Unable to get buffer");
+        return 1;
+    }
+
+    GMPF_Action action = buffer_redo(buffer);
+    GMPF_BufferElement *element = buffer_get_current_element(buffer);
+
+    switch (action) {
+        case INCORECT_ACTION: PRINTERR("Enconter an incorect action");
+        case MOVE: D_PRINT("MOVE ACTION", NULL);
+                   break;
+        case MODIF_IMAGE: D_PRINT("MODIF_IMAGE ACTION", NULL);
+                          break;
+        case CHANGE_NAME: D_PRINT("CHANGE_NAME ACTION", NULL);
+                          break;
+        case DELETE: D_PRINT("DELETE ACTION", NULL);
+                     break;
+        case ADD: D_PRINT("ADD ACTION", NULL);
+                  break;
+        default: D_PRINT("UNKNOWN ACTION", NULL);
+    }
+
+    return 0;
 }
 
 /******************************Code for buffer*********************************/
@@ -143,7 +206,7 @@ void buffer_destroy(GMPF_Buffer *buffer)
  *           FILE        *file - the filestream to add (Accept NULL value)
  * RETURNS : int - 0 if there were no error, else 1
  *   NOTES : Do nothing if the given Buffer or Action is invalid.
-             Delete the first entered element if the Buffer is full.
+ *           Delete the first entered element if the Buffer is full.
  */
 int buffer_add(GMPF_Buffer *buffer,
                 GMPF_Action action,
@@ -193,8 +256,8 @@ GMPF_Action buffer_undo(GMPF_Buffer *buffer)
  * PURPOSE : Return the current filestream associated with the current action
  *           in the given Buffer
  *  PARAMS : GMPF_Buffer *buffer - The Buffer witch contain the filestream
- * RETURNS : FILE - The filestream at the current position, or NULL if there is
- *                  no assocated filestream
+ * RETURNS : GMPF_BufferElement * - The Element at the current position,
+ *           or NULL if there is no assocated Element
  *   NOTES : Do nothing if the buffer is invalid
  */
 GMPF_BufferElement *buffer_get_current_element(GMPF_Buffer *buffer)
@@ -211,7 +274,7 @@ GMPF_BufferElement *buffer_get_current_element(GMPF_Buffer *buffer)
  */
 GMPF_Action buffer_redo(GMPF_Buffer *buffer)
 {
-    GMPF_Action action = buffer->buffer[buffer->pos];
     buffer->pos = (buffer->pos + 1) % BUFFER_SIZE;
+    GMPF_Action action = buffer->buffer[buffer->pos];
     return action;
 }

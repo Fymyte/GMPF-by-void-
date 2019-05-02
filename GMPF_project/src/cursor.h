@@ -15,7 +15,7 @@ void pick_color_on_screen(int              x,
                           int              y,
                           GtkColorChooser *colorChooser,
                           gpointer         user_data);
-void resetCursor(SGlobalData* data);
+void resetCursor(GtkWindow *window);
 void stayInWindow(SGlobalData* data);
 void resizeCuror(SGlobalData* data, int size);
 void callback_setCursor(SGlobalData* data);

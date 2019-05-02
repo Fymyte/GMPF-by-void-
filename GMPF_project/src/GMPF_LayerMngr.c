@@ -271,6 +271,7 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
     list_init(&(layermngr->layer_list));
 
     layermngr->brush_size = 4;
+    layermngr->brush = CIRCULAR;
 
     layermngr->image = NULL;
     layermngr->display_image = NULL;

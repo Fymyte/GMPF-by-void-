@@ -175,6 +175,8 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
                        NULL, NULL);
 
     layer->surface = gdk_cairo_surface_create_from_pixbuf(layer->image, 0, NULL);
+    layer->scale_factor.x = 1;
+    layer->scale_factor.y = 1;
 
     GtkWidget *image = gtk_image_new();
 
@@ -254,7 +256,8 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
  * Load the project at the given filename and associat it to the given flowbox
  * (Return: 0 if there is no error, else 1)
  */
-char load_project(GtkFlowBox *flowbox, const char *filename)
+char load_project(GtkFlowBox *flowbox,
+                  const char *filename)
 {
     // only read the file
     FILE *file = fopen(filename, "rb"); // read as binary => rb
@@ -266,7 +269,7 @@ char load_project(GtkFlowBox *flowbox, const char *filename)
     char err = load_layermngr(flowbox, file);
     if (err)
     {
-        if (fclose(file)) { PRINTERR ("Unable to close filestream")};
+        if (fclose(file)) { PRINTERR ("Unable to close filestream"); }
         PRINTERR ("Unable to load LayerMngr");
         return 1;
     }

@@ -1,16 +1,4 @@
-#include <gtk-3.0/gtk/gtk.h>
-#include <err.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "cursor.h"
-
-#include "GMPF_LayerMngr.h"
-
-#define INTERFACE_NAME "interface.glade"
-
-#define CSSTHEME "themes/main.css"
-
+#include "gtk.h"
 
 /*
  * Init all variables and UI element of the application and launch it
@@ -56,7 +44,7 @@ int GMPF_start()
     Main_window = GTK_WIDGET(gtk_builder_get_object (data.builder, "MainWindow"));
     //g_signal_connect(Main_window, "key-release-event", G_CALLBACK(key_event), NULL);
 
-    resetCursor(&data);
+    // resetCursor(&data);
 
 
 
@@ -66,8 +54,10 @@ int GMPF_start()
     layermngr_create(flowbox);
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     layermngr->brush_size = 4;
+
     GMPF_saved_state_init(flowbox);
     GMPF_selection_init(flowbox);
+    GMPF_buffer_init(flowbox);
 
     GtkWidget *da = NULL;
     da = GTK_WIDGET(gtk_builder_get_object(data.builder, "drawingArea"));
@@ -102,4 +92,19 @@ int GMPF_start()
     gtk_main();
 
     return 0;
+}
+
+
+/*
+ * Quit the application, free all element and close all window
+ */
+void GMPF_quit (GtkFlowBox *flowbox,
+                GtkWindow  *window)
+{
+    layermngr_delete(flowbox);
+    GMPF_saved_state_destroy(flowbox);
+    GMPF_selection_destroy(flowbox);
+    GMPF_buffer_destroy(flowbox);
+    resetCursor(window);
+    gtk_main_quit();
 }

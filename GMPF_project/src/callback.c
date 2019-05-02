@@ -718,7 +718,8 @@ gboolean callback_leave_notify_event (UNUSED GtkWidget *widget,
                                       gpointer           user_data)
 {
     INIT_UI();
-    resetCursor(data);
+    GET_UI(GtkWindow, window, "MainWindow");
+    resetCursor(window);
     return TRUE;
 }
 
@@ -1614,7 +1615,8 @@ void reset_cursor(UNUSED GtkMenuItem *menuitem,
                   gpointer            user_data)
 {
     INIT_UI();
-    resetCursor(data);
+    GET_UI(GtkWindow, window, "MainWindow");
+    resetCursor(window);
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     layermngr->tool = INCORECT_TOOL;
@@ -1745,21 +1747,6 @@ void callback_applyFilter(UNUSED GtkWidget *btn,
 
 
 /*
- * Quit the application, free all element and close all window
- */
-void GMPFquit(gpointer user_data)
-{
-    INIT_UI();
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    layermngr_delete(flowbox);
-    GMPF_saved_state_destroy(flowbox);
-    GMPF_selection_destroy(flowbox);
-    resetCursor(data);
-    gtk_main_quit();
-}
-
-
-/*
  * Callback to quit the application
  * (Ask confirmation before quit)
  */
@@ -1768,17 +1755,20 @@ void callback_quit(UNUSED GtkWidget *widget,
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWindow, window, "MainWindow");
     int confirm = 2;
+
     if (!GMPF_saved_state_get_is_saved(flowbox))
         confirm = open_confirm_quit_without_saving_dialog(user_data);
+
     if (confirm == 0)
-    {
         return;
-    }
+
     else if (confirm == 1)
         if (!GMPF_save_project(user_data))
             return;
-     GMPFquit(user_data);
+
+    GMPF_quit(flowbox, window);
 }
 
 
@@ -1793,19 +1783,19 @@ gboolean do_destroy_event(UNUSED GtkWidget *widget,
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWindow, window, "MainWindow");
     int confirm = 2;
     if (!GMPF_saved_state_get_is_saved(flowbox))
         confirm = open_confirm_quit_without_saving_dialog(user_data);
+
     if (confirm == 0)
-    {
         return TRUE;
-    }
+
     else if (confirm == 1)
-    {
         if (!GMPF_save_project(user_data))
             return TRUE;
-    }
-    GMPFquit(user_data);
+
+    GMPF_quit(flowbox, window);
     return FALSE;
 }
 
