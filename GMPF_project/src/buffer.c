@@ -5,16 +5,18 @@
  * Create a new Buffer and attach it to the given flowbox
  * (Return: the newly created Buffer, or NULL if it is unable to malloc)
  */
-s_buffer *GMPF_buffer_init(GtkFlowBox *flowbox)
+GMPF_Buffer *GMPF_buffer_init(GtkFlowBox *flowbox)
 {
-    s_buffer *buff = buffer_create();
-    if (!buff)
+    GMPF_Buffer *buffer = buffer_create();
+
+    if (!buffer)
     {
-        PRINTERR;
-        return;
+        PRINTERR ("No created buffer");
+        return NULL;
     }
-    g_object_set_data(G_OBJECT(flowbox), BUFFER_KEY_NAME, buff);
-    return buff;
+
+    g_object_set_data(G_OBJECT(flowbox), BUFFER_KEY_NAME, buffer);
+    return buffer;
 }
 
 
@@ -24,10 +26,12 @@ s_buffer *GMPF_buffer_init(GtkFlowBox *flowbox)
  */
 void GMPF_buffer_destroy(GtkFlowBox *flowbox)
 {
-    s_buffer *buff = GMPF_buffer_get_buffer(flowbox);
-    if (!buff)
+    GMPF_Buffer *buffer = GMPF_buffer_get_buffer(flowbox);
+
+    if (!buffer)
         return;
-    buffer_destroy(buff);
+
+    buffer_destroy(buffer);
     g_object_set_data(G_OBJECT(flowbox), BUFFER_KEY_NAME, NULL);
 }
 
@@ -36,9 +40,10 @@ void GMPF_buffer_destroy(GtkFlowBox *flowbox)
  * Return the Buffer associated with the given flowbox
  * (Return: the Buffer, or NULL if there is no associated Buffer)
  */
-s_buffer *GMPF_buffer_get_buffer(GtkFlowBox *flowbox)
+GMPF_Buffer *GMPF_buffer_get_buffer(GtkFlowBox *flowbox)
 {
-    return (s_buffer *)g_object_get_data(G_OBJECT(flowbox), BUFFER_KEY_NAME);
+    return (GMPF_Buffer *)g_object_get_data(G_OBJECT(flowbox),
+                                                  BUFFER_KEY_NAME);
 }
 
 
@@ -46,16 +51,19 @@ s_buffer *GMPF_buffer_get_buffer(GtkFlowBox *flowbox)
  * Associate the given Buffer to the given flowbox
  * (Return: the previous Buffer, or NULL if they were no one)
  */
-s_buffer *GMPF_buffer_set_buffer(GtkFlowBox *flowbox, s_buffer *buff)
+GMPF_Buffer *GMPF_buffer_set_buffer(GtkFlowBox        *flowbox,
+                                          GMPF_Buffer *buffer)
 {
-    s_buffer *prev_buf = GMPF_buffer_get_buffer(flowbox);
-    if (!buff)
+    GMPF_Buffer *prev_buf = GMPF_buffer_get_buffer(flowbox);
+
+    if (!buffer)
     {
-        PRINTERR;
+        PRINTERR("No created buffer");
         g_object_set_data(G_OBJECT(flowbox), BUFFER_KEY_NAME, NULL);
         return prev_buf;
     }
-    g_object_set_data(G_OBJECT(flowbox), BUFFER_KEY_NAME, buff);
+
+    g_object_set_data(G_OBJECT(flowbox), BUFFER_KEY_NAME, buffer);
     return prev_buf;
 }
 
@@ -65,13 +73,15 @@ s_buffer *GMPF_buffer_set_buffer(GtkFlowBox *flowbox, s_buffer *buff)
  * Create a new Buffer
  * (Return: the Buffer, or NULL if it is unable to malloc)
  */
-s_buffer *buffer_create()
+GMPF_Buffer *buffer_create()
 {
-    s_buffer *buf = malloc(sizeof(s_buffer));
-    if (!buf)
+    GMPF_Buffer *buffer = malloc(sizeof(GMPF_Buffer));
+
+    if (!buffer)
         return NULL;
-    buffer_init(buf);
-    return buf;
+
+    buffer_init(buffer);
+    return buffer;
 }
 
 
@@ -79,13 +89,13 @@ s_buffer *buffer_create()
  * Set all parameters from the given buffer to there default values
  * (Do nothing if the given buffer is invalid)
  */
-void buffer_init(s_buffer *buf)
+void buffer_init(GMPF_Buffer *buffer)
 {
-    if (buf != NULL)
+    if (buffer != NULL)
     {
-        buf->begin = 0;
-        buf->size = 0;
-        buf->pos = -1;
+        buffer->begin = 0;
+        buffer->size = 0;
+        buffer->pos = -1;
     }
 }
 
@@ -93,64 +103,74 @@ void buffer_init(s_buffer *buf)
 /*
  * Close all open filestream in the list and free the given Buffer
  */
-void buffer_destroy(s_buffer *buf)
+void buffer_destroy(GMPF_Buffer *buffer)
 {
-    if (!buf)
+    if (!buffer)
         return;
-    for (int i = 0; i < buf->size; i++)
-    {
-        close(buf->buff[i]);
-    }
-    free(buf);
+
+    free(buffer);
 }
 
 
 /*
- * Add a new file descriptor to the list
- * (Do nothing if the given Buffer or File descriptor is invalid)
+ * Add a new Action to the Buffer, if a File is provided, then add it to the
+ * file_buffer list, else add a NULL value
+ * (Do nothing if the given Buffer or Action is invalid)
  * (Delete the first entered element if the Buffer is full)
+ * (Return: 0 if there were no error, else 1)
  */
-void buffer_add(s_buffer *buf, FILE *file)
+int buffer_add(GMPF_Buffer *buffer,
+                GMPF_Action  action,
+                FILE        *file)
 {
-    if (!buf || !file)
+    if (!buffer || action == INCORECT_ACTION)
+        return 0;
+
+    buffer->pos = (buffer->pos + 1) % BUFFER_SIZE;
+
+    if (buffer->file_buffer[buffer->pos])
     {
-        return;
+        int err = fclose(buffer->file_buffer[buffer->pos]);
+        if (err)
+        {
+            PRINTERR("Unable to close filestream");
+            return 1;
+        }
     }
 
-    if (buf->size == BUF_SIZE)
-    {
-        buf->pos = (buf->pos + 1) % BUF_SIZE;
-        close(buf->buff[buf->begin]);
-        buf->begin = (buf->begin + 1) % BUF_SIZE;
-    }
-    else
-    {
-        buf->size += 1;
-        buf->pos += 1;
-    }
-    buf->buff[buf->pos] = file;
+    buffer->begin = (buffer->begin + 1) % BUFFER_SIZE;
+    buffer->buffer[buffer->pos] = action;
+    buffer->file_buffer[buffer->pos] = file;
+
+    return 0;
 }
 
 
 /*
  * TODO
  */
-FILE * buffer_undo(s_buffer *buf)
+GMPF_Action buffer_undo(GMPF_Buffer *buffer)
 {
-    FILE *file = buf->buff[buf->pos];
-    buf->pos -= 1;
-    if (buf->pos < 0)
-        buf->pos += BUF_SIZE;
-    return file;
+    GMPF_Action action = buffer->buffer[buffer->pos];
+    buffer->pos -= 1;
+    if (buffer->pos < 0)
+        buffer->pos += BUFFER_SIZE;
+    return action;
+}
+
+
+FILE *GMPF_buffer_get_current_file(GMPF_Buffer *buffer)
+{
+    return buffer->file_buffer[buffer->pos];
 }
 
 
 /*
  * TODO
  */
-FILE * buffer_redo(s_buffer *buf)
+GMPF_Action buffer_redo(GMPF_Buffer *buffer)
 {
-    FILE *file = buf->buff[buf->pos];
-    buf->pos = (buf->pos + 1) % BUF_SIZE;
-    return file;
+    GMPF_Action action = buffer->buffer[buffer->pos];
+    buffer->pos = (buffer->pos + 1) % BUFFER_SIZE;
+    return action;
 }

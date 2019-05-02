@@ -57,8 +57,7 @@ void load_theme(GdkScreen  *screen,
     gtk_css_provider_load_from_file(provider, file, &err);
     if (err)
     {
-        PRINTERR;
-        D_PRINT("%s", err->message)
+        PRINTERR ("Unable to load the CSS provider");
         return;
     }
     gtk_style_context_add_provider_for_screen(screen,

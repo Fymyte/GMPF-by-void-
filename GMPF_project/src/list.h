@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#include "GMPF_Struct.h"
+
 /*
     Implementation of intrusive lists.
 */
@@ -16,16 +18,6 @@
 #define container_of(ptr, type, member)  \
     (type *)((char *)ptr - offsetof(type,member));
 #endif
-
-
-// STRUCTURES
-
-typedef struct GMPF_List GMPF_List;
-
-struct GMPF_List {
-    GMPF_List *prev;
-    GMPF_List *next;
-};
 
 
 // FUNCTIONS DECLARATIONS

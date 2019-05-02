@@ -550,7 +550,7 @@ GMPF_Layer *layer_initialization()
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
     if (!layer)
     {
-        PRINTERR;
+        PRINTERR ("Unable to malloc the Layer");
         return NULL;
     }
 

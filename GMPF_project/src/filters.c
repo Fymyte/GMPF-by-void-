@@ -532,8 +532,7 @@ void Convolute(SGlobalData *data, double *mat)
                         error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i + k, j + l, &red, &green, &blue, &alpha);
                         if(!error)
                         {
-                            PRINTERR;
-                            D_PRINT("Unable to get pixel at coordinates (%i, %i)", i+k, j+l);
+                            PRINTERR ("Unable to get pixel");
                             return;
                         }
                         r += mat[l + x/2 + k + x/2] * (double)red;

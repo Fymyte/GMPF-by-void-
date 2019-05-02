@@ -5,13 +5,18 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 
-#include "list.h"
 #include "types_redefine.h"
 
+#define BUFFER_SIZE 100
 
 
 // STRUCTURES
 typedef enum   GMPF_Tool GMPF_Tool;
+typedef enum   GMPF_Action GMPF_Action;
+typedef struct GMPF_List GMPF_List;
+typedef struct GMPF_Buffer GMPF_Buffer;
+typedef struct savebuf s_savebuf;
+typedef struct buffer s_buffer;
 typedef struct GMPF_SavedState GMPF_SavedState;
 typedef struct GMPF_Pos GMPF_Pos;
 typedef struct GMPF_Size GMPF_Size;
@@ -36,6 +41,54 @@ enum GMPF_Tool {
     SELECTOR_FREE = 6,
 };
 
+
+/*
+ * Enumeration of the different possible action for the user
+ * (INVALID, MOVE_UP, MOVE_DOWN, MODIF_IMAGE, CHANGE_NAME, DELETE, ADD)
+ */
+enum GMPF_Action {
+    INCORECT_ACTION,
+    MOVE_UP,
+    MOVE_DOWN,
+    MODIF_IMAGE,
+    CHANGE_NAME,
+    DELETE,
+    ADD
+};
+
+
+/*
+ * Structure to store the passed action of the user
+ * (buffer, begin, size, pos properties)
+ */
+struct GMPF_Buffer {
+    GMPF_Action buffer[BUFFER_SIZE];
+    FILE *file_buffer[BUFFER_SIZE];
+    int begin;
+    int size;
+    int pos;
+    int file_begin;
+    int file_size;
+    int file_pos;
+};
+
+
+
+struct GMPF_List {
+    GMPF_List *prev;
+    GMPF_List *next;
+};
+// struct savebuf {
+//     enum action act;
+//     int layer; /* Peut-etre mettre des id uniques aux calques.*/
+// };
+
+// struct buffer {
+//     FILE buff[BUF_SIZE];
+//     int begin;
+//     int size;
+//     int pos;
+// };
 
 /*
  * Structure to store the state of the project

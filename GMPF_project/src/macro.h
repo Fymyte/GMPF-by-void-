@@ -17,8 +17,9 @@
     #define D_PRINT(_fmt, ...)
 #endif
 
-#define PRINTERR fprintf(stderr, "[error %s::%d %s]\n", \
-        __FILE__, __LINE__, __func__);
+#define PRINTERR(_fmt) \
+        fprintf(stderr, "[error %s::%d %s] "_fmt "\n", \
+            __FILE__, __LINE__, __func__);
 
 
 
@@ -51,7 +52,7 @@
             _type * _name = malloc(sizeof(_type)); \
             if (_name == NULL) \
             { \
-                PRINTERR; \
+                PRINTERR ("Unable to malloc"); \
                 return __VA_ARGS__; \
             }
 #else

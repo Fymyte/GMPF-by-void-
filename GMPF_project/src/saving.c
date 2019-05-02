@@ -55,7 +55,7 @@ int set_extension(char **filename, char *extension)
     char *newfilename = malloc(sizeof(char) * filelen);
     if (newfilename == NULL)
     {
-        PRINTERR;
+        PRINTERR ("Unable to malloc the new filename");
         return -1;
     }
     sprintf(newfilename, "%s.%s", *filename, extension);
@@ -85,9 +85,9 @@ char save_layermngr(GMPF_LayerMngr *layermngr, FILE *file)
 char load_layermngr(GtkFlowBox *flowbox, FILE *file)
 {
     GMPF_LayerMngr *layermngr = malloc(sizeof(GMPF_LayerMngr));
-    if (layermngr == NULL) { PRINTERR; return 1; }
+    if (layermngr == NULL) { PRINTERR("Unable to malloc"); return 1; }
     if (fread(layermngr, sizeof(GMPF_LayerMngr), 1, file) != 1)
-    { PRINTERR; return 1; }
+    { PRINTERR ("Unable to read LayerMngr in filestream"); return 1; }
     list_init(&(layermngr->layer_list));
 
     layermngr->surface = NULL;
@@ -109,7 +109,7 @@ char load_layermngr(GtkFlowBox *flowbox, FILE *file)
 char save_layer(GMPF_Layer *layer, FILE *file)
 {
     if (fwrite(layer, sizeof(GMPF_Layer), 1, file) != 1)
-     { PRINTERR; return 1; }
+     { PRINTERR ("Unable to write in filestream"); return 1; }
 
     //if (fwrite(layer->image, sizeof(GdkPixbuf), 1, file) != 1)
     //    return 1;
@@ -117,8 +117,9 @@ char save_layer(GMPF_Layer *layer, FILE *file)
     unsigned int length = layer->size.h * rowstride;
     guchar *image = gdk_pixbuf_get_pixels(layer->image);
     if (fwrite(&length, sizeof(unsigned int), 1, file) != 1)
-    { PRINTERR; return 1; }
-    if (fwrite(image, length, 1, file) != 1) { PRINTERR; return 1; }
+    { PRINTERR ("Unable to write in filestream"); return 1; }
+    if (fwrite(image, length, 1, file) != 1)
+    { PRINTERR ("Unable to write in filestream"); return 1; }
 
     return 0;
 }
@@ -131,21 +132,21 @@ char save_layer(GMPF_Layer *layer, FILE *file)
 char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
 {
     GMPF_Layer *layer = malloc(sizeof(GMPF_Layer));
-    if (layer == NULL) { PRINTERR; return 1; }
+    if (layer == NULL) { PRINTERR ("Unable to malloc"); return 1; }
 
     GtkFlowBox *flowbox = layermngr->flowbox;
-    if (flowbox == NULL) { PRINTERR; return 1; }
+    if (flowbox == NULL) { PRINTERR ("Unable to get flowbox"); return 1; }
 
     if (fread(layer, sizeof(GMPF_Layer), 1, file) != 1)
     { // restore the layer
-        PRINTERR;
+        PRINTERR ("Unable to read in filestream");
         free(layer);
         return 1;
     }
     unsigned int length;
     if (fread(&length, sizeof(unsigned int), 1, file) != 1)
     {
-        PRINTERR;
+        PRINTERR ("Unable to read in filestream");
         free(layer);
         return 1;
     }
@@ -153,7 +154,7 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
     unsigned int true_length = ((unsigned int) layer->size.w * ((unsigned int) layer->size.h << 2));
     if (length != true_length)
     { // test if the length of the pixmap is good
-        PRINTERR;
+        PRINTERR ("length and true_length doesn't correspond");
         free(layer);
         return 1;
     }
@@ -161,7 +162,7 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
     guchar *data = malloc(length * sizeof(guchar));
     if (fread(data, length, 1, file) != 1)
     {
-        PRINTERR;
+        PRINTERR ("Unable to read in filestream");
         free(data);
         free(layer);
         return 1;
@@ -213,21 +214,31 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
     //FILE *tmpFile = tmpfile(void);
 
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    if (layermngr == NULL) { PRINTERR; return 1; }
+    if (layermngr == NULL) { PRINTERR ("Unable to get LayerMngr"); return 1; }
 
     FILE *file = fopen(filename, "wb"); // write as binary => rb
-    if (file == NULL) { PRINTERR; return 1; }
+    if (file == NULL) { PRINTERR ("Unable to open filestream"); return 1; }
 
     char err = save_layermngr(layermngr, file);
 
-    if (err) { fclose(file); PRINTERR; return 1; }
+    if (err)
+    {
+        if (fclose(file)) { PRINTERR("Unable to close filestream"); }
+        PRINTERR("Unable to save LayerMngr");
+        return 1;
+    }
 
     GMPF_List *list = layermngr->layer_list.next;
     GMPF_Layer *lay = container_of(list, GMPF_Layer, list);
     for (int i = 0; i < layermngr->nb_layer; i++)
     {
         err = save_layer(lay, file);
-        if (err) { fclose(file); PRINTERR; return 1;}
+        if (err)
+        {
+            if (fclose(file)) { PRINTERR ("Unable to close filestream")};
+            PRINTERR ("Unable to save Layer");
+            return 1;
+        }
         lay = container_of(lay->list.next, GMPF_Layer, list);
     }
 
@@ -247,21 +258,36 @@ char load_project(GtkFlowBox *flowbox, const char *filename)
 {
     // only read the file
     FILE *file = fopen(filename, "rb"); // read as binary => rb
-    if (file == NULL) { PRINTERR; return 1; }
+    if (file == NULL) { PRINTERR ("Unable to open filestream"); return 1; }
 
     if (g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME) != NULL)
         layermngr_delete(flowbox);
 
     char err = load_layermngr(flowbox, file);
-    if (err) { fclose(file); PRINTERR; return 1; }
+    if (err)
+    {
+        if (fclose(file)) { PRINTERR ("Unable to close filestream")};
+        PRINTERR ("Unable to load LayerMngr");
+        return 1;
+    }
 
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    if (layermngr == NULL) { fclose(file); PRINTERR; return 1; }
+    if (layermngr == NULL)
+    {
+        if (fclose(file)) { PRINTERR("Unable to close filestream"); }
+        PRINTERR ("Unable to get LayerMngr");
+        return 1;
+    }
 
     for (int i = 0; i < layermngr->nb_layer; i++)
     {
         err = load_layer(layermngr, file);
-        if (err) { fclose(file); PRINTERR; return 1; }
+        if (err)
+        {
+            if (fclose(file)) { PRINTERR("Unable to close filestream"); }
+            PRINTERR ("Unable to load Layer");
+            return 1;
+        }
     }
 
     fclose(file);
@@ -280,13 +306,18 @@ char saving_layer(GtkFlowBox *flowbox, const char *filename)
     //FILE *tmpFile = tmpfile(void)
 
     FILE *file = fopen(filename, "wb"); // write as binary => rb
-    if (file == NULL) { PRINTERR; return 1; }
+    if (file == NULL) { PRINTERR ("Unable to open filestream"); return 1; }
 
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     if (!lay)
         return 1;
     char err = save_layer(lay, file);
-    if (err) { fclose(file); PRINTERR; return 1;}
+    if (err)
+    {
+        if (fclose(file)) { PRINTERR("Unable to close filestream"); }
+        PRINTERR ("Unable to save Layer");
+        return 1;
+    }
 
     long long dbg = 0;
     fwrite(&dbg, sizeof(long long), 1, file);
@@ -304,13 +335,23 @@ char loading_layer(GtkFlowBox *flowbox, const char *filename)
 {
     // only read the file
     FILE *file = fopen(filename, "rb"); // read as binary => rb
-    if (file == NULL) { PRINTERR; return 1; }
+    if (file == NULL) { PRINTERR ("Unable to open filestream"); return 1; }
 
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    if (layermngr == NULL) { fclose(file); PRINTERR; return 1; }
+    if (layermngr == NULL)
+    {
+        if (fclose(file)) { PRINTERR("Unable to close filestream"); }
+        PRINTERR ("Unable to get LayerMngr");
+        return 1;
+    }
 
     char err = load_layer(layermngr, file);
-    if (err) { fclose(file); PRINTERR; return 1; }
+    if (err)
+    {
+        if (fclose(file)) { PRINTERR("Unable to close filestream"); }
+        PRINTERR ("Unable to load Layer");
+        return 1;
+    }
 
     fclose(file);
     return 0;
