@@ -67,9 +67,6 @@ struct GMPF_Buffer {
     int begin;
     int size;
     int pos;
-    int file_begin;
-    int file_size;
-    int file_pos;
 };
 
 
