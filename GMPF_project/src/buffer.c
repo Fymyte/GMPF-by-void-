@@ -29,7 +29,10 @@ void GMPF_buffer_destroy(GtkFlowBox *flowbox)
     GMPF_Buffer *buffer = GMPF_buffer_get_buffer(flowbox);
 
     if (!buffer)
+    {
+        PRINTERR("Unable to get buffer");
         return;
+    }
 
     buffer_destroy(buffer);
     g_object_set_data(G_OBJECT(flowbox), BUFFER_KEY_NAME, NULL);
@@ -78,9 +81,13 @@ GMPF_Buffer *buffer_create()
     GMPF_Buffer *buffer = malloc(sizeof(GMPF_Buffer));
 
     if (!buffer)
+    {
+        PRINTERR("Unable to malloc");
         return NULL;
+    }
 
-    buffer_init(buffer);
+    if (buffer_init(buffer))
+    { PRINTERR ("Unable to init buffer"); }
     return buffer;
 }
 
@@ -88,57 +95,79 @@ GMPF_Buffer *buffer_create()
 /*
  * Set all parameters from the given buffer to there default values
  * (Do nothing if the given buffer is invalid)
+ * (Return: 0 if there were no error, else 1)
  */
-void buffer_init(GMPF_Buffer *buffer)
+int buffer_init(GMPF_Buffer *buffer)
 {
     if (buffer != NULL)
     {
         buffer->begin = 0;
         buffer->size = 0;
         buffer->pos = -1;
+        for (size_t i = 0; i < BUFFER_SIZE; i++)
+        {
+            buffer->buffer[i] = INCORECT_ACTION;
+            buffer->file_buffer[i] = NULL;
+        }
+        return 0;
+    }
+    else
+    {
+        PRINTERR ("Invalid buffer");
+        return 1;
     }
 }
 
 
 /*
  * Close all open filestream in the list and free the given Buffer
+ * (Do nothing if the given buffer is invalid)
  */
 void buffer_destroy(GMPF_Buffer *buffer)
 {
     if (!buffer)
+    {
+        PRINTERR("Invalid buffer");
         return;
+    }
 
     free(buffer);
 }
 
 
 /*
- * Add a new Action to the Buffer, if a File is provided, then add it to the
- * file_buffer list, else add a NULL value
- * (Do nothing if the given Buffer or Action is invalid)
- * (Delete the first entered element if the Buffer is full)
- * (Return: 0 if there were no error, else 1)
+ * PURPOSE :  Add a new Action to the Buffer. If a File is provided, then add
+ *            it to the file_buffer list, else add a NULL value
+ *  PARAMS : GMPF_Buffer *buffer - The buffer in witch add the action
+ *           GMPF_Action  action - The action to add
+ *           FILE        *file - the filestream to add (Accept NULL value)
+ * RETURNS : int - 0 if there were no error, else 1
+ *   NOTES : Do nothing if the given Buffer or Action is invalid.
+             Delete the first entered element if the Buffer is full.
  */
 int buffer_add(GMPF_Buffer *buffer,
-                GMPF_Action  action,
-                FILE        *file)
+                GMPF_Action action,
+                FILE       *file)
 {
     if (!buffer || action == INCORECT_ACTION)
-        return 0;
+    {
+        PRINTERR("Invalid buffer or action");
+        return 1;
+    }
+
+    if (buffer->size < BUFFER_SIZE)
+        buffer->size += 1;
 
     buffer->pos = (buffer->pos + 1) % BUFFER_SIZE;
 
     if (buffer->file_buffer[buffer->pos])
     {
-        int err = fclose(buffer->file_buffer[buffer->pos]);
-        if (err)
-        {
-            PRINTERR("Unable to close filestream");
-            return 1;
-        }
+        if (fclose(buffer->file_buffer[buffer->pos]))
+        { PRINTERR("Unable to close filestream"); }
     }
 
-    buffer->begin = (buffer->begin + 1) % BUFFER_SIZE;
+    if (buffer->size == BUFFER_SIZE)
+        buffer->begin = (buffer->begin + 1) % BUFFER_SIZE;
     buffer->buffer[buffer->pos] = action;
     buffer->file_buffer[buffer->pos] = file;
 
@@ -155,12 +184,24 @@ GMPF_Action buffer_undo(GMPF_Buffer *buffer)
     buffer->pos -= 1;
     if (buffer->pos < 0)
         buffer->pos += BUFFER_SIZE;
+
     return action;
 }
 
 
-FILE *GMPF_buffer_get_current_file(GMPF_Buffer *buffer)
+/*
+ * PURPOSE : Return the current filestream associated with the current action
+ *           in the given Buffer
+ *  PARAMS : GMPF_Buffer *buffer - The Buffer witch contain the filestream
+ * RETURNS : FILE - The filestream at the current position, or NULL if there is
+ *                  no assocated filestream
+ *   NOTES : Do nothing if the buffer is invalid
+ */
+FILE *buffer_get_current_file(GMPF_Buffer *buffer)
 {
+    if (!buffer)
+    { PRINTERR("Invalid Buffer"); return NULL; }
+
     return buffer->file_buffer[buffer->pos];
 }
 
