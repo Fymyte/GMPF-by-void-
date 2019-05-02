@@ -88,7 +88,19 @@ void callback_setCursor(SGlobalData* data)
       //create the new cursor
 
       cairo_set_line_width(cr, 0.5);
-      cairo_arc (cr, size, size, size, 0.0, G_PI * 2.0);
+
+      //circle
+      if (layermngr->brush == 0)
+      {
+          cairo_arc (cr, size, size, size, 0.0, G_PI * 2.0);
+      }
+
+      //square
+      if (layermngr->brush == 1)
+      {
+          cairo_rectangle(cr, 0, 0, size*2.0, size*2.0);
+      }
+
       cairo_set_source_rgba (cr, 0, 0, 0, 1);
       cairo_stroke (cr);
       cairo_cursor = cairo_get_target(cr);

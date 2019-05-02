@@ -25,6 +25,7 @@ void square_brush(GtkWidget *widget,
                   float      blue,
                   float      alpha)
 {
+    size = size << 1;
     int semi_size = size >> 1;
     int nx = x - semi_size;
     int ny = y - semi_size;
