@@ -12,6 +12,7 @@
 
 // STRUCTURES
 typedef enum   GMPF_Tool GMPF_Tool;
+typedef enum   GMPF_Brush GMPF_Brush;
 typedef enum   GMPF_Action GMPF_Action;
 typedef struct GMPF_List GMPF_List;
 typedef struct GMPF_Buffer GMPF_Buffer;
@@ -42,6 +43,14 @@ enum GMPF_Tool {
     SELECTOR_FREE = 6,
 };
 
+/* Enumeration of the different brushes
+ * for the paint mode
+ */
+
+ enum GMPF_Brush {
+    CIRCULAR = 0,
+    SQUARE = 1,
+ };
 
 /*
  * Enumeration of the different possible action for the user
@@ -206,6 +215,7 @@ struct GMPF_Layer {
  * A tool (GMPF_Tool): To store the current selected tool
  * A filename (char *): to store the name of the project's file
  * A brush_size (int): to store the current size of the brush
+ * A brush type (GMPF_Brush): to store the current brush type
  * A flowbox (GtkFlowBox): to store the UI element the LayerMngr is associated with+
  */
 
@@ -222,6 +232,7 @@ struct GMPF_LayerMngr {
     cairo_surface_t *surface;
 
     float brush_size;
+    GMPF_Brush brush;
 
     GdkPixbuf *image;
     GdkPixbuf *display_image;

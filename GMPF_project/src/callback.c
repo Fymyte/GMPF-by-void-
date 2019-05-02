@@ -634,10 +634,15 @@ void draw_brush (GtkWidget *widget,
         lay->cr = cairo_create (lay->surface);
 
         //begin brush zone
-        circular_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,lay->pos.x, lay->pos.y, layermngr->brush_size,
-            (float)color.red, (float)color.green, (float)color.blue,
-            (float)color.alpha, lay->scale_factor.x, lay->scale_factor.y,
-            layermngr);
+        if (layermngr->brush == 0)
+            circular_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,lay->pos.x, lay->pos.y, layermngr->brush_size,
+                (float)color.red, (float)color.green, (float)color.blue,
+                (float)color.alpha, lay->scale_factor.x, lay->scale_factor.y,
+                layermngr);
+        if (layermngr->brush == 1)
+            square_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,
+                layermngr->brush_size, (float)color.red, (float)color.green,
+                (float)color.blue, (float)color.alpha);
         //end brush zone
 
         cairo_destroy(lay->cr);
@@ -1913,4 +1918,16 @@ void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem,
         gtk_layout_set_size((GtkLayout *)layout, 0, 0);
     }
     gtk_widget_queue_draw(da);
+}
+
+void callback_select_brush(GtkMenuItem *menuitem, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    if (strcmp(gtk_menu_item_get_label(menuitem), "Circulaire") == 0)
+        layermngr->brush = 0;
+
+    if (strcmp(gtk_menu_item_get_label(menuitem), "Carré") == 0)
+        layermngr->brush = 1;
 }
