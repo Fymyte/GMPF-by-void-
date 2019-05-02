@@ -343,18 +343,8 @@ void layermngr_move_up_selected_layer(GtkFlowBox *flowbox)
         gint insertpos = gtk_flow_box_child_get_index(layer->UIElement) - 1;
         gtk_widget_destroy((GtkWidget *) layer->UIElement);
 
+        layer_insert_at_pos(layer, flowbox, insertpos);
 
-        GtkWidget *image = gtk_image_new();
-        // Style of the image
-        INIT_LAYER_UI(image);
-
-        gtk_flow_box_insert (flowbox, image, insertpos);
-
-        layer->UIElement =
-            gtk_flow_box_get_child_at_index(flowbox, insertpos);
-        g_object_set_data(G_OBJECT(layer->UIElement), LAYER_KEY_NAME, layer);
-        layer->UIIcon = (GtkImage *) image;
-        layer_icon_refresh(layer);
         gtk_flow_box_select_child(flowbox, layer->UIElement);
     }
 }
@@ -373,19 +363,8 @@ void layermngr_move_down_selected_layer(GtkFlowBox *flowbox)
         gint insertpos = gtk_flow_box_child_get_index(layer->UIElement) + 1;
         gtk_widget_destroy((GtkWidget *) layer->UIElement);
 
+        layer_insert_at_pos(layer, flowbox, insertpos);
 
-        GtkWidget *image = gtk_image_new();
-        // Style of the image
-        INIT_LAYER_UI(image);
-
-        gtk_flow_box_insert (flowbox, image, insertpos);
-
-
-        layer->UIElement =
-            gtk_flow_box_get_child_at_index(flowbox, insertpos);
-        g_object_set_data(G_OBJECT(layer->UIElement), LAYER_KEY_NAME, layer);
-        layer->UIIcon = (GtkImage *) image;
-        layer_icon_refresh(layer);
         gtk_flow_box_select_child(flowbox, layer->UIElement);
     }
 }
@@ -608,6 +587,31 @@ void layer_delete(GMPF_Layer *layer)
         cairo_surface_destroy (layer->surface);
 
     free(layer);
+}
+
+
+/*
+ * PURPOSE : Autogenerates function contract comments
+ *  PARAMS : GMPF_Layer *layer -
+ *           GtkFlowBox *flowbox -
+ *           int         insertpos -
+ * RETURNS : None
+ *   NOTES :
+ */
+void layer_insert_at_pos(GMPF_Layer *layer,
+                         GtkFlowBox *flowbox,
+                         int         insertpos)
+{
+    GtkWidget *image = gtk_image_new();
+    // Style of the image
+    INIT_LAYER_UI(image);
+
+    gtk_flow_box_insert (flowbox, image, insertpos);
+
+    layer->UIElement = gtk_flow_box_get_child_at_index(flowbox, insertpos);
+    g_object_set_data(G_OBJECT(layer->UIElement), LAYER_KEY_NAME, layer);
+    layer->UIIcon = (GtkImage *) image;
+    layer_icon_refresh(layer);
 }
 
 

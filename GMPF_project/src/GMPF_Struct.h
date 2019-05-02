@@ -15,6 +15,7 @@ typedef enum   GMPF_Tool GMPF_Tool;
 typedef enum   GMPF_Action GMPF_Action;
 typedef struct GMPF_List GMPF_List;
 typedef struct GMPF_Buffer GMPF_Buffer;
+typedef struct GMPF_BufferElement GMPF_BufferElement;
 typedef struct savebuf s_savebuf;
 typedef struct buffer s_buffer;
 typedef struct GMPF_SavedState GMPF_SavedState;
@@ -63,9 +64,21 @@ enum GMPF_Action {
  */
 struct GMPF_Buffer {
     GMPF_Action buffer[BUFFER_SIZE];
-    FILE *file_buffer[BUFFER_SIZE];
+    GMPF_BufferElement *element_buffer[BUFFER_SIZE];
     int begin;
     int size;
+    int pos;
+};
+
+
+/*
+ * Structure to store elements inside of the Buffer
+ * (Layer, file and pos properties)
+ * (Should be field according to the associated action)
+ */
+struct GMPF_BufferElement {
+    GMPF_Layer *Layer;
+    FILE *file;
     int pos;
 };
 

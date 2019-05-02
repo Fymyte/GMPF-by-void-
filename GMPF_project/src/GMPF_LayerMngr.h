@@ -88,6 +88,9 @@ GMPF_LayerMngr *layermngr_get_layermngr(GtkFlowBox *flowbox);
 
 GMPF_Layer * layer_initialization(); //ENDED
 void layer_delete(GMPF_Layer *layer); //ENDED
+void layer_insert_at_pos(GMPF_Layer *layer,
+                         GtkFlowBox *flowbox,
+                         int         insertpos);
 void layer_icon_refresh(GMPF_Layer *layer);
 
 /****************************End of Layer functions****************************/

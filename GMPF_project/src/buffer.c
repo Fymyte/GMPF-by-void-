@@ -107,7 +107,7 @@ int buffer_init(GMPF_Buffer *buffer)
         for (size_t i = 0; i < BUFFER_SIZE; i++)
         {
             buffer->buffer[i] = INCORECT_ACTION;
-            buffer->file_buffer[i] = NULL;
+            buffer->element_buffer[i] = NULL;
         }
         return 0;
     }
@@ -147,7 +147,7 @@ void buffer_destroy(GMPF_Buffer *buffer)
  */
 int buffer_add(GMPF_Buffer *buffer,
                 GMPF_Action action,
-                FILE       *file)
+                GMPF_BufferElement *element)
 {
     if (!buffer || action == INCORECT_ACTION)
     {
@@ -160,16 +160,16 @@ int buffer_add(GMPF_Buffer *buffer,
 
     buffer->pos = (buffer->pos + 1) % BUFFER_SIZE;
 
-    if (buffer->file_buffer[buffer->pos])
+    if (buffer->element_buffer[buffer->pos]->file)
     {
-        if (fclose(buffer->file_buffer[buffer->pos]))
+        if (fclose(buffer->element_buffer[buffer->pos]->file))
         { PRINTERR("Unable to close filestream"); }
     }
 
     if (buffer->size == BUFFER_SIZE)
         buffer->begin = (buffer->begin + 1) % BUFFER_SIZE;
     buffer->buffer[buffer->pos] = action;
-    buffer->file_buffer[buffer->pos] = file;
+    buffer->element_buffer[buffer->pos] = element;
 
     return 0;
 }
@@ -197,12 +197,12 @@ GMPF_Action buffer_undo(GMPF_Buffer *buffer)
  *                  no assocated filestream
  *   NOTES : Do nothing if the buffer is invalid
  */
-FILE *buffer_get_current_file(GMPF_Buffer *buffer)
+GMPF_BufferElement *buffer_get_current_element(GMPF_Buffer *buffer)
 {
     if (!buffer)
     { PRINTERR("Invalid Buffer"); return NULL; }
 
-    return buffer->file_buffer[buffer->pos];
+    return buffer->element_buffer[buffer->pos];
 }
 
 
