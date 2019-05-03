@@ -1,5 +1,5 @@
-#ifndef GMPF_PIXEL_H
-#define GMPF_PIXEL_H
+#ifndef GMPF_STRUCT_H
+#define GMPF_STRUCT_H
 
 
 #include <gtk/gtk.h>
@@ -7,16 +7,16 @@
 
 #include "types_redefine.h"
 
-#define BUFFER_SIZE 100
+#define BUFFER_SIZE 4
 
 
 // STRUCTURES
 typedef enum   GMPF_Tool GMPF_Tool;
 typedef enum   GMPF_Brush GMPF_Brush;
 typedef enum   GMPF_Action GMPF_Action;
-typedef struct GMPF_List GMPF_List;
 typedef struct GMPF_Buffer GMPF_Buffer;
 typedef struct GMPF_BufferElement GMPF_BufferElement;
+typedef struct GMPF_List GMPF_List;
 typedef struct savebuf s_savebuf;
 typedef struct buffer s_buffer;
 typedef struct GMPF_SavedState GMPF_SavedState;
@@ -43,7 +43,8 @@ enum GMPF_Tool {
     SELECTOR_FREE = 6,
 };
 
-/* Enumeration of the different brushes
+/*
+ * Enumeration of the different brushes
  * for the paint mode
  */
 
@@ -54,11 +55,12 @@ enum GMPF_Tool {
 
 /*
  * Enumeration of the different possible action for the user
- * (INVALID, MOVE_UP, MOVE_DOWN, MODIF_IMAGE, CHANGE_NAME, DELETE, ADD)
+ * (INVALID, MOVE, MODIF_IMAGE, CHANGE_NAME, DELETE, ADD)
  */
 enum GMPF_Action {
     INCORECT_ACTION,
-    MOVE,
+    MOVE_UP,
+    MOVE_DOWN,
     MODIF_IMAGE,
     CHANGE_NAME,
     DELETE,
@@ -66,40 +68,29 @@ enum GMPF_Action {
 };
 
 
+struct savebuf {
+    GMPF_Action action;
+    int layer; /* Peut-etre mettre des id uniques aux calques.*/
+};
+
+
 /*
  * Structure to store the passed action of the user
- * (buffer, begin, size, pos properties)
+ * (buffer, begin, end, size & pos properties)
  */
 struct GMPF_Buffer {
-    GMPF_Action buffer[BUFFER_SIZE];
-    GMPF_BufferElement *element_buffer[BUFFER_SIZE];
+    FILE *buffer[BUFFER_SIZE];
     int begin;
+    int end;
     int size;
     int pos;
 };
-
-
-/*
- * Structure to store elements inside of the Buffer
- * (Layer, file and pos properties)
- * (Should be field according to the associated action)
- */
-struct GMPF_BufferElement {
-    GMPF_Layer *Layer;
-    FILE *file;
-    int pos;
-};
-
 
 
 struct GMPF_List {
     GMPF_List *prev;
     GMPF_List *next;
 };
-// struct savebuf {
-//     enum action act;
-//     int layer; /* Peut-etre mettre des id uniques aux calques.*/
-// };
 
 // struct buffer {
 //     FILE buff[BUF_SIZE];
@@ -181,7 +172,7 @@ struct GMPF_Pixel {
  */
 struct GMPF_Layer {
 
-    char *name;
+    char name[51];
     char *filename;
 
     GMPF_Pos pos;
@@ -267,4 +258,4 @@ struct Img_rgb
     struct Matrix *alpha;
 };
 
-#endif /* GMPF_PIXEL_H */
+#endif /* GMPF_STRUCT_H */

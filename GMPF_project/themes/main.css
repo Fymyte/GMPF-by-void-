@@ -152,6 +152,7 @@ window menuitem > label {
 
 #main_toolbar > * {
     margin-left: 10px;
+    margin-right: 10px;
 }
 
 /* DRAW SPACE */

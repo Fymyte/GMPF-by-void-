@@ -9,6 +9,7 @@
 
 #include "types_redefine.h"
 #include "GMPF_Struct.h"
+#include "buffer.h"
 #include "list.h"
 
 #include "macro.h"
@@ -91,6 +92,10 @@ void layer_delete(GMPF_Layer *layer); //ENDED
 void layer_insert_at_pos(GMPF_Layer *layer,
                          GtkFlowBox *flowbox,
                          int         insertpos);
+GMPF_Layer *layer_get_at_pos(GtkFlowBox *flowbox,
+                             int         pos);
+char layer_set_name(GMPF_Layer *layer,
+                    char       *name);
 void layer_icon_refresh(GMPF_Layer *layer);
 
 /****************************End of Layer functions****************************/

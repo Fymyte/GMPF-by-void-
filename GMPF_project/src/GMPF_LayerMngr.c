@@ -281,15 +281,11 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
 
 
 /*
- * Clear all the layer contained in the list of layer
+ * Clear all layer contained in the list of layer
  * (Reset all variables to there default value)
  */
 void layermngr_clear(GtkFlowBox *flowbox)
 {
-    /*
-        Clear the GMPF_LayerMngr attched to the flowbox.
-    */
-
     GMPF_LayerMngr *layermngr =
         (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
@@ -344,6 +340,8 @@ void layermngr_move_up_selected_layer(GtkFlowBox *flowbox)
         gint insertpos = gtk_flow_box_child_get_index(layer->UIElement) - 1;
         gtk_widget_destroy((GtkWidget *) layer->UIElement);
 
+        GMPF_buffer_add(flowbox, MOVE_UP, NULL);
+
         layer_insert_at_pos(layer, flowbox, insertpos);
 
         gtk_flow_box_select_child(flowbox, layer->UIElement);
@@ -363,6 +361,8 @@ void layermngr_move_down_selected_layer(GtkFlowBox *flowbox)
 //        //GtkWidget *image = gtk_image_new();
         gint insertpos = gtk_flow_box_child_get_index(layer->UIElement) + 1;
         gtk_widget_destroy((GtkWidget *) layer->UIElement);
+
+        GMPF_buffer_add(flowbox, MOVE_DOWN, NULL);
 
         layer_insert_at_pos(layer, flowbox, insertpos);
 
@@ -534,7 +534,7 @@ GMPF_Layer *layer_initialization()
         return NULL;
     }
 
-    layer->name = NULL;
+    layer->name[0] = '\0';
     layer->filename = NULL;
 
     layer->pos.x = 0;
@@ -613,6 +613,60 @@ void layer_insert_at_pos(GMPF_Layer *layer,
     g_object_set_data(G_OBJECT(layer->UIElement), LAYER_KEY_NAME, layer);
     layer->UIIcon = (GtkImage *) image;
     layer_icon_refresh(layer);
+}
+
+
+GMPF_Layer *layer_get_at_pos(GtkFlowBox *flowbox,
+                             int         pos)
+{
+    GtkFlowBoxChild *child = gtk_flow_box_get_child_at_index(flowbox, pos);
+    if (!child)
+    {
+        PRINTERR("No child at this pos");
+        return NULL;
+    }
+    return (GMPF_Layer *) g_object_get_data(G_OBJECT(child), LAYER_KEY_NAME);
+}
+
+
+
+
+
+
+char layer_set_name(GMPF_Layer *layer,
+                   char       *name)
+{
+    if (!layer)
+    {
+        PRINTERR("Unable to get layer");
+        return 1;
+    }
+    size_t i = 0;
+
+    for(; i < 50 && *name != '\0'; i++, name++)
+        layer->name[i] = *name;
+
+    for(; i <= 50; i++)
+        layer->name[i] = '\0';
+
+    return 0;
+}
+
+
+char layer_set_image(GtkFlowBox *flowbox,
+                     int         pos,
+                     GdkPixbuf  *image)
+{
+    GMPF_Layer *layer = layer_get_at_pos(flowbox, pos);
+    if (!layer)
+    {
+        PRINTERR("Unable to get layer");
+        return 1;
+    }
+    layer->image = image;
+    layer->surface = gdk_cairo_surface_create_from_pixbuf(layer->image, 0, NULL);
+    layer_icon_refresh(layer);
+    return 0;
 }
 
 

@@ -992,7 +992,7 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget,
     const gchar *f = gtk_file_chooser_get_filename(filename);
 
     GMPF_Layer *lay = layermngr_add_new_layer(flowbox, f);
-    lay->name = (char*)n;
+    layer_set_name(lay, (char*)n);
     lay->size.w = atoi(w);
     lay->size.h = atoi(h);
     lay->pos.x = atoi(x);
@@ -1746,6 +1746,23 @@ void callback_applyFilter(UNUSED GtkWidget *btn,
 }
 
 
+void callback_undo(GtkWidget *widget,
+                   gpointer   user_data)
+{
+   INIT_UI();
+   GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+   GMPF_buffer_undo(flowbox);
+}
+
+void callback_redo(GtkWidget *widget,
+                   gpointer   user_data)
+{
+   INIT_UI();
+   GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+   GMPF_buffer_redo(flowbox);
+}
+
+
 /*
  * Callback to quit the application
  * (Ask confirmation before quit)
@@ -1823,7 +1840,7 @@ void callback_edit_layer_properties(UNUSED GtkWidget *widget,
     const gchar *y = gtk_entry_get_text(offsetY);
 
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-    lay->name = (char*)n;
+    layer_set_name(lay, (char*)n);
     lay->size.w = atoi(w);
     lay->size.h = atoi(h);
     lay->pos.x = atoi(x);
@@ -1864,7 +1881,7 @@ void callback_open_edit_layer_properties_window(UNUSED GtkWidget *widget,
     GET_UI(GtkSpinButton, offsetY, "LayerOffsetYSpinButton1");
     GET_UI(GtkFileChooser, filename, "LayerImageFilename1");
 
-    gtk_entry_set_text(name, lay->name != NULL ? lay->name : "");
+    gtk_entry_set_text(name, lay->name);
     gtk_spin_button_set_value(width, lay->size.w);
     gtk_spin_button_set_value(height, lay->size.h);
     gtk_spin_button_set_value(offsetX, lay->pos.x);

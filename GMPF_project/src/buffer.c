@@ -72,6 +72,16 @@ GMPF_Buffer *GMPF_buffer_set_buffer(GtkFlowBox  *flowbox,
 }
 
 
+int GMPF_buffer_add(GtkFlowBox *flowbox,
+                    GMPF_Action action,
+                    GMPF_BufferElement *element)
+{
+    GMPF_Buffer *buffer = GMPF_buffer_get_buffer(flowbox);
+    // return 0;
+    return buffer_add(buffer);
+}
+
+
 int GMPF_buffer_undo(GtkFlowBox *flowbox)
 {
     GMPF_Buffer *buffer = GMPF_buffer_get_buffer(flowbox);
@@ -81,23 +91,32 @@ int GMPF_buffer_undo(GtkFlowBox *flowbox)
         return 1;
     }
 
-    GMPF_BufferElement *element = buffer_get_current_element(buffer);
+    // GMPF_BufferElement *element = buffer_get_current_element(buffer);
     GMPF_Action action = buffer_undo(buffer);
-
-    switch (action) {
-        case INCORECT_ACTION: PRINTERR("Enconter an incorect action");
-        case MOVE: D_PRINT("MOVE ACTION", NULL);
-                   break;
-        case MODIF_IMAGE: D_PRINT("MODIF_IMAGE ACTION", NULL);
-                          break;
-        case CHANGE_NAME: D_PRINT("CHANGE_NAME ACTION", NULL);
-                          break;
-        case DELETE: D_PRINT("DELETE ACTION", NULL);
-                     break;
-        case ADD: D_PRINT("ADD ACTION", NULL);
-                  break;
-        default: D_PRINT("UNKNOWN ACTION", NULL);
-    }
+    //
+    // switch (action) {
+    //     case INCORECT_ACTION: PRINTERR("Enconter an incorect action");
+    //                           break;
+    //     case MOVE_UP: D_PRINT("MOVE_UP ACTION", NULL);
+    //                   gtk_widget_destroy((GtkWidget *) element->layer->UIElement);
+    //                   D_PRINT("insert pos: %i", element->pos);
+    //                   layer_insert_at_pos(element->layer, flowbox, element->pos);
+    //                   break;
+    //     case MOVE_DOWN: D_PRINT("MOVE_DOWN ACTION", NULL);
+    //                     gtk_widget_destroy((GtkWidget *) element->layer->UIElement);
+    //                     D_PRINT("insert pos: %i", element->pos);
+    //                     layer_insert_at_pos(element->layer, flowbox, element->pos);
+    //                     break;
+    //     case MODIF_IMAGE: D_PRINT("MODIF_IMAGE ACTION", NULL);
+    //                       break;
+    //     case CHANGE_NAME: D_PRINT("CHANGE_NAME ACTION", NULL);
+    //                       break;
+    //     case DELETE: D_PRINT("DELETE ACTION", NULL);
+    //                  break;
+    //     case ADD: D_PRINT("ADD ACTION", NULL);
+    //               break;
+    //     default: D_PRINT("UNKNOWN ACTION", NULL);
+    // }
 
     return 0;
 }
@@ -113,23 +132,32 @@ int GMPF_buffer_redo(GtkFlowBox *flowbox)
     }
 
     GMPF_Action action = buffer_redo(buffer);
-    GMPF_BufferElement *element = buffer_get_current_element(buffer);
-
-    switch (action) {
-        case INCORECT_ACTION: PRINTERR("Enconter an incorect action");
-        case MOVE: D_PRINT("MOVE ACTION", NULL);
-                   break;
-        case MODIF_IMAGE: D_PRINT("MODIF_IMAGE ACTION", NULL);
-                          break;
-        case CHANGE_NAME: D_PRINT("CHANGE_NAME ACTION", NULL);
-                          break;
-        case DELETE: D_PRINT("DELETE ACTION", NULL);
-                     break;
-        case ADD: D_PRINT("ADD ACTION", NULL);
-                  break;
-        default: D_PRINT("UNKNOWN ACTION", NULL);
-    }
-
+    // GMPF_BufferElement *element = buffer_get_current_element(buffer);
+    //
+    // switch (action) {
+    //     case INCORECT_ACTION: PRINTERR("Enconter an incorect action");
+    //                           break;
+    //     case MOVE_UP: D_PRINT("MOVE_UP ACTION", NULL);
+    //                gtk_widget_destroy((GtkWidget *) element->layer->UIElement);
+    //                D_PRINT("insert pos: %i", element->pos + 1);
+    //                layer_insert_at_pos(element->layer, flowbox, element->pos - 1);
+    //                break;
+    //     case MOVE_DOWN: D_PRINT("MOVE_DOWN ACTION", NULL);
+    //                     gtk_widget_destroy((GtkWidget *) element->layer->UIElement);
+    //                     D_PRINT("insert pos: %i", element->pos - 1);
+    //                     layer_insert_at_pos(element->layer, flowbox, element->pos + 1);
+    //                     break;
+    //     case MODIF_IMAGE: D_PRINT("MODIF_IMAGE ACTION", NULL);
+    //                       break;
+    //     case CHANGE_NAME: D_PRINT("CHANGE_NAME ACTION", NULL);
+    //                       break;
+    //     case DELETE: D_PRINT("DELETE ACTION", NULL);
+    //                  break;
+    //     case ADD: D_PRINT("ADD ACTION", NULL);
+    //               break;
+    //     default: D_PRINT("UNKNOWN ACTION", NULL);
+    // }
+    //
     return 0;
 }
 
@@ -165,12 +193,12 @@ int buffer_init(GMPF_Buffer *buffer)
     if (buffer != NULL)
     {
         buffer->begin = 0;
+        buffer->end = 0;
         buffer->size = 0;
         buffer->pos = -1;
         for (size_t i = 0; i < BUFFER_SIZE; i++)
         {
-            buffer->buffer[i] = INCORECT_ACTION;
-            buffer->element_buffer[i] = NULL;
+            buffer->buffer[i] = NULL;
         }
         return 0;
     }
@@ -203,18 +231,18 @@ void buffer_destroy(GMPF_Buffer *buffer)
  *            it to the file_buffer list, else add a NULL value
  *  PARAMS : GMPF_Buffer *buffer - The buffer in witch add the action
  *           GMPF_Action  action - The action to add
- *           FILE        *file - the filestream to add (Accept NULL value)
+ *           GMPF_BufferElement *elements - the element to add
  * RETURNS : int - 0 if there were no error, else 1
  *   NOTES : Do nothing if the given Buffer or Action is invalid.
  *           Delete the first entered element if the Buffer is full.
  */
-int buffer_add(GMPF_Buffer *buffer,
+int buffer_add(GMPF_Buffer *buffer/*,
                 GMPF_Action action,
-                GMPF_BufferElement *element)
+                GMPF_BufferElement *element*/)
 {
-    if (!buffer || action == INCORECT_ACTION)
+    if (!buffer/* || !action || !element*/)
     {
-        PRINTERR("Invalid buffer or action");
+        PRINTERR("Invalid buffer, action or element");
         return 1;
     }
 
@@ -222,18 +250,18 @@ int buffer_add(GMPF_Buffer *buffer,
         buffer->size += 1;
 
     buffer->pos = (buffer->pos + 1) % BUFFER_SIZE;
+    buffer->end = (buffer->end + 1) % BUFFER_SIZE;
 
-    if (buffer->element_buffer[buffer->pos]->file)
-    {
-        if (fclose(buffer->element_buffer[buffer->pos]->file))
-        { PRINTERR("Unable to close filestream"); }
-    }
+    /*if (buffer->buffer[buffer->pos])
+        fclose(buffer->buffer[buffer->pos]);*/
 
     if (buffer->size == BUFFER_SIZE)
         buffer->begin = (buffer->begin + 1) % BUFFER_SIZE;
-    buffer->buffer[buffer->pos] = action;
-    buffer->element_buffer[buffer->pos] = element;
+    /*buffer->buffer[buffer->pos] = action;
+    buffer->element_buffer[buffer->pos] = element;*/
 
+    D_PRINT("buffer -- pos: %i, begin: %i, end: %i, size: %i",
+            buffer->pos, buffer->begin, buffer->end, buffer->size);
     return 0;
 }
 
@@ -243,12 +271,18 @@ int buffer_add(GMPF_Buffer *buffer,
  */
 GMPF_Action buffer_undo(GMPF_Buffer *buffer)
 {
-    GMPF_Action action = buffer->buffer[buffer->pos];
-    buffer->pos -= 1;
-    if (buffer->pos < 0)
-        buffer->pos += BUFFER_SIZE;
+    if (buffer->pos > buffer->begin)
+    {
+        FILE *file = buffer->buffer[buffer->pos];
+        buffer->pos -= 1;
+        if (buffer->pos < 0)
+            buffer->pos += BUFFER_SIZE;
+    }
 
-    return action;
+    D_PRINT("buffer -- pos: %i, begin: %i, end: %i, size: %i",
+            buffer->pos, buffer->begin, buffer->end, buffer->size);
+
+    return MOVE_UP;
 }
 
 
@@ -260,13 +294,13 @@ GMPF_Action buffer_undo(GMPF_Buffer *buffer)
  *           or NULL if there is no assocated Element
  *   NOTES : Do nothing if the buffer is invalid
  */
-GMPF_BufferElement *buffer_get_current_element(GMPF_Buffer *buffer)
-{
-    if (!buffer)
-    { PRINTERR("Invalid Buffer"); return NULL; }
-
-    return buffer->element_buffer[buffer->pos];
-}
+// GMPF_BufferElement *buffer_get_current_element(GMPF_Buffer *buffer)
+// {
+//     if (!buffer)
+//     { PRINTERR("Invalid Buffer"); return NULL; }
+//
+//     return buffer->element_buffer[buffer->pos];
+// }
 
 
 /*
@@ -274,7 +308,13 @@ GMPF_BufferElement *buffer_get_current_element(GMPF_Buffer *buffer)
  */
 GMPF_Action buffer_redo(GMPF_Buffer *buffer)
 {
-    buffer->pos = (buffer->pos + 1) % BUFFER_SIZE;
-    GMPF_Action action = buffer->buffer[buffer->pos];
-    return action;
+    if (buffer->pos < buffer->end)
+    {
+        buffer->pos = (buffer->pos + 1) % BUFFER_SIZE;
+        FILE *file = buffer->buffer[buffer->pos];
+    }
+    D_PRINT("buffer -- pos: %i, begin: %i, end: %i, size: %i",
+            buffer->pos, buffer->begin, buffer->end, buffer->size);
+
+    return MOVE_UP;
 }
