@@ -15,15 +15,20 @@ int GMPF_buffer_add(GtkFlowBox *flowbox,
 int GMPF_buffer_undo(GtkFlowBox *flowbox);
 int GMPF_buffer_redo(GtkFlowBox *flowbox);
 
-GMPF_Buffer *buffer_create();
-int buffer_init(GMPF_Buffer *buffer);
-void buffer_destroy(GMPF_Buffer *buffer);
 
-int buffer_add(GMPF_Buffer *buffer/*,
-               GMPF_Action  action,
-               GMPF_BufferElement *element*/);
-GMPF_BufferElement *buffer_get_current_element(GMPF_Buffer *buffer);
-GMPF_Action buffer_undo(GMPF_Buffer *buffer);
-GMPF_Action buffer_redo(GMPF_Buffer *buffer);
+
+//
+// BUFFER FUNCTIONS
+//
+GMPF_Buffer *buffer_create();
+char buffer_init(GMPF_Buffer *buffer);
+char buffer_destroy(GMPF_Buffer *buffer);
+
+char buffer_add(GMPF_Buffer *buffer,
+                GMPF_Action action,
+                GMPF_Layer *layer);
+//GMPF_BufferElement *buffer_get_current_element(GMPF_Buffer *buffer);
+char buffer_undo(GMPF_Buffer *buffer, GtkFlowBox *flowbox);
+char buffer_redo(GMPF_Buffer *buffer, GtkFlowBox *flowbox);
 
 #endif /* BUFFER_H */

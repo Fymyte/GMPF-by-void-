@@ -79,7 +79,7 @@ struct savebuf {
  * (buffer, begin, end, size & pos properties)
  */
 struct GMPF_Buffer {
-    FILE *buffer[BUFFER_SIZE];
+    FILE *elmt[BUFFER_SIZE];
     int begin;
     int end;
     int size;
