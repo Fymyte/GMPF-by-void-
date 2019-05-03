@@ -15,6 +15,69 @@ without any warranty.
   <!-- interface-license-type all_permissive -->
   <!-- interface-name GMPF -->
   <!-- interface-copyright VOID* -->
+  <object class="GtkWindow" id="Brushes">
+    <property name="name">Types de brosses</property>
+    <property name="can_focus">False</property>
+    <property name="default_width">250</property>
+    <property name="default_height">200</property>
+    <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkToolbar">
+        <property name="width_request">100</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="toolbar_style">icons</property>
+        <child>
+          <object class="GtkToolButton">
+            <property name="name">Circulaire</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Circulaire</property>
+            <property name="use_underline">True</property>
+            <property name="icon_name">media-record</property>
+            <signal name="clicked" handler="callback_select_brush" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton">
+            <property name="name">Carré</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Carré</property>
+            <property name="use_underline">True</property>
+            <property name="icon_name">media-playback-stop</property>
+            <signal name="clicked" handler="callback_select_brush" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Rectangulaire</property>
+            <property name="use_underline">True</property>
+            <property name="icon_name">list-remove</property>
+            <signal name="clicked" handler="callback_select_brush" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkMessageDialog" id="CancelDialog">
     <property name="can_focus">False</property>
     <property name="resizable">False</property>
@@ -1077,30 +1140,7 @@ effet :</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Brosse</property>
                 <property name="use_underline">True</property>
-                <child type="submenu">
-                  <object class="GtkMenu">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkMenuItem">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Carré</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_select_brush" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Circulaire</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="callback_select_brush" swapped="no"/>
-                      </object>
-                    </child>
-                  </object>
-                </child>
+                <signal name="activate" handler="callback_show_window" object="Brushes" swapped="no"/>
               </object>
             </child>
           </object>

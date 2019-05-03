@@ -1927,14 +1927,20 @@ void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem,
     gtk_widget_queue_draw(da);
 }
 
-void callback_select_brush(GtkMenuItem *menuitem, gpointer user_data)
+void callback_select_brush(GtkWidget *brush, gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    if (strcmp(gtk_menu_item_get_label(menuitem), "Circulaire") == 0)
+    if (strcmp(gtk_widget_get_name(brush), "Circulaire") == 0)
         layermngr->brush = 0;
 
-    if (strcmp(gtk_menu_item_get_label(menuitem), "Carré") == 0)
+    if (strcmp(gtk_widget_get_name(brush), "Carré") == 0)
         layermngr->brush = 1;
+    printf("done\n");
+}
+
+void callback_show_window(UNUSED GtkMenuItem *menuitem, GtkWindow *window)
+{
+    gtk_widget_show(GTK_WIDGET(window));
 }
