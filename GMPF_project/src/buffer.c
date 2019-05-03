@@ -230,10 +230,10 @@ char buffer_init(GMPF_Buffer *buffer)
         PRINTERR ("Invalid buffer");
         return 1;
     }
-    buffer->begin = 0;
-    buffer->end = 0;
-    buffer->size = 0;
-    buffer->pos = -1;
+    //buffer->begin = 0;
+    //buffer->end = 0;
+    buffer->size = 0; // only size is important / if size == 0, init these fields in the add function
+    //buffer->pos = -1;
     for (size_t i = 0; i < BUFFER_SIZE; i++)
     {
         buffer->elmt[i] = NULL;
@@ -317,13 +317,14 @@ char buffer_add(GMPF_Buffer *buffer,
 /*
  * TODO
  */
-char buffer_undo(GMPF_Buffer *buffer, GtkFlowBox *flowbox)
+char buffer_undo(GMPF_Buffer *buffer, GtkFlowBox *flowbox) // TODO
 {
     if (!buffer->size)
-    {
-        return 1;
-    }
-    if (buffer->pos < buffer->begin && buffer->pos >= buffer->end)
+    { return 1; }
+    if (buffer->pos < 0 || buffer->pos >= BUFFER_SIZE)
+    { return 1; }
+    if ((buffer->begin > buffer->end && (buffer->pos <= buffer->begin && buffer->pos > buffer->end))
+     || (buffer->begin < buffer->end && (buffer->pos <= buffer->begin || buffer->pos > buffer->end)))
     {
         return 1;
     }
@@ -359,18 +360,21 @@ char buffer_undo(GMPF_Buffer *buffer, GtkFlowBox *flowbox)
 /*
  * TODO
  */
-char buffer_redo(GMPF_Buffer *buffer, GtkFlowBox *flowbox)
+char buffer_redo(GMPF_Buffer *buffer, GtkFlowBox *flowbox) // TODO
 {
     if (!buffer->size)
+    { return 1; }
+    if (buffer->pos < 0 || buffer->pos >= BUFFER_SIZE)
+    { return 1; }
+    if ((buffer->begin > buffer->end && (buffer->pos < buffer->begin && buffer->pos >= buffer->end))
+     || (buffer->begin < buffer->end && (buffer->pos < buffer->begin || buffer->pos >= buffer->end)))
     {
         return 1;
     }
 
-    if (buffer->pos < buffer->end - 1)
-    {
-        buffer->pos = (buffer->pos + 1) % BUFFER_SIZE;
-        FILE *file = buffer->elmt[buffer->pos];
-    }
+    INC_BUF_LOOP(buffer->pos);
+    FILE *file = buffer->elmt[buffer->pos];
+    // TODO: traiter le fichier
 
     D_PRINT("buffer -- pos: %i, begin: %i, end: %i, size: %i",
             buffer->pos, buffer->begin, buffer->end, buffer->size);
