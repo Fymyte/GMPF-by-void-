@@ -1,0 +1,9 @@
+@define-color ui_text_color rgb(150, 150, 150);
+@define-color ui_text_color2 rgb(255, 255, 255);
+
+@define-color ui_button_color #008000;
+@define-color ui_button_hover_color #005000;
+@define-color ui_button_pressed_color rgb( 0, 255, 0);
+
+@define-color ui_window_background rgb(0, 0, 0);
+

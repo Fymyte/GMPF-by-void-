@@ -5,7 +5,7 @@
 
 @define-color ui_button_color #45d7ff;
 @define-color ui_button_hover_color #457aff;
-@define-color ui_button_pressed_color rgb( 0, 0, 255);
+@define-color ui_button_pressed_color rgb( 0, 0, 200);
 
 @define-color ui_window_background rgb(225, 225, 225);
 

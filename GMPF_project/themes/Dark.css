@@ -1,0 +1,36 @@
+#menubar1 menuitem > label {
+	color: rgb(0, 255, 165);
+}
+
+#menubar2 menuitem > label {
+	color: rgb(255, 0, 90);
+}
+
+/*change the color of the button while the cursor is on it */
+#menubar1 > menuitem:hover > label {
+	color: rgb(255, 255, 0);
+}
+
+#GMPF {
+    background-image: linear-gradient(45deg, rgb(150, 150, 150), rgb(0, 0, 0));
+}
+
+/*change the eventbox background*/
+#event {
+    /* background-image: linear-gradient(45deg, rgb(0, 255, 165), rgb(0, 0, 0)); */
+    background-image: url("grille.png");
+}
+
+#flowwin, #scroll{
+	background-color: transparent;
+	color: transparent;
+}
+
+#GMPF > button, #GMPF > box{
+    background-color: rgb(80, 80, 80);
+}
+
+/*change the color of the selected layer*/
+#flow *:selected {
+    background-color: rgb(0, 255, 165);
+}
