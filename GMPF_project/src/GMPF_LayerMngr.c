@@ -340,7 +340,7 @@ void layermngr_move_up_selected_layer(GtkFlowBox *flowbox)
         gint insertpos = gtk_flow_box_child_get_index(layer->UIElement) - 1;
         gtk_widget_destroy((GtkWidget *) layer->UIElement);
 
-        GMPF_buffer_add(flowbox, MOVE_UP, NULL);
+        GMPF_buffer_add(flowbox, MOVE_UP, layer);
 
         layer_insert_at_pos(layer, flowbox, insertpos);
 
@@ -362,7 +362,7 @@ void layermngr_move_down_selected_layer(GtkFlowBox *flowbox)
         gint insertpos = gtk_flow_box_child_get_index(layer->UIElement) + 1;
         gtk_widget_destroy((GtkWidget *) layer->UIElement);
 
-        GMPF_buffer_add(flowbox, MOVE_DOWN, NULL);
+        GMPF_buffer_add(flowbox, MOVE_DOWN, layer);
 
         layer_insert_at_pos(layer, flowbox, insertpos);
 

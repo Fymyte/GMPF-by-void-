@@ -1746,16 +1746,16 @@ void callback_applyFilter(UNUSED GtkWidget *btn,
 }
 
 
-void callback_undo(GtkWidget *widget,
-                   gpointer   user_data)
+void callback_undo(UNUSED GtkWidget *widget,
+                   gpointer          user_data)
 {
    INIT_UI();
    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
    GMPF_buffer_undo(flowbox);
 }
 
-void callback_redo(GtkWidget *widget,
-                   gpointer   user_data)
+void callback_redo(UNUSED GtkWidget *widget,
+                   gpointer          user_data)
 {
    INIT_UI();
    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");

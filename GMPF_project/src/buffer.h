@@ -11,7 +11,7 @@ GMPF_Buffer *GMPF_buffer_set_buffer(GtkFlowBox  *flowbox,
                                     GMPF_Buffer *buffer);
 int GMPF_buffer_add(GtkFlowBox *flowbox,
                     GMPF_Action action,
-                    GMPF_BufferElement *element);
+                    GMPF_Layer *layer);
 int GMPF_buffer_undo(GtkFlowBox *flowbox);
 int GMPF_buffer_redo(GtkFlowBox *flowbox);
 
