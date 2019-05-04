@@ -246,7 +246,15 @@ char buffer_add(GMPF_Buffer *buffer,
         }
 
         // TODO: create the file
-        FILE *file = NULL;
+        FILE *file = tmpfile();
+        switch (action) {
+            case GMPF_ACTION_MOVE_UP:   break;
+            case GMPF_ACTION_MOVE_DOWN: break;
+            case GMPF_ACTION_MODIF_IMAGE: break;
+            case GMPF_ACTION_CHANGE_NAME: break;
+            case GMPF_ACTION_DELETE: break;
+            case GMPF_ACTION_ADD: break;
+        }
 
 
         INC_BUF_LOOP(buffer->end);

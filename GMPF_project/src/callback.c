@@ -740,19 +740,19 @@ gboolean callback_button_press_event (GtkWidget      *widget,
 
     GMPF_Tool tool = layermngr->tool;
 
-    if (event->button == GDK_BUTTON_PRIMARY & tool == PAINTER)
+    if (event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_PAINTER)
         draw_brush (widget, event->x, event->y, user_data);
 
-    else if (event->button == GDK_BUTTON_PRIMARY & tool == ERAISER)
+    else if (event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_ERAISER)
         draw_rubber (widget, event->x, event->y, user_data);
 
-    else if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_PICKER)
+    else if (event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_COLOR_PICKER)
         color_picker (widget, event->x, event->y, user_data);
 
-    else if (event->button == GDK_BUTTON_PRIMARY & tool == COLOR_KILLER)
+    else if (event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_COLOR_KILLER)
         kill_color(widget, .2, user_data);
 
-    else if(event->button == GDK_BUTTON_PRIMARY & tool == SELECTOR)
+    else if(event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_SELECTOR)
         { layermngr->pos.x = event->x; layermngr->pos.y = event->y; }
 
     /* We've handled the event, stop processing */
@@ -775,7 +775,7 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
     GET_UI(GtkWidget, da, "drawingArea");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-    if (layermngr->tool == SELECTOR)
+    if (layermngr->tool == GMPF_TOOL_SELECTOR)
     {
         GMPF_Pos pos = { .x = layermngr->pos.x, .y = layermngr->pos.y };
         GMPF_Pos npos = { .x = event->x, .y = event->y };
@@ -839,7 +839,7 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
     layermngr->pos.x = -1;
     layermngr->pos.y = -1;
     GMPF_Tool tool = layermngr->tool;
-    if (tool == PAINTER || tool == ERAISER)
+    if (tool == GMPF_TOOL_PAINTER || tool == GMPF_TOOL_ERAISER)
         GMPF_saved_state_set_is_saved(flowbox, 0);
     if (!lay)
         return FALSE;
@@ -869,9 +869,9 @@ gboolean callback_motion_notify_event (GtkWidget      *widget,
 
     GMPF_Tool tool = layermngr->tool;
 
-    if (tool == PAINTER && (event->state & GDK_BUTTON1_MASK))
+    if (tool == GMPF_TOOL_PAINTER && (event->state & GDK_BUTTON1_MASK))
         draw_brush (widget, event->x, event->y, user_data);
-    if (tool == ERAISER && (event->state & GDK_BUTTON1_MASK))
+    if (tool == GMPF_TOOL_ERAISER && (event->state & GDK_BUTTON1_MASK))
         draw_rubber (widget, event->x, event->y, user_data);
 
     /* We've handled it, stop processing */
@@ -948,19 +948,19 @@ void callback_select_tool(GtkWidget *widget,
     GMPF_Tool tool;
     switch (name)
     {
-        case '1': tool = PAINTER;
+        case '1': tool = GMPF_TOOL_PAINTER;
                          break;
-        case '2': tool = ERAISER;
+        case '2': tool = GMPF_TOOL_ERAISER;
                          break;
-        case '3': tool = COLOR_PICKER;
+        case '3': tool = GMPF_TOOL_COLOR_PICKER;
                          break;
-        case '4': tool = COLOR_KILLER;
+        case '4': tool = GMPF_TOOL_COLOR_KILLER;
                          break;
-        case '5': tool = SELECTOR;
+        case '5': tool = GMPF_TOOL_SELECTOR;
                          break;
-        case '6': tool = SELECTOR_FREE;
+        case '6': tool = GMPF_TOOL_SELECTOR_FREE;
                          break;
-        default : tool = INCORECT_TOOL;
+        default : tool = GMPF_TOOL_INCORECT;
         D_PRINT("Unknown tool", NULL);
     }
     layermngr->tool = tool;
@@ -1619,7 +1619,7 @@ void reset_cursor(UNUSED GtkMenuItem *menuitem,
     resetCursor(window);
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    layermngr->tool = INCORECT_TOOL;
+    layermngr->tool = GMPF_TOOL_INCORECT;
 }
 
 

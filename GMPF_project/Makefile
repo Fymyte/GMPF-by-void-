@@ -17,7 +17,10 @@ GMPF.out: $(OBJ)
 %.o: %.c
 	@$(CC) -o $@ -c $< $(CFLAGS)
 
-.PHONY: clean
+.PHONY: clean clean_save
 
 clean:
 	@rm -rf $(OBJ) $(EXEC)
+
+clean_save:
+	@rm -rf *.gmpf
