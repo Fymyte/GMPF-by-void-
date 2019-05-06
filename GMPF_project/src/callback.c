@@ -1008,7 +1008,7 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget,
         lay->surface = surface;
         REFRESH_IMAGE(lay);
     }
-    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_ADD, lay);
 
 
     gtk_widget_hide(window);
@@ -1752,21 +1752,35 @@ void callback_applyFilter(UNUSED GtkWidget *btn,
 void callback_undo(UNUSED GtkWidget *widget,
                    gpointer          user_data)
 {
-   INIT_UI();
-   GET_UI(GtkWidget, da, "drawingArea");
-   GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-   GMPF_buffer_undo(flowbox);
-   gtk_widget_queue_draw(da);
+    INIT_UI();
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    int max_width = layermngr->size.w;
+    int max_height = layermngr->size.h;
+    GMPF_buffer_undo(flowbox);
+    gtk_widget_set_size_request(layout, max_width, max_height);
+    gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
+    gtk_widget_queue_draw(da);
 }
 
 void callback_redo(UNUSED GtkWidget *widget,
                    gpointer          user_data)
 {
-   INIT_UI();
-   GET_UI(GtkWidget, da, "drawingArea");
-   GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-   GMPF_buffer_redo(flowbox);
-   gtk_widget_queue_draw(da);
+    INIT_UI();
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    int max_width = layermngr->size.w;
+    int max_height = layermngr->size.h;
+    GMPF_buffer_redo(flowbox);
+    gtk_widget_set_size_request(layout, max_width, max_height);
+    gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
+    gtk_widget_queue_draw(da);
 }
 
 
@@ -1925,8 +1939,8 @@ void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem,
     layermngr_delete_selected_layer(flowbox);
     if (!layermngr->layer_list.next)
     {
-        layermngr->size.w = 0;
-        layermngr->size.h = 0;
+        // layermngr->size.w = 0;
+        // layermngr->size.h = 0;
         gtk_widget_set_size_request(layout, 0, 0);
         gtk_widget_set_size_request(da, 0, 0);
         gtk_layout_set_size((GtkLayout *)layout, 0, 0);

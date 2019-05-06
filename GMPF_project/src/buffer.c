@@ -217,6 +217,7 @@ char buffer_add(GMPF_Buffer *buffer,
     save.action = action;
     if (fwrite(&save, sizeof(s_savebuf), 1, file) != 1)
     { PRINTERR("Unable to write in filestream"); return 1; }
+    D_PRINT("Action: %i", action)
 
     switch (action) {
         case GMPF_ACTION_MOVE_UP:
@@ -318,6 +319,7 @@ char buffer_undo(GMPF_Buffer *buffer,
             break;
 
         case GMPF_ACTION_MODIF_IMAGE:
+            D_PRINT("pos: %i", s_buff.layer);
             if (load_layer(layermngr_get_layermngr(flowbox), file))
             { PRINTERR("Unable to load layer"); break; }
 
@@ -326,6 +328,8 @@ char buffer_undo(GMPF_Buffer *buffer,
             { PRINTERR("Unable to get layer"); break; }
 
             rewind(file);
+            if (fwrite(&s_buff, sizeof(s_savebuf), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); return 1; }
             if (save_layer(layer, file))
             { PRINTERR("Unable to save layer"); break; }
 
@@ -339,6 +343,9 @@ char buffer_undo(GMPF_Buffer *buffer,
                 if (!list_move_down(&layer->list))
                 { PRINTERR("Unable to move down"); }
             }
+            gtk_widget_destroy((GtkWidget *) layer->UIElement);
+            layer_insert_at_pos(layer, flowbox, s_buff.layer);
+            gtk_flow_box_select_child(flowbox, layer->UIElement);
             break;
 
         case GMPF_ACTION_CHANGE_NAME:
@@ -351,6 +358,8 @@ char buffer_undo(GMPF_Buffer *buffer,
             { PRINTERR("Unable to read in filestream"); break; }
 
             rewind(file);
+            if (fwrite(&s_buff, sizeof(s_savebuf), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); return 1; }
             if (fwrite(&layer->name, sizeof(char), 51, file) != 51)
             { PRINTERR("Unable to write in filestream"); break; }
 
@@ -370,6 +379,9 @@ char buffer_undo(GMPF_Buffer *buffer,
                 if (!list_move_down(&layer->list))
                 { PRINTERR("Unable to move down"); }
             }
+            gtk_widget_destroy((GtkWidget *) layer->UIElement);
+            layer_insert_at_pos(layer, flowbox, s_buff.layer);
+            gtk_flow_box_select_child(flowbox, layer->UIElement);
             break;
 
         case GMPF_ACTION_ADD:
@@ -416,6 +428,7 @@ char buffer_redo(GMPF_Buffer *buffer,
     { PRINTERR ("Unable to read in filestream"); return 1; }
 
     GMPF_Action action = s_buff.action;
+    D_PRINT("action: %i", action);
     GMPF_Layer *layer = NULL;
 
     switch (action) {
@@ -438,6 +451,7 @@ char buffer_redo(GMPF_Buffer *buffer,
             break;
 
         case GMPF_ACTION_MODIF_IMAGE:
+            D_PRINT("pos: %i", s_buff.layer);
             if (load_layer(layermngr_get_layermngr(flowbox), file))
             { PRINTERR("Unable to load layer"); break; }
 
@@ -446,6 +460,8 @@ char buffer_redo(GMPF_Buffer *buffer,
             { PRINTERR("Unable to get layer"); break; }
 
             rewind(file);
+            if (fwrite(&s_buff, sizeof(s_savebuf), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); return 1; }
             if (save_layer(layer, file))
             { PRINTERR("Unable to save layer"); break; }
 
@@ -459,6 +475,9 @@ char buffer_redo(GMPF_Buffer *buffer,
                 if (!list_move_down(&layer->list))
                 { PRINTERR("Unable to move down"); }
             }
+            gtk_widget_destroy((GtkWidget *) layer->UIElement);
+            layer_insert_at_pos(layer, flowbox, s_buff.layer);
+            gtk_flow_box_select_child(flowbox, layer->UIElement);
             break;
 
         case GMPF_ACTION_CHANGE_NAME:
@@ -471,6 +490,8 @@ char buffer_redo(GMPF_Buffer *buffer,
             { PRINTERR("Unable to read in filestream"); break; }
 
             rewind(file);
+            if (fwrite(&s_buff, sizeof(s_savebuf), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); return 1; }
             if (fwrite(&layer->name, sizeof(char), 51, file) != 51)
             { PRINTERR("Unable to write in filestream"); break; }
 
@@ -498,9 +519,14 @@ char buffer_redo(GMPF_Buffer *buffer,
                 if (!list_move_down(&layer->list))
                 { PRINTERR("Unable to move down"); }
             }
+            gtk_widget_destroy((GtkWidget *) layer->UIElement);
+            layer_insert_at_pos(layer, flowbox, s_buff.layer);
+            gtk_flow_box_select_child(flowbox, layer->UIElement);
             break;
 
-        default: break;
+        default:
+            PRINTERR("Invalid action");
+            break;
     }
 
     rewind(file);

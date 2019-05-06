@@ -7,7 +7,7 @@
 
 #include "types_redefine.h"
 
-#define BUFFER_SIZE 4
+#define BUFFER_SIZE 501
 
 
 // STRUCTURES

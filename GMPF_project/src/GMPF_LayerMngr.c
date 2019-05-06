@@ -510,8 +510,8 @@ void layermngr_delete_selected_layer(GtkFlowBox *flowbox)
 
         if (layer != NULL)
         {
+            GMPF_buffer_add(flowbox, GMPF_ACTION_DELETE, layer);
             layer_delete(layer);
-            GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
             layermngr->nb_layer -= 1;
         }
     }
