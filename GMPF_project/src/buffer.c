@@ -1,39 +1,21 @@
 #include "buffer.h"
 
-// General
-/* val ~ [min ; max[ */
-#define INC_LOOP(_val, _min, _max) \
-        _val++; \
-        if (_val == _max) { _val = _min; }
 
-#define DEC_LOOP(_val, _min, _max) \
-        if (_val == _min) { _val = _max; } \
-        _val--
-
-// for the buffer
-/* val ~ [0 ; BUFFER_SIZE[ */
-#define INC_BUF_LOOP(_val) \
-        INC_LOOP(_val, 0, BUFFER_SIZE)
-
-#define DEC_BUF_LOOP(_val) \
-        DEC_LOOP(_val, 0, BUFFER_SIZE)
-
-
-#define CLOSE_BUFFER_FILES(_buffer, _begin, _end) \
-        if (_begin > _end) \
-        { \
-            for(; 0 < _end; _end--, _buffer->size--) \
-                if (_buffer->elmt[_end]) \
-                    fclose(_buffer->elmt[_end]); \
-            if (_buffer->elmt[0]) \
-                fclose(_buffer->elmt[0]); \
-            _end = BUFFER_SIZE - 1; \
-        } \
-        for(; _begin < _end; _end--, _buffer->size--) \
-            if (_buffer->elmt[_end]) \
-                fclose(_buffer->elmt[_end]); \
-        if (_buffer->elmt[_begin]) \
-            fclose(_buffer->elmt[_begin]);
+// #define CLOSE_BUFFER_FILES(_buffer, _begin, _end) \
+//         if (_begin > _end) \
+//         { \
+//             for(; 0 < _end; _end--, _buffer->size--) \
+//                 if (_buffer->elmt[_end]) \
+//                     fclose(_buffer->elmt[_end]); \
+//             if (_buffer->elmt[0]) \
+//                 fclose(_buffer->elmt[0]); \
+//             _end = BUFFER_SIZE - 1; \
+//         } \
+//         for(; _begin < _end; _end--, _buffer->size--) \
+//             if (_buffer->elmt[_end]) \
+//                 fclose(_buffer->elmt[_end]); \
+//         if (_buffer->elmt[_begin]) \
+//             fclose(_buffer->elmt[_begin]);
 
 
 
@@ -157,14 +139,9 @@ GMPF_Buffer *buffer_create()
 {
     GMPF_Buffer *buffer = malloc(sizeof(GMPF_Buffer));
 
-    if (!buffer)
-    {
-        PRINTERR("Unable to malloc");
-        return NULL;
-    }
-
     if (buffer_init(buffer))
-    { PRINTERR("Unable to init buffer"); }
+    { PRINTERR("Unable to malloc"); }
+
     return buffer;
 }
 
@@ -176,14 +153,14 @@ GMPF_Buffer *buffer_create()
  */
 char buffer_init(GMPF_Buffer *buffer)
 {
-    if (buffer == NULL)
+    if (!buffer)
     {
         PRINTERR ("Invalid buffer");
         return 1;
     }
     buffer->begin = 0;
     buffer->end = 0;
-    buffer->size = 1;
+    buffer->size = 0;
     buffer->pos = 0;
     for (size_t i = 0; i < BUFFER_SIZE; i++)
     {
@@ -204,7 +181,10 @@ char buffer_destroy(GMPF_Buffer *buffer)
         PRINTERR("Invalid buffer");
         return 1;
     }
-    CLOSE_BUFFER_FILES(buffer, buffer->begin, buffer->end);
+    for( ; buffer->begin <= buffer->end; buffer->begin++, buffer->size--)
+    {
+        fclose(buffer->elmt[r_begin]);
+    }
     free(buffer);
     return 0;
 }
@@ -230,86 +210,90 @@ char buffer_add(GMPF_Buffer *buffer,
         return 1;
     }
 
-    if (buffer->size)
-    { // size > 0
-        if (buffer->pos != buffer->end)
-        { // erase the end of the buffer / change buffer->end
-            INC_BUF_LOOP(buffer->begin);
-            CLOSE_BUFFER_FILES(buffer, buffer->begin, buffer->end);
-            buffer->end = buffer->pos;
-        }
-        else if ((buffer->end + 1) % BUFFER_SIZE == buffer->begin)
+
+    unsigned long long r_begin = buffer->begin % BUFFER_SIZE;
+    unsigned long long r_pos = buffer->pos % BUFFER_SIZE;
+    unsigned long long r_end = buffer->end % BUFFER_SIZE;
+
+    /*FILE *file = tmpfile();
+    if (!file)
+    { PRINTERR("No file"); return 1; }
+    int pos;
+    switch (action) {
+        case GMPF_ACTION_MOVE_UP:
+            pos = gtk_flow_box_child_get_index(layer->UIElement);
+            if (fwrite(&action, sizeof(int), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            if (fwrite(&pos, sizeof(int), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            break;
+
+        case GMPF_ACTION_MOVE_DOWN:
+            pos = gtk_flow_box_child_get_index(layer->UIElement);
+            if (fwrite(&action, sizeof(int), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            if (fwrite(&pos, sizeof(int), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            break;
+
+        case GMPF_ACTION_MODIF_IMAGE:
+            if (fwrite(&action, sizeof(int), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            if (!save_layer(layer, file))
+            { PRINTERR("Unable to save layer"); break; }
+            break;
+
+        case GMPF_ACTION_CHANGE_NAME:
+            if (fwrite(&action, sizeof(int), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            if (fwrite(&layer->name, sizeof(char), 51, file) != 51)
+            { PRINTERR("Unable to write in filestream"); break; }
+            break;
+
+        case GMPF_ACTION_DELETE:
+            if (fwrite(&action, sizeof(int), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            if (!save_layer(layer, file))
+            { PRINTERR("Unable to save layer"); break; }
+            break;
+
+        case GMPF_ACTION_ADD:
+            if (fwrite(&action, sizeof(int), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            if (!save_layer(layer, file))
+            { PRINTERR("Unable to save layer"); break; }
+            break;
+
+        default:
+            PRINTERR("Unknown action");
+    }*/
+
+
+    if (buffer->pos <= buffer->end)
+    {
+        for( ; buffer->begin != buffer->pos; buffer->begin++, buffer->size--)
         {
-            if (buffer->elmt[buffer->begin])
-            { fclose(buffer->elmt[buffer->begin]); }
-            INC_BUF_LOOP(buffer->begin);
+            fclose(buffer->elmt[r_begin]);
         }
+    }
 
-        FILE *file = tmpfile();
-        if (!file)
-        { PRINTERR("No file"); return 1; }
-        int pos;
-        switch (action) {
-            case GMPF_ACTION_MOVE_UP:
-                pos = gtk_flow_box_child_get_index(layer->UIElement);
-                if (fwrite(&action, sizeof(int), 1, file) != 1)
-                { PRINTERR("Unable to write in filestream"); break; }
-                if (fwrite(&pos, sizeof(int), 1, file) != 1)
-                { PRINTERR("Unable to write in filestream"); break; }
-                break;
-
-            case GMPF_ACTION_MOVE_DOWN:
-                pos = gtk_flow_box_child_get_index(layer->UIElement);
-                if (fwrite(&action, sizeof(int), 1, file) != 1)
-                { PRINTERR("Unable to write in filestream"); break; }
-                if (fwrite(&pos, sizeof(int), 1, file) != 1)
-                { PRINTERR("Unable to write in filestream"); break; }
-                break;
-
-            case GMPF_ACTION_MODIF_IMAGE:
-                if (fwrite(&action, sizeof(int), 1, file) != 1)
-                { PRINTERR("Unable to write in filestream"); break; }
-                if (!save_layer(layer, file))
-                { PRINTERR("Unable to save layer"); break; }
-                break;
-
-            case GMPF_ACTION_CHANGE_NAME:
-                if (fwrite(&action, sizeof(int), 1, file) != 1)
-                { PRINTERR("Unable to write in filestream"); break; }
-                if (fwrite(&layer->name, sizeof(char), 51, file) != 51)
-                { PRINTERR("Unable to write in filestream"); break; }
-                break;
-
-            case GMPF_ACTION_DELETE:
-                if (fwrite(&action, sizeof(int), 1, file) != 1)
-                { PRINTERR("Unable to write in filestream"); break; }
-                if (!save_layer(layer, file))
-                { PRINTERR("Unable to save layer"); break; }
-                break;
-
-            case GMPF_ACTION_ADD:
-                if (fwrite(&action, sizeof(int), 1, file) != 1)
-                { PRINTERR("Unable to write in filestream"); break; }
-                if (!save_layer(layer, file))
-                { PRINTERR("Unable to save layer"); break; }
-                break;
-
-            default:
-                PRINTERR("Unknown action");
-        }
-
-        INC_BUF_LOOP(buffer->end);
-        rewind(file); // Set the position in the file to 0
-        buffer->elmt[buffer->end] = file;
-        INC_BUF_LOOP(buffer->pos);
+    if (buffer->size == BUFFER_SIZE)
+    {
+        fclose(buffer->elmt[r_begin]);
     }
     else
-    { // size == 0
-        buffer->begin = 0;
-        buffer->end = 0;
-        buffer->size = 1;
-        buffer->pos = 0;
+    {
+        buffer->size++;
     }
+
+
+    buffer->begin++;
+    buffer->end++;
+    rewind(file); // Set the position in the file to 0
+    buffer->elmt[r_end] = file;
+    buffer->pos++;
+
+
 
     D_PRINT("buffer -- pos: %i, begin: %i, end: %i, size: %i",
             buffer->pos, buffer->begin, buffer->end, buffer->size);
@@ -323,15 +307,8 @@ char buffer_add(GMPF_Buffer *buffer,
 char buffer_undo(GMPF_Buffer *buffer,
                  GtkFlowBox  *flowbox) // TODO
 {
-    if (!buffer->size)
+    if (!buffer->size || buffer->pos <= buffer->begin)
     { return 1; }
-    if (buffer->pos < 0 || buffer->pos >= BUFFER_SIZE)
-    { return 1; }
-    if ((buffer->begin > buffer->end && (buffer->pos <= buffer->begin && buffer->pos > buffer->end))
-     || (buffer->begin < buffer->end && (buffer->pos <= buffer->begin || buffer->pos > buffer->end)))
-    {
-        return 1;
-    }
 
     FILE *file = buffer->elmt[buffer->pos];
     if (!file)
@@ -387,17 +364,8 @@ char buffer_undo(GMPF_Buffer *buffer,
 char buffer_redo(GMPF_Buffer *buffer,
                  GtkFlowBox  *flowbox) // TODO
 {
-    if (!buffer->size)
+    if (!buffer->size || buffer->pos >= buffer->end)
     { return 1; }
-    if (buffer->pos < 0 || buffer->pos >= BUFFER_SIZE)
-    { return 1; }
-    if ((buffer->begin > buffer->end &&
-                   (buffer->pos < buffer->begin && buffer->pos >= buffer->end))
-     || (buffer->begin < buffer->end &&
-                   (buffer->pos < buffer->begin || buffer->pos >= buffer->end)))
-    {
-        return 1;
-    }
 
     INC_BUF_LOOP(buffer->pos);
     FILE *file = buffer->elmt[buffer->pos];
