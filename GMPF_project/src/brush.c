@@ -121,18 +121,43 @@ void circular_brush(GtkWidget      *widget,
  * RETURNS : None
  *   NOTES :
  */
-void selector(UNUSED GtkWidget *widget,
-              double             x,
-              double             y,
-              GMPF_LayerMngr    *layermngr)
+char selector(GtkFlowBox     *flowbox,
+              double          x,
+              double          y,
+              GMPF_LayerMngr *layermngr)
 {
-    if (layermngr->pos.x == -1)
+    GMPF_Pos pos = { .x = layermngr->pos.x, .y = layermngr->pos.y };
+    GMPF_Pos npos = { .x = x, .y = y };
+    GMPF_Size size = { .w = 0, .h = 0};
+    layermngr->pos.x = -1;
+    layermngr->pos.y = -1;
+    D_PRINT("pos: (%i, %i)", pos.x, pos.y);
+    D_PRINT("npos: (%i, %i)", npos.x, npos.y);
+
+    if (pos.x == npos.x || pos.y == npos.y)
+        return 1;
+
+    if (pos.x < npos.x)
     {
-        layermngr->pos.x = x;
-        layermngr->pos.y = y;
+        size.w = npos.x - pos.x;
     }
     else
     {
-
+        size.w = pos.x - npos.x;
+        pos.x = npos.x;
     }
+    if (pos.y < npos.y)
+    {
+        size.h = npos.y - pos.y;
+    }
+    else
+    {
+        size.h = pos.y - npos.y;
+        pos.y = npos.y;
+    }
+    D_PRINT("size: .w = %d, .h = %d", size.w, size.h);
+    GMPF_selection_set_pos(flowbox, pos);
+    GMPF_selection_set_size(flowbox, size);
+
+    return 0;
 }

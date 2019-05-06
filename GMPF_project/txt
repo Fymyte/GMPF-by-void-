@@ -1,0 +1,15 @@
+
+
+
+[ 0 | 1 | 2 ] [ 3 | 4 | 5 ]
+ beg end
+
+ pos = [beg ; end]
+
+begin : 3
+end : 5
+size : 3
+pos : 5
+
+
+ val & 0b11

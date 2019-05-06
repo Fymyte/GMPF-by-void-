@@ -80,10 +80,10 @@ struct savebuf {
  */
 struct GMPF_Buffer {
     FILE *elmt[BUFFER_SIZE];
-    int begin;
-    int end;
-    int size;
-    int pos;
+    unsigned long long begin;
+    unsigned long long end;
+    unsigned long long size;
+    unsigned long long pos;
 };
 
 
@@ -92,12 +92,6 @@ struct GMPF_List {
     GMPF_List *next;
 };
 
-// struct buffer {
-//     FILE buff[BUF_SIZE];
-//     int begin;
-//     int size;
-//     int pos;
-// };
 
 /*
  * Structure to store the state of the project

@@ -162,10 +162,11 @@ char buffer_init(GMPF_Buffer *buffer)
     buffer->end = 0;
     buffer->size = 0;
     buffer->pos = 0;
-    for (size_t i = 0; i < BUFFER_SIZE; i++)
+    for (size_t i = 1; i < BUFFER_SIZE; i++)
     {
         buffer->elmt[i] = NULL;
     }
+    buffer->elmt[0] = tmpfile();
     return 0;
 }
 
@@ -177,14 +178,11 @@ char buffer_init(GMPF_Buffer *buffer)
 char buffer_destroy(GMPF_Buffer *buffer)
 {
     if (!buffer)
-    {
-        PRINTERR("Invalid buffer");
-        return 1;
-    }
-    for( ; buffer->begin <= buffer->end; buffer->begin++, buffer->size--)
-    {
-        fclose(buffer->elmt[r_begin]);
-    }
+    { PRINTERR("Invalid buffer"); return 1; }
+
+    for(; buffer->begin <= buffer->end; buffer->begin++)
+    { fclose(buffer->elmt[buffer->begin % BUFFER_SIZE]); }
+
     free(buffer);
     return 0;
 }
@@ -204,20 +202,19 @@ char buffer_add(GMPF_Buffer *buffer,
                 GMPF_Action  action,
                 GMPF_Layer  *layer)
 {
-    if (!buffer/* || !action*/ || !layer)
+    if (!buffer || !layer)
     {
         PRINTERR("Invalid buffer or layer");
         return 1;
     }
 
-
-    unsigned long long r_begin = buffer->begin % BUFFER_SIZE;
-    unsigned long long r_pos = buffer->pos % BUFFER_SIZE;
-    unsigned long long r_end = buffer->end % BUFFER_SIZE;
-
-    /*FILE *file = tmpfile();
+    FILE *file = tmpfile();
     if (!file)
     { PRINTERR("No file"); return 1; }
+
+    if (fwrite(&action, sizeof(int), 1, file) != 1)
+    { PRINTERR("Unable to write in filestream"); return 1; }
+
     int pos;
     switch (action) {
         case GMPF_ACTION_MOVE_UP:
@@ -266,36 +263,38 @@ char buffer_add(GMPF_Buffer *buffer,
 
         default:
             PRINTERR("Unknown action");
-    }*/
-
-
-    if (buffer->pos <= buffer->end)
-    {
-        for( ; buffer->begin != buffer->pos; buffer->begin++, buffer->size--)
-        {
-            fclose(buffer->elmt[r_begin]);
-        }
     }
+
+
+    // if (buffer->pos && buffer->end > buffer->pos && buffer->pos == buffer->begin)
+    // {
+    //     buffer->size++;
+    // }
+    for(; buffer->end > buffer->pos; buffer->end--, buffer->size--)
+    {
+        fclose(buffer->elmt[buffer->end % BUFFER_SIZE]);
+    }
+
+    buffer->size = buffer->end - buffer->begin + 1;
 
     if (buffer->size == BUFFER_SIZE)
     {
-        fclose(buffer->elmt[r_begin]);
+        fclose(buffer->elmt[buffer->begin % BUFFER_SIZE]);
+        buffer->begin++;
     }
     else
     {
         buffer->size++;
     }
 
-
-    buffer->begin++;
+    buffer->pos++;
     buffer->end++;
     rewind(file); // Set the position in the file to 0
-    buffer->elmt[r_end] = file;
-    buffer->pos++;
+    buffer->elmt[buffer->end % BUFFER_SIZE] = file;
 
 
 
-    D_PRINT("buffer -- pos: %i, begin: %i, end: %i, size: %i",
+    D_PRINT("buffer -- pos: %llu, begin: %llu, end: %llu, size: %llu",
             buffer->pos, buffer->begin, buffer->end, buffer->size);
     return 0;
 }
@@ -310,10 +309,10 @@ char buffer_undo(GMPF_Buffer *buffer,
     if (!buffer->size || buffer->pos <= buffer->begin)
     { return 1; }
 
-    FILE *file = buffer->elmt[buffer->pos];
+    FILE *file = buffer->elmt[buffer->pos % BUFFER_SIZE];
     if (!file)
     { PRINTERR("No file"); return 1; }
-    GMPF_Action action;
+    /*GMPF_Action action;
     if (fread(&action, sizeof(int), 1, file) != 1)
     { PRINTERR ("Unable to read action in filestream"); return 1; }
     D_PRINT("Readed Action: %i", action);
@@ -342,11 +341,11 @@ char buffer_undo(GMPF_Buffer *buffer,
                                     gtk_flow_box_select_child(flowbox, layer->UIElement);
                                     break;
         default: break;
-    }
+    }*/
     // TODO : traiter le fichier des actions
-    DEC_LOOP(buffer->pos, 0, BUFFER_SIZE - 1);
+    buffer->pos--;
     rewind(file); // Set the positon in the file to 0
-    D_PRINT("buffer -- pos: %i, begin: %i, end: %i, size: %i",
+    D_PRINT("buffer -- pos: %llu, begin: %llu, end: %llu, size: %llu",
             buffer->pos, buffer->begin, buffer->end, buffer->size);
 
     return 0;
@@ -367,11 +366,12 @@ char buffer_redo(GMPF_Buffer *buffer,
     if (!buffer->size || buffer->pos >= buffer->end)
     { return 1; }
 
-    INC_BUF_LOOP(buffer->pos);
-    FILE *file = buffer->elmt[buffer->pos];
+    buffer->pos++;
+
+    FILE *file = buffer->elmt[buffer->pos % BUFFER_SIZE];
     // TODO: traiter le fichier
 
-    D_PRINT("buffer -- pos: %i, begin: %i, end: %i, size: %i",
+    D_PRINT("buffer -- pos: %llu, begin: %llu, end: %llu, size: %llu",
             buffer->pos, buffer->begin, buffer->end, buffer->size);
 
     return 0;
