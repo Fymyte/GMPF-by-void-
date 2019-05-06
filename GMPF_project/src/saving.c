@@ -381,7 +381,7 @@ int export_cairo_to_png(gchar *filename, gpointer user_data)
 
 	//create a new surface and context to store all the layer surfaces
 	cairo_surface_t *final_surface =
-		cairo_image_surface_create (CAIRO_FORMAT_ARGB32, lay->size.w, lay->size.h);
+		cairo_image_surface_create (CAIRO_FORMAT_ARGB32, layermngr->size.w, layermngr->size.h);
 	cairo_t *final_context = cairo_create(final_surface);
 
 	//write the surfaces on the new surface
@@ -391,7 +391,7 @@ int export_cairo_to_png(gchar *filename, gpointer user_data)
         {
             cairo_save(final_context);
             // cairo_surface_t *surface = lay->surface ? lay->surface : lay->surface;
-            cairo_scale(final_context, lay->scale_factor.x, lay->scale_factor.y);
+            // cairo_scale(final_context, lay->scale_factor.x, lay->scale_factor.y);
             cairo_set_source_surface (final_context, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
             cairo_paint(final_context);
             cairo_restore(final_context);

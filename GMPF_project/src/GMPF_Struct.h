@@ -18,7 +18,6 @@ typedef struct GMPF_Buffer GMPF_Buffer;
 typedef struct GMPF_BufferElement GMPF_BufferElement;
 typedef struct GMPF_List GMPF_List;
 typedef struct savebuf s_savebuf;
-typedef struct buffer s_buffer;
 typedef struct GMPF_SavedState GMPF_SavedState;
 typedef struct GMPF_Pos GMPF_Pos;
 typedef struct GMPF_Size GMPF_Size;
