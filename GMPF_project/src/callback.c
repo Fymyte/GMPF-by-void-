@@ -839,15 +839,17 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
     layermngr->pos.x = -1;
     layermngr->pos.y = -1;
     GMPF_Tool tool = layermngr->tool;
-    if (tool == GMPF_TOOL_PAINTER || tool == GMPF_TOOL_ERAISER)
-        GMPF_saved_state_set_is_saved(flowbox, 0);
     if (!lay)
         return FALSE;
+    if (tool == GMPF_TOOL_PAINTER || tool == GMPF_TOOL_ERAISER || lay->rotate_angle)
+    {
+        GMPF_saved_state_set_is_saved(flowbox, 0);
+        GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+        lay->rotate_angle = 0;
+        gtk_spin_button_set_value(button, lay->rotate_angle);
+    }
 
     REFRESH_IMAGE(lay);
-
-    lay->rotate_angle = 0;
-    gtk_spin_button_set_value(button, lay->rotate_angle);
 
     return TRUE;
 }
@@ -923,14 +925,6 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
         cairo_paint(cr);
         cairo_restore(cr);
     }
-    // if (layermngr->surface != NULL)
-    // {
-    //     D_PRINT("layermngr->surface too", NULL);
-    //     cairo_save(cr);
-    //     cairo_set_source_surface (cr, layermngr->surface, 0, 0);
-    //     cairo_paint(cr);
-    //     cairo_restore(cr);
-    // }
 }
 
 
@@ -1014,6 +1008,8 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget,
         lay->surface = surface;
         REFRESH_IMAGE(lay);
     }
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+
 
     gtk_widget_hide(window);
 }
@@ -1230,7 +1226,9 @@ void load_image_cairo(GtkWindow *window,
                       char *filename)
 {
     GError *error = NULL;
-    layermngr_add_new_layer(flowbox, filename);
+    GMPF_Layer *layer = layermngr_add_new_layer(flowbox, filename);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_ADD, layer);
+
 
     int max_width  = layermngr->size.w;
     int max_height = layermngr->size.h;
@@ -1394,6 +1392,9 @@ void callback_convolute_f(UNUSED GtkMenuItem *menuitem,
         break;
     }
     Convolute(data, mat);
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
 }
 
 
@@ -1432,6 +1433,7 @@ void callback_tinter(UNUSED GtkMenuItem *menuitem,
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     Tinter(lay, chooser);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
 }
 
 
@@ -1447,6 +1449,7 @@ void callback_colorfull(UNUSED GtkMenuItem *menuitem,
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     Colorfull(lay, chooser);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
 }
 
 
@@ -1750,16 +1753,20 @@ void callback_undo(UNUSED GtkWidget *widget,
                    gpointer          user_data)
 {
    INIT_UI();
+   GET_UI(GtkWidget, da, "drawingArea");
    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
    GMPF_buffer_undo(flowbox);
+   gtk_widget_queue_draw(da);
 }
 
 void callback_redo(UNUSED GtkWidget *widget,
                    gpointer          user_data)
 {
    INIT_UI();
+   GET_UI(GtkWidget, da, "drawingArea");
    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
    GMPF_buffer_redo(flowbox);
+   gtk_widget_queue_draw(da);
 }
 
 

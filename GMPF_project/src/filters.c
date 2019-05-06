@@ -20,6 +20,7 @@ void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*),
     }
 
     filter(lay);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
     GMPF_saved_state_set_is_saved(flowbox, 0);
 
     gtk_widget_queue_draw(da);
@@ -43,6 +44,7 @@ void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*),
         while (lay != NULL)
         {
             filter(lay);
+            GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
 
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
@@ -80,6 +82,7 @@ void GMPF_filter_apply_to_selected_layer_color(void (*filter)(GMPF_Layer*,
     }
 
     filter(lay, r, g, b);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
     GMPF_saved_state_set_is_saved(flowbox, 0);
 
     gtk_widget_queue_draw(da);
@@ -110,6 +113,7 @@ void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*,
         while (lay != NULL)
         {
             filter(lay, r, g, b);
+            GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
 
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
