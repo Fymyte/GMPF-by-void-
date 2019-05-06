@@ -338,9 +338,9 @@ void layermngr_move_up_selected_layer(GtkFlowBox *flowbox)
     {
         //GtkWidget *image = gtk_image_new();
         gint insertpos = gtk_flow_box_child_get_index(layer->UIElement) - 1;
+        GMPF_buffer_add(flowbox, GMPF_ACTION_MOVE_UP, layer);
         gtk_widget_destroy((GtkWidget *) layer->UIElement);
 
-        GMPF_buffer_add(flowbox, MOVE_UP, layer);
 
         layer_insert_at_pos(layer, flowbox, insertpos);
 
@@ -360,9 +360,9 @@ void layermngr_move_down_selected_layer(GtkFlowBox *flowbox)
     {
 //        //GtkWidget *image = gtk_image_new();
         gint insertpos = gtk_flow_box_child_get_index(layer->UIElement) + 1;
+        GMPF_buffer_add(flowbox, GMPF_ACTION_MOVE_DOWN, layer);
         gtk_widget_destroy((GtkWidget *) layer->UIElement);
 
-        GMPF_buffer_add(flowbox, MOVE_DOWN, layer);
 
         layer_insert_at_pos(layer, flowbox, insertpos);
 

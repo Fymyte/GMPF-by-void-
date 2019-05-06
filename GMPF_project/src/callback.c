@@ -348,7 +348,7 @@ void callback_layer_set_visible(GtkToggleButton *button,
 void callback_layer_move_down(UNUSED GtkWidget *widget,
                               gpointer          user_data)
 {
-    SGlobalData *data = (SGlobalData *)user_data;
+    INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
     layermngr_move_down_selected_layer(flowbox);
@@ -367,7 +367,7 @@ void callback_layer_move_up(UNUSED GtkWidget *widget,
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
     layermngr_move_up_selected_layer(flowbox);
-    gtk_widget_queue_draw(da);;
+    gtk_widget_queue_draw(da);
 }
 
 

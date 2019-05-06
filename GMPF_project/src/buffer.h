@@ -1,8 +1,9 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-# include "callback.h"
-# include "GMPF_Struct.h"
+#include "callback.h"
+#include "GMPF_Struct.h"
+#include "saving.h"
 
 GMPF_Buffer *GMPF_buffer_init(GtkFlowBox *flowbox);
 void GMPF_buffer_destroy(GtkFlowBox *flowbox);
