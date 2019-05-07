@@ -818,21 +818,8 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
         cairo_t *cr = cairo_create(new_surf);
         cairo_set_source_surface(cr, lay->surface, -pos.x, -pos.y);
         cairo_paint(cr);
-        GMPF_Layer *selec_lay = layer_initialization();
-        selec_lay->surface = new_surf;
-        selec_lay->size.w = size.w;
-        selec_lay->size.h = size.h;
+        GMPF_selection_set_surface(flowbox, new_surf);
 
-        selec_lay->pos.x = pos.x;
-        selec_lay->pos.y = pos.y;
-
-
-        Binarize(selec_lay);
-        GMPF_selection_set_surface(flowbox, selec_lay->surface);
-        gtk_widget_queue_draw(da);
-        if (selec_lay->image)
-            g_object_unref(selec_lay->image);
-        free(selec_lay);
         return TRUE;
     }
 
@@ -958,6 +945,9 @@ void callback_select_tool(GtkWidget *widget,
         D_PRINT("Unknown tool", NULL);
     }
     layermngr->tool = tool;
+
+    /*if (tool != GMPF_TOOL_INCORECT) // Clear the selection
+    { GMPF_selection_destroy(flowbox); GMPF_selection_init(flowbox); }*/
 }
 
 
@@ -1406,7 +1396,15 @@ void callback_grey(UNUSED GtkMenuItem *menuitem,
                    gpointer            user_data)
 {
     INIT_UI();
-    GMPF_filter_apply_to_selected_layer(Greyscale, data);
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    if (layermngr->tool == GMPF_TOOL_SELECTOR)
+        filter_for_selection(Greyscale, flowbox);
+    else
+        GMPF_filter_apply_to_selected_layer(Greyscale, data);
+
+    gtk_widget_queue_draw(da);
 }
 
 
@@ -1958,7 +1956,6 @@ void callback_select_brush(GtkWidget *brush, gpointer user_data)
 
     if (strcmp(gtk_widget_get_name(brush), "Carré") == 0)
         layermngr->brush = 1;
-    printf("done\n");
 }
 
 void callback_show_window(UNUSED GtkMenuItem *menuitem, GtkWindow *window)

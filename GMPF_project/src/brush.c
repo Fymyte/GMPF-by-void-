@@ -161,3 +161,29 @@ char selector(GtkFlowBox     *flowbox,
 
     return 0;
 }
+
+void filter_for_selection(void(*filter)(GMPF_Layer *), GtkFlowBox *flowbox)
+{
+    cairo_surface_t *new_surf = GMPF_selection_get_surface(flowbox);
+    GMPF_Size size = *GMPF_selection_get_size(flowbox);
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+
+    GMPF_Layer *selec_lay = layer_initialization();
+    selec_lay->surface = new_surf;
+    selec_lay->size.w = size.w;
+    selec_lay->size.h = size.h;
+
+    selec_lay->pos.x = pos.x;
+    selec_lay->pos.y = pos.y;
+
+
+    //filter selection
+    filter(selec_lay);
+    // gtk_widget_show(win);
+    // filter_for_selection(selec_lay, layermngr);
+    //end filter selection
+    GMPF_selection_set_surface(flowbox, selec_lay->surface);
+    // if (selec_lay->image)
+    //     g_object_unref(selec_lay->image);
+    free(selec_lay);
+}
