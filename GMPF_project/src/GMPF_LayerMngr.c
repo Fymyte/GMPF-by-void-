@@ -155,6 +155,62 @@ int GMPF_selection_set_size(GtkFlowBox *flowbox,
     return 0;
 }
 
+
+/*
+ * PURPOSE : Copy the Selection of Layer inside of the Selection
+ *  PARAMS : GtkFlowBox *flowbox - The flowbox with contain the Selection
+ *           GMPF_Layer *layer - The Layer to copy the content
+ * RETURNS : char - 0 if there is no error, else 1
+ *   NOTES : Do nothing if there is no Selection on Layer
+ */
+char GMPF_selection_copy(GtkFlowBox *flowbox,
+                         GMPF_Layer *layer)
+{
+    GMPF_Size size = *GMPF_selection_get_size(flowbox);
+    if (!size.w || !size.h)
+    { D_PRINT("No selected surface", NULL); return 1; }
+
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+
+    cairo_surface_t *surf = GMPF_selection_get_surface(flowbox);
+    if (surf)
+        cairo_surface_destroy(surf);
+
+    cairo_surface_t *new_surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                                                            size.w,
+                                                            size.h);
+    cairo_t *cr = cairo_create(new_surf);
+    cairo_set_source_surface(cr, layer->surface, -pos.x, -pos.y);
+    cairo_paint(cr);
+    cairo_destroy(cr);
+    GMPF_selection_set_surface(flowbox, new_surf);
+
+    return 0;
+}
+
+
+char GMPF_selection_paste(GtkFlowBox *flowbox,
+                          GMPF_Layer *layer,
+                          GMPF_Pos    pos)
+{
+    cairo_surface_t *surface = GMPF_selection_get_surface(flowbox);
+    if (!surface)
+    { D_PRINT("No selected surface", NULL); return 1; }
+    D_PRINT("ref: %i", cairo_surface_get_reference_count(surface));
+
+    layer->cr = cairo_create(layer->surface);
+
+    while (cairo_surface_get_reference_count(surface) < 3)
+        cairo_surface_reference(surface);
+    cairo_set_source_surface(layer->cr, surface, pos.x, pos.y);
+    cairo_paint(layer->cr);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
+    cairo_destroy(layer->cr);
+    REFRESH_IMAGE(layer);
+
+    return 0;
+}
+
 /**************************End of Selected Surface*****************************/
 
 

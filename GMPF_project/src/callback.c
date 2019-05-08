@@ -901,22 +901,8 @@ void callback_copy(UNUSED GtkWidget *widget, gpointer user_data)
     if (!lay)
     { D_PRINT("No selected layer", NULL); return; }
 
-    GMPF_Size size = *GMPF_selection_get_size(flowbox);
-    if (!size.w || !size.h)
-    { D_PRINT("No selected surface", NULL); return; }
-    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
-
-    cairo_surface_t *surf = GMPF_selection_get_surface(flowbox);
-    if (surf)
-        cairo_surface_destroy(surf);
-
-    cairo_surface_t *new_surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-                                                            size.w,
-                                                            size.h);
-    cairo_t *cr = cairo_create(new_surf);
-    cairo_set_source_surface(cr, lay->surface, -pos.x, -pos.y);
-    cairo_paint(cr);
-    GMPF_selection_set_surface(flowbox, new_surf);
+    if (GMPF_selection_copy(flowbox, lay))
+    { PRINTERR("Unable to copy the selection"); return; }
 }
 
 
@@ -929,20 +915,11 @@ void callback_paste(UNUSED GtkWidget *widget, gpointer user_data)
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     if (!lay)
     { D_PRINT("No selected layer", NULL); return; }
+    GMPF_Pos pos = { .x = layermngr->pos.x, .y = layermngr->pos.y };
 
-    cairo_surface_t *surface = GMPF_selection_get_surface(flowbox);
-    if (!surface)
-    { D_PRINT("No selected surface", NULL); return; }
-    D_PRINT("ref: %i", cairo_surface_get_reference_count(surface));
+    if (GMPF_selection_paste(flowbox, lay, pos))
+    { PRINTERR("Unable to paste selection"); return; }
 
-    lay->cr = cairo_create(lay->surface);
-
-    while (cairo_surface_get_reference_count(surface) < 3)
-        cairo_surface_reference(surface);
-    cairo_set_source_surface(lay->cr, surface, layermngr->pos.x, layermngr->pos.y);
-    cairo_paint(lay->cr);
-    cairo_destroy(lay->cr);
-    REFRESH_IMAGE(lay);
     gtk_widget_queue_draw(da);
 }
 
