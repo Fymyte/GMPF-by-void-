@@ -13,6 +13,7 @@ int open_confirm_quit_without_saving_dialog(gpointer user_data)
 {
     INIT_UI();
     GET_UI(GtkWindow, window, "MainWindow");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GtkWidget *dialog;
     gint res;
 
@@ -36,6 +37,14 @@ int open_confirm_quit_without_saving_dialog(gpointer user_data)
     gtk_widget_show_all(dialog);
     res = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
+    if (res == 2)
+    {
+        GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+        char *filename = malloc(sizeof(char) * (strlen(layermngr->filename) + 6));
+        sprintf(filename, "%s~", layermngr->filename);
+        if (remove (filename))
+        { D_PRINT("Unable to remove file", NULL); }
+    }
     return res;
 }
 
@@ -188,14 +197,10 @@ void callback_open(UNUSED GtkMenuItem *menu,
         confirm = open_confirm_quit_without_saving_dialog(user_data);
 
     if (confirm == 0)
-    {
-        return;
-    }
+    { return; }
+
     else if (confirm == 1)
-    {
-        if (!GMPF_save_project(user_data))
-            return;
-    }
+    { if (!GMPF_save_project(user_data)) return; }
 
     open_new_file(window, layermngr, flowbox);
 
@@ -1048,6 +1053,22 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget,
 
 
     gtk_widget_hide(window);
+}
+
+
+char GMPF_auto_save_project(GtkFlowBox *flowbox)
+{
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    if (!layermngr->filename)
+    { return 1; }
+    char *filename = malloc (sizeof(char) * (2 + strlen(layermngr->filename)));
+    sprintf(filename, "%s~", layermngr->filename);
+    if (save_project(flowbox, filename))
+    {
+        PRINTERR("Unable to save project");
+        return 1;
+    }
+    return 0;
 }
 
 

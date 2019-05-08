@@ -11,6 +11,7 @@
 char *get_extension(char *filename);
 int check_extension(char *filename, char *extension);
 int set_extension(char **filename, char *extension);
+char *filename_get_name_of_file(char *filename);
 
 char save_layer(GMPF_Layer *layer, FILE *file);
 char load_layer(GMPF_LayerMngr *layermngr, FILE *file);

@@ -236,7 +236,7 @@ char GMPF_selection_cut(GtkFlowBox *flowbox,
 
     GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
     GMPF_Size size = *GMPF_selection_get_size(flowbox);
-    
+
     cairo_set_source_rgba(layer->cr, 0, 0, 0, 0);
     cairo_set_operator(layer->cr, CAIRO_OPERATOR_SOURCE);
     cairo_rectangle(layer->cr, pos.x, pos.y, size.w, size.h);
@@ -334,6 +334,16 @@ void GMPF_saved_state_set_is_saved(GtkFlowBox *flowbox,
                                    int         state)
 {
     GMPF_SavedState *saved_state = GMPF_saved_state_get_saved_state(flowbox);
+    if (!state)
+    { GMPF_auto_save_project(flowbox); }
+    else
+    {
+        GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+        char *filename = malloc(sizeof(char) * (strlen(layermngr->filename) + 2));
+        sprintf(filename, "%s~", layermngr->filename);
+        if (remove (filename))
+        { D_PRINT("Unable to remove file", NULL); }
+    }
     saved_state->state = state;
 }
 

@@ -38,6 +38,7 @@ int check(int width, int height, int i, int j);
 int open_confirm_quit_without_saving_dialog(gpointer user_data);
 gboolean GMPF_save_project(gpointer user_data);
 gboolean GMPF_save_under_project(gpointer user_data);
+char GMPF_auto_save_project(GtkFlowBox *flowbox);
 void load_image_cairo(GtkWindow *window,
                       GMPF_LayerMngr *layermngr,
                       GtkFlowBox *flowbox,

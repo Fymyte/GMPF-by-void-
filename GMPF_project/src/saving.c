@@ -65,6 +65,30 @@ int set_extension(char **filename, char *extension)
 }
 
 
+
+/*
+ * PURPOSE : Return the name of the file in Filename
+ *  PARAMS : char *filename - the filename witch contain the name of file
+ * RETURNS : char *- the name of the file
+ *   NOTES : return NULL if filename is incorrect
+ */
+char *filename_get_name_of_file(char *filename)
+{
+    if (!filename)
+        return NULL;
+    char *c = NULL;
+    for ( ; *filename != '\0'; filename++)
+    {
+        if (*filename == '/')
+        {
+            c = filename;
+        }
+    }
+
+    return c == NULL || c + 1 == NULL ? NULL : c + 1;
+}
+
+
 /*
  * Save the given LayerMngr in File "file"
  * (Return: 0 if there is no error, else 1)
