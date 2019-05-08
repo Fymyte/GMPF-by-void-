@@ -236,6 +236,27 @@ char GMPF_selection_cut(GtkFlowBox *flowbox,
 
     GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
     GMPF_Size size = *GMPF_selection_get_size(flowbox);
+    
+    cairo_set_source_rgba(layer->cr, 0, 0, 0, 0);
+    cairo_set_operator(layer->cr, CAIRO_OPERATOR_SOURCE);
+    cairo_rectangle(layer->cr, pos.x, pos.y, size.w, size.h);
+    cairo_fill(layer->cr);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
+    cairo_destroy(layer->cr);
+    REFRESH_IMAGE(layer);
+
+    return 0;
+}
+
+
+char GMPF_selection_delete(GtkFlowBox *flowbox,
+                           GMPF_Layer *layer)
+{
+    layer->cr = cairo_create(layer->surface);
+
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+    GMPF_Size size = *GMPF_selection_get_size(flowbox);
+
     D_PRINT("pos: (%i, %i), size: %i*%i", pos.x, pos.y, size.w, size.h);
     cairo_set_source_rgba(layer->cr, 0, 0, 0, 0);
     cairo_set_operator(layer->cr, CAIRO_OPERATOR_SOURCE);

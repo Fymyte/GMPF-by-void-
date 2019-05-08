@@ -559,6 +559,7 @@ effet :</property>
                         <property name="label" translatable="yes">Quitter</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_quit" swapped="no"/>
+                        <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -615,6 +616,8 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_delete" swapped="no"/>
+                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>

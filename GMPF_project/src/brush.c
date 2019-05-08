@@ -40,7 +40,7 @@ void square_brush(GtkWidget *widget,
     // cairo_destroy (cr);
 
     /* Now invalidate the affected region of the drawing area. */
-    gtk_widget_queue_draw_area (widget, nx, ny, size, size);
+    gtk_widget_queue_draw (widget);
 }
 
 

@@ -940,6 +940,22 @@ void callback_cut(UNUSED GtkWidget *widget, gpointer user_data)
 }
 
 
+void callback_delete(UNUSED GtkWidget *widget, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+    { D_PRINT("No selected layer", NULL); return; }
+
+    if (GMPF_selection_delete(flowbox, lay))
+    { PRINTERR("Unable to delete selection"); return; }
+
+    gtk_widget_queue_draw(da);
+}
+
+
 /*
  * Calback to select the right tool according to the pressed button in the
  * ToolBar
@@ -1488,9 +1504,11 @@ void callback_tinter(UNUSED GtkMenuItem *menuitem,
     INIT_UI();
     GET_UI(GtkColorChooser, chooser, "ColorTinter");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     Tinter(lay, chooser);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+    gtk_widget_queue_draw(da);
 }
 
 
@@ -1504,9 +1522,11 @@ void callback_colorfull(UNUSED GtkMenuItem *menuitem,
     INIT_UI();
     GET_UI(GtkColorChooser, chooser, "ColorTinter");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     Colorfull(lay, chooser);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+    gtk_widget_queue_draw(da);
 }
 
 
