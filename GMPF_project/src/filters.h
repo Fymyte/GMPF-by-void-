@@ -4,7 +4,15 @@
 #define FILTERS_H
 
 //file that contain the prototypes for the GMPF filters functions
-
+void filter_for_selection(void(*filter)(GMPF_Layer *), GtkFlowBox *flowbox);
+void filter_for_selection_color(void (*filter)(GMPF_Layer*,
+                                                           guchar,
+                                                           guchar,
+                                                           guchar),
+                                                 guchar   r,
+                                                 guchar   g,
+                                                 guchar   b,
+                                                 GtkFlowBox *flowbox);
 void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*),
                                          gpointer       user_data);
 void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*),

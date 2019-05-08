@@ -1,5 +1,63 @@
 #include "filters.h"
 
+void filter_for_selection(void(*filter)(GMPF_Layer *), GtkFlowBox *flowbox)
+{
+    cairo_surface_t *new_surf = GMPF_selection_get_surface(flowbox);
+    D_PRINT("ref: %i", cairo_surface_get_reference_count(new_surf));
+    if (!new_surf || cairo_surface_get_reference_count(new_surf) == 0)
+    { PRINTERR("No surface"); return; }
+    GMPF_Size size = *GMPF_selection_get_size(flowbox);
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+
+    GMPF_Layer *selec_lay = layer_initialization();
+    selec_lay->surface = new_surf;
+    selec_lay->size.w = size.w;
+    selec_lay->size.h = size.h;
+
+    selec_lay->pos.x = pos.x;
+    selec_lay->pos.y = pos.y;
+
+    //filter selection
+    filter(selec_lay);
+    //end filter selection
+    GMPF_selection_set_surface(flowbox, selec_lay->surface);
+
+    if (selec_lay->image)
+        g_object_unref(selec_lay->image);
+    free(selec_lay);
+}
+
+
+void filter_for_selection_color(void (*filter)(GMPF_Layer*,
+                                                           guchar,
+                                                           guchar,
+                                                           guchar),
+                                                 guchar   r,
+                                                 guchar   g,
+                                                 guchar   b,
+                                                 GtkFlowBox *flowbox)
+{
+    cairo_surface_t *new_surf = GMPF_selection_get_surface(flowbox);
+    GMPF_Size size = *GMPF_selection_get_size(flowbox);
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+
+    GMPF_Layer *selec_lay = layer_initialization();
+    selec_lay->surface = new_surf;
+    selec_lay->size.w = size.w;
+    selec_lay->size.h = size.h;
+
+    selec_lay->pos.x = pos.x;
+    selec_lay->pos.y = pos.y;
+
+
+    //filter selection
+    filter(selec_lay, r, g, b);
+    //end filter selection
+    GMPF_selection_set_surface(flowbox, selec_lay->surface);
+
+    free(selec_lay);
+}
+
 
 /*
  * Apply the "filter" function to the selected Layer
@@ -252,6 +310,8 @@ void Greyscale(GMPF_Layer *lay)
     }
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    cairo_surface_reference(lay->surface);
+    D_PRINT("ref in grey: %i", cairo_surface_get_reference_count(lay->surface));
     layer_icon_refresh(lay);
 }
 

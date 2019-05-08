@@ -26,5 +26,4 @@ void circular_brush(GtkWidget      *widget,
                   float           scale_x,
                   float           scale_y,
                   GMPF_LayerMngr *layermngr);
-void filter_for_selection(void(*filter)(GMPF_Layer *), GtkFlowBox *flowbox);
 #endif
