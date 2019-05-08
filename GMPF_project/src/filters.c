@@ -3,9 +3,12 @@
 void filter_for_selection(void(*filter)(GMPF_Layer *), GtkFlowBox *flowbox)
 {
     cairo_surface_t *new_surf = GMPF_selection_get_surface(flowbox);
-    D_PRINT("ref: %i", cairo_surface_get_reference_count(new_surf));
-    if (!new_surf || cairo_surface_get_reference_count(new_surf) == 0)
+    if (!new_surf)
     { PRINTERR("No surface"); return; }
+
+    while (cairo_surface_get_reference_count(new_surf) < 3)
+    { D_PRINT("Reference", NULL); cairo_surface_reference(new_surf); }
+
     GMPF_Size size = *GMPF_selection_get_size(flowbox);
     GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
 
@@ -38,6 +41,12 @@ void filter_for_selection_color(void (*filter)(GMPF_Layer*,
                                                  GtkFlowBox *flowbox)
 {
     cairo_surface_t *new_surf = GMPF_selection_get_surface(flowbox);
+    if (!new_surf)
+    { PRINTERR("No surface"); return; }
+
+    while (cairo_surface_get_reference_count(new_surf) < 3)
+    { D_PRINT("Reference", NULL); cairo_surface_reference(new_surf); }
+
     GMPF_Size size = *GMPF_selection_get_size(flowbox);
     GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
 
@@ -310,8 +319,6 @@ void Greyscale(GMPF_Layer *lay)
     }
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
-    cairo_surface_reference(lay->surface);
-    D_PRINT("ref in grey: %i", cairo_surface_get_reference_count(lay->surface));
     layer_icon_refresh(lay);
 }
 

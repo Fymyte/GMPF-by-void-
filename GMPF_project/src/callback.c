@@ -737,8 +737,9 @@ gboolean callback_button_press_event (GtkWidget      *widget,
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
-
     GMPF_Tool tool = layermngr->tool;
+    if (tool != GMPF_TOOL_SELECTOR)
+    { layermngr->pos.x = -1; layermngr->pos.y = -1; }
 
     if (event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_PAINTER)
         draw_brush (widget, event->x, event->y, user_data);
@@ -775,51 +776,23 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
     GET_UI(GtkWidget, da, "drawingArea");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    GMPF_Tool tool = layermngr->tool;
+    if (!lay)
+        return FALSE;
+
     if (layermngr->tool == GMPF_TOOL_SELECTOR)
     {
         GMPF_Pos pos = { .x = layermngr->pos.x, .y = layermngr->pos.y };
         GMPF_Pos npos = { .x = event->x, .y = event->y };
-        GMPF_Size size = { .w = 0, .h = 0};
-        layermngr->pos.x = -1;
-        layermngr->pos.y = -1;
-        if (!lay)
-            return FALSE;
 
-        if (pos.x == npos.x || pos.y == npos.y)
-            return TRUE;
+        if (selector(flowbox, pos, npos))
+        { return FALSE; }
 
-        if (pos.x < npos.x)
-        { size.w = npos.x - pos.x; }
-        else
-        { size.w = pos.x - npos.x; pos.x = npos.x; }
-
-        if (pos.y < npos.y)
-        { size.h = npos.y - pos.y; }
-        else
-        { size.h = pos.y - npos.y; pos.y = npos.y; }
-
-        GMPF_selection_destroy(flowbox);
-        GMPF_selection_init(flowbox);
-
-        GMPF_selection_set_pos(flowbox, pos);
-        GMPF_selection_set_size(flowbox, size);
-
-        cairo_surface_t *new_surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-                                                                size.w,
-                                                                size.h);
-        cairo_t *cr = cairo_create(new_surf);
-        cairo_set_source_surface(cr, lay->surface, -pos.x, -pos.y);
-        cairo_paint(cr);
-        GMPF_selection_set_surface(flowbox, new_surf);
+        gtk_widget_queue_draw(da);;
 
         return TRUE;
     }
 
-    layermngr->pos.x = -1;
-    layermngr->pos.y = -1;
-    GMPF_Tool tool = layermngr->tool;
-    if (!lay)
-        return FALSE;
     if (tool == GMPF_TOOL_PAINTER || tool == GMPF_TOOL_ERAISER || lay->rotate_angle)
     {
         GMPF_saved_state_set_is_saved(flowbox, 0);
@@ -853,39 +826,18 @@ gboolean callback_motion_notify_event (GtkWidget      *widget,
 
     if (tool == GMPF_TOOL_PAINTER && (event->state & GDK_BUTTON1_MASK))
         draw_brush (widget, event->x, event->y, user_data);
-    if (tool == GMPF_TOOL_ERAISER && (event->state & GDK_BUTTON1_MASK))
+    else if (tool == GMPF_TOOL_ERAISER && (event->state & GDK_BUTTON1_MASK))
         draw_rubber (widget, event->x, event->y, user_data);
-    if (tool == GMPF_TOOL_SELECTOR && (event->state & GDK_BUTTON1_MASK))
+    else if (tool == GMPF_TOOL_SELECTOR && (event->state & GDK_BUTTON1_MASK))
     {
+        if (!layermngr_get_selected_layer(flowbox))
+            return FALSE;
+
         GMPF_Pos pos = { .x = layermngr->pos.x, .y = layermngr->pos.y };
         GMPF_Pos npos = { .x = event->x, .y = event->y };
-        GMPF_Size size = { .w = 0, .h = 0};
-
-        if (pos.x == npos.x || pos.y == npos.y)
-            return TRUE;
-
-        if (pos.x < npos.x)
-        { size.w = npos.x - pos.x; npos.x = pos.x; }
-        else
-        { size.w = pos.x - npos.x; pos.x = npos.x; }
-
-        if (pos.y < npos.y)
-        { size.h = npos.y - pos.y; npos.y = pos.y; }
-        else
-        { size.h = pos.y - npos.y; pos.y = npos.y; }
-
-        GMPF_selection_destroy(flowbox);
-        GMPF_selection_init(flowbox);
-        GMPF_selection_set_pos(flowbox, pos);
-        GMPF_selection_set_size(flowbox, size);
-
-        cairo_surface_t *new_surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-                                                                size.w,
-                                                                size.h);
-        cairo_t *cr = cairo_create(new_surf);
-        cairo_rectangle(cr, pos.x - npos.x, pos.y - npos.y, size.w, size.h);
-        cairo_stroke(cr);
-        GMPF_selection_set_surface(flowbox, new_surf);
+        char err = selector(flowbox, pos, npos);
+        if (err)
+        { D_PRINT("Null mouvement", NULL); return TRUE; }
         gtk_widget_queue_draw(da);
     }
 
@@ -928,15 +880,70 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
-    cairo_surface_t *selec_surface = GMPF_selection_get_surface(flowbox);
-    if (selec_surface)
+    GMPF_Size size = *GMPF_selection_get_size(flowbox);
+    if (size.w > 0 && size.h > 0)
     {
         GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
         cairo_save(cr);
-        cairo_set_source_surface(cr, selec_surface, pos.x, pos.y);
-        cairo_paint(cr);
+        cairo_set_source_rgba(cr, 1, 0, 0, 1);
+        cairo_rectangle (cr, pos.x, pos.y, size.w, size.h);
+        cairo_stroke(cr);
         cairo_restore(cr);
     }
+}
+
+
+void callback_copy(UNUSED GtkWidget *widget, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+    { D_PRINT("No selected layer", NULL); return; }
+
+    GMPF_Size size = *GMPF_selection_get_size(flowbox);
+    if (!size.w || !size.h)
+    { D_PRINT("No selected surface", NULL); return; }
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+
+    cairo_surface_t *surf = GMPF_selection_get_surface(flowbox);
+    if (surf)
+        cairo_surface_destroy(surf);
+
+    cairo_surface_t *new_surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                                                            size.w,
+                                                            size.h);
+    cairo_t *cr = cairo_create(new_surf);
+    cairo_set_source_surface(cr, lay->surface, -pos.x, -pos.y);
+    cairo_paint(cr);
+    GMPF_selection_set_surface(flowbox, new_surf);
+}
+
+
+void callback_paste(UNUSED GtkWidget *widget, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+    { D_PRINT("No selected layer", NULL); return; }
+
+    cairo_surface_t *surface = GMPF_selection_get_surface(flowbox);
+    if (!surface)
+    { D_PRINT("No selected surface", NULL); return; }
+    D_PRINT("ref: %i", cairo_surface_get_reference_count(surface));
+
+    lay->cr = cairo_create(lay->surface);
+
+    while (cairo_surface_get_reference_count(surface) < 3)
+        cairo_surface_reference(surface);
+    cairo_set_source_surface(lay->cr, surface, layermngr->pos.x, layermngr->pos.y);
+    cairo_paint(lay->cr);
+    cairo_destroy(lay->cr);
+    REFRESH_IMAGE(lay);
+    gtk_widget_queue_draw(da);
 }
 
 
@@ -949,6 +956,7 @@ void callback_select_tool(GtkWidget *widget,
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     gchar name = gtk_widget_get_name(widget)[0];
     GMPF_Tool tool;
@@ -972,7 +980,11 @@ void callback_select_tool(GtkWidget *widget,
     layermngr->tool = tool;
 
     if (tool != GMPF_TOOL_INCORECT && tool != GMPF_TOOL_SELECTOR) // Clear the selection
-    { GMPF_selection_destroy(flowbox); GMPF_selection_init(flowbox); }
+    {
+        GMPF_selection_destroy(flowbox);
+        GMPF_selection_init(flowbox);
+        gtk_widget_queue_draw(da);
+    }
 }
 
 
