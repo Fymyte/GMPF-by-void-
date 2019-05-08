@@ -189,6 +189,14 @@ char GMPF_selection_copy(GtkFlowBox *flowbox,
 }
 
 
+/*
+ * PURPOSE : Paste the content of the Selection on the Layer's surface
+ *  PARAMS : GtkFlowBox *flowbox - The flowbow witch contain the Selection
+ *           GMPF_Layer *layer - The Layer on witch to paste the Selection
+ *           GMPF_Pos    pos - The position at witch to paste
+ * RETURNS : char - 0 if there were no error, else 1
+ *   NOTES : Do nothing if there is no surface in the Selection
+ */
 char GMPF_selection_paste(GtkFlowBox *flowbox,
                           GMPF_Layer *layer,
                           GMPF_Pos    pos)
@@ -196,7 +204,6 @@ char GMPF_selection_paste(GtkFlowBox *flowbox,
     cairo_surface_t *surface = GMPF_selection_get_surface(flowbox);
     if (!surface)
     { D_PRINT("No selected surface", NULL); return 1; }
-    D_PRINT("ref: %i", cairo_surface_get_reference_count(surface));
 
     layer->cr = cairo_create(layer->surface);
 
@@ -204,6 +211,36 @@ char GMPF_selection_paste(GtkFlowBox *flowbox,
         cairo_surface_reference(surface);
     cairo_set_source_surface(layer->cr, surface, pos.x, pos.y);
     cairo_paint(layer->cr);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
+    cairo_destroy(layer->cr);
+    REFRESH_IMAGE(layer);
+
+    return 0;
+}
+
+
+char GMPF_selection_cut(GtkFlowBox *flowbox,
+                        GMPF_Layer *layer)
+{
+    if (GMPF_selection_copy(flowbox, layer))
+    { D_PRINT("Unable to copy before cut", NULL); return 1; }
+
+    cairo_surface_t *surface = GMPF_selection_get_surface(flowbox);
+    if (!surface)
+    { D_PRINT("No selected surface", NULL); return 1; }
+
+    layer->cr = cairo_create(layer->surface);
+
+    while (cairo_surface_get_reference_count(surface) < 3)
+        cairo_surface_reference(surface);
+
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+    GMPF_Size size = *GMPF_selection_get_size(flowbox);
+    D_PRINT("pos: (%i, %i), size: %i*%i", pos.x, pos.y, size.w, size.h);
+    cairo_set_source_rgba(layer->cr, 0, 0, 0, 0);
+    cairo_set_operator(layer->cr, CAIRO_OPERATOR_SOURCE);
+    cairo_rectangle(layer->cr, pos.x, pos.y, size.w, size.h);
+    cairo_fill(layer->cr);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
     cairo_destroy(layer->cr);
     REFRESH_IMAGE(layer);

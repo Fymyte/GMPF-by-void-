@@ -58,6 +58,8 @@ char GMPF_selection_copy(GtkFlowBox *flowbox,
 char GMPF_selection_paste(GtkFlowBox *flowbox,
                           GMPF_Layer *layer,
                           GMPF_Pos    pos);
+char GMPF_selection_cut(GtkFlowBox *flowbox,
+                        GMPF_Layer *layer);
 
 /*************************End of Selection functions***************************/
 

@@ -924,6 +924,22 @@ void callback_paste(UNUSED GtkWidget *widget, gpointer user_data)
 }
 
 
+void callback_cut(UNUSED GtkWidget *widget, gpointer user_data)
+{
+    INIT_UI();
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+    { D_PRINT("No selected layer", NULL); return; }
+
+    if (GMPF_selection_cut(flowbox, lay))
+    { PRINTERR("Unable to cut selection"); return; }
+
+    gtk_widget_queue_draw(da);
+}
+
+
 /*
  * Calback to select the right tool according to the pressed button in the
  * ToolBar
