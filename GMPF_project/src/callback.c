@@ -2088,6 +2088,7 @@ void callback_edit_layer_properties(UNUSED GtkWidget *widget,
     const gchar *y = gtk_entry_get_text(offsetY);
 
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_CHANGE_NAME, lay);
     layer_set_name(lay, (char*)n);
     lay->size.w = atoi(w);
     lay->size.h = atoi(h);

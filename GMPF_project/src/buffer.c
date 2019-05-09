@@ -362,9 +362,10 @@ char buffer_undo(GMPF_Buffer *buffer,
             { PRINTERR("Unable to write in filestream"); return 1; }
             if (fwrite(&layer->name, sizeof(char), 51, file) != 51)
             { PRINTERR("Unable to write in filestream"); break; }
+            D_PRINT("name: %s, newname: %s", layer->name, name);
 
-            for (int i = 0; i < 51; i++)
-            { layer->name[i] = name[i]; }
+            layer_set_name(layer, name);
+            layer_icon_refresh(layer);
             break;
 
         case GMPF_ACTION_DELETE:
@@ -494,9 +495,10 @@ char buffer_redo(GMPF_Buffer *buffer,
             { PRINTERR("Unable to write in filestream"); return 1; }
             if (fwrite(&layer->name, sizeof(char), 51, file) != 51)
             { PRINTERR("Unable to write in filestream"); break; }
+            D_PRINT("name: %s, newname: %s", layer->name, name);
 
-            for (int i = 0; i < 51; i++)
-            { layer->name[i] = name[i]; }
+            layer_set_name(layer, name);
+            layer_icon_refresh(layer);
             break;
 
         case GMPF_ACTION_DELETE:

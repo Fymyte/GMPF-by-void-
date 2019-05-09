@@ -773,10 +773,7 @@ char layer_set_name(GMPF_Layer *layer,
 
     for(; i <= 50; i++)
         layer->name[i] = '\0';
-
-    SGlobalData *data = (SGlobalData *)G_user_data;
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GMPF_buffer_add(flowbox, GMPF_ACTION_ADD, layer);
+        
     return 0;
 }
 
