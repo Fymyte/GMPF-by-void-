@@ -1,5 +1,8 @@
 #include "saving.h"
 
+
+extern gpointer G_user_data;
+
 /*
  * Return the extention of the given filename
  * (Return: the extension, or NULL, if there is no extension or filename is invalid)
@@ -205,20 +208,20 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
     GtkWidget *image = gtk_image_new();
 
     // Style of the image
-    INIT_LAYER_UI(image);
+    INIT_LAYER_UI(layer, image, grid);
 
     /*int insertpos;*/
     // add the layer in the list
     list_append(&(layermngr->layer_list), &(layer->list));
     /*insertpos = 0;*/
 
-    gtk_flow_box_insert (flowbox, image, 0 /*insertpos*/);
+    gtk_flow_box_insert (flowbox, grid, 0 /*insertpos*/);
 
     layer->UIElement =
         gtk_flow_box_get_child_at_index(flowbox, 0 /*insertpos*/);
     g_object_set_data(G_OBJECT(layer->UIElement), LAYER_KEY_NAME, layer);
 
-    layer->UIIcon = (GtkImage *) image;
+    layer->UIIcon = (GtkGrid *) grid;
 
     layer->cr = NULL;
     layer->icon = NULL;

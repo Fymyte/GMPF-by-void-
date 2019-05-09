@@ -160,6 +160,10 @@ window menuitem > label {
 	background-image: url("../images/grille.png");
 }
 
+#image {
+    background-image: url("../images/grille.png");
+}
+
 /* COMBOBOX & ENTRY */
 
 combobox {

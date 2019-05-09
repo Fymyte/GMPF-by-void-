@@ -12,9 +12,9 @@
 #include "buffer.h"
 #include "list.h"
 #include "saving.h"
+#include "callback.h"
 
 #include "macro.h"
-
 
 // DEFINES
 #define LAYERMNGR_KEY_NAME "GMPF_layermngr"
@@ -23,20 +23,41 @@
 #define SELECTION_KEY_NAME "GMPF_selection"
 #define BUFFER_KEY_NAME "GMPF_buffer"
 
-#define INIT_LAYER_UI(_layerui) \
-    gtk_widget_set_sensitive(image, TRUE); \
-    gtk_widget_set_visible(image, TRUE);\
+extern gpointer G_user_data;
+
+#define INIT_LAYER_UI(_layer, _image, _grid) \
+    GtkWidget *_grid = gtk_grid_new(); \
+    GtkWidget *gtklabel = gtk_label_new(_layer->name); \
+    GtkWidget *button = gtk_check_button_new(); \
+    gtk_toggle_button_set_active((GtkToggleButton *)button, _layer->isvisible); \
+    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(callback_layer_set_visible), G_user_data); \
+    gtk_widget_set_sensitive(_grid, TRUE); \
+    gtk_widget_set_visible(_grid, TRUE); \
+    gtk_widget_set_visible(_image, TRUE); \
+    gtk_widget_set_visible(gtklabel, TRUE); \
+    gtk_widget_set_visible(button, TRUE); \
     /*** Visual ***/ \
     /* size */ \
-    gtk_widget_set_size_request(image, 160, 90); \
+    gtk_widget_set_size_request(_image, 160, 90); \
+    gtk_widget_set_size_request(gtklabel, 130, 30); \
+    gtk_widget_set_size_request(_grid, 160, 120); \
+    gtk_widget_set_size_request(button, 20, 20); \
     /* Alignement */ \
-    gtk_widget_set_halign(image, GTK_ALIGN_CENTER); \
-    gtk_widget_set_valign(image, GTK_ALIGN_START); \
+    gtk_label_set_justify((GtkLabel *)gtklabel, GTK_JUSTIFY_RIGHT); \
+    gtk_widget_set_halign(_grid, GTK_ALIGN_CENTER); \
+    gtk_widget_set_valign(_grid, GTK_ALIGN_START); \
     /* Margin */ \
-    gtk_widget_set_margin_top(image, 5); \
-    gtk_widget_set_margin_bottom(image, 5); \
-    gtk_widget_set_margin_start(image, 5); \
-    gtk_widget_set_margin_end(image, 5); \
+    gtk_widget_set_margin_top(_grid, 5); \
+    gtk_widget_set_margin_bottom(_grid, 5); \
+    gtk_widget_set_margin_start(_grid, 5); \
+    gtk_widget_set_margin_end(_grid, 5); \
+    gtk_widget_set_margin_top(button, 5); \
+    gtk_widget_set_margin_bottom(button, 5); \
+    gtk_widget_set_margin_start(button, 5); \
+    gtk_widget_set_margin_end(button, 5); \
+    gtk_grid_attach((GtkGrid *)_grid, _image, 0, 0, 2, 1); \
+    gtk_grid_attach((GtkGrid *)_grid, gtklabel, 1, 1, 1, 1); \
+    gtk_grid_attach((GtkGrid *)_grid, button, 0, 1, 1, 1);
 
 /*****************************Selection functions******************************/
 

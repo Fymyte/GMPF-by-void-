@@ -183,7 +183,7 @@ struct GMPF_Layer {
 
     GMPF_List list;
 
-    GtkImage *UIIcon;
+    GtkGrid *UIIcon;
     GtkFlowBoxChild *UIElement;
 };
 

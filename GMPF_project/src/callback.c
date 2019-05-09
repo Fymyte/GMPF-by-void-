@@ -1,5 +1,6 @@
 #include "callback.h"
 
+extern gpointer G_user_data;
 
 /*
  * PURPOSE : Open a dialog with 3 buttons: "Annuler", "Savegarder" and "Confirmer"
@@ -316,32 +317,30 @@ void callback_adjust_rotate_value(UNUSED GtkWidget *widget,
 
 
 /*
- * Set if the layer is displayed on the surface or not
- */
-void layer_set_visible (GMPF_Layer *lay,
-                        gboolean    isvisible)
-{
-    lay->isvisible = isvisible;
-}
-
-
-/*
  * Callback to set the visibility of the selected Layer
  * (Do nothing if there is no selected Layer)
  * (Refresh the displayed surface after rotation)
  */
-void callback_layer_set_visible(GtkToggleButton *button,
-                                gpointer         user_data)
+void callback_layer_set_visible(GtkWidget *button,
+                                gpointer   user_data)
 {
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
 
+
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
     if (!layer)
-        D_PRINT("Unable to get selected layer", NULL);
+    {
+        GtkWidget *parent = gtk_widget_get_parent(gtk_widget_get_parent(button));
+        if (!parent)
+        { PRINTERR("Unable to get parent"); return; }
+        layer = (GMPF_Layer *) g_object_get_data(G_OBJECT(parent), LAYER_KEY_NAME);
+        if (!layer)
+        { PRINTERR("Unable to get layer"); return; }
+    }
 
-    layer_set_visible(layer, gtk_toggle_button_get_active(button));
+    layer->isvisible = gtk_toggle_button_get_active((GtkToggleButton *)button);
     gtk_widget_queue_draw(da);
 }
 
@@ -862,7 +861,15 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
     INIT_UI();
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    // GMPF_List *list = layermngr->layer_list;
+    int max_width = layermngr->size.w;
+    int max_height = layermngr->size.h;
+    gtk_widget_set_size_request(layout, max_width, max_height);
+    gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
 
     cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 
@@ -2068,7 +2075,6 @@ void callback_edit_layer_properties(UNUSED GtkWidget *widget,
     GET_UI(GtkEntry, height, "LayerHeightSpinButton1");
     GET_UI(GtkEntry, offsetX, "LayerOffsetXSpinButton1");
     GET_UI(GtkEntry, offsetY, "LayerOffsetYSpinButton1");
-    GET_UI(GtkFileChooser, filename, "LayerImageFilename1");
     GET_UI(GtkWidget, window, "EditLayerWindow");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
@@ -2118,14 +2124,12 @@ void callback_open_edit_layer_properties_window(UNUSED GtkWidget *widget,
     GET_UI(GtkSpinButton, height, "LayerHeightSpinButton1");
     GET_UI(GtkSpinButton, offsetX, "LayerOffsetXSpinButton1");
     GET_UI(GtkSpinButton, offsetY, "LayerOffsetYSpinButton1");
-    GET_UI(GtkFileChooser, filename, "LayerImageFilename1");
 
     gtk_entry_set_text(name, lay->name);
     gtk_spin_button_set_value(width, lay->size.w);
     gtk_spin_button_set_value(height, lay->size.h);
     gtk_spin_button_set_value(offsetX, lay->pos.x);
     gtk_spin_button_set_value(offsetY, lay->pos.y);
-    gtk_file_chooser_set_filename(filename, lay->filename);
 
     gtk_widget_show(layer_window);
 }
@@ -2157,8 +2161,6 @@ void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem,
     layermngr_delete_selected_layer(flowbox);
     if (!layermngr->layer_list.next)
     {
-        // layermngr->size.w = 0;
-        // layermngr->size.h = 0;
         gtk_widget_set_size_request(layout, 0, 0);
         gtk_widget_set_size_request(da, 0, 0);
         gtk_layout_set_size((GtkLayout *)layout, 0, 0);

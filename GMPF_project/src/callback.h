@@ -43,6 +43,8 @@ void load_image_cairo(GtkWindow *window,
                       GMPF_LayerMngr *layermngr,
                       GtkFlowBox *flowbox,
                       char *filename);
+void callback_layer_set_visible(GtkWidget *button,
+                                gpointer   user_data);
 
 void reset_cursor(GtkMenuItem *menuitem,
                   gpointer     user_data);

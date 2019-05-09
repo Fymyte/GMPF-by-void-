@@ -1,5 +1,6 @@
 #include "GMPF_LayerMngr.h"
 
+extern gpointer G_user_data;
 
 // DEFINE
 #define IS_NOT_IN_LAYER(size, pos) \
@@ -591,9 +592,8 @@ GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox,
     add UIElement to the flowbox
     */
     GtkWidget *image = gtk_image_new();
-
     // Style of the image
-    INIT_LAYER_UI(image);
+    INIT_LAYER_UI(newlayer, image, grid);
 
     int insertpos;
     // add the layer in the list
@@ -601,7 +601,7 @@ GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox,
     list_append(&(layermngr->layer_list), &(newlayer->list));
     insertpos = 0;
 
-    gtk_flow_box_insert (flowbox, image, insertpos);
+    gtk_flow_box_insert (flowbox, grid, insertpos);
 
     newlayer->UIElement =
         gtk_flow_box_get_child_at_index(flowbox, insertpos);
@@ -609,7 +609,7 @@ GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox,
 
     layermngr->nb_layer += 1;
 
-    newlayer->UIIcon = (GtkImage *) image;
+    newlayer->UIIcon = (GtkGrid *) grid;
     layer_icon_refresh(newlayer);
     return newlayer;
 }
@@ -659,7 +659,7 @@ GMPF_Layer *layer_initialization()
         return NULL;
     }
 
-    layer->name[0] = '\0';
+    for (size_t i = 0; i < 51; layer->name[i] = '\0', i++);
     layer->filename = NULL;
 
     layer->pos.x = 0;
@@ -730,13 +730,13 @@ void layer_insert_at_pos(GMPF_Layer *layer,
 {
     GtkWidget *image = gtk_image_new();
     // Style of the image
-    INIT_LAYER_UI(image);
+    INIT_LAYER_UI(layer, image, grid);
 
-    gtk_flow_box_insert (flowbox, image, insertpos);
+    gtk_flow_box_insert (flowbox, grid, insertpos);
 
     layer->UIElement = gtk_flow_box_get_child_at_index(flowbox, insertpos);
     g_object_set_data(G_OBJECT(layer->UIElement), LAYER_KEY_NAME, layer);
-    layer->UIIcon = (GtkImage *) image;
+    layer->UIIcon = (GtkGrid *) grid;
     layer_icon_refresh(layer);
 }
 
@@ -802,6 +802,11 @@ void layer_icon_refresh(GMPF_Layer *layer)
 {
     if (!layer->UIIcon)
         return;
+    GtkGrid *grid = layer->UIIcon;
+    GtkWidget *label = gtk_grid_get_child_at(grid, 1, 1);
+    GtkImage *UIImage = (GtkImage *)gtk_grid_get_child_at(grid, 0, 0);
+    D_PRINT("name: %s", layer->name);
+    gtk_label_set_text((GtkLabel *)label, layer->name);
     float ratio1 = layer->size.w / 160.0;
     float ratio2 = layer->size.h / 90.0;
     int finalh = 90;
@@ -815,7 +820,7 @@ void layer_icon_refresh(GMPF_Layer *layer)
         g_object_unref(layer->icon);
     layer->icon = gdk_pixbuf_scale_simple(layer->image, finalw, finalh,
                          GDK_INTERP_BILINEAR);
-    gtk_image_set_from_pixbuf(layer->UIIcon, layer->icon);
+    gtk_image_set_from_pixbuf(UIImage, layer->icon);
 }
 
 /******************************End of Layer Code*******************************/

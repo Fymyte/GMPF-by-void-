@@ -3,10 +3,12 @@
 
 #include "gtk.h"
 
+gpointer G_user_data = NULL;
+
 int main(int argc, char *argv [])
 {
     int error;
-    
+
     /* Initialisation de la librairie Gtk. */
     gtk_init(&argc, &argv);
 
