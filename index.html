@@ -11,6 +11,10 @@
     .mySlides {display:none}
     .w3-tag, .fa {cursor:pointer}
     .w3-tag {height:15px;width:15px;padding:0;margin-top:6px}
+    .w3-fift {width: 19%}
+    .w3-twofift {width: 38%}
+    .w3-twreefift {width: 57%}
+    .w3-fourfift {width: 76%}
 </style>
 <body id="myPage">
 
@@ -82,9 +86,10 @@
   <a href="#news" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Actualités</a>
   <a href="#contact" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Contact</a>
   <div class="w3-dropdown-hover w3-hide-small">
-    <button class="w3-button" title="Notifications">Plus <i class="fa fa-caret-down"></i></button>
+    <button class="w3-button" title="More">Plus <i class="fa fa-caret-down"></i></button>
     <div class="w3-dropdown-content w3-card-4 w3-bar-block">
-      <a href="#FollowUs" class="w3-bar-item w3-button">Nous suivres</a>
+      <a href="#" class="w3-bar-item w3-button" onclick="document.getElementById('DownloadMore').style.display='block'">Documents</a>
+      <a href="#Ressources" class="w3-bar-item w3-button">Nous suivres</a>
       <a href="#Ressources" class="w3-bar-item w3-button">Ressources</a>
     </div>
   </div>
@@ -99,25 +104,17 @@
     <a href="#contact" class="w3-bar-item w3-button">Contact</a>
     <a href="#FollowUs" class="w3-bar-item w3-button">Nous suivres</a>
     <a href="#Ressources" class="w3-bar-item w3-button">Ressources</a>
-  </div>
-</div>
-
-
-<!-- Modificated images -->
-<div id="Image1" class="w3-modal">
-  <div class="w3-modal-content w3-card-4 w3-animate-top">
-    <header class="w3-container w3-teal w3-display-container">
-      <span onclick="document.getElementById('Image1').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
-      <h4>Image 1</h4>
-    </header>
-    <div class="w3-container">
-	<img src="Modified_images/9.png" style="width:100%"> <!-- Change image -->
+    <div class="w3-dropdown-hover">
+      <button class="w3-button" title="More">Plus <i class="fa fa-caret-down"></i></button>
+      <div class="w3-dropdown-content w3-card-4 w3-bar-block">
+        <a href="#" class="w3-bar-item w3-button" onclick="document.getElementById('DownloadMore').style.display='block'">Documents</a>
+        <a href="#Ressources" class="w3-bar-item w3-button">Nous suivres</a>
+        <a href="#Ressources" class="w3-bar-item w3-button">Ressources</a>
+      </div>
     </div>
-    <footer class="w3-container w3-teal">
-      <p></br></p>
-    </footer>
   </div>
 </div>
+
 
 <!-- Header Image -->
 <div class="w3-display-container w3-animate-opacity">
@@ -236,7 +233,104 @@
           j’ai entièrement confiance en eux pour à au mieux ce nouveau projet. De mon côté, j’espère acquérir de connaissances durant ces prochains mois.
       </p>
     </div>
-    <footer class="w3-container w3-teal">
+    <footer class="w3-container w3-teal">s
+      <p></p>
+    </footer>
+  </div>
+</div>
+
+
+<div id="DownloadMore" class="w3-modal">
+  <div class="w3-modal-content w3-card-4 w3-animate-top w3-mobile w3-row" style="height: 90%; width: 80%">
+    <header class="w3-container w3-teal w3-display-container">
+      <span onclick="document.getElementById('DownloadMore').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
+      <button class="w3-bar-item w3-button w3-fift" onclick="opendl('Synopsis')">Synopsis</button>
+      <button class="w3-bar-item w3-button w3-fift" onclick="opendl('Cahier')">Cahier des charges</button>
+      <button class="w3-bar-item w3-button w3-fift" onclick="opendl('R1')">Rapport de soutenance 1</button>
+      <button class="w3-bar-item w3-button w3-fift" onclick="opendl('R2')">Rapport de soutenance 2</button>
+      <button class="w3-bar-item w3-button w3-fift" onclick="opendl('R3')">Rapport de soutenance 3</button>
+    </header>
+    <div id="Synopsis" class="w3-container dlmore" style="height: 90%; width: 100%">
+        <object
+          data="Synopsis.pdf"
+          type="application/pdf"
+          width="100%"
+          height="100%">
+          <iframe
+            src="Synopsis.pdf"
+            width="100%"
+            height="100%"
+            style="border: none;">
+            <p>Votre navigateur ne supporte pas la lecture de pdf.
+              <a href="Synopsis.pdf">Télecharger le rapport de soutenance</a>.</p>
+          </iframe>
+        </object>
+    </div>
+    <div id="Cahier" class="w3-container dlmore" style="height: 90%; width: 100%; display: none">
+        <object
+          data="Projet_S4_Cahier_des_charges.pdf"
+          type="application/pdf"
+          width="100%"
+          height="100%">
+          <iframe
+            src="Projet_S4_Cahier_des_charges.pdf"
+            width="100%"
+            height="100%"
+            style="border: none;">
+            <p>Votre navigateur ne supporte pas la lecture de pdf.
+              <a href="Projet_S4_Cahier_des_charges.pdf">Télecharger le rapport de soutenance</a>.</p>
+          </iframe>
+        </object>
+    </div>
+    <div id="R1" class="w3-container dlmore" style="height: 90%; width: 100%;display: none">
+        <object
+          data="Projet_S4__Rapport_de_soutenance_1.pdf"
+          type="application/pdf"
+          width="100%"
+          height="100%">
+          <iframe
+            src="Projet_S4__Rapport_de_soutenance_1.pdf"
+            width="100%"
+            height="100%"
+            style="border: none;">
+            <p>Votre navigateur ne supporte pas la lecture de pdf.
+              <a href="Projet_S4__Rapport_de_soutenance_1.pdf">Télecharger le rapport de soutenance</a>.</p>
+          </iframe>
+        </object>
+    </div>
+    <div id="R2" class="w3-container dlmore" style="height: 90%; width: 100%; display: none">
+        <object
+          data="Projet_S4__Rapport_de_soutenance_2.pdf"
+          type="application/pdf"
+          width="100%"
+          height="100%">
+          <iframe
+            src="Projet_S4__Rapport_de_soutenance_2.pdf"
+            width="100%"
+            height="100%"
+            style="border: none;">
+            <p>Votre navigateur ne supporte pas la lecture de pdf.
+              <a href="Projet_S4__Rapport_de_soutenance_2.pdf">Télecharger le rapport de soutenance</a>.</p>
+          </iframe>
+        </object>
+    </div>
+    <div id="R3" class="w3-container dlmore" style="height: 90%; width: 100%; display: none">
+        <object
+          data="Projet_S4__Rapport_de_soutenance_3.pdf"
+          type="application/pdf"
+          width="100%"
+          height="100%">
+          <iframe
+            src="Projet_S4__Rapport_de_soutenance_3.pdf"
+            width="100%"
+            height="100%"
+            style="border: none;">
+            <p>Votre navigateur ne supporte pas la lecture de pdf.
+              <a href="Projet_S4__Rapport_de_soutenance_3.pdf">Télecharger le rapport de soutenance</a>.</p>
+          </iframe>
+        </object>
+    </div>
+    <footer class="w3-container w3-teal" style="height: 5%">
       <p></p>
     </footer>
   </div>
@@ -561,7 +655,7 @@
     </div>
     <div class="w3-half w3-center">
       <a href="https://discord.gg/R4h7CTE" class="w3-btn w3-teal w3-padding-64"
-          style="width: 75%;"><i class="fa fa-download"></i> Rejoindre notre discord</a>
+          style="width: 75%;"><i class="fa fa-users"></i> Rejoindre notre discord</a>
     </div>
   </div>
 </div>
@@ -584,15 +678,15 @@
         <div class="w3-container w3-half" id="Ressources">
             <h4>Ressources</h4>
             <div class="w3-container w3-third">
-                <a href=""><img src="images/GTK.png" style="height:100px" class="w3-hover-opacity"/></a>
+                <a href="https://www.gtk.org"><img src="images/GTK.png" style="height:100px" class="w3-hover-opacity"/></a>
                 <h6>GTK+</h6>
             </div>
             <div class="w3-container w3-third">
-                <a href=""><img src="images/cairo.png" style="height:100px" class="w3-hover-opacity"/></a>
+                <a href="https://cairographics.org"><img src="images/cairo.png" style="height:100px" class="w3-hover-opacity"/></a>
                 <h6>Cairo graphic</h6>
             </div>
             <div class="w3-container w3-third">
-                <a href=""><img src="images/Overleaf.png" style="height:100px" class="w3-hover-opacity"/></a>
+                <a href="https://www.overleaf.com/"><img src="images/Overleaf.png" style="height:100px" class="w3-hover-opacity"/></a>
                 <h6>Overleaf</h6>
             </div>
         </div>
@@ -679,6 +773,15 @@ function openElementById(id) {
   } else {
     x.className = x.className.replace(" w3-show", "");
   }
+}
+
+function opendl(dlName) {
+  var i;
+  var x = document.getElementsByClassName("dlmore");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  document.getElementById(dlName).style.display = "block";
 }
 </script>
 
