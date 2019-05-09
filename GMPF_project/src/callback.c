@@ -41,10 +41,14 @@ int open_confirm_quit_without_saving_dialog(gpointer user_data)
     if (res == 2)
     {
         GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+        if (!layermngr->filename)
+        { D_PRINT("", NULL); return res; }
+
         char *filename = malloc(sizeof(char) * (strlen(layermngr->filename) + 6));
         sprintf(filename, "%s~", layermngr->filename);
         if (remove (filename))
         { D_PRINT("Unable to remove file", NULL); }
+        free(filename);
     }
     return res;
 }
@@ -186,11 +190,13 @@ void open_new_file(GtkWindow      *window,
 void callback_open(UNUSED GtkMenuItem *menu,
                    gpointer            user_data)
 {
+    D_PRINT("", NULL);
     INIT_UI();
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWindow, window, "MainWindow");
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+    D_PRINT("", NULL);
 
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     int confirm = 2;
@@ -202,6 +208,8 @@ void callback_open(UNUSED GtkMenuItem *menu,
 
     else if (confirm == 1)
     { if (!GMPF_save_project(user_data)) return; }
+
+    D_PRINT("", NULL);
 
     open_new_file(window, layermngr, flowbox);
 
