@@ -867,12 +867,6 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    // GMPF_List *list = layermngr->layer_list;
-    int max_width = layermngr->size.w;
-    int max_height = layermngr->size.h;
-    gtk_widget_set_size_request(layout, max_width, max_height);
-    gtk_widget_set_size_request(da, max_width, max_height);
-    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
 
     cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 
@@ -880,6 +874,12 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
     if (layermngr->layer_list.next != NULL)
     {
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+        int max_width = layermngr->size.w * lay->scale_factor.x;
+        int max_height = layermngr->size.h * lay->scale_factor.y;
+        D_PRINT("size: %i*%i", max_width, max_height);
+        gtk_widget_set_size_request(layout, max_width, max_height);
+        gtk_widget_set_size_request(da, max_width, max_height);
+        gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
         while (lay != NULL)
         {
             cur_lay++;
