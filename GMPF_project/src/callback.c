@@ -336,17 +336,12 @@ void callback_layer_set_visible(GtkWidget *button,
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
 
-
-    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    GtkWidget *parent = gtk_widget_get_parent(gtk_widget_get_parent(button));
+    if (!parent)
+    { PRINTERR("Unable to get parent"); return; }
+    GMPF_Layer *layer = (GMPF_Layer *) g_object_get_data(G_OBJECT(parent), LAYER_KEY_NAME);
     if (!layer)
-    {
-        GtkWidget *parent = gtk_widget_get_parent(gtk_widget_get_parent(button));
-        if (!parent)
-        { PRINTERR("Unable to get parent"); return; }
-        layer = (GMPF_Layer *) g_object_get_data(G_OBJECT(parent), LAYER_KEY_NAME);
-        if (!layer)
-        { PRINTERR("Unable to get layer"); return; }
-    }
+    { PRINTERR("Unable to get layer"); return; }
 
     layer->isvisible = gtk_toggle_button_get_active((GtkToggleButton *)button);
     gtk_widget_queue_draw(da);
@@ -805,6 +800,8 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
         return TRUE;
     }
 
+    REFRESH_IMAGE(lay);
+
     if (tool == GMPF_TOOL_PAINTER || tool == GMPF_TOOL_ERAISER || lay->rotate_angle)
     {
         GMPF_saved_state_set_is_saved(flowbox, 0);
@@ -812,8 +809,6 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
         lay->rotate_angle = 0;
         gtk_spin_button_set_value(button, lay->rotate_angle);
     }
-
-    REFRESH_IMAGE(lay);
 
     return TRUE;
 }
