@@ -805,8 +805,7 @@ void layer_icon_refresh(GMPF_Layer *layer)
     GtkGrid *grid = layer->UIIcon;
     GtkWidget *label = gtk_grid_get_child_at(grid, 1, 1);
     GtkImage *UIImage = (GtkImage *)gtk_grid_get_child_at(grid, 0, 0);
-    D_PRINT("name: %s", layer->name);
-    gtk_label_set_text((GtkLabel *)label, layer->name);
+    gtk_label_set_text((GtkLabel *)label, !layer->name[0] ? "(Untitled)":layer->name);
     float ratio1 = layer->size.w / 160.0;
     float ratio2 = layer->size.h / 90.0;
     int finalh = 90;
