@@ -1,6 +1,6 @@
 #include "GMPF_LayerMngr.h"
 
-extern gpointer G_user_data;
+extern SGlobalData G_user_data;
 
 // DEFINE
 #define IS_NOT_IN_LAYER(size, pos) \
@@ -344,6 +344,7 @@ void GMPF_saved_state_set_is_saved(GtkFlowBox *flowbox,
         sprintf(filename, "%s~", layermngr->filename);
         if (remove (filename))
         { D_PRINT("Unable to remove file", NULL); }
+        free(filename);
     }
     saved_state->state = state;
 }
@@ -773,7 +774,7 @@ char layer_set_name(GMPF_Layer *layer,
 
     for(; i <= 50; i++)
         layer->name[i] = '\0';
-        
+
     return 0;
 }
 

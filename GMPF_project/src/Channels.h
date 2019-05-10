@@ -4,7 +4,6 @@
 #define CHANNELS_H
 
 void kill_color(GtkWidget *widget,
-                double     toloerance,
-                gpointer   user_data);
+                double     toloerance);
 
 #endif

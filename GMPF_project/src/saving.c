@@ -1,7 +1,6 @@
 #include "saving.h"
 
-
-extern gpointer G_user_data;
+extern SGlobalData G_user_data;
 
 /*
  * Return the extention of the given filename
@@ -392,14 +391,9 @@ char loading_layer(GtkFlowBox *flowbox, const char *filename)
  * Export the project to a PNG image file at the given filename
  * (Return: 0 if there is no error, else -1)
  */
-int export_cairo_to_png(gchar *filename, gpointer user_data)
+int export_cairo_to_png(gchar *filename, GtkFlowBox *flowbox)
 {
-    INIT_UI();
-    GMPF_LayerMngr *layermngr = NULL;
-    GtkFlowBox *flowbox = NULL;
-
-    flowbox = (GtkFlowBox *) (gtk_builder_get_object(data->builder, "GMPF_flowbox"));
-    layermngr = layermngr_get_layermngr(flowbox);
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
     if (layermngr->layer_list.next == NULL)
         return -1; //save failed

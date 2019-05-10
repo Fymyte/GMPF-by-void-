@@ -1,6 +1,6 @@
 #include "gtk.h"
 
-extern gpointer G_user_data;
+extern SGlobalData G_user_data;
 
 /*
  * Init all variables and UI element of the application and launch it
@@ -48,7 +48,7 @@ int GMPF_start()
 
     // resetCursor(&data);
 
-    G_user_data = &data;
+    G_user_data = data;
 
     // INIT THE WINDOW ELEMENT
     GtkFlowBox *flowbox = NULL;

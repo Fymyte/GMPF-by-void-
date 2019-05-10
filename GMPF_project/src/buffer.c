@@ -1,25 +1,6 @@
 #include "buffer.h"
 
-
-// #define CLOSE_BUFFER_FILES(_buffer, _begin, _end) \
-//         if (_begin > _end) \
-//         { \
-//             for(; 0 < _end; _end--, _buffer->size--) \
-//                 if (_buffer->elmt[_end]) \
-//                     fclose(_buffer->elmt[_end]); \
-//             if (_buffer->elmt[0]) \
-//                 fclose(_buffer->elmt[0]); \
-//             _end = BUFFER_SIZE - 1; \
-//         } \
-//         for(; _begin < _end; _end--, _buffer->size--) \
-//             if (_buffer->elmt[_end]) \
-//                 fclose(_buffer->elmt[_end]); \
-//         if (_buffer->elmt[_begin]) \
-//             fclose(_buffer->elmt[_begin]);
-
-
-
-
+extern SGlobalData G_user_data;
 /*
  * Create a new Buffer and attach it to the given flowbox
  * (Return: the newly created Buffer, or NULL if it is unable to malloc)
@@ -108,7 +89,7 @@ int GMPF_buffer_undo(GtkFlowBox *flowbox)
     }
 
     if (buffer_undo(buffer, flowbox))
-    { PRINTERR("Unable to undo the last action"); return 1; }
+    { D_PRINT("Unable to undo the last action", NULL); return 1; }
 
     return 0;
 }
@@ -124,7 +105,7 @@ int GMPF_buffer_redo(GtkFlowBox *flowbox)
     }
 
     if (buffer_redo(buffer, flowbox))
-    { PRINTERR("Unable to redo the last action"); return 1; }
+    { D_PRINT("Unable to redo the last action", NULL); return 1; }
 
     return 0;
 }
@@ -217,7 +198,6 @@ char buffer_add(GMPF_Buffer *buffer,
     save.action = action;
     if (fwrite(&save, sizeof(s_savebuf), 1, file) != 1)
     { PRINTERR("Unable to write in filestream"); return 1; }
-    D_PRINT("Action: %i", action)
 
     switch (action) {
         case GMPF_ACTION_MOVE_UP:
@@ -272,10 +252,6 @@ char buffer_add(GMPF_Buffer *buffer,
     rewind(file); // Set the position in the file to 0
     buffer->elmt[buffer->end % BUFFER_SIZE] = file;
 
-
-
-    D_PRINT("buffer -- pos: %llu, begin: %llu, end: %llu, size: %llu",
-            buffer->pos, buffer->begin, buffer->end, buffer->size);
     return 0;
 }
 
@@ -397,8 +373,6 @@ char buffer_undo(GMPF_Buffer *buffer,
     }
     buffer->pos--;
     rewind(file); // Set the positon in the file to 0
-    D_PRINT("buffer -- pos: %llu, begin: %llu, end: %llu, size: %llu",
-            buffer->pos, buffer->begin, buffer->end, buffer->size);
 
     return 0;
 }
@@ -429,7 +403,6 @@ char buffer_redo(GMPF_Buffer *buffer,
     { PRINTERR ("Unable to read in filestream"); return 1; }
 
     GMPF_Action action = s_buff.action;
-    D_PRINT("action: %i", action);
     GMPF_Layer *layer = NULL;
 
     switch (action) {
@@ -532,9 +505,6 @@ char buffer_redo(GMPF_Buffer *buffer,
     }
 
     rewind(file);
-
-    D_PRINT("buffer -- pos: %llu, begin: %llu, end: %llu, size: %llu",
-            buffer->pos, buffer->begin, buffer->end, buffer->size);
 
     return 0;
 }

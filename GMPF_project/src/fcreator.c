@@ -1,12 +1,13 @@
 #include "fcreator.h"
 
+extern SGlobalData G_user_data;
+
 /*
  * Save the newly created filter into a *.ftr file type as text
  * (Do nothing if the custom filter is incorect)
  */
-void Save_filter(gpointer user_data)
+void Save_filter()
 {
-    INIT_UI();
     GdkRGBA color;
 
     GET_UI(GtkComboBoxText, effet_1, "effet1");
@@ -115,9 +116,8 @@ void Save_filter(gpointer user_data)
  * Layer
  * (Do nothing if there is no selected Layer)
  */
-void Apply_user_filter(gchar *filename, gpointer user_data)
+void Apply_user_filter(gchar *filename)
 {
-    INIT_UI();
     if (!check_extension(filename, "lay"))
         return;
     FILE *filter = fopen(filename, "r");
@@ -131,30 +131,25 @@ void Apply_user_filter(gchar *filename, gpointer user_data)
     char *save = malloc(35 * sizeof(char));
     char *line = NULL;
 
-    GET_UI(GtkColorChooser, chooser, "ColorTinter");
-
     while((line = fgets(save, 20, filter)) != NULL)
     {
         if (strcmp("Grey\n", save) == 0)
-            GMPF_filter_apply_to_selected_layer(Greyscale, data);
+            GMPF_filter_apply_to_selected_layer(Greyscale);
 
         if (strcmp("Binarize\n", save) == 0)
-            GMPF_filter_apply_to_selected_layer(Binarize, data);
+            GMPF_filter_apply_to_selected_layer(Binarize);
 
         if (strcmp("Binarize color\n", save) == 0)
-            GMPF_filter_apply_to_selected_layer(BinarizeColor, data);
+            GMPF_filter_apply_to_selected_layer(BinarizeColor);
 
         if (strcmp("Blur\n", save) == 0) //TODO
-            GMPF_filter_apply_to_selected_layer(Greyscale, data);
-
-        GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-        GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+            GMPF_filter_apply_to_selected_layer(Greyscale);
 
         if (strcmp("Colorfull\n", save) == 0)
-            Colorfull(lay, chooser);
+            GMPF_filter_apply_to_selected_layer(Colorfull);
 
         if (strcmp("Tinter\n", save) == 0) //TODO
-            Tinter(lay, chooser);
+            GMPF_filter_apply_to_selected_layer(Tinter);
     }
 
     if (fclose(filter) == -1)

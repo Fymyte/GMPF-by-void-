@@ -11,13 +11,11 @@ typedef struct
     gpointer user_data;
 } SGlobalData;
 
-void pick_color_on_screen(int              x,
-                          int              y,
-                          GtkColorChooser *colorChooser,
-                          gpointer         user_data);
+void pick_color_on_screen(int x,
+                          int y);
 void resetCursor(GtkWindow *window);
-void stayInWindow(SGlobalData* data);
-void resizeCuror(SGlobalData* data, int size);
-void callback_setCursor(SGlobalData* data);
+void stayInWindow();
+void resizeCuror(int size);
+void callback_setCursor();
 
 #endif

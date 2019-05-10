@@ -3,7 +3,7 @@
 
 #include "gtk.h"
 
-gpointer G_user_data = NULL;
+SGlobalData G_user_data;
 
 int main(int argc, char *argv [])
 {

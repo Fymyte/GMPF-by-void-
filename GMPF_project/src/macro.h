@@ -26,7 +26,7 @@
 /****************************MAGIC ZONE****************************************/
 
 #define GET_UI(_type, _var, _name) \
-    _type * _var = (_type *) (gtk_builder_get_object(data->builder, _name)); \
+    _type * _var = (_type *) (gtk_builder_get_object(G_user_data.builder, _name)); \
     if (!_var) \
     { \
         D_PRINT("Unable to get %s\n", _name); \

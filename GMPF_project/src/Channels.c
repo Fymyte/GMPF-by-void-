@@ -1,13 +1,13 @@
 #include "Channels.h"
 
+extern SGlobalData G_user_data;
+
 /*
  * function to eraise the selected color with the given tolerance
  */
 void kill_color(GtkWidget *widget,
-                double     tolerance,
-                gpointer   user_data)
+                double     tolerance)
 {
-    INIT_UI();
     GET_UI (GtkColorChooser, colorbtn, "ColorTinter");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);

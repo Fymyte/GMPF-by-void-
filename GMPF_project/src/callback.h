@@ -35,9 +35,9 @@ int check(int width, int height, int i, int j);
 //cairo image functions
 
 /***********Functions to open, load and save project and images****************/
-int open_confirm_quit_without_saving_dialog(gpointer user_data);
-gboolean GMPF_save_project(gpointer user_data);
-gboolean GMPF_save_under_project(gpointer user_data);
+char open_confirm_quit_without_saving_dialog();
+gboolean GMPF_save_project();
+gboolean GMPF_save_under_project();
 char GMPF_auto_save_project(GtkFlowBox *flowbox);
 void load_image_cairo(GtkWindow *window,
                       GMPF_LayerMngr *layermngr,
@@ -46,18 +46,14 @@ void load_image_cairo(GtkWindow *window,
 void callback_layer_set_visible(GtkWidget *button,
                                 gpointer   user_data);
 
-void reset_cursor(GtkMenuItem *menuitem,
-                  gpointer     user_data);
+void reset_cursor(GtkMenuItem *menuitem);
 
 //drawing functions
 void draw_brush (GtkWidget  *widget,
                  gdouble    x,
-                 gdouble    y,
-                 gpointer   user_data);
+                 gdouble    y);
 void draw_rubber (GtkWidget *widget,
                   gdouble     x,
-                  gdouble     y,
-                  gpointer    user_data);
-
+                  gdouble     y);
 
 #endif

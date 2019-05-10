@@ -21,6 +21,6 @@ char load_project(GtkFlowBox *flowbox, const char *filename);
 char saving_layer(GtkFlowBox *flowbox, const char *filename);
 char loading_layer(GtkFlowBox *flowbox, const char *filename);
 
-int export_cairo_to_png(gchar *filename, gpointer user_data);
+int export_cairo_to_png(gchar *filename, GtkFlowBox *flowbox);
 
 #endif /* SAVING_H_ */

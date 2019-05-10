@@ -1,5 +1,7 @@
 #include "filters.h"
 
+extern SGlobalData G_user_data;
+
 void filter_for_selection(void(*filter)(GMPF_Layer *), GtkFlowBox *flowbox)
 {
     cairo_surface_t *new_surf = GMPF_selection_get_surface(flowbox);
@@ -72,10 +74,8 @@ void filter_for_selection_color(void (*filter)(GMPF_Layer*,
  * Apply the "filter" function to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*),
-                                         gpointer       user_data)
+void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*))
 {
-    INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
@@ -86,8 +86,8 @@ void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*),
         return;
     }
 
-    filter(lay);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+    filter(lay);
     GMPF_saved_state_set_is_saved(flowbox, 0);
 
     gtk_widget_queue_draw(da);
@@ -97,10 +97,8 @@ void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*),
 /*
  * Apply the "filter" function to all Layer
  */
-void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*),
-                                    gpointer       user_data)
+void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*))
 {
-    INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
@@ -110,8 +108,8 @@ void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*),
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
-            filter(lay);
             GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+            filter(lay);
 
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
@@ -134,10 +132,8 @@ void GMPF_filter_apply_to_selected_layer_color(void (*filter)(GMPF_Layer*,
                                                                         guchar),
                                                               guchar   r,
                                                               guchar   g,
-                                                              guchar   b,
-                                                              gpointer user_data)
+                                                              guchar   b)
 {
-    INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
@@ -148,8 +144,8 @@ void GMPF_filter_apply_to_selected_layer_color(void (*filter)(GMPF_Layer*,
         return;
     }
 
-    filter(lay, r, g, b);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+    filter(lay, r, g, b);
     GMPF_saved_state_set_is_saved(flowbox, 0);
 
     gtk_widget_queue_draw(da);
@@ -166,10 +162,8 @@ void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*,
                                                                         guchar),
                                                               guchar   r,
                                                               guchar   g,
-                                                              guchar   b,
-                                                              gpointer user_data)
+                                                              guchar   b)
 {
-    INIT_UI();
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
@@ -179,8 +173,8 @@ void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*,
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
-            filter(lay, r, g, b);
             GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+            filter(lay, r, g, b);
 
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
@@ -450,8 +444,7 @@ void BinarizeColor(GMPF_Layer *lay)
 /*
  * Apply "Teinture" filter to the given Layer
  */
-void Tinter(GMPF_Layer      *lay,
-            GtkColorChooser *colorChooser)
+void Tinter(GMPF_Layer *lay)
 {
     if (!lay)
         return;
@@ -464,6 +457,7 @@ void Tinter(GMPF_Layer      *lay,
     guchar r, g, b, factor;
     GdkRGBA rgba;
 
+    GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
     gtk_color_chooser_get_rgba (colorChooser, &rgba);
     r = (guchar)(rgba.red * 255);
     g = (guchar)(rgba.green * 255);
@@ -501,8 +495,7 @@ void Tinter(GMPF_Layer      *lay,
 /*
  * Apply "Coloré" filter to the given Layer
  */
-void Colorfull(GMPF_Layer      *lay,
-               GtkColorChooser *colorChooser)
+void Colorfull(GMPF_Layer *lay)
 {
     if (!lay)
         return;
@@ -516,6 +509,7 @@ void Colorfull(GMPF_Layer      *lay,
 
     GdkPixbuf *imgPixbuf = lay->image;
 
+    GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
     gtk_color_chooser_get_rgba (colorChooser, &rgba);
     r = (guchar)(rgba.red * 255);
     g = (guchar)(rgba.green * 255);
@@ -562,7 +556,7 @@ int check (int width, int height, int i, int j)
  * Apply the given convolution matrix to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void Convolute(SGlobalData *data, double *mat)
+void Convolute(double *mat)
 {
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");

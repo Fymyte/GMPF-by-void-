@@ -1,19 +1,17 @@
 #include "cursor.h"
-//#include "GMPF_LayerMngr.h"
-//#include <gtk-3.0/gtk/gtk.h>
+
+extern SGlobalData G_user_data;
 
 /*
  * Take the color of the selected Layer at the given coordinates and put the
  * taken color inside of the colorChooser's color parameter
  */
-void pick_color_on_screen(int              x,
-                          int              y,
-                          GtkColorChooser *colorChooser,
-                          gpointer         user_data)
+void pick_color_on_screen(int x,
+                          int y)
 {
-    INIT_UI();
     GET_UI(GtkWindow, window, "MainWindow");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     if (!lay)
         return;
@@ -62,7 +60,7 @@ void resetCursor(GtkWindow *window)
 /*
  * Set the cusror to a circle penta cursor icon
  */
-void callback_setCursor(SGlobalData* data)
+void callback_setCursor()
  {
       //init variables
 
@@ -70,15 +68,16 @@ void callback_setCursor(SGlobalData* data)
       GdkCursor *cursor = NULL;
       GdkScreen *screen = NULL;
       GdkWindow * win = NULL;
-      GtkFlowBox *flowbox;
       GMPF_LayerMngr *layermngr;
       int size;
       cairo_t *cr;
 
       //set variables
-      screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
+      GET_UI(GtkWindow, window, "MainWindow");
+      GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+      screen = gtk_window_get_screen(window);
       display = gdk_screen_get_display(screen);
-      flowbox = (GtkFlowBox *)gtk_builder_get_object(data->builder, "GMPF_flowbox");
+
       layermngr = layermngr_get_layermngr(flowbox);
       size = layermngr->brush_size;
       cairo_surface_t *cairo_cursor =
@@ -119,7 +118,7 @@ void callback_setCursor(SGlobalData* data)
 /*
  * Resize the cursor to math the LayerMngr's cursor's size parameter
  */
-void resizeCursor(SGlobalData* data, int size)
+void resizeCursor(int size)
 {
     GdkWindow * win = NULL;
     GdkCursor *cursor = NULL;
@@ -135,8 +134,8 @@ void resizeCursor(SGlobalData* data, int size)
         printf("Error : %s\n", error->message);
         g_error_free(error);
     }
-
-    screen = gtk_window_get_screen(GTK_WINDOW(gtk_builder_get_object(data->builder, "MainWindow")));
+    GET_UI(GtkWindow, window, "MainWindow");
+    screen = gtk_window_get_screen(window);
     display = gdk_screen_get_display(screen);
     win = gdk_screen_get_root_window(screen);
 

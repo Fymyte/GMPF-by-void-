@@ -23,14 +23,12 @@
 #define SELECTION_KEY_NAME "GMPF_selection"
 #define BUFFER_KEY_NAME "GMPF_buffer"
 
-extern gpointer G_user_data;
-
 #define INIT_LAYER_UI(_layer, _image, _grid) \
     GtkWidget *_grid = gtk_grid_new(); \
     GtkWidget *gtklabel = gtk_label_new(_layer->name); \
     GtkWidget *button = gtk_check_button_new(); \
     gtk_toggle_button_set_active((GtkToggleButton *)button, _layer->isvisible); \
-    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(callback_layer_set_visible), G_user_data); \
+    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(callback_layer_set_visible), NULL); \
     gtk_widget_set_sensitive(_grid, TRUE); \
     gtk_widget_set_visible(_grid, TRUE); \
     gtk_widget_set_visible(_image, TRUE); \
