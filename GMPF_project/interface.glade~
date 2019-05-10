@@ -17,11 +17,23 @@ without any warranty.
   <!-- interface-copyright VOID* -->
   <object class="GtkWindow" id="Brushes">
     <property name="name">Types de brosses</property>
-    <property name="can_focus">False</property>
-    <property name="default_width">250</property>
-    <property name="default_height">200</property>
+    <property name="can_focus">True</property>
+    <property name="has_focus">True</property>
+    <property name="is_focus">True</property>
+    <property name="can_default">True</property>
+    <property name="has_default">True</property>
+    <property name="receives_default">True</property>
+    <property name="title" translatable="yes">Brosses</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">mouse</property>
+    <property name="default_width">100</property>
+    <property name="default_height">100</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">menu</property>
+    <property name="skip_pager_hint">True</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
-    <child>
+    <child type="titlebar">
       <placeholder/>
     </child>
     <child>
@@ -33,11 +45,13 @@ without any warranty.
         <property name="toolbar_style">icons</property>
         <child>
           <object class="GtkToolButton">
+            <property name="name">Circulaire</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Circulaire</property>
             <property name="use_underline">True</property>
             <property name="icon_name">media-record</property>
+            <signal name="clicked" handler="callback_hideParent" object="Brushes" swapped="no"/>
             <signal name="clicked" handler="callback_select_brush" swapped="no"/>
           </object>
           <packing>
@@ -47,11 +61,13 @@ without any warranty.
         </child>
         <child>
           <object class="GtkToolButton">
+            <property name="name">Carré</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Carré</property>
             <property name="use_underline">True</property>
             <property name="icon_name">media-playback-stop</property>
+            <signal name="clicked" handler="callback_hideParent" object="Brushes" swapped="no"/>
             <signal name="clicked" handler="callback_select_brush" swapped="no"/>
           </object>
           <packing>
@@ -66,85 +82,12 @@ without any warranty.
             <property name="label" translatable="yes">Rectangulaire</property>
             <property name="use_underline">True</property>
             <property name="icon_name">list-remove</property>
+            <signal name="clicked" handler="callback_hideParent" object="Brushes" swapped="no"/>
             <signal name="clicked" handler="callback_select_brush" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="homogeneous">True</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkMessageDialog" id="CancelDialog">
-    <property name="can_focus">False</property>
-    <property name="resizable">False</property>
-    <property name="destroy_with_parent">True</property>
-    <property name="type_hint">dialog</property>
-    <property name="urgency_hint">True</property>
-    <property name="deletable">False</property>
-    <property name="message_type">warning</property>
-    <property name="text" translatable="yes">Fermer sans enregister</property>
-    <property name="secondary_text" translatable="yes">Toute donnée non sauvegarder sera perdue </property>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="can_focus">False</property>
-        <property name="margin_top">1</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox">
-            <property name="can_focus">False</property>
-            <property name="margin_left">68</property>
-            <property name="margin_right">5</property>
-            <property name="margin_bottom">5</property>
-            <property name="homogeneous">True</property>
-            <property name="baseline_position">top</property>
-            <property name="layout_style">center</property>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">Enregister</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">Confirmer</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
           </packing>
         </child>
       </object>
@@ -616,6 +559,7 @@ effet :</property>
                         <property name="label" translatable="yes">Quitter</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_quit" swapped="no"/>
+                        <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -639,6 +583,8 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_cut" swapped="no"/>
+                        <accelerator key="x" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -648,6 +594,8 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_copy" swapped="no"/>
+                        <accelerator key="c" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -657,6 +605,8 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_paste" swapped="no"/>
+                        <accelerator key="v" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -666,6 +616,8 @@ effet :</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_delete" swapped="no"/>
+                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -1239,6 +1191,7 @@ effet :</property>
                 <property name="use_stock">True</property>
                 <property name="always_show_image">True</property>
                 <signal name="clicked" handler="callback_undo" swapped="no"/>
+                <accelerator key="z" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1295,6 +1248,7 @@ effet :</property>
                 <property name="use_stock">True</property>
                 <property name="always_show_image">True</property>
                 <signal name="clicked" handler="callback_redo" swapped="no"/>
+                <accelerator key="y" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1775,6 +1729,7 @@ Samory DIABY</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">menu</property>
+    <property name="deletable">False</property>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -1867,9 +1822,10 @@ Samory DIABY</property>
         </child>
         <child>
           <object class="GtkEntry" id="LayerNameEntry1">
+            <property name="width_request">300</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="max_length">50</property>
+            <property name="max_length">12</property>
             <property name="shadow_type">none</property>
             <property name="caps_lock_warning">False</property>
             <property name="placeholder_text" translatable="yes">Entrer un nom</property>
@@ -1985,24 +1941,8 @@ Samory DIABY</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
-            <property name="top_attach">6</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkFileChooserButton" id="LayerImageFilename1">
-            <property name="width_request">300</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">5</property>
-            <property name="title" translatable="yes"/>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
             <property name="top_attach">5</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
         <child>
           <placeholder/>
@@ -2015,6 +1955,7 @@ Samory DIABY</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">menu</property>
+    <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
@@ -2113,7 +2054,7 @@ Samory DIABY</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="margin_left">2</property>
-            <property name="max_length">50</property>
+            <property name="max_length">12</property>
             <property name="shadow_type">none</property>
             <property name="caps_lock_warning">False</property>
             <property name="placeholder_text" translatable="yes">Entrer un nom</property>

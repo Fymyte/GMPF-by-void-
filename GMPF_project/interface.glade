@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 
+<!-- Generated with glade 3.20.0 
 
 Copyright (C) VOID*
 
@@ -33,9 +33,6 @@ without any warranty.
     <property name="type_hint">menu</property>
     <property name="skip_pager_hint">True</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkToolbar">
         <property name="width_request">100</property>
@@ -92,6 +89,9 @@ without any warranty.
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkWindow" id="FilterCreator">
     <property name="name">Créateur de filtres</property>
@@ -102,9 +102,6 @@ without any warranty.
     <property name="default_height">300</property>
     <property name="icon_name">address-book-new</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
-    <child>
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -455,14 +452,11 @@ effet :</property>
     <property name="can_focus">False</property>
     <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
     <property name="title" translatable="yes">GMPF</property>
-    <property name="icon">images/GMPF_white.png</property>
+    <property name="icon">images/GMPF.png</property>
     <property name="has_resize_grip">True</property>
     <signal name="delete-event" handler="do_destroy_event" swapped="no"/>
     <signal name="delete-event" handler="gtk_widget_hide_on_delete" swapped="no"/>
     <signal name="delete-event" handler="gtk_widget_show" swapped="no"/>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -541,7 +535,7 @@ effet :</property>
                       <object class="GtkMenuItem" id="ExportToPNG">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">exporter vers png</property>
+                        <property name="label" translatable="yes">Exporter vers png</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_export" swapped="no"/>
                       </object>
@@ -1041,24 +1035,9 @@ effet :</property>
               <object class="GtkMenuItem">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Aid_e</property>
+                <property name="label" translatable="yes">Brosse</property>
                 <property name="use_underline">True</property>
-                <child type="submenu">
-                  <object class="GtkMenu">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkImageMenuItem" id="about">
-                        <property name="label">gtk-about</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                        <signal name="activate" handler="callback_about" swapped="no"/>
-                      </object>
-                    </child>
-                  </object>
-                </child>
+                <signal name="activate" handler="callback_show_window" object="Brushes" swapped="no"/>
               </object>
             </child>
             <child>
@@ -1088,9 +1067,25 @@ effet :</property>
               <object class="GtkMenuItem">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Brosse</property>
+                <property name="label" translatable="yes">Aid_e</property>
                 <property name="use_underline">True</property>
-                <signal name="activate" handler="callback_show_window" object="Brushes" swapped="no"/>
+                <child type="submenu">
+                  <object class="GtkMenu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="about">
+                        <property name="label">gtk-about</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="activate" handler="callback_about" swapped="no"/>
+                        <accelerator key="h" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -1661,6 +1656,9 @@ effet :</property>
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkAboutDialog" id="AboutWindow">
     <property name="name">A Propos</property>
@@ -1676,9 +1674,6 @@ Arnaud CASSEZ
 Pierrick GUILLAUME
 Samory DIABY</property>
     <property name="logo">images/GMPF.png</property>
-    <child>
-      <placeholder/>
-    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -1730,9 +1725,6 @@ Samory DIABY</property>
     <property name="window_position">center</property>
     <property name="type_hint">menu</property>
     <property name="deletable">False</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -1949,6 +1941,9 @@ Samory DIABY</property>
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkWindow" id="LayerWindow">
     <property name="can_focus">False</property>
@@ -1957,9 +1952,6 @@ Samory DIABY</property>
     <property name="type_hint">menu</property>
     <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -2191,6 +2183,9 @@ Samory DIABY</property>
           <placeholder/>
         </child>
       </object>
+    </child>
+    <child type="titlebar">
+      <placeholder/>
     </child>
   </object>
 </interface>
