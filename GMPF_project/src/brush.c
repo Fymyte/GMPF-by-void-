@@ -1,5 +1,6 @@
 #include "brush.h"
 
+extern SGlobalData G_user_data;
 
 /*
  * PURPOSE : Make a square collored shape collored at the given position
@@ -125,6 +126,7 @@ char selector(GtkFlowBox *flowbox,
               GMPF_Pos    pos,
               GMPF_Pos    npos)
 {
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     GMPF_Size size = { .w = 0, .h = 0};
 
     if (pos.x == npos.x || pos.y == npos.y)

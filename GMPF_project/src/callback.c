@@ -895,10 +895,11 @@ gboolean callback_motion_notify_event (GtkWidget      *widget,
         draw_rubber (widget, event->x, event->y);
     else if (tool == GMPF_TOOL_SELECTOR && (event->state & GDK_BUTTON1_MASK))
     {
-        if (!layermngr_get_selected_layer(flowbox))
+        GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+        if (!lay)
             return FALSE;
 
-        GMPF_Pos pos = { .x = layermngr->pos.x, .y = layermngr->pos.y };
+        GMPF_Pos pos = { .x = layermngr->pos.x, .y = layermngr->pos.y};
         GMPF_Pos npos = { .x = event->x, .y = event->y };
         char err = selector(flowbox, pos, npos);
         if (err)
@@ -970,8 +971,11 @@ void callback_copy(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     if (!lay)
     { D_PRINT("No selected layer", NULL); return; }
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+    GMPF_Pos cppos = {.x = (-pos.x+lay->pos.x)/lay->scale_factor.x,
+                      .y = (-pos.y+lay->pos.y)/lay->scale_factor.y };
 
-    if (GMPF_selection_copy(flowbox, lay))
+    if (GMPF_selection_copy(flowbox, lay, cppos))
     { PRINTERR("Unable to copy the selection"); return; }
 }
 
@@ -984,7 +988,8 @@ void callback_paste(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     if (!lay)
     { D_PRINT("No selected layer", NULL); return; }
-    GMPF_Pos pos = { .x = layermngr->pos.x, .y = layermngr->pos.y };
+    GMPF_Pos pos = { .x = (layermngr->pos.x - lay->pos.x)/lay->scale_factor.x,
+                     .y = (layermngr->pos.y - lay->pos.y)/lay->scale_factor.y};
 
     if (GMPF_selection_paste(flowbox, lay, pos))
     { PRINTERR("Unable to paste selection"); return; }
@@ -1001,7 +1006,11 @@ void callback_cut(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
     if (!lay)
     { D_PRINT("No selected layer", NULL); return; }
 
-    if (GMPF_selection_cut(flowbox, lay))
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+    GMPF_Pos cppos = {.x = (-pos.x+lay->pos.x)/lay->scale_factor.x,
+                      .y = (-pos.y+lay->pos.y)/lay->scale_factor.y };
+
+    if (GMPF_selection_cut(flowbox, lay, cppos))
     { PRINTERR("Unable to cut selection"); return; }
 
     gtk_widget_queue_draw(da);
@@ -1016,7 +1025,11 @@ void callback_delete(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
     if (!lay)
     { D_PRINT("No selected layer", NULL); return; }
 
-    if (GMPF_selection_delete(flowbox, lay))
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+    GMPF_Pos cppos = {.x = (pos.x-lay->pos.x)/lay->scale_factor.x,
+                      .y = (pos.y-lay->pos.y)/lay->scale_factor.y };
+
+    if (GMPF_selection_delete(flowbox, lay, cppos))
     { PRINTERR("Unable to delete selection"); return; }
 
     gtk_widget_queue_draw(da);

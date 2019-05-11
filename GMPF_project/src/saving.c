@@ -279,7 +279,7 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
 
 
 /*
- * Load the project at the given filename and associat it to the given flowbox
+ * Load the project at the given filename and associate it to the given flowbox
  * (Return: 0 if there is no error, else 1)
  */
 char load_project(GtkFlowBox *flowbox,

@@ -74,14 +74,17 @@ GMPF_Size *GMPF_selection_get_size(GtkFlowBox *flowbox);
 int GMPF_selection_set_size(GtkFlowBox *flowbox,
                            GMPF_Size    size);
 char GMPF_selection_copy(GtkFlowBox *flowbox,
-                         GMPF_Layer *layer);
+                         GMPF_Layer *layer,
+                         GMPF_Pos    pos);
 char GMPF_selection_paste(GtkFlowBox *flowbox,
                           GMPF_Layer *layer,
                           GMPF_Pos    pos);
 char GMPF_selection_cut(GtkFlowBox *flowbox,
-                        GMPF_Layer *layer);
+                        GMPF_Layer *layer,
+                        GMPF_Pos    pos);
 char GMPF_selection_delete(GtkFlowBox *flowbox,
-                           GMPF_Layer *layer);
+                           GMPF_Layer *layer,
+                           GMPF_Pos    pos);
 
 /*************************End of Selection functions***************************/
 

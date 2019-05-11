@@ -165,23 +165,25 @@ int GMPF_selection_set_size(GtkFlowBox *flowbox,
  *   NOTES : Do nothing if there is no Selection on Layer
  */
 char GMPF_selection_copy(GtkFlowBox *flowbox,
-                         GMPF_Layer *layer)
+                         GMPF_Layer *layer,
+                         GMPF_Pos    pos)
 {
     GMPF_Size size = *GMPF_selection_get_size(flowbox);
     if (!size.w || !size.h)
     { D_PRINT("No selected surface", NULL); return 1; }
 
-    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+    // GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+    D_PRINT("pos: (%d, %d)", pos.x, pos.y);
 
     cairo_surface_t *surf = GMPF_selection_get_surface(flowbox);
     if (surf)
         cairo_surface_destroy(surf);
 
     cairo_surface_t *new_surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-                                                            size.w,
-                                                            size.h);
+                                                            size.w/layer->scale_factor.x,
+                                                            size.h/layer->scale_factor.y);
     cairo_t *cr = cairo_create(new_surf);
-    cairo_set_source_surface(cr, layer->surface, -pos.x, -pos.y);
+    cairo_set_source_surface(cr, layer->surface, pos.x, pos.y);
     cairo_paint(cr);
     cairo_destroy(cr);
     while (cairo_surface_get_reference_count(new_surf) < 5)
@@ -223,9 +225,10 @@ char GMPF_selection_paste(GtkFlowBox *flowbox,
 
 
 char GMPF_selection_cut(GtkFlowBox *flowbox,
-                        GMPF_Layer *layer)
+                        GMPF_Layer *layer,
+                        GMPF_Pos    pos)
 {
-    if (GMPF_selection_copy(flowbox, layer))
+    if (GMPF_selection_copy(flowbox, layer, pos))
     { D_PRINT("Unable to copy before cut", NULL); return 1; }
 
     cairo_surface_t *surface = GMPF_selection_get_surface(flowbox);
@@ -237,12 +240,13 @@ char GMPF_selection_cut(GtkFlowBox *flowbox,
     while (cairo_surface_get_reference_count(surface) < 3)
         cairo_surface_reference(surface);
 
-    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+    // GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
     GMPF_Size size = *GMPF_selection_get_size(flowbox);
 
     cairo_set_source_rgba(layer->cr, 0, 0, 0, 0);
     cairo_set_operator(layer->cr, CAIRO_OPERATOR_SOURCE);
-    cairo_rectangle(layer->cr, pos.x, pos.y, size.w, size.h);
+    cairo_rectangle(layer->cr, -pos.x, -pos.y, size.w/layer->scale_factor.x,
+                                               size.h/layer->scale_factor.y);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
     cairo_fill(layer->cr);
     cairo_destroy(layer->cr);
@@ -253,17 +257,18 @@ char GMPF_selection_cut(GtkFlowBox *flowbox,
 
 
 char GMPF_selection_delete(GtkFlowBox *flowbox,
-                           GMPF_Layer *layer)
+                           GMPF_Layer *layer,
+                           GMPF_Pos    pos)
 {
     layer->cr = cairo_create(layer->surface);
 
-    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
     GMPF_Size size = *GMPF_selection_get_size(flowbox);
 
     D_PRINT("pos: (%i, %i), size: %i*%i", pos.x, pos.y, size.w, size.h);
     cairo_set_source_rgba(layer->cr, 0, 0, 0, 0);
     cairo_set_operator(layer->cr, CAIRO_OPERATOR_SOURCE);
-    cairo_rectangle(layer->cr, pos.x, pos.y, size.w, size.h);
+    cairo_rectangle(layer->cr, pos.x, pos.y, size.w/layer->scale_factor.x,
+                                             size.h/layer->scale_factor.y);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
     cairo_fill(layer->cr);
     cairo_destroy(layer->cr);

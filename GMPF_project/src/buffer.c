@@ -295,7 +295,6 @@ char buffer_undo(GMPF_Buffer *buffer,
             break;
 
         case GMPF_ACTION_MODIF_IMAGE:
-            D_PRINT("pos: %i", s_buff.layer);
             if (load_layer(layermngr_get_layermngr(flowbox), file))
             { PRINTERR("Unable to load layer"); break; }
 
