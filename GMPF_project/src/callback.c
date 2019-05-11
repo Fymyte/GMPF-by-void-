@@ -1350,15 +1350,17 @@ void callback_test_matrix(UNUSED GtkWidget *widget,
             double res = 0;
             double tmp = 0;
             char op = 0;
+            char neg = 1;
             for (size_t j = 0; txt[j] != '\0'; j++)
             {
                 if (txt[j] <= '9' && txt[j] >= '0')
                 { !op ? (res = res * 10 + txt[j] - '0') : (tmp = tmp * 10 + txt[j] - '0'); }
                 else if (txt[j] == '/')
                 { op = 1; }
-                D_PRINT("cur: %c, res: %f", txt[j], res);
+                else if (txt[j] == '-')
+                { neg = -1; }
             }
-            mat[i] = op ? res / tmp : res;
+            mat[i] = (op ? res / tmp : res) * neg;
 
             D_PRINT("mat[%lu, %lu] = %f", i % 5, i / 5, mat[i]);
         }
@@ -1374,14 +1376,17 @@ void callback_test_matrix(UNUSED GtkWidget *widget,
                 double res = 0;
                 double tmp = 0;
                 char op = 0;
+                char neg = 1;
                 for (size_t j = 0; txt[j] != '\0'; j++)
                 {
                     if (txt[j] <= '9' && txt[j] >= '0')
                     { !op ? (res = res * 10 + txt[j] - '0') : (tmp = tmp * 10 + txt[j] - '0'); }
                     else if (txt[j] == '/')
                     { op = 1; }
+                    else if (txt[j] == '-')
+                    { neg = -1; }
                 }
-                mat[(i*3)+k] = op ? res / tmp : res;
+                mat[(i*3)+k] = (op ? res / tmp : res) * neg;
 
                 D_PRINT("mat[%lu, %lu] = %f", (i+1), (k+1), mat[(i*3)+k]);
                 }
@@ -2036,15 +2041,17 @@ void callback_applyFilter(UNUSED GtkWidget *btn,
             double res = 0;
             double tmp = 0;
             char op = 0;
+            char neg = 1;
             for (size_t j = 0; txt[j] != '\0'; j++)
             {
                 if (txt[j] <= '9' && txt[j] >= '0')
                 { !op ? (res = res * 10 + txt[j] - '0') : (tmp = tmp * 10 + txt[j] - '0'); }
                 else if (txt[j] == '/')
                 { op = 1; }
-                D_PRINT("cur: %c, res: %f", txt[j], res);
+                else if (txt[j] == '-')
+                { neg = -1; }
             }
-            mat[i] = op ? res / tmp : res;
+            mat[i] = (op ? res / tmp : res) * neg;
 
             D_PRINT("mat[%lu, %lu] = %f", i % 5, i / 5, mat[i]);
         }
@@ -2060,14 +2067,17 @@ void callback_applyFilter(UNUSED GtkWidget *btn,
                 double res = 0;
                 double tmp = 0;
                 char op = 0;
+                char neg = 1;
                 for (size_t j = 0; txt[j] != '\0'; j++)
                 {
                     if (txt[j] <= '9' && txt[j] >= '0')
                     { !op ? (res = res * 10 + txt[j] - '0') : (tmp = tmp * 10 + txt[j] - '0'); }
                     else if (txt[j] == '/')
                     { op = 1; }
+                    else if (txt[j] == '-')
+                    { neg = -1; }
                 }
-                mat[(i*3)+k] = op ? res / tmp : res;
+                mat[(i*3)+k] = (op ? res / tmp : res) * neg;
 
                 D_PRINT("mat[%lu, %lu] = %f", (i+1), (k+1), mat[(i*3)+k]);
                 }
