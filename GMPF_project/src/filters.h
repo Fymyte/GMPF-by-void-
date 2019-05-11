@@ -40,7 +40,7 @@ void Greyscale(GMPF_Layer *lay);
 void Negative(GMPF_Layer *lay);
 void Binarize(GMPF_Layer *lay);
 void BinarizeColor(GMPF_Layer *lay);
-void Convolute(double *mat);
+void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size);
 
 void Equalize(GMPF_Layer *lay);
 void Equalize_color(GMPF_Layer *lay);

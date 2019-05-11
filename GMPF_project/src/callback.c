@@ -41,7 +41,7 @@ char open_confirm_quit_without_saving_dialog()
     {
         GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
         if (!layermngr->filename)
-        { D_PRINT("", NULL); return res; }
+        { return res; }
 
         char *filename = malloc(sizeof(char) * (strlen(layermngr->filename) + 6));
         sprintf(filename, "%s~", layermngr->filename);
@@ -1296,32 +1296,145 @@ void load_image_cairo(GtkWindow *window,
 void callback_FC(UNUSED GtkMenuItem *menuitem,
                  UNUSED gpointer     user_data)
 {
-    //variables definitions
-    GError *err = NULL;
-    GdkPixbuf *imgPixbuf = gdk_pixbuf_new_from_file("image_test.jpg", &err);
-    if(err)
+    GET_UI(GtkWidget, window, "FilterCreator");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, button, "ApplyMatrixButton");
+    GET_UI(GtkImage, image, "FilterImage");
+    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    GError *error = NULL;
+    GdkPixbuf *pixbuf = layer ? layer->image : gdk_pixbuf_new_from_file_at_size("images/GMPF_white.png",
+                                                         300,
+                                                         300,
+                                                         &error);
+    if (error)
+    { PRINTERR ("Unable to load pixbuf"); return; }
+    if (layer)
     {
-        printf("Error : %s\n", err->message);
-        g_error_free(err);
+        gtk_widget_show(button);
+        float ratio1 = layer->size.w / 300;
+        float ratio2 = layer->size.h / 300;
+        int finalh = 300;
+        int finalw = 300;
+        if (ratio1 < ratio2)
+            finalw = layer->size.w / ratio2;
+        else
+            finalh = layer->size.h / ratio1;
+
+        pixbuf = gdk_pixbuf_scale_simple(pixbuf, finalw, finalh,
+                             GDK_INTERP_BILINEAR);
     }
+    else
+    { gtk_widget_hide(button); }
 
-    GET_UI(GtkWidget, FCWindow, "FilterCreator");
-    GET_UI(GtkImage, image, "Image_test");
-
-    //test image resize + setting
-    int pixbuf_width = gdk_pixbuf_get_width(imgPixbuf) / 2;
-    int pixbuf_height = gdk_pixbuf_get_height(imgPixbuf) / 2;
-
-
-    GdkPixbuf *img2 = gdk_pixbuf_scale_simple(imgPixbuf,
-    pixbuf_width, pixbuf_height, GDK_INTERP_BILINEAR);
-
-    gtk_image_clear(image);
-    gtk_image_set_from_pixbuf(image, img2);
+    gtk_image_set_from_pixbuf(image, pixbuf);
 
     //show the filter creator windowjust
-    gtk_widget_show(FCWindow);
+    gtk_widget_show(window);
 }
+
+
+void callback_test_matrix(UNUSED GtkWidget *widget,
+                          UNUSED gpointer   user_data)
+{
+    GET_UI(GtkGrid, grid, "MatrixGrid");
+    GET_UI(GtkImage, image, "FilterImage");
+    GET_UI(GtkSwitch, sw, "MatrixSizeSwitch");
+    size_t mat_size = gtk_switch_get_active(sw) ? 5 : 3;
+    double *mat = malloc (sizeof(double) * mat_size * mat_size);
+    if (mat_size == 5)
+    {
+        for (size_t i = 0; i < 25; i++)
+        {
+            GtkEntry *entry = GTK_ENTRY(gtk_grid_get_child_at(grid, i % 5, i / 5));
+            const char *txt = gtk_entry_get_text(entry);
+            double res = 0;
+            double tmp = 0;
+            char op = 0;
+            for (size_t j = 0; txt[j] != '\0'; j++)
+            {
+                if (txt[j] <= '9' && txt[j] >= '0')
+                { !op ? (res = res * 10 + txt[j] - '0') : (tmp = tmp * 10 + txt[j] - '0'); }
+                else if (txt[j] == '/')
+                { op = 1; }
+                D_PRINT("cur: %c, res: %f", txt[j], res);
+            }
+            mat[i] = op ? res / tmp : res;
+
+            D_PRINT("mat[%lu, %lu] = %f", i % 5, i / 5, mat[i]);
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < 3; i++)
+        {
+            for (size_t k = 0; k < 3; k++)
+            {
+                GtkEntry *entry = GTK_ENTRY(gtk_grid_get_child_at(grid, (k+1), (i+1)));
+                const char *txt = gtk_entry_get_text(entry);
+                double res = 0;
+                double tmp = 0;
+                char op = 0;
+                for (size_t j = 0; txt[j] != '\0'; j++)
+                {
+                    if (txt[j] <= '9' && txt[j] >= '0')
+                    { !op ? (res = res * 10 + txt[j] - '0') : (tmp = tmp * 10 + txt[j] - '0'); }
+                    else if (txt[j] == '/')
+                    { op = 1; }
+                }
+                mat[(i*3)+k] = op ? res / tmp : res;
+
+                D_PRINT("mat[%lu, %lu] = %f", (i+1), (k+1), mat[(i*3)+k]);
+                }
+        }
+    }
+    GdkPixbuf *pixbuf = gtk_image_get_pixbuf(image);
+    GMPF_Layer *layer = layer_initialization();
+    layer->surface = gdk_cairo_surface_create_from_pixbuf(pixbuf, 1, NULL);
+    GMPF_Size size = { .w = gdk_pixbuf_get_width(pixbuf), .h = gdk_pixbuf_get_height(pixbuf) };
+    layer->size = size;
+    Convolute(layer, mat, mat_size);
+    gtk_image_set_from_pixbuf(image, layer->image);
+    layer_delete(layer);
+}
+
+
+void callback_show_hide_matrix_case(GtkSwitch *sw, UNUSED gpointer user_data)
+{
+    char isOn = gtk_switch_get_active(sw);
+    GET_UI(GtkWidget, w0w0w, "0;0");
+    GET_UI(GtkWidget, w0w1w, "0;1");
+    GET_UI(GtkWidget, w0w2w, "0;2");
+    GET_UI(GtkWidget, w0w3w, "0;3");
+    GET_UI(GtkWidget, w0w4w, "0;4");
+    GET_UI(GtkWidget, w1w0w, "1;0");
+    GET_UI(GtkWidget, w1w4w, "1;4");
+    GET_UI(GtkWidget, w2w0w, "2;0");
+    GET_UI(GtkWidget, w2w4w, "2;4");
+    GET_UI(GtkWidget, w3w0w, "3;0");
+    GET_UI(GtkWidget, w3w4w, "3;4");
+    GET_UI(GtkWidget, w4w0w, "4;0");
+    GET_UI(GtkWidget, w4w1w, "4;1");
+    GET_UI(GtkWidget, w4w2w, "4;2");
+    GET_UI(GtkWidget, w4w3w, "4;3");
+    GET_UI(GtkWidget, w4w4w, "4;4");
+    isOn ? gtk_widget_show(w0w0w) : gtk_widget_hide(w0w0w);
+    isOn ? gtk_widget_show(w0w1w) : gtk_widget_hide(w0w1w);
+    isOn ? gtk_widget_show(w0w2w) : gtk_widget_hide(w0w2w);
+    isOn ? gtk_widget_show(w0w3w) : gtk_widget_hide(w0w3w);
+    isOn ? gtk_widget_show(w0w4w) : gtk_widget_hide(w0w4w);
+    isOn ? gtk_widget_show(w1w0w) : gtk_widget_hide(w1w0w);
+    isOn ? gtk_widget_show(w1w4w) : gtk_widget_hide(w1w4w);
+    isOn ? gtk_widget_show(w2w0w) : gtk_widget_hide(w2w0w);
+    isOn ? gtk_widget_show(w2w4w) : gtk_widget_hide(w2w4w);
+    isOn ? gtk_widget_show(w3w0w) : gtk_widget_hide(w3w0w);
+    isOn ? gtk_widget_show(w3w4w) : gtk_widget_hide(w3w4w);
+    isOn ? gtk_widget_show(w4w0w) : gtk_widget_hide(w4w0w);
+    isOn ? gtk_widget_show(w4w1w) : gtk_widget_hide(w4w1w);
+    isOn ? gtk_widget_show(w4w2w) : gtk_widget_hide(w4w2w);
+    isOn ? gtk_widget_show(w4w3w) : gtk_widget_hide(w4w3w);
+    isOn ? gtk_widget_show(w4w4w) : gtk_widget_hide(w4w4w);
+}
+
 
 
 /*
@@ -1431,9 +1544,9 @@ void callback_convolute_f(UNUSED GtkMenuItem *menuitem,
         mat[0] = mat[1] = mat[2] = mat[3] = mat[4] = mat[5] = mat[6] = mat[7] = mat[8] = (double) 1/9;
         break;
     }
-    Convolute(mat);
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    Convolute(layer, mat, 3);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
 }
 
@@ -1906,32 +2019,62 @@ void callback_applyFilter(UNUSED GtkWidget *btn,
 {
     //a modifier -> recuprer le fichier du dialog
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GET_UI(GtkWindow, window, "MainWindow");
+    GET_UI(GtkGrid, grid, "MatrixGrid");
+    GET_UI(GtkImage, image, "FilterImage");
+    GET_UI(GtkSwitch, sw, "MatrixSizeSwitch");
 
-    GtkWidget *dialog;
-    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
-    gint res;
+    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
 
-    dialog = gtk_file_chooser_dialog_new ("Choisir un filtre",
-                                          window,
-                                          action,
-                                          ("Annuler"),
-                                          GTK_RESPONSE_CANCEL,
-                                          ("Ouvrir"),
-                                          GTK_RESPONSE_ACCEPT,
-                                          NULL);
-
-    res = gtk_dialog_run (GTK_DIALOG (dialog));
-    if (res == GTK_RESPONSE_ACCEPT)
+    size_t mat_size = gtk_switch_get_active(sw) ? 5 : 3;
+    double *mat = malloc (sizeof(double) * mat_size * mat_size);
+    if (mat_size == 5)
     {
-        char *filename;
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
-        filename = gtk_file_chooser_get_filename (chooser);
-        Apply_user_filter(filename);
-        g_free (filename);
+        for (size_t i = 0; i < 25; i++)
+        {
+            GtkEntry *entry = GTK_ENTRY(gtk_grid_get_child_at(grid, i % 5, i / 5));
+            const char *txt = gtk_entry_get_text(entry);
+            double res = 0;
+            double tmp = 0;
+            char op = 0;
+            for (size_t j = 0; txt[j] != '\0'; j++)
+            {
+                if (txt[j] <= '9' && txt[j] >= '0')
+                { !op ? (res = res * 10 + txt[j] - '0') : (tmp = tmp * 10 + txt[j] - '0'); }
+                else if (txt[j] == '/')
+                { op = 1; }
+                D_PRINT("cur: %c, res: %f", txt[j], res);
+            }
+            mat[i] = op ? res / tmp : res;
+
+            D_PRINT("mat[%lu, %lu] = %f", i % 5, i / 5, mat[i]);
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < 3; i++)
+        {
+            for (size_t k = 0; k < 3; k++)
+            {
+                GtkEntry *entry = GTK_ENTRY(gtk_grid_get_child_at(grid, (k+1), (i+1)));
+                const char *txt = gtk_entry_get_text(entry);
+                double res = 0;
+                double tmp = 0;
+                char op = 0;
+                for (size_t j = 0; txt[j] != '\0'; j++)
+                {
+                    if (txt[j] <= '9' && txt[j] >= '0')
+                    { !op ? (res = res * 10 + txt[j] - '0') : (tmp = tmp * 10 + txt[j] - '0'); }
+                    else if (txt[j] == '/')
+                    { op = 1; }
+                }
+                mat[(i*3)+k] = op ? res / tmp : res;
+
+                D_PRINT("mat[%lu, %lu] = %f", (i+1), (k+1), mat[(i*3)+k]);
+                }
+        }
     }
 
-    gtk_widget_destroy (dialog);
+    Convolute(layer, mat, mat_size);
 }
 
 

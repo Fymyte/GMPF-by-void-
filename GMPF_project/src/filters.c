@@ -556,12 +556,10 @@ int check (int width, int height, int i, int j)
  * Apply the given convolution matrix to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void Convolute(double *mat)
+void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size)
 {
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-
-    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
     if (lay == NULL)
         return;
@@ -579,7 +577,7 @@ void Convolute(double *mat)
     int height = gdk_pixbuf_get_height(imgPixbuf);
     gboolean error = FALSE;
 
-    int x = 3;
+    int x = mat_size;
     struct Img_rgb *img = init_img_rgb(width, height);
 
     for(int i = 0; i < width; i++)
