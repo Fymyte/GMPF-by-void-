@@ -727,6 +727,7 @@ without any warranty.
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Nouveau</property>
                         <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_new" swapped="no"/>
                         <accelerator key="n" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
@@ -815,6 +816,15 @@ without any warranty.
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
+                      <object class="GtkMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Redimensionner le projet</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_open_resize_project_window" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkImageMenuItem">
                         <property name="label">gtk-cut</property>
                         <property name="visible">True</property>
@@ -876,7 +886,7 @@ without any warranty.
                       <object class="GtkMenuItem" id="Image">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Image</property>
+                        <property name="label" translatable="yes">Projet</property>
                         <property name="use_underline">True</property>
                         <child type="submenu">
                           <object class="GtkMenu">
@@ -954,7 +964,7 @@ without any warranty.
                       <object class="GtkMenuItem" id="AllLayer">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Image</property>
+                        <property name="label" translatable="yes">Projet</property>
                         <property name="use_underline">True</property>
                         <child type="submenu">
                           <object class="GtkMenu">
@@ -1909,10 +1919,12 @@ Samory DIABY</property>
     <property name="step_increment">1</property>
   </object>
   <object class="GtkAdjustment" id="LayerOffsetXAdjustment">
+    <property name="lower">-100000000000000</property>
     <property name="upper">100000000000000</property>
     <property name="step_increment">1</property>
   </object>
   <object class="GtkAdjustment" id="LayerOffsetYAdjustment">
+    <property name="lower">-100000000000000</property>
     <property name="upper">100000000000000</property>
     <property name="step_increment">1</property>
   </object>
@@ -1934,6 +1946,8 @@ Samory DIABY</property>
       <object class="GtkGrid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">10</property>
+        <property name="margin_right">10</property>
         <property name="margin_top">10</property>
         <property name="margin_bottom">10</property>
         <property name="column_spacing">10</property>
@@ -1941,6 +1955,7 @@ Samory DIABY</property>
           <object class="GtkLabel" id="LayerNameLabel1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
             <property name="label" translatable="yes">Nom:</property>
             <property name="xalign">0</property>
             <attributes>
@@ -1957,6 +1972,7 @@ Samory DIABY</property>
           <object class="GtkLabel" id="LayerWidthLabel1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
             <property name="label" translatable="yes">Largeur:</property>
             <property name="xalign">0</property>
             <attributes>
@@ -1973,6 +1989,7 @@ Samory DIABY</property>
           <object class="GtkLabel" id="LayerHeightLabel1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
             <property name="label" translatable="yes">Hauteur:</property>
             <property name="xalign">0</property>
             <attributes>
@@ -1989,6 +2006,7 @@ Samory DIABY</property>
           <object class="GtkLabel" id="LayerOffsetXLabel1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
             <property name="label" translatable="yes">Décalage X:</property>
             <property name="xalign">0</property>
             <attributes>
@@ -2005,6 +2023,7 @@ Samory DIABY</property>
           <object class="GtkLabel" id="LayerOffsetYLabel1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
             <property name="label" translatable="yes">Décalage Y:</property>
             <property name="xalign">0</property>
             <attributes>
@@ -2170,6 +2189,7 @@ Samory DIABY</property>
           <object class="GtkLabel" id="LayerNameLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
             <property name="label" translatable="yes">Nom:</property>
             <property name="xalign">0</property>
             <attributes>
@@ -2186,6 +2206,7 @@ Samory DIABY</property>
           <object class="GtkLabel" id="LayerWidthLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
             <property name="label" translatable="yes">Largeur:</property>
             <property name="xalign">0</property>
             <attributes>
@@ -2202,6 +2223,7 @@ Samory DIABY</property>
           <object class="GtkLabel" id="LayerHeightLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
             <property name="label" translatable="yes">Hauteur:</property>
             <property name="xalign">0</property>
             <attributes>
@@ -2218,6 +2240,7 @@ Samory DIABY</property>
           <object class="GtkLabel" id="LayerOffsetXLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
             <property name="label" translatable="yes">Décalage X:</property>
             <property name="xalign">0</property>
             <attributes>
@@ -2234,6 +2257,7 @@ Samory DIABY</property>
           <object class="GtkLabel" id="LayerOffsetYLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
             <property name="label" translatable="yes">Décalage Y:</property>
             <property name="xalign">0</property>
             <attributes>
@@ -2383,6 +2407,308 @@ Samory DIABY</property>
         </child>
         <child>
           <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="NewProjectWindow">
+    <property name="can_focus">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center</property>
+    <property name="type_hint">menu</property>
+    <property name="deletable">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">10</property>
+        <property name="margin_right">10</property>
+        <property name="margin_top">10</property>
+        <property name="margin_bottom">10</property>
+        <property name="column_spacing">10</property>
+        <child>
+          <object class="GtkSpinButton" id="NewProjectHeightSpinButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="margin_top">3</property>
+            <property name="text" translatable="yes">100</property>
+            <property name="input_purpose">number</property>
+            <property name="adjustment">LayerHeightAdjustment</property>
+            <property name="climb_rate">0.01</property>
+            <property name="value">100</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinButton" id="NewProjectWidthSpinButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="margin_top">3</property>
+            <property name="has_frame">False</property>
+            <property name="activates_default">True</property>
+            <property name="text" translatable="yes">100</property>
+            <property name="overwrite_mode">True</property>
+            <property name="caps_lock_warning">False</property>
+            <property name="placeholder_text" translatable="yes">10</property>
+            <property name="input_purpose">number</property>
+            <property name="adjustment">LayerWidthAdjustment</property>
+            <property name="numeric">True</property>
+            <property name="update_policy">if-valid</property>
+            <property name="value">100</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="LayerHeightLabel3">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
+            <property name="label" translatable="yes">Hauteur:</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans Bold 10"/>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="LayerWidthLabel3">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
+            <property name="label" translatable="yes">Largeur:</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans Bold 10"/>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="NewProjectNameEntry">
+            <property name="width_request">300</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="max_length">12</property>
+            <property name="shadow_type">none</property>
+            <property name="caps_lock_warning">False</property>
+            <property name="placeholder_text" translatable="yes">Entrer un nom</property>
+            <property name="input_purpose">name</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">5</property>
+            <property name="spacing">5</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="callback_hideParent" object="NewProjectWindow" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label">gtk-add</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="callback_hideParent" object="NewProjectWindow" swapped="no"/>
+                <signal name="clicked" handler="callback_new_project" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">5</property>
+            <property name="label" translatable="yes">Nom:</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="ResizeProjectWindow">
+    <property name="can_focus">False</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_top">10</property>
+        <property name="margin_bottom">10</property>
+        <property name="column_spacing">10</property>
+        <child>
+          <object class="GtkSpinButton" id="ProjectWidthSpinButton">
+            <property name="width_request">300</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="margin_top">3</property>
+            <property name="has_frame">False</property>
+            <property name="activates_default">True</property>
+            <property name="text" translatable="yes">100</property>
+            <property name="overwrite_mode">True</property>
+            <property name="caps_lock_warning">False</property>
+            <property name="placeholder_text" translatable="yes">10</property>
+            <property name="input_purpose">number</property>
+            <property name="adjustment">LayerWidthAdjustment</property>
+            <property name="numeric">True</property>
+            <property name="update_policy">if-valid</property>
+            <property name="value">100</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="ProjectWidthLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Largeur:</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans Bold 10"/>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="ProjectHeightLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Hauteur:</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans Bold 10"/>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinButton" id="ProjectHeightSpinButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="margin_top">3</property>
+            <property name="text" translatable="yes">100</property>
+            <property name="input_purpose">number</property>
+            <property name="adjustment">LayerHeightAdjustment</property>
+            <property name="climb_rate">0.01</property>
+            <property name="value">100</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">5</property>
+            <property name="spacing">5</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkButton" id="ProjectCancelButton">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="callback_hideParent" object="ResizeProjectWindow" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="ProjectApplyButton">
+                <property name="label">gtk-apply</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="callback_hideParent" object="ResizeProjectWindow" swapped="no"/>
+                <signal name="clicked" handler="callback_resize_project" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">2</property>
+          </packing>
         </child>
         <child>
           <placeholder/>

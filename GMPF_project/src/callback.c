@@ -217,6 +217,89 @@ void callback_open(UNUSED GtkMenuItem *menu,
 }
 
 
+void callback_new(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GET_UI(GtkWidget, window, "NewProjectWindow");
+    gtk_widget_show(window);
+}
+
+
+void callback_new_project(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GET_UI(GtkEntry, name, "NewProjectNameEntry");
+    GET_UI(GtkEntry, width, "NewProjectWidthSpinButton");
+    GET_UI(GtkEntry, height, "NewProjectHeightSpinButton");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+
+    const gchar *n = gtk_entry_get_text(name);
+    const gchar *w = gtk_entry_get_text(width);
+    const gchar *h = gtk_entry_get_text(height);
+
+    layermngr_clear(flowbox);
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    layermngr->size.w = atoi(w);
+    layermngr->size.h = atoi(h);
+
+    GMPF_Layer *lay = layermngr_add_new_layer(flowbox, NULL);
+    layer_set_name(lay, (char*)n);
+    lay->size.w = atoi(w);
+    lay->size.h = atoi(h);
+
+    if (lay->image)
+        g_object_unref(lay->image);
+    while (cairo_surface_get_reference_count(lay->surface) > 0)
+        cairo_surface_destroy(lay->surface);
+    lay->image = new_pixbuf_standardized(&lay->size);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 0, NULL);
+    REFRESH_IMAGE(lay);
+
+    int max_width = layermngr->size.w * lay->scale_factor.x;
+    int max_height = layermngr->size.h * lay->scale_factor.y;
+    gtk_widget_set_size_request(layout, max_width, max_height);
+    gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
+
+    GMPF_save_under_project();
+}
+
+void callback_open_resize_project_window(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GET_UI(GtkWidget, window, "ResizeProjectWindow");
+    gtk_widget_show(window);
+}
+
+
+void callback_resize_project(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkEntry, width, "ProjectWidthSpinButton");
+    GET_UI(GtkEntry, height, "ProjectHeightSpinButton");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+
+    const gchar *w = gtk_entry_get_text(width);
+    const gchar *h = gtk_entry_get_text(height);
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    layermngr->size.w = atoi(w);
+    layermngr->size.h = atoi(h);
+
+    GMPF_Layer *lay = NULL;
+
+     if (layermngr->layer_list.next != NULL)
+        lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+
+    int max_width = layermngr->size.w * (lay ? lay->scale_factor.x : 1);
+    int max_height = layermngr->size.h * (lay ? lay->scale_factor.y : 1);
+    gtk_widget_set_size_request(layout, max_width, max_height);
+    gtk_widget_set_size_request(da, max_width, max_height);
+    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
+}
+
+
 /*
  * Rotate the layer of "rotate_angle" degree
  */
@@ -711,22 +794,32 @@ gboolean callback_button_press_event (GtkWidget      *widget,
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
 
     GMPF_Tool tool = layermngr->tool;
     if (tool != GMPF_TOOL_SELECTOR)
     { layermngr->pos.x = -1; layermngr->pos.y = -1; }
 
     if (event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_PAINTER)
+    {
+        if (lay) { GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay); }
         draw_brush (widget, event->x, event->y);
+    }
 
     else if (event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_ERAISER)
+    {
+        if (lay) { GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay); }
         draw_rubber (widget, event->x, event->y);
+    }
 
     else if (event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_COLOR_PICKER)
         color_picker (event->x, event->y);
 
     else if (event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_COLOR_KILLER)
+    {
+        if (lay) { GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay); }
         kill_color(widget, .2);
+    }
 
     else if(event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_SELECTOR)
         { layermngr->pos.x = event->x; layermngr->pos.y = event->y; }
@@ -773,7 +866,6 @@ gboolean callback_button_release_event(UNUSED GtkWidget *widget,
     {
         GMPF_saved_state_set_is_saved(flowbox, 0);
         lay->rotate_angle = 0;
-        GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
         gtk_spin_button_set_value(button, lay->rotate_angle);
     }
 
@@ -851,7 +943,7 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
             {
                 cairo_save(cr);
                 cairo_scale(cr, lay->scale_factor.x, lay->scale_factor.y);
-                cairo_set_source_surface (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
+                (cairo_set_source_surface) (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
                 cairo_paint(cr);
                 cairo_restore(cr);
             }
@@ -1002,6 +1094,10 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget,
     lay->pos.y = atoi(y);
     if (!lay->filename)
     {
+        if (lay->image)
+            g_object_unref(lay->image);
+        while (cairo_surface_get_reference_count(lay->surface) > 0)
+            cairo_surface_destroy(lay->surface);
         lay->image = new_pixbuf_standardized(&lay->size);
         lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 0, NULL);
         REFRESH_IMAGE(lay);
@@ -1247,12 +1343,10 @@ void load_image_cairo(GtkWindow *window,
                       char *filename)
 {
     GError *error = NULL;
+    layermngr_clear(flowbox);
     GMPF_Layer *layer = layermngr_add_new_layer(flowbox, filename);
     GMPF_buffer_add(flowbox, GMPF_ACTION_ADD, layer);
 
-
-    int max_width  = layermngr->size.w;
-    int max_height = layermngr->size.h;
     //
     int width, height;
     layermngr->image  = gdk_pixbuf_new_from_file(filename, &error);
@@ -1263,13 +1357,8 @@ void load_image_cairo(GtkWindow *window,
     gtk_window_set_title(window, (const char*)title);
     GMPF_saved_state_set_is_saved(flowbox, 0);
 
-    if (width > max_width)
-        max_width = width;
-    if (height > max_height)
-        max_height = height;
-
-    layermngr->size.w = max_width;
-    layermngr->size.h = max_height;
+    layermngr->size.w = width;
+    layermngr->size.h = height;
 
     layermngr->surface = gdk_cairo_surface_create_from_pixbuf(layermngr->image, 0, NULL);
 
@@ -1551,8 +1640,8 @@ void callback_convolute_f(UNUSED GtkMenuItem *menuitem,
     }
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
-    Convolute(layer, mat, 3);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
+    Convolute(layer, mat, 3);
 }
 
 
@@ -2095,9 +2184,15 @@ void callback_undo(UNUSED GtkWidget *widget,
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    int max_width = layermngr->size.w;
-    int max_height = layermngr->size.h;
+
+    GMPF_Layer *lay = NULL;
+    if (layermngr->layer_list.next != NULL)
+        lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+    int max_width = layermngr->size.w * (lay ? lay->scale_factor.x : 1);
+    int max_height = layermngr->size.h * (lay ? lay->scale_factor.y : 1);
+
     GMPF_buffer_undo(flowbox);
+
     gtk_widget_set_size_request(layout, max_width, max_height);
     gtk_widget_set_size_request(da, max_width, max_height);
     gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
@@ -2111,9 +2206,15 @@ void callback_redo(UNUSED GtkWidget *widget,
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    int max_width = layermngr->size.w;
-    int max_height = layermngr->size.h;
+
+    GMPF_Layer *lay = NULL;
+    if (layermngr->layer_list.next != NULL)
+        lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+    int max_width = layermngr->size.w * (lay ? lay->scale_factor.x : 1);
+    int max_height = layermngr->size.h * (lay ? lay->scale_factor.y : 1);
+
     GMPF_buffer_redo(flowbox);
+
     gtk_widget_set_size_request(layout, max_width, max_height);
     gtk_widget_set_size_request(da, max_width, max_height);
     gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);

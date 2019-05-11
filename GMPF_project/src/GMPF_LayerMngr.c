@@ -184,6 +184,8 @@ char GMPF_selection_copy(GtkFlowBox *flowbox,
     cairo_set_source_surface(cr, layer->surface, -pos.x, -pos.y);
     cairo_paint(cr);
     cairo_destroy(cr);
+    while (cairo_surface_get_reference_count(new_surf) < 5)
+        cairo_surface_reference(new_surf);
     GMPF_selection_set_surface(flowbox, new_surf);
 
     return 0;
@@ -211,8 +213,8 @@ char GMPF_selection_paste(GtkFlowBox *flowbox,
     while (cairo_surface_get_reference_count(surface) < 3)
         cairo_surface_reference(surface);
     cairo_set_source_surface(layer->cr, surface, pos.x, pos.y);
-    cairo_paint(layer->cr);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
+    cairo_paint(layer->cr);
     cairo_destroy(layer->cr);
     REFRESH_IMAGE(layer);
 
@@ -241,8 +243,8 @@ char GMPF_selection_cut(GtkFlowBox *flowbox,
     cairo_set_source_rgba(layer->cr, 0, 0, 0, 0);
     cairo_set_operator(layer->cr, CAIRO_OPERATOR_SOURCE);
     cairo_rectangle(layer->cr, pos.x, pos.y, size.w, size.h);
-    cairo_fill(layer->cr);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
+    cairo_fill(layer->cr);
     cairo_destroy(layer->cr);
     REFRESH_IMAGE(layer);
 
@@ -262,8 +264,8 @@ char GMPF_selection_delete(GtkFlowBox *flowbox,
     cairo_set_source_rgba(layer->cr, 0, 0, 0, 0);
     cairo_set_operator(layer->cr, CAIRO_OPERATOR_SOURCE);
     cairo_rectangle(layer->cr, pos.x, pos.y, size.w, size.h);
-    cairo_fill(layer->cr);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
+    cairo_fill(layer->cr);
     cairo_destroy(layer->cr);
     REFRESH_IMAGE(layer);
 
@@ -432,6 +434,8 @@ void layermngr_clear(GtkFlowBox *flowbox)
 
     // reset default values
     layermngr_initialization(layermngr);
+    GMPF_buffer_destroy(flowbox);
+    GMPF_buffer_init(flowbox);
 }
 
 
