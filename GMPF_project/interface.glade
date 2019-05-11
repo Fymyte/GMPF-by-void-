@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 
+<!-- Generated with glade 3.22.1 
 
 Copyright (C) VOID*
 
@@ -33,6 +33,9 @@ without any warranty.
     <property name="type_hint">menu</property>
     <property name="skip_pager_hint">True</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkToolbar">
         <property name="width_request">100</property>
@@ -89,9 +92,6 @@ without any warranty.
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
   </object>
   <object class="GtkWindow" id="FilterCreator">
     <property name="name">Créateur de filtres</property>
@@ -102,6 +102,9 @@ without any warranty.
     <property name="icon_name">address-book-new</property>
     <property name="type_hint">dialog</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -695,6 +698,9 @@ without any warranty.
     <signal name="delete-event" handler="do_destroy_event" swapped="no"/>
     <signal name="delete-event" handler="gtk_widget_hide_on_delete" swapped="no"/>
     <signal name="delete-event" handler="gtk_widget_show" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -1046,27 +1052,6 @@ without any warranty.
                                 <signal name="activate" handler="callback_binarize_color_all" swapped="no"/>
                               </object>
                             </child>
-                            <child>
-                              <object class="GtkMenuItem" id="PersonelisedFilterAll">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Filtre personnalisé</property>
-                                <child type="submenu">
-                                  <object class="GtkMenu">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <child>
-                                      <object class="GtkMenuItem" id="LoadFilterAll">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="tooltip_text" translatable="yes">Charge un filtre personnalisé depuis un fichier "*.ftr"</property>
-                                        <property name="label" translatable="yes">Charger un filtre</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>
@@ -1229,27 +1214,6 @@ without any warranty.
                                 <property name="label" translatable="yes">Binarisation</property>
                                 <property name="use_underline">True</property>
                                 <signal name="activate" handler="callback_binarize" swapped="no"/>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkMenuItem" id="PersonelisedFilter">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Filtre personnalisé</property>
-                                <child type="submenu">
-                                  <object class="GtkMenu">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <child>
-                                      <object class="GtkMenuItem" id="LoadFilter">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="tooltip_text" translatable="yes">Charge un filtre personnalisé depuis un fichier "*.ftr"</property>
-                                        <property name="label" translatable="yes">Charger un filtre</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                           </object>
@@ -1894,9 +1858,6 @@ without any warranty.
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
   </object>
   <object class="GtkAboutDialog" id="AboutWindow">
     <property name="name">A Propos</property>
@@ -1912,6 +1873,9 @@ Arnaud CASSEZ
 Pierrick GUILLAUME
 Samory DIABY</property>
     <property name="logo">images/GMPF.png</property>
+    <child>
+      <placeholder/>
+    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -1963,6 +1927,9 @@ Samory DIABY</property>
     <property name="window_position">center</property>
     <property name="type_hint">menu</property>
     <property name="deletable">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -2179,9 +2146,6 @@ Samory DIABY</property>
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
   </object>
   <object class="GtkWindow" id="LayerWindow">
     <property name="can_focus">False</property>
@@ -2190,6 +2154,9 @@ Samory DIABY</property>
     <property name="type_hint">menu</property>
     <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -2421,9 +2388,6 @@ Samory DIABY</property>
           <placeholder/>
         </child>
       </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
     </child>
   </object>
 </interface>
