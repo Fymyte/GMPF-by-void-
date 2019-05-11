@@ -2,6 +2,16 @@
 
 extern SGlobalData G_user_data;
 
+char is_file_exist(const char *filename)
+{
+    FILE *file= fopen(filename, "r");
+
+    if (file)
+    { fclose(file); return 1; }
+
+    return 0;
+}
+
 /*
  * PURPOSE : Open a dialog with 3 buttons: "Annuler", "Savegarder" and "Confirmer"
  *  PARAMS : UNUSED UNUSED gpointer user_data -
@@ -49,6 +59,45 @@ char open_confirm_quit_without_saving_dialog()
         { D_PRINT("Unable to remove file", NULL); }
         free(filename);
     }
+    return res;
+}
+
+
+/*
+ * PURPOSE : Open a dialog with 3 buttons: "Annuler", "Savegarder" and "Confirmer"
+ *  PARAMS : UNUSED UNUSED gpointer user_data -
+ * RETURNS : int - 0 for "Annuler"
+ *                 1 for "Sauvegarder"
+ *                 2 for "Confirmer"
+ *   NOTES :
+ */
+char open_open_auto_saved_file_dialog()
+{
+    GET_UI(GtkWindow, window, "MainWindow");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GtkWidget *dialog;
+    gint res;
+
+    dialog = gtk_dialog_new_with_buttons(NULL,
+                                        window,
+                                        GTK_DIALOG_DESTROY_WITH_PARENT,
+                                        ("_Non"), 0,
+                                        ("Oui"), 1,
+                                        NULL);
+    GtkWidget *content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget *label = gtk_label_new("Nous avons détecter une version plus récente de ce fichier. Voulez-vous la charger ?");
+    gtk_container_add(GTK_CONTAINER(content), label);
+    gtk_widget_set_margin_start(label, 10);
+    gtk_widget_set_margin_end(label, 10);
+    gtk_widget_set_margin_top(label, 10);
+    gtk_widget_set_margin_bottom(label, 10);
+    gtk_window_set_title(GTK_WINDOW(dialog), "Attention");
+    gtk_window_set_deletable(GTK_WINDOW(dialog), FALSE);
+    // gtk_window_set_decorated(GTK_WINDOW(dialog), FALSE);
+    gtk_widget_show_all(dialog);
+    res = gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+
     return res;
 }
 
@@ -146,7 +195,7 @@ void open_new_file(GtkWindow      *window,
     GtkFileChooser *fileChooser = GTK_FILE_CHOOSER(dialog);
     GtkFileFilter *filter = gtk_file_filter_new ();
     gtk_file_filter_add_pattern(filter, "*.gmpf");
-    gtk_file_filter_add_pattern(filter, "*.gmpf~");
+    // gtk_file_filter_add_pattern(filter, "*.gmpf~");
     gtk_file_filter_add_mime_type(filter, "image/*");
     gtk_file_chooser_set_filter(fileChooser, filter);
 
@@ -156,16 +205,37 @@ void open_new_file(GtkWindow      *window,
         char *filename;
         GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
         filename = gtk_file_chooser_get_filename (chooser);
+        gtk_widget_destroy(dialog);
         char *ext = get_extension(filename);
-        if (!strcmp(ext, "gmpf") || !strcmp(ext, "gmpf~"))
+        if (!strcmp(ext, "gmpf"))
         {
             if (layermngr->filename != NULL)
                 free(layermngr->filename);
-            char err = load_project (flowbox, filename);
-            if (err)
+            char *tmpfile = malloc(sizeof(char) * (strlen(filename) + 2));
+            sprintf(tmpfile, "%s~", filename);
+            char open = 0;
+            if (is_file_exist(tmpfile))
+                open = open_open_auto_saved_file_dialog();
+            if (open)
+            {
+                char err = load_project (flowbox, tmpfile);
+                if (err)
+                    D_PRINT("Uable to load project", NULL);
+                err = save_project(flowbox, filename);
+                if (err)
+                    D_PRINT("Unable to save project", NULL);
+            }
+            else
+            {
+                char err = load_project (flowbox, filename);
+                if (err)
                 D_PRINT("Uable to load project", NULL);
+            }
+            free(tmpfile);
+
             layermngr->filename = filename;
-            GMPF_saved_state_set_is_saved(flowbox, 1);
+            D_PRINT("filename: %s", layermngr->filename);
+            GMPF_saved_state_set_is_saved_filename(flowbox, 1, filename);
             int width = layermngr->size.w;
             int height = layermngr->size.h;
             char *title = malloc (sizeof(char) * (strlen(filename) + 30));
@@ -178,7 +248,7 @@ void open_new_file(GtkWindow      *window,
             g_free (filename);
         }
     }
-    gtk_widget_destroy(dialog);
+
 }
 
 

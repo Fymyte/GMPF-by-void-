@@ -344,14 +344,28 @@ void GMPF_saved_state_set_is_saved(GtkFlowBox *flowbox,
     GMPF_SavedState *saved_state = GMPF_saved_state_get_saved_state(flowbox);
     if (!state)
     { GMPF_auto_save_project(flowbox); }
+    
+    saved_state->state = state;
+}
+
+
+/*
+ * Set the state of the SavedState attached to the flowbox to "state"
+ */
+void GMPF_saved_state_set_is_saved_filename(GtkFlowBox *flowbox,
+                                           int         state,
+                                           char       *filename)
+{
+    GMPF_SavedState *saved_state = GMPF_saved_state_get_saved_state(flowbox);
+    if (!state)
+    { GMPF_auto_save_project(flowbox); }
     else
     {
-        GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-        char *filename = malloc(sizeof(char) * (strlen(layermngr->filename) + 2));
-        sprintf(filename, "%s~", layermngr->filename);
-        if (remove (filename))
+        char *filename2 = malloc(sizeof(char) * (strlen(filename) + 2));
+        sprintf(filename2, "%s~", filename);
+        if (remove (filename2))
         { D_PRINT("Unable to remove file", NULL); }
-        free(filename);
+        free(filename2);
     }
     saved_state->state = state;
 }

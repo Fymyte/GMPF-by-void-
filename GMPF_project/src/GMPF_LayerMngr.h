@@ -95,6 +95,9 @@ void GMPF_saved_state_destroy(GtkFlowBox *flowbox);
 GMPF_SavedState *GMPF_saved_state_get_saved_state(GtkFlowBox *flowbox);
 int GMPF_saved_state_get_is_saved(GtkFlowBox *flowbox);
 void GMPF_saved_state_set_is_saved(GtkFlowBox *flowbox, int state);
+void GMPF_saved_state_set_is_saved_filename(GtkFlowBox *flowbox,
+                                           int         state,
+                                           char       *filename);
 
 /*************************End of Saved State functions*************************/
 
