@@ -22,6 +22,7 @@ char is_file_exist(const char *filename)
  */
 char open_confirm_quit_without_saving_dialog()
 {
+    // gtk_file_filter_add_pattern(filter, "*.gmpf~");
     GET_UI(GtkWindow, window, "MainWindow");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GtkWidget *dialog;
@@ -195,7 +196,6 @@ void open_new_file(GtkWindow      *window,
     GtkFileChooser *fileChooser = GTK_FILE_CHOOSER(dialog);
     GtkFileFilter *filter = gtk_file_filter_new ();
     gtk_file_filter_add_pattern(filter, "*.gmpf");
-    // gtk_file_filter_add_pattern(filter, "*.gmpf~");
     gtk_file_filter_add_mime_type(filter, "image/*");
     gtk_file_chooser_set_filter(fileChooser, filter);
 
@@ -248,6 +248,10 @@ void open_new_file(GtkWindow      *window,
             g_free (filename);
         }
     }
+    else
+    {
+        gtk_widget_destroy(dialog);
+    }
 
 }
 
@@ -277,12 +281,6 @@ void callback_open(UNUSED GtkMenuItem *menu,
 
     open_new_file(window, layermngr, flowbox);
 
-    int max_width = layermngr->size.w;
-    int max_height = layermngr->size.h;
-
-    gtk_widget_set_size_request(layout, max_width, max_height);
-    gtk_widget_set_size_request(da, max_width, max_height);
-    gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
     gtk_widget_queue_draw(da);
 }
 
@@ -2459,7 +2457,9 @@ void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem,
     gtk_widget_queue_draw(da);
 }
 
+    // gtk_file_filter_add_pattern(filter, "*.gmpf~");
 void callback_select_brush(GtkWidget *brush, UNUSED gpointer user_data)
+    // gtk_file_filter_add_pattern(filter, "*.gmpf~");
 {
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
