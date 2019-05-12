@@ -26,12 +26,13 @@ without any warranty.
     <property name="title" translatable="yes">Brosses</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
-    <property name="window_position">mouse</property>
+    <property name="window_position">center</property>
     <property name="default_width">150</property>
     <property name="default_height">150</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
+    <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
@@ -119,6 +120,9 @@ without any warranty.
             <property name="homogeneous">True</property>
           </packing>
         </child>
+        <style>
+          <class name="bordered-box"/>
+        </style>
       </object>
     </child>
     <style>
@@ -135,6 +139,7 @@ without any warranty.
     <property name="destroy_with_parent">True</property>
     <property name="icon_name">address-book-new</property>
     <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
     <child>
       <placeholder/>
@@ -170,6 +175,9 @@ without any warranty.
                 <property name="overwrite_mode">True</property>
                 <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">number</property>
+                <style>
+                  <class name="text"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -187,6 +195,9 @@ without any warranty.
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
                 <property name="input_purpose">digits</property>
+                <style>
+                  <class name="text"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -204,6 +215,9 @@ without any warranty.
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
                 <property name="input_purpose">digits</property>
+                <style>
+                  <class name="text"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -221,6 +235,9 @@ without any warranty.
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
                 <property name="input_purpose">digits</property>
+                <style>
+                  <class name="text"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -238,6 +255,9 @@ without any warranty.
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
                 <property name="input_purpose">digits</property>
+                <style>
+                  <class name="text"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">4</property>
@@ -255,6 +275,9 @@ without any warranty.
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
                 <property name="input_purpose">digits</property>
+                <style>
+                  <class name="text"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -272,6 +295,9 @@ without any warranty.
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
                 <property name="input_purpose">digits</property>
+                <style>
+                  <class name="text"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -599,6 +625,8 @@ without any warranty.
             <property name="pixel_size">0</property>
             <style>
               <class name="image"/>
+              <class name="margin-top-5"/>
+              <class name="margin-bottom-5"/>
             </style>
           </object>
           <packing>
@@ -617,6 +645,9 @@ without any warranty.
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">3 * 3</property>
+                <style>
+                  <class name="description"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -642,6 +673,9 @@ without any warranty.
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">5 * 5</property>
+                <style>
+                  <class name="description"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -726,6 +760,9 @@ without any warranty.
             <property name="position">3</property>
           </packing>
         </child>
+        <style>
+          <class name="bordered-box"/>
+        </style>
       </object>
     </child>
     <style>
@@ -745,6 +782,7 @@ without any warranty.
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
+    <property name="deletable">False</property>
     <child>
       <placeholder/>
     </child>
@@ -781,6 +819,8 @@ without any warranty.
             <property name="can_focus">False</property>
             <style>
               <class name="image"/>
+              <class name="margin-top-5"/>
+              <class name="margin-bottom-5"/>
             </style>
           </object>
           <packing>
@@ -803,10 +843,9 @@ without any warranty.
                 <property name="margin_left">5</property>
                 <property name="label" translatable="yes">Tolérance:</property>
                 <property name="xalign">0</property>
-                <attributes>
-                  <attribute name="font-desc" value="Sans Bold 10"/>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
+                <style>
+                  <class name="description"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -835,8 +874,11 @@ without any warranty.
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="margin_left">5</property>
-                <property name="label" translatable="yes">Couleur</property>
+                <property name="label" translatable="yes">Couleur:</property>
                 <property name="xalign">0</property>
+                <style>
+                  <class name="description"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -937,6 +979,9 @@ without any warranty.
             <property name="position">2</property>
           </packing>
         </child>
+        <style>
+          <class name="bordered-box"/>
+        </style>
       </object>
     </child>
     <style>
@@ -1050,6 +1095,9 @@ without any warranty.
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_export" swapped="no"/>
                         <accelerator key="e" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <style>
+                          <class name="border-bottom-radius-10"/>
+                        </style>
                       </object>
                     </child>
                     <child>
@@ -1070,16 +1118,10 @@ without any warranty.
                         <signal name="activate" handler="callback_quit" swapped="no"/>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <style>
-                          <class name="border-bottom-radius-10"/>
+                          <class name="border-top-radius-10"/>
                         </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="window-background-soft"/>
-                      <class name="padding-5"/>
-                      <class name="nonshadowed"/>
-                      <class name="border-bottom-radius-10"/>
-                    </style>
                   </object>
                 </child>
               </object>
@@ -1146,17 +1188,8 @@ without any warranty.
                         <signal name="activate" handler="callback_delete" swapped="no"/>
                         <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="Delete" signal="activate"/>
-                        <style>
-                          <class name="border-bottom-radius-10"/>
-                        </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="window-background-soft"/>
-                      <class name="padding-5"/>
-                      <class name="nonshadowed"/>
-                      <class name="border-bottom-radius-10"/>
-                    </style>
                   </object>
                 </child>
               </object>
@@ -1197,17 +1230,8 @@ without any warranty.
                                 <property name="label" translatable="yes">Miroir Horizontal</property>
                                 <property name="use_underline">True</property>
                                 <signal name="activate" handler="callback_horizontale_all" swapped="no"/>
-                                <style>
-                                  <class name="border-bottom-radius-10"/>
-                                </style>
                               </object>
                             </child>
-                            <style>
-                              <class name="window-background-soft"/>
-                              <class name="padding-5"/>
-                              <class name="nonshadowed"/>
-                              <class name="border-bottom-radius-10"/>
-                            </style>
                           </object>
                         </child>
                       </object>
@@ -1238,27 +1262,12 @@ without any warranty.
                                 <property name="label" translatable="yes">Miroir Horizontal</property>
                                 <property name="use_underline">True</property>
                                 <signal name="activate" handler="callback_horizontale" swapped="no"/>
-                                <style>
-                                  <class name="border-bottom-radius-10"/>
-                                </style>
                               </object>
                             </child>
-                            <style>
-                              <class name="window-background-soft"/>
-                              <class name="padding-5"/>
-                              <class name="nonshadowed"/>
-                              <class name="border-bottom-radius-10"/>
-                            </style>
                           </object>
                         </child>
                       </object>
                     </child>
-                    <style>
-                      <class name="window-background-soft"/>
-                      <class name="padding-5"/>
-                      <class name="nonshadowed"/>
-                      <class name="border-bottom-radius-10"/>
-                    </style>
                   </object>
                 </child>
               </object>
@@ -1389,17 +1398,8 @@ without any warranty.
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Accentuation des couleurs</property>
                                 <signal name="activate" handler="callback_colorfull_all" swapped="no"/>
-                                <style>
-                                  <class name="border-bottom-radius-10"/>
-                                </style>
                               </object>
                             </child>
-                            <style>
-                              <class name="window-background-soft"/>
-                              <class name="padding-5"/>
-                              <class name="nonshadowed"/>
-                              <class name="border-bottom-radius-10"/>
-                            </style>
                           </object>
                         </child>
                       </object>
@@ -1562,17 +1562,8 @@ without any warranty.
                                 <property name="label" translatable="yes">Binarisation</property>
                                 <property name="use_underline">True</property>
                                 <signal name="activate" handler="callback_binarize" swapped="no"/>
-                                <style>
-                                  <class name="border-bottom-radius-10"/>
-                                </style>
                               </object>
                             </child>
-                            <style>
-                              <class name="window-background-soft"/>
-                              <class name="padding-5"/>
-                              <class name="nonshadowed"/>
-                              <class name="border-bottom-radius-10"/>
-                            </style>
                           </object>
                         </child>
                       </object>
@@ -1584,17 +1575,8 @@ without any warranty.
                         <property name="label" translatable="yes">Créateur de filtre</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_FC" swapped="no"/>
-                        <style>
-                          <class name="border-bottom-radius-10"/>
-                        </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="window-background-soft"/>
-                      <class name="padding-5"/>
-                      <class name="nonshadowed"/>
-                      <class name="border-bottom-radius-10"/>
-                    </style>
                   </object>
                 </child>
               </object>
@@ -1661,17 +1643,8 @@ without any warranty.
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Type de brosse</property>
                         <signal name="activate" handler="callback_show_window" object="Brushes" swapped="no"/>
-                        <style>
-                          <class name="border-bottom-radius-10"/>
-                        </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="window-background-soft"/>
-                      <class name="padding-5"/>
-                      <class name="nonshadowed"/>
-                      <class name="border-bottom-radius-10"/>
-                    </style>
                   </object>
                 </child>
               </object>
@@ -1693,17 +1666,8 @@ without any warranty.
                         <property name="label" translatable="yes">Changer de thème</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_load_theme" swapped="no"/>
-                        <style>
-                          <class name="border-bottom-radius-10"/>
-                        </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="window-background-soft"/>
-                      <class name="padding-5"/>
-                      <class name="nonshadowed"/>
-                      <class name="border-bottom-radius-10"/>
-                    </style>
                   </object>
                 </child>
                 <accelerator key="F10" signal="activate"/>
@@ -1728,17 +1692,8 @@ without any warranty.
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="callback_about" swapped="no"/>
                         <accelerator key="h" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <style>
-                          <class name="border-bottom-radius-10"/>
-                        </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="window-background-soft"/>
-                      <class name="padding-5"/>
-                      <class name="nonshadowed"/>
-                      <class name="border-bottom-radius-10"/>
-                    </style>
                   </object>
                 </child>
               </object>
@@ -2424,6 +2379,7 @@ Samory DIABY</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
+    <property name="deletable">False</property>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -2443,10 +2399,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Nom:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -2460,10 +2415,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Largeur:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -2477,10 +2431,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Hauteur:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -2494,10 +2447,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Décalage X:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -2511,10 +2463,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Décalage Y:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -2687,6 +2638,7 @@ Samory DIABY</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
+    <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
@@ -2707,10 +2659,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Nom:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -2724,10 +2675,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Largeur:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -2741,10 +2691,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Hauteur:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -2758,10 +2707,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Décalage X:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -2775,10 +2723,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Décalage Y:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -2798,6 +2745,7 @@ Samory DIABY</property>
             <style>
               <class name="shadowed"/>
               <class name="margin-5"/>
+              <class name="border-radius-20"/>
             </style>
           </object>
           <packing>
@@ -2824,6 +2772,7 @@ Samory DIABY</property>
             <style>
               <class name="shadowed"/>
               <class name="margin-5"/>
+              <class name="border-radius-20"/>
             </style>
           </object>
           <packing>
@@ -2970,6 +2919,7 @@ Samory DIABY</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
+    <property name="deletable">False</property>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -3033,10 +2983,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Hauteur:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -3050,10 +2999,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Largeur:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -3139,6 +3087,9 @@ Samory DIABY</property>
             <property name="margin_left">5</property>
             <property name="label" translatable="yes">Nom:</property>
             <property name="xalign">0</property>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -3159,9 +3110,11 @@ Samory DIABY</property>
     <property name="title" translatable="yes">Redimmensionner le projet</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
+    <property name="window_position">center</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
+    <property name="deletable">False</property>
     <child>
       <placeholder/>
     </child>
@@ -3204,10 +3157,9 @@ Samory DIABY</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Largeur:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -3220,10 +3172,9 @@ Samory DIABY</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Hauteur:</property>
             <property name="xalign">0</property>
-            <attributes>
-              <attribute name="font-desc" value="Sans Bold 10"/>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <style>
+              <class name="description"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>

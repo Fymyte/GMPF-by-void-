@@ -1,7 +1,7 @@
 /*@define-color gmpf_pink rgb(255, 0, 90);*/
 
 @define-color ui_text_color rgb(0, 255, 165);
-@define-color ui_text_color2 rgb(255, 255, 255);
+@define-color ui_text_color_neutral rgb(255, 255, 255);
 
 @define-color ui_button_color rgb(150, 150, 150);
 @define-color ui_button_hover_color rgb(0, 255, 165);
@@ -9,10 +9,11 @@
 
 @define-color ui_shadow_color rgba(0, 0, 0, 0.19);
 
-@define-color ui_border_color rgb(0, 255, 165);
+@define-color ui_box_border_color rgb(0, 255, 165);
 
 @define-color ui_window_background rgb(110, 110, 110);
 @define-color ui_window_background_soft rgb(130, 130, 130);
+@define-color ui_menu_background_color rgb(130, 130, 130);
 
 
 /* WINDOW */
@@ -20,22 +21,31 @@ window, window > grid, menubar {
     background-color: @ui_window_background;
 }
 
-window label {
-    color: @ui_text_color2;
+window > label {
+    color: @ui_text_color_netral;
+    /* background: none; */
 }
 
-/*menuitem {
+menu {
+    border-radius: 10px;
+    background-color: @ui_menu_background_color;
     box-shadow: none;
-    background-image: none;
-    background-color: transparent;
-    border-width: 0px;
-    border-style: hidden;
+    padding: 5px;
+}
 
-    border-radius: 20px;
-}*/
+
+menuitem:first-child{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+menuitem:last-child{
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
 
 menuitem:hover {
-    box-shadow: 0px 0px;
+    box-shadow: none;
     background-image: none;
     background-color: @ui_button_pressed_color;
     border-width: 0px;
@@ -58,7 +68,9 @@ spinbutton {
     background: none;
     color: @ui_text_color;
 }
+
 spinbutton > button {
+    border-color: @ui_button_color;
     box-shadow: none;
     border-radius: 0px;
     margin-left: 0px;
@@ -69,6 +81,7 @@ spinbutton > entry {
     border-radius: 20px 0px 0px 20px;
 }
 
+
 spinbutton :last-child {
     border-radius: 0px 20px 20px 0px;
 }
@@ -77,13 +90,20 @@ spinbutton :last-child {
 /* BUTTON */
 button {
     border-radius: 20px;
-    color: @ui_text_color2;
+    color: @ui_text_color_neutral;
     border-color: @ui_button_color;
     box-shadow: none;
     /* border: hidden; */
     background-image: none;
     background-color: @ui_button_color;
 }
+
+/* button > * {
+    color: @ui_text_color_netral;
+    border-color: @ui_button_color;
+    box-shadow: none;
+    background-color: @ui_button_color;
+} */
 
 .colorbutton {
     padding-right: 15px;
@@ -149,7 +169,7 @@ toolbar separator {
 }
 
 window button label {
-    color: @ui_text_color2;
+    color: @ui_text_color_neutral;
 }
 
 /* MENUITEM, TOOLBAR */
@@ -214,7 +234,7 @@ combobox :first-child entry {
 
 combobox menu {
     border-color: red;
-    border-radius: 0px;
+    /* border-radius: 0px; */
     color: @ui_text_color;
     background-color:transparent;
 }
@@ -234,7 +254,7 @@ combobox menu {
     border-right-width: 2px;
     border-left-width: 2px;
     border-style: solid;
-    border-color: @ui_border_color;
+    border-color: @ui_box_border_color;
 }
 
 #LeftBox {
@@ -243,23 +263,63 @@ combobox menu {
     border-right-width: 2px;
     border-left-width: 2px;
     border-style: solid;
-    border-color: @ui_border_color;
+    border-color: @ui_box_border_color;
 }
 
 #MainBox {
     border-top-width: 2px;
     border-bottom-width: 2px;
     border-style: solid;
-    border-color: @ui_button_hover_color;
+    border-color: @ui_box_border_color;
     /* padding-top: 5px; */
     margin: 0px;
 }
 
+.tb-bordered-box {
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-style: solid;
+    border-color: @ui_box_border_color;
+}
+
+.edge-bordered-box {
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-style: solid;
+    border-color: @ui_box_border_color;
+}
+
+.bordered-box {
+    padding: 5px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: @ui_box_border_color;
+}
+
+.description {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.text {
+    color: @ui_text_color;
+}
+
 .border-top-radius-10 {
-    border-radius: 10px 10px 0 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .border-bottom-radius-10 {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.border-radius-10 {
+    border-radius:10px;
+}
+
+.border-left-radius-20 {
     border-radius: 0px 0px 10px 10px;
 }
 
@@ -271,12 +331,24 @@ combobox menu {
     background-color: @ui_window_background;
 }
 
+.nobackground {
+    background: none;
+}
+
 .padding-5 {
     padding: 5px;
 }
 
 .margin-5 {
     margin: 5px;
+}
+
+.margin-top-5 {
+    margin-top: 5px;
+}
+
+.margin-bottom-5 {
+    margin-bottom: 5px;
 }
 
 .border-radius-20 {
@@ -292,5 +364,10 @@ combobox menu {
 }
 
 .nonshadowed {
+    box-shadow: none;
+}
+
+.appwindow {
+    background-color: @ui_window_background;
     box-shadow: none;
 }

@@ -1,9 +1,14 @@
-@define-color ui_text_color rgb(150, 150, 150);
-@define-color ui_text_color2 rgb(255, 255, 255);
+@define-color ui_text_color rgb(200, 200, 200);
+@define-color ui_text_color_netral rgb(255, 255, 255);
 
 @define-color ui_button_color #008000;
 @define-color ui_button_hover_color #005000;
 @define-color ui_button_pressed_color rgb( 0, 255, 0);
 
-@define-color ui_window_background rgb(0, 0, 0);
+@define-color ui_shadow_color rgba(0, 50, 0, 0.19);
 
+@define-color ui_box_border_color #008000;
+
+@define-color ui_window_background rgb(10, 10, 10);
+@define-color ui_window_background_soft rgb(30, 30, 30);
+@define-color ui_menu_background_color rgb(130, 130, 130);
