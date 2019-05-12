@@ -7,7 +7,12 @@
 @define-color ui_button_hover_color rgb(0, 255, 165);
 @define-color ui_button_pressed_color rgb(180, 180, 180);
 
+@define-color ui_shadow_color rgba(0, 0, 0, 0.19);
+
+@define-color ui_border_color rgb(0, 255, 165);
+
 @define-color ui_window_background rgb(110, 110, 110);
+@define-color ui_window_background_soft rgb(130, 130, 130);
 
 
 /* WINDOW */
@@ -30,7 +35,7 @@ window label {
 }*/
 
 menuitem:hover {
-    box-shadow: none;
+    box-shadow: 0px 0px;
     background-image: none;
     background-color: @ui_button_pressed_color;
     border-width: 0px;
@@ -46,12 +51,15 @@ menubar > menuitem:hover {
 spinbutton {
     border-width: 0px;
     border-style: hidden;
+    border-radius: 20px;
+    /* box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19); */
     border-color: @ui_button_pressed_color;
     background-image: none;
-    background-color: transparent;
+    background: none;
     color: @ui_text_color;
 }
 spinbutton > button {
+    box-shadow: none;
     border-radius: 0px;
     margin-left: 0px;
     margin-right: 0px;
@@ -66,57 +74,58 @@ spinbutton :last-child {
 }
 
 
-
-
-
-
-
 /* BUTTON */
 button {
     border-radius: 20px;
-    box-shadow: none;
     color: @ui_text_color2;
-    border: hidden;
+    border-color: @ui_button_color;
+    box-shadow: none;
+    /* border: hidden; */
     background-image: none;
     background-color: @ui_button_color;
 }
 
 .colorbutton {
-    padding-right: 10px;
-    padding-left: 10px;
+    padding-right: 15px;
+    padding-left: 15px;
 }
 
 button:hover {
+    border-color: @ui_button_hover_color;
     background-image: none;
     background-color: @ui_button_hover_color;
 }
 
 button:active {
+    border-color: @ui_button_pressed_color;
     background-image: none;
     background-color: @ui_button_pressed_color;
 }
 
 toolbar.VerticalToolBar button, #LoadImageChooser > button {
     border-radius: 20px;
-    margin: 4px;
+    margin: 5px;
     /*border-style: hidden;*/
 }
 
 toolbar separator {
-    margin-top: 4px;
+    margin-top: 5px;
 }
 
 .HorizontalToolBar {
-    margin: 0px;
-    padding: 0px;
     margin-right: 4px;
+    margin-left: 4px;
+    padding: 0px;
+    background: none;
+    margin-bottom: 2px;
 }
 
 .HorizontalToolBar button {
-    margin: 4px;
+    /* margin: 4px; */
     border-radius: 0px;
     margin-left: 0px;
     margin-right: 0px;
+    box-shadow: none;
 }
 
 .HorizontalToolBar :first-child button {
@@ -128,13 +137,14 @@ toolbar separator {
 }
 
 .layer {
-    box-shadow: none;
+    box-shadow: 0px 0px;
     border-width: 0px;
-    border-left-width: 2px;
+    /* border-left-width: 2px; */
     border-color: @ui_button_hover_color;
 }
 
 #flow *:selected {
+    margin-top: 5px;
     background-color: @ui_button_pressed_color;
 }
 
@@ -161,8 +171,10 @@ window menuitem > label {
 	background-image: url("../images/grille.png");
 }
 
-#image {
+.image {
+    border-radius: 5px;
     background-image: url("../images/grille.png");
+    box-shadow: 0 2px 4px 0 @ui_shadow_color, 0 3px 10px 0 @ui_shadow_color;
 }
 
 /* COMBOBOX & ENTRY */
@@ -205,4 +217,80 @@ combobox menu {
     border-radius: 0px;
     color: @ui_text_color;
     background-color:transparent;
+}
+
+.VerticalBox {
+    background-color: @ui_window_background_soft;
+    border-color: @ui_button_hover_color;
+    /* border-style: solid; */
+    border-radius: 20px;
+    /* box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19); */
+    /* margin: 5px; */
+}
+
+#RightBox {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-right-width: 2px;
+    border-left-width: 2px;
+    border-style: solid;
+    border-color: @ui_border_color;
+}
+
+#LeftBox {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-right-width: 2px;
+    border-left-width: 2px;
+    border-style: solid;
+    border-color: @ui_border_color;
+}
+
+#MainBox {
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-style: solid;
+    border-color: @ui_button_hover_color;
+    /* padding-top: 5px; */
+    margin: 0px;
+}
+
+.border-top-radius-10 {
+    border-radius: 10px 10px 0 0;
+}
+
+.border-bottom-radius-10 {
+    border-radius: 0px 0px 10px 10px;
+}
+
+.window-background-soft {
+    background-color: @ui_window_background_soft;
+}
+
+.window-background {
+    background-color: @ui_window_background;
+}
+
+.padding-5 {
+    padding: 5px;
+}
+
+.margin-5 {
+    margin: 5px;
+}
+
+.border-radius-20 {
+    border-radius: 20px;
+}
+
+.shadowedbutton, .shadowedbox {
+    box-shadow: 0 2px 4px 0 @ui_shadow_color, 0 3px 10px 0 @ui_shadow_color;
+}
+
+.shadowed {
+    box-shadow: 0 2px 4px 0 @ui_shadow_color, 0 3px 10px 0 @ui_shadow_color;
+}
+
+.nonshadowed {
+    box-shadow: none;
 }

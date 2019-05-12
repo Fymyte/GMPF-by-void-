@@ -29,6 +29,8 @@
     GtkWidget *button = gtk_check_button_new(); \
     gtk_toggle_button_set_active((GtkToggleButton *)button, _layer->isvisible); \
     g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(callback_layer_set_visible), NULL); \
+    GtkStyleContext *context = gtk_widget_get_style_context(_image); \
+    gtk_style_context_add_class(context,"image"); \
     gtk_widget_set_sensitive(_grid, TRUE); \
     gtk_widget_set_visible(_grid, TRUE); \
     gtk_widget_set_visible(_image, TRUE); \
