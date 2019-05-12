@@ -111,6 +111,16 @@ void callback_setCursor()
           cairo_rectangle(cr, 0, 0, size*2.0, size);
       }
 
+      //triangle
+      if (layermngr->brush == 3)
+      {
+          cairo_set_line_width(cr, 1);
+          cairo_move_to(cr, size, 0);
+          cairo_line_to(cr, 0, size*2.0);
+          cairo_line_to(cr, size*2.0, size*2.0);
+          cairo_close_path (cr);
+      }
+
       cairo_set_source_rgba (cr, 0, 0, 0, 1);
       cairo_stroke (cr);
       cairo_cursor = cairo_get_target(cr);

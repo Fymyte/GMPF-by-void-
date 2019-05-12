@@ -91,6 +91,22 @@ without any warranty.
             <property name="homogeneous">True</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkToolButton">
+            <property name="name">Triangle</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Triangle</property>
+            <property name="use_underline">True</property>
+            <property name="icon_name">media-playback-start</property>
+            <signal name="clicked" handler="callback_hideParent" object="Brushes" swapped="no"/>
+            <signal name="clicked" handler="callback_select_brush" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>

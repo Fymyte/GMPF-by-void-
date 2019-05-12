@@ -51,6 +51,7 @@ enum GMPF_Tool {
     CIRCULAR = 0,
     SQUARE = 1,
     RECTANGLE = 2,
+    triangle = 3,
  };
 
 /*

@@ -44,6 +44,20 @@ void square_brush(GtkWidget *widget,
     gtk_widget_queue_draw (widget);
 }
 
+/*
+ * PURPOSE : Make a rectangle collored shape collored at the given position
+ *  PARAMS : GtkWidget *widget -
+ *           cairo_t   *cr - cairo context associated with the surface to paint on
+ *           int        x - x position to paint
+ *           int        y - y position to paint
+ *           int        size - size of the brush
+ *           float      red - red channel for brush
+ *           float      green - green channel for brush
+ *           float      blue - blue channel for brush
+ *           float      alpha - alpha channel for brush
+ * RETURNS : None
+ *   NOTES : affect only the surface associated with the given cairo context
+ */
 void rectangular_brush(GtkWidget *widget,
                   cairo_t   *cr,
                   int        x,
@@ -73,6 +87,40 @@ void rectangular_brush(GtkWidget *widget,
     gtk_widget_queue_draw (widget);
 }
 
+void triangle_brush(GtkWidget *widget,
+                  cairo_t   *cr,
+                  int        x,
+                  int        y,
+                  int        size,
+                  float      red,
+                  float      green,
+                  float      blue,
+                  float      alpha)
+{
+    size = size << 1;
+    int semi_size = size >> 1;
+    int nx = x - semi_size;
+    int ny = y - semi_size;
+
+    cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
+    cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE);
+
+
+    cairo_set_line_width(cr, 1);
+    cairo_move_to(cr, x, ny);
+    cairo_line_to(cr, nx, ny + size);
+    cairo_line_to(cr, nx + size, y + semi_size);
+    cairo_close_path (cr);
+
+    cairo_set_source_rgba (cr, red, green, blue, alpha);
+    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+
+    cairo_fill(cr);
+    // cairo_destroy (cr);
+
+    /* Now invalidate the affected region of the drawing area. */
+    gtk_widget_queue_draw (widget);
+}
 
 /*
  * Make a circle shape collored with "red", "green", "blue" and "alpha"
