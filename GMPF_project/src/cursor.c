@@ -88,18 +88,27 @@ void callback_setCursor()
 
       //create the new cursor
 
-      cairo_set_line_width(cr, 0.5);
+
 
       //circle
       if (layermngr->brush == 0)
       {
+          cairo_set_line_width(cr, 0.5);
           cairo_arc (cr, size, size, size, 0.0, G_PI * 2.0);
       }
 
       //square
       if (layermngr->brush == 1)
       {
+          cairo_set_line_width(cr, 1);
           cairo_rectangle(cr, 0, 0, size*2.0, size*2.0);
+      }
+
+      //rectangle
+      if (layermngr->brush == 2)
+      {
+          cairo_set_line_width(cr, 1);
+          cairo_rectangle(cr, 0, 0, size*2.0, size);
       }
 
       cairo_set_source_rgba (cr, 0, 0, 0, 1);

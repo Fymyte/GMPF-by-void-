@@ -44,6 +44,35 @@ void square_brush(GtkWidget *widget,
     gtk_widget_queue_draw (widget);
 }
 
+void rectangular_brush(GtkWidget *widget,
+                  cairo_t   *cr,
+                  int        x,
+                  int        y,
+                  int        size,
+                  float      red,
+                  float      green,
+                  float      blue,
+                  float      alpha)
+{
+    size = size << 1;
+    int semi_size = size >> 1;
+    int nx = x - semi_size;
+    int ny = y - semi_size;
+
+    cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
+    cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE);
+    cairo_set_source_rgba (cr, red, green, blue, alpha);
+    cairo_rectangle (cr, nx, ny, size, size/2);
+
+    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+
+    cairo_fill(cr);
+    // cairo_destroy (cr);
+
+    /* Now invalidate the affected region of the drawing area. */
+    gtk_widget_queue_draw (widget);
+}
+
 
 /*
  * Make a circle shape collored with "red", "green", "blue" and "alpha"

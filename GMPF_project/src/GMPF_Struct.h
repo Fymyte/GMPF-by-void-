@@ -50,6 +50,7 @@ enum GMPF_Tool {
  enum GMPF_Brush {
     CIRCULAR = 0,
     SQUARE = 1,
+    RECTANGLE = 2,
  };
 
 /*

@@ -798,6 +798,11 @@ void draw_brush (GtkWidget *widget,
             square_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,
                 layermngr->brush_size, (float)color.red, (float)color.green,
                 (float)color.blue, (float)color.alpha);
+
+        if (layermngr->brush == 2)
+            rectangular_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,
+                layermngr->brush_size, (float)color.red, (float)color.green,
+                (float)color.blue, (float)color.alpha);
         //end brush zone
 
         cairo_destroy(lay->cr);
@@ -2579,6 +2584,9 @@ void callback_select_brush(GtkWidget *brush, UNUSED gpointer user_data)
 
     if (strcmp(gtk_widget_get_name(brush), "Carré") == 0)
         layermngr->brush = 1;
+
+    if (strcmp(gtk_widget_get_name(brush), "Rectangle") == 0)
+        layermngr->brush = 2;
 }
 
 void callback_show_window(UNUSED GtkMenuItem *menuitem, GtkWindow *window)
