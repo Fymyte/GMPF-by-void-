@@ -211,8 +211,12 @@ char buffer_add(GMPF_Buffer *buffer,
             { PRINTERR("Unable to save layer"); break; }
             break;
 
-        case GMPF_ACTION_CHANGE_NAME:
+        case GMPF_ACTION_CHANGE_PROPERTIES:
             if (fwrite(&layer->name, sizeof(char), 51, file) != 51)
+            { PRINTERR("Unable to write in filestream"); break; }
+            if (fwrite(&layer->size, sizeof(GMPF_Size), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            if (fwrite(&layer->pos, sizeof(GMPF_Pos), 1, file) != 1)
             { PRINTERR("Unable to write in filestream"); break; }
             break;
 
@@ -323,7 +327,7 @@ char buffer_undo(GMPF_Buffer *buffer,
             gtk_flow_box_select_child(flowbox, layer->UIElement);
             break;
 
-        case GMPF_ACTION_CHANGE_NAME:
+        case GMPF_ACTION_CHANGE_PROPERTIES:
             layer = layer_get_at_pos(flowbox, s_buff.layer);
             if (!layer)
             { PRINTERR("Unable to get layer"); break; }
@@ -331,16 +335,38 @@ char buffer_undo(GMPF_Buffer *buffer,
             char name[51];
             if (fread(&name, sizeof(char), 51, file) != 51)
             { PRINTERR("Unable to read in filestream"); break; }
+            GMPF_Size size;
+            if (fread(&size, sizeof(GMPF_Size), 1, file) != 1)
+            { PRINTERR("Unable to read in filestream"); break; }
+            GMPF_Pos pos;
+            if (fread(&pos, sizeof(GMPF_Pos), 1, file) != 1)
+            { PRINTERR("Unable to read in filestream"); break; }
 
             rewind(file);
             if (fwrite(&s_buff, sizeof(s_savebuf), 1, file) != 1)
             { PRINTERR("Unable to write in filestream"); return 1; }
             if (fwrite(&layer->name, sizeof(char), 51, file) != 51)
             { PRINTERR("Unable to write in filestream"); break; }
+            if (fwrite(&layer->size, sizeof(GMPF_Size), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            if (fwrite(&layer->pos, sizeof(GMPF_Pos), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
             D_PRINT("name: %s, newname: %s", layer->name, name);
 
             layer_set_name(layer, name);
-            layer_icon_refresh(layer);
+            layer->size.w = size.w;
+            layer->size.h = size.h;
+            layer->pos.x = pos.x;
+            layer->pos.y = pos.y;
+            cairo_surface_t *surface = cairo_surface_create_similar_image(layer->surface,
+                                    CAIRO_FORMAT_ARGB32, layer->size.w, layer->size.h);
+            cairo_t *cr = cairo_create(surface);
+            cairo_set_source_surface(cr, layer->surface, 0, 0);
+            cairo_paint(cr);
+            while (cairo_surface_get_reference_count(layer->surface))
+                cairo_surface_destroy(layer->surface);
+            layer->surface = surface;
+            REFRESH_IMAGE(layer);
             break;
 
         case GMPF_ACTION_DELETE:
@@ -453,7 +479,7 @@ char buffer_redo(GMPF_Buffer *buffer,
             gtk_flow_box_select_child(flowbox, layer->UIElement);
             break;
 
-        case GMPF_ACTION_CHANGE_NAME:
+        case GMPF_ACTION_CHANGE_PROPERTIES:
             layer = layer_get_at_pos(flowbox, s_buff.layer);
             if (!layer)
             { PRINTERR("Unable to get layer"); break; }
@@ -461,16 +487,38 @@ char buffer_redo(GMPF_Buffer *buffer,
             char name[51];
             if (fread(&name, sizeof(char), 51, file) != 51)
             { PRINTERR("Unable to read in filestream"); break; }
+            GMPF_Size size;
+            if (fread(&size, sizeof(GMPF_Size), 1, file) != 1)
+            { PRINTERR("Unable to read in filestream"); break; }
+            GMPF_Pos pos;
+            if (fread(&pos, sizeof(GMPF_Pos), 1, file) != 1)
+            { PRINTERR("Unable to read in filestream"); break; }
 
             rewind(file);
             if (fwrite(&s_buff, sizeof(s_savebuf), 1, file) != 1)
             { PRINTERR("Unable to write in filestream"); return 1; }
             if (fwrite(&layer->name, sizeof(char), 51, file) != 51)
             { PRINTERR("Unable to write in filestream"); break; }
+            if (fwrite(&layer->size, sizeof(GMPF_Size), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
+            if (fwrite(&layer->pos, sizeof(GMPF_Pos), 1, file) != 1)
+            { PRINTERR("Unable to write in filestream"); break; }
             D_PRINT("name: %s, newname: %s", layer->name, name);
 
             layer_set_name(layer, name);
-            layer_icon_refresh(layer);
+            layer->size.w = size.w;
+            layer->size.h = size.h;
+            layer->pos.x = pos.x;
+            layer->pos.y = pos.y;
+            cairo_surface_t *surface = cairo_surface_create_similar_image(layer->surface,
+                                    CAIRO_FORMAT_ARGB32, layer->size.w, layer->size.h);
+            cairo_t *cr = cairo_create(surface);
+            cairo_set_source_surface(cr, layer->surface, 0, 0);
+            cairo_paint(cr);
+            while (cairo_surface_get_reference_count(layer->surface))
+                cairo_surface_destroy(layer->surface);
+            layer->surface = surface;
+            REFRESH_IMAGE(layer);
             break;
 
         case GMPF_ACTION_DELETE:

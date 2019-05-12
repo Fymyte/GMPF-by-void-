@@ -284,6 +284,9 @@ void callback_open(UNUSED GtkMenuItem *menu,
 }
 
 
+/*
+ * Show the New Project window
+ */
 void callback_new(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
 {
     GET_UI(GtkWidget, window, "NewProjectWindow");
@@ -291,6 +294,10 @@ void callback_new(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
 }
 
 
+/*
+ * Create a new project with the size given by the user in the interface
+ * (Clear the previous project if they were one)
+ */
 void callback_new_project(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
 {
     GET_UI(GtkEntry, name, "NewProjectNameEntry");
@@ -332,6 +339,10 @@ void callback_new_project(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
     GMPF_save_under_project();
 }
 
+
+/*
+ * Open the resize project window
+ */
 void callback_open_resize_project_window(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
 {
     GET_UI(GtkWidget, window, "ResizeProjectWindow");
@@ -339,6 +350,9 @@ void callback_open_resize_project_window(UNUSED GtkWidget *widget, UNUSED gpoint
 }
 
 
+/*
+ * Resize the project with the dimension given by the user in the interface
+ */
 void callback_resize_project(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
 {
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -2472,7 +2486,7 @@ void callback_edit_layer_properties(UNUSED GtkWidget *widget,
     const gchar *y = gtk_entry_get_text(offsetY);
 
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
-    GMPF_buffer_add(flowbox, GMPF_ACTION_CHANGE_NAME, lay);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_CHANGE_PROPERTIES, lay);
     layer_set_name(lay, (char*)n);
     lay->size.w = atoi(w);
     lay->size.h = atoi(h);
