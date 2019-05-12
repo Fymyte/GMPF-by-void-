@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1
+<!-- Generated with glade 3.22.1 
 
 Copyright (C) VOID*
 
@@ -85,6 +85,7 @@ without any warranty.
         </child>
         <child>
           <object class="GtkToolButton">
+            <property name="name">Rectangle</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Rectangulaire</property>
@@ -1143,8 +1144,8 @@ without any warranty.
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="callback_delete" swapped="no"/>
-                        <accelerator key="Delete" signal="activate"/>
                         <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="Delete" signal="activate"/>
                         <style>
                           <class name="border-bottom-radius-10"/>
                         </style>

@@ -2595,6 +2595,8 @@ void callback_select_brush(GtkWidget *brush, UNUSED gpointer user_data)
 
     if (strcmp(gtk_widget_get_name(brush), "Triangle") == 0)
         layermngr->brush = 3;
+
+    D_PRINT("brush: %s", gtk_widget_get_name(brush));
 }
 
 void callback_show_window(UNUSED GtkMenuItem *menuitem, GtkWindow *window)
