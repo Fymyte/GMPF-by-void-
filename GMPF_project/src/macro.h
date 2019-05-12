@@ -32,9 +32,6 @@
         D_PRINT("Unable to get %s\n", _name); \
     }
 
-#define INIT_UI() \
-    SGlobalData *data = (SGlobalData *)user_data;
-
 #ifdef __GNUC__
     #define UNUSED __attribute__((__unused__))
 #else
@@ -42,6 +39,9 @@
 #endif
 
 #define RAD_FROM_DEG(_x) (_x * G_PI / 180)
+
+#define GET_LAYERMNGR(_flowbox) \
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(_flowbox);
 
 
 // print error

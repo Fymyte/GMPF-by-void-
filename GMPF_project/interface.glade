@@ -27,10 +27,10 @@ without any warranty.
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">mouse</property>
-    <property name="default_width">100</property>
-    <property name="default_height">100</property>
+    <property name="default_width">150</property>
+    <property name="default_height">150</property>
     <property name="destroy_with_parent">True</property>
-    <property name="type_hint">menu</property>
+    <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
     <child type="titlebar">
@@ -97,8 +97,10 @@ without any warranty.
     <property name="name">Créateur de filtres</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Createur de filtre</property>
+    <property name="resizable">False</property>
     <property name="modal">True</property>
-    <property name="window_position">mouse</property>
+    <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
     <property name="icon_name">address-book-new</property>
     <property name="type_hint">dialog</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
@@ -680,6 +682,192 @@ without any warranty.
       </object>
     </child>
   </object>
+  <object class="GtkAdjustment" id="KillColorToleranceAdjustement">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+  </object>
+  <object class="GtkWindow" id="ColorKillerToleranceWindow">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Suppression des couleurs</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="skip_pager_hint">True</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Veuillez définir la tolérance et la couleur de la suppression.</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="ColorKillerImage">
+            <property name="width_request">320</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">10</property>
+            <property name="margin_bottom">10</property>
+            <property name="column_spacing">10</property>
+            <child>
+              <object class="GtkLabel" id="ProjectWidthLabel2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">5</property>
+                <property name="label" translatable="yes">Tolérance:</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans Bold 10"/>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScale" id="ColorKillerToleranceScale">
+                <property name="width_request">300</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">s</property>
+                <property name="adjustment">KillColorToleranceAdjustement</property>
+                <property name="show_fill_level">True</property>
+                <property name="fill_level">100</property>
+                <property name="digits">2</property>
+                <property name="value_pos">left</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">5</property>
+                <property name="label" translatable="yes">Couleur</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkColorButton" id="ColorKillerChooser">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="rgba">rgb(117,80,123)</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="width_request">450</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_top">5</property>
+                <property name="spacing">5</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label">gtk-cancel</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="callback_hideParent" object="ColorKillerToleranceWindow" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="ColorKillerTestButton">
+                    <property name="label" translatable="yes">Tester</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="callback_test_color_killer" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="ColorKillerApplyButton">
+                    <property name="label">gtk-apply</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="callback_hideParent" object="ColorKillerToleranceWindow" swapped="no"/>
+                    <signal name="clicked" handler="callback_kill_color" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkAdjustment" id="LayerAngleAdjustment">
     <property name="lower">-180</property>
     <property name="upper">180</property>
@@ -705,6 +893,9 @@ without any warranty.
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_bottom">5</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkMenuBar" id="menubar1">
@@ -783,6 +974,7 @@ without any warranty.
                         <property name="label" translatable="yes">Exporter vers png</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_export" swapped="no"/>
+                        <accelerator key="e" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -866,6 +1058,7 @@ without any warranty.
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="callback_delete" swapped="no"/>
                         <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="Delete" signal="activate"/>
                       </object>
                     </child>
                   </object>
@@ -1247,9 +1440,68 @@ without any warranty.
               <object class="GtkMenuItem">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Brosse</property>
+                <property name="label" translatable="yes">Outils</property>
                 <property name="use_underline">True</property>
-                <signal name="activate" handler="callback_show_window" object="Brushes" swapped="no"/>
+                <child type="submenu">
+                  <object class="GtkMenu">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkMenuItem" id="1">
+                        <property name="name">1</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Pinceau</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_select_tool" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="2">
+                        <property name="name">2</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Gomme</property>
+                        <signal name="activate" handler="callback_select_tool" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="3">
+                        <property name="name">3</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Pipette</property>
+                        <signal name="activate" handler="callback_select_tool" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="4">
+                        <property name="name">4</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Suppression de couleur</property>
+                        <signal name="activate" handler="callback_show_color_killer_window" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="5">
+                        <property name="name">5</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Selection</property>
+                        <signal name="activate" handler="callback_select_tool" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="6">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Type de brosse</property>
+                        <signal name="activate" handler="callback_show_window" object="Brushes" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
@@ -1273,6 +1525,7 @@ without any warranty.
                     </child>
                   </object>
                 </child>
+                <accelerator key="F10" signal="activate"/>
               </object>
             </child>
             <child>
@@ -1312,15 +1565,14 @@ without any warranty.
             <property name="name">main_toolbar</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_top">4</property>
-            <property name="margin_bottom">4</property>
+            <property name="margin_bottom">10</property>
             <child>
               <object class="GtkColorButton" id="ColorTinter">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Selectionnner la couleur du filtre de teinture</property>
+                <property name="tooltip_text" translatable="yes">Selectionnner la couleur du pinceau ainsi que la couleur pour les filtre de teinture et d'accentuation des couleurs.</property>
                 <property name="use_alpha">True</property>
                 <property name="title" translatable="yes">Selection de couleur</property>
                 <property name="alpha">65535</property>
@@ -1339,6 +1591,7 @@ without any warranty.
               <object class="GtkSpinButton" id="RotateDegreeSpinButton">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Modifier pour effectuer une rotation du calque sélectionné.</property>
                 <property name="max_length">4</property>
                 <property name="xalign">0.5</property>
                 <property name="shadow_type">none</property>
@@ -1358,6 +1611,8 @@ without any warranty.
               <object class="GtkComboBoxText" id="BrushSize">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Modifier pour changer le diametre du pinceau.</property>
+                <property name="resize_mode">immediate</property>
                 <property name="active">0</property>
                 <property name="has_entry">True</property>
                 <items>
@@ -1394,6 +1649,8 @@ without any warranty.
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Annuler la dernière action effectué</property>
+                <property name="resize_mode">immediate</property>
                 <property name="relief">none</property>
                 <property name="use_stock">True</property>
                 <property name="always_show_image">True</property>
@@ -1408,7 +1665,6 @@ without any warranty.
             </child>
             <child>
               <object class="GtkComboBoxText" id="ComboBo">
-                <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="resize_mode">immediate</property>
@@ -1426,7 +1682,7 @@ without any warranty.
                   <object class="GtkEntry" id="ScaleEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Permet de gerer le facteur de zoom sur l'image</property>
+                    <property name="tooltip_text" translatable="yes">Modifier pour changer le facteur de grossisement sur l'image.</property>
                     <property name="max_length">5</property>
                     <property name="has_frame">False</property>
                     <property name="xalign">0.5</property>
@@ -1451,6 +1707,8 @@ without any warranty.
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Rétablir la dèrnière action annulé.</property>
+                <property name="resize_mode">immediate</property>
                 <property name="relief">none</property>
                 <property name="use_stock">True</property>
                 <property name="always_show_image">True</property>
@@ -1497,7 +1755,7 @@ without any warranty.
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Pinceau pour peindre sur le calque séléctionné de la couleur choisie</property>
+                        <property name="tooltip_text" translatable="yes">Outil pinceau: permet de peindre sur le calque séléctionné de la couleur choisie.</property>
                         <property name="label" translatable="yes">Pinceau</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-edit</property>
@@ -1515,7 +1773,7 @@ without any warranty.
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Gomme</property>
+                        <property name="tooltip_text" translatable="yes">Outil gomme: permet de gommer les pixels sur le calque sélectionné.</property>
                         <property name="label" translatable="yes">Gomme</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-media-stop</property>
@@ -1533,25 +1791,10 @@ without any warranty.
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Définie la couleur d'après la valeur du pixel séléctionné</property>
+                        <property name="tooltip_text" translatable="yes">Outil pipette à couleur: définie la couleur du pinceau d'après la couleur du pixel séléctionné.</property>
                         <property name="label" translatable="yes">Pipette</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-color-picker</property>
-                        <signal name="clicked" handler="callback_select_tool" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="homogeneous">True</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToolButton" id="4DeleteColor">
-                        <property name="name">4</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Suppression de couleur</property>
-                        <property name="use_underline">True</property>
-                        <property name="icon_name">account-types-closed</property>
                         <signal name="clicked" handler="callback_select_tool" swapped="no"/>
                       </object>
                       <packing>
@@ -1577,26 +1820,10 @@ without any warranty.
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Outil sélection: permet de sélectionné une zone réctangulaire sur le calque sélectionné.</property>
                         <property name="label" translatable="yes">Selection</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-select-all</property>
-                        <signal name="clicked" handler="callback_select_tool" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="homogeneous">True</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToolButton" id="6FreeSelectionButton">
-                        <property name="name">6</property>
-                        <property name="width_request">40</property>
-                        <property name="height_request">40</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Sélection libre</property>
-                        <property name="use_underline">True</property>
-                        <property name="stock_id">gtk-stop</property>
                         <signal name="clicked" handler="callback_select_tool" swapped="no"/>
                       </object>
                       <packing>
@@ -1738,6 +1965,7 @@ without any warranty.
                     <property name="height_request">20</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_right">5</property>
                     <property name="toolbar_style">icons</property>
                     <property name="icon_size">4</property>
                     <child>
@@ -1746,11 +1974,12 @@ without any warranty.
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Ajoute un nouveau calque à la liste</property>
+                        <property name="tooltip_text" translatable="yes">Ajouter un nouveau calque à la liste.</property>
                         <property name="label" translatable="yes">Ajouter un calque</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-add</property>
                         <signal name="clicked" handler="callback_show_layer_window" swapped="no"/>
+                        <accelerator key="KP_Add" signal="clicked"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1763,12 +1992,12 @@ without any warranty.
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Remonte le calque séléctionné d'un rang dans la liste</property>
+                        <property name="tooltip_text" translatable="yes">Remonter le calque séléctionné d'un rang dans la liste.</property>
                         <property name="label" translatable="yes">Remonter le calque</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-go-up</property>
                         <signal name="clicked" handler="callback_layer_move_up" swapped="no"/>
-                        <accelerator key="KP_8" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="Up" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1781,12 +2010,12 @@ without any warranty.
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Descend le calque séléctionner d'un rang dans la liste</property>
+                        <property name="tooltip_text" translatable="yes">Descendre le calque séléctionner d'un rang dans la liste.</property>
                         <property name="label" translatable="yes">Descendre le calque</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-go-down</property>
                         <signal name="clicked" handler="callback_layer_move_down" swapped="no"/>
-                        <accelerator key="KP_2" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+                        <accelerator key="Down" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1799,11 +2028,12 @@ without any warranty.
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Cliquez pour  modifier les paramètres du calque sélectionné </property>
+                        <property name="tooltip_text" translatable="yes">Modifier les propriété du calque sélectionné.</property>
                         <property name="label" translatable="yes">Duplique le calque</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-convert</property>
                         <signal name="clicked" handler="callback_open_edit_layer_properties_window" swapped="no"/>
+                        <accelerator key="m" signal="clicked" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1816,12 +2046,12 @@ without any warranty.
                         <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Supprime le calque séléctionné de la liste</property>
+                        <property name="tooltip_text" translatable="yes">Supprimer le calque séléctionné de la liste.</property>
                         <property name="label" translatable="yes">Retirer le calque</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-remove</property>
                         <signal name="clicked" handler="callback_remove_selected_layer" swapped="no"/>
-                        <accelerator key="Delete" signal="clicked"/>
+                        <accelerator key="KP_Subtract" signal="clicked"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1850,20 +2080,6 @@ without any warranty.
             <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="LoadImageButton">
-            <property name="label" translatable="yes">Load an image</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <signal name="clicked" handler="callback_open" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
           </packing>
         </child>
       </object>
@@ -1935,10 +2151,13 @@ Samory DIABY</property>
   </object>
   <object class="GtkWindow" id="EditLayerWindow">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Modifier les propriétés du calque</property>
+    <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
-    <property name="type_hint">menu</property>
-    <property name="deletable">False</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="skip_pager_hint">True</property>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -2168,10 +2387,13 @@ Samory DIABY</property>
   </object>
   <object class="GtkWindow" id="LayerWindow">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Ajouter un calque</property>
+    <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
-    <property name="type_hint">menu</property>
-    <property name="deletable">False</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="skip_pager_hint">True</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
@@ -2416,10 +2638,13 @@ Samory DIABY</property>
   </object>
   <object class="GtkWindow" id="NewProjectWindow">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Créer un nouveau projet</property>
+    <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
-    <property name="type_hint">menu</property>
-    <property name="deletable">False</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="skip_pager_hint">True</property>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -2585,6 +2810,12 @@ Samory DIABY</property>
   </object>
   <object class="GtkWindow" id="ResizeProjectWindow">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Redimmensionner le projet</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="skip_pager_hint">True</property>
     <child>
       <placeholder/>
     </child>

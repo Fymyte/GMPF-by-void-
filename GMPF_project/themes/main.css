@@ -9,6 +9,7 @@
 
 @define-color ui_window_background rgb(110, 110, 110);
 
+
 /* WINDOW */
 window, window > grid, menubar {
     background-color: @ui_window_background;

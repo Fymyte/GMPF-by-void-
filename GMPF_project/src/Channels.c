@@ -5,14 +5,18 @@ extern SGlobalData G_user_data;
 /*
  * function to eraise the selected color with the given tolerance
  */
-void kill_color(GtkWidget *widget,
-                double     tolerance)
+void kill_color(GMPF_Layer *layer,
+                double      tolerance)
 {
-    GET_UI (GtkColorChooser, colorbtn, "ColorTinter");
+    GET_UI (GtkColorChooser, colorbtn, "ColorKillerChooser");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+
     if (!layer)
         return;
+
+    if (layer->image)
+        g_object_unref(layer->image);
+    layer->image = gdk_pixbuf_get_from_surface(layer->surface, 0, 0, layer->size.w, layer->size.h);
     int width = layer->size.w;
     int height = layer->size.h;
     GdkRGBA color;
@@ -41,5 +45,4 @@ void kill_color(GtkWidget *widget,
     cairo_surface_destroy(layer->surface);
     layer->surface = gdk_cairo_surface_create_from_pixbuf(layer->image, 1, NULL);
     layer_icon_refresh(layer);
-    gtk_widget_queue_draw(widget);
 }

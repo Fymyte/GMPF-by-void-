@@ -3,7 +3,7 @@
 #ifndef CHANNELS_H
 #define CHANNELS_H
 
-void kill_color(GtkWidget *widget,
-                double     toloerance);
+void kill_color(GMPF_Layer *layer,
+                double      tolerance);
 
 #endif

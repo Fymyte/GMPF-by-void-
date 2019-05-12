@@ -67,9 +67,8 @@ char open_confirm_quit_without_saving_dialog()
 /*
  * PURPOSE : Open a dialog with 3 buttons: "Annuler", "Savegarder" and "Confirmer"
  *  PARAMS : UNUSED UNUSED gpointer user_data -
- * RETURNS : int - 0 for "Annuler"
- *                 1 for "Sauvegarder"
- *                 2 for "Confirmer"
+ * RETURNS : int - 0 for "Non"
+ *                 1 for "Oui"
  *   NOTES :
  */
 char open_open_auto_saved_file_dialog()
@@ -691,7 +690,13 @@ void callback_show_layer_window(UNUSED GtkWidget *widget,
     GET_UI(GtkFileChooser, filename, "LayerImageFilename");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    GET_LAYERMNGR(flowbox);
+    if (!layermngr->layer_list.next)
+    {
+        GET_UI(GtkWidget, projectwindow, "NewProjectWindow");
+        gtk_widget_show(projectwindow);
+        return;
+    }
 
     gtk_entry_set_text(name, "");
     gtk_spin_button_set_value(width, layermngr->size.w);
@@ -886,7 +891,7 @@ gboolean callback_button_press_event (GtkWidget      *widget,
     else if (event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_COLOR_KILLER)
     {
         if (lay) { GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay); }
-        kill_color(widget, .2);
+        kill_color(lay, .2);
     }
 
     else if(event->button == GDK_BUTTON_PRIMARY & tool == GMPF_TOOL_SELECTOR)
@@ -1141,6 +1146,90 @@ void callback_select_tool(GtkWidget *widget,
         GMPF_selection_init(flowbox);
         gtk_widget_queue_draw(da);
     }
+}
+
+
+void GMPF_init_color_killer_window()
+{
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, button, "ColorKillerApplyButton");
+    GET_UI(GtkImage, image, "ColorKillerImage");
+    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    GError *error = NULL;
+
+    GdkPixbuf *pixbuf = layer ? layer->image : gdk_pixbuf_new_from_file_at_size("images/GMPF_white.png",
+                                                         300,
+                                                         300,
+                                                         &error);
+    if (error)
+    { PRINTERR ("Unable to load pixbuf"); return; }
+    if (layer)
+    {
+        gtk_widget_show(button);
+        float ratio1 = layer->size.w / 300;
+        float ratio2 = layer->size.h / 300;
+        int finalh = 300;
+        int finalw = 300;
+        if (ratio1 < ratio2)
+            finalw = layer->size.w / ratio2;
+        else
+            finalh = layer->size.h / ratio1;
+
+        pixbuf = gdk_pixbuf_scale_simple(pixbuf, finalw, finalh,
+                             GDK_INTERP_BILINEAR);
+    }
+    else
+    { gtk_widget_hide(button); }
+
+    gtk_image_set_from_pixbuf(image, pixbuf);
+}
+
+
+void callback_test_color_killer(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GMPF_init_color_killer_window();
+
+    GET_UI(GtkImage, image, "ColorKillerImage");
+    GET_UI(GtkRange, range, "ColorKillerToleranceScale");
+
+    double tolerance = gtk_range_get_value(range) / 100;
+
+    GdkPixbuf *pixbuf = gtk_image_get_pixbuf(image);
+    GMPF_Layer *layer = layer_initialization();
+    layer->surface = gdk_cairo_surface_create_from_pixbuf(pixbuf, 1, NULL);
+    GMPF_Size size = { .w = gdk_pixbuf_get_width(pixbuf), .h = gdk_pixbuf_get_height(pixbuf) };
+
+    layer->size = size;
+    kill_color(layer, tolerance);
+    gtk_image_set_from_pixbuf(image, layer->image);
+    layer_delete(layer);
+}
+
+
+void callback_show_color_killer_window(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GET_UI(GtkWidget, window, "ColorKillerToleranceWindow");
+    GMPF_init_color_killer_window();
+
+    //show the filter creator windowjust
+    gtk_widget_show(window);
+}
+
+
+void callback_kill_color(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GET_UI(GtkRange, scale, "ColorKillerToleranceScale");
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    double tolerance = gtk_range_get_value(scale) / 100;
+
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+    kill_color(lay, tolerance);
+
+    gtk_widget_queue_draw(da);
 }
 
 
@@ -1459,14 +1548,8 @@ void load_image_cairo(GtkWindow *window,
 }
 
 
-/*
- * Show the "Créateur de filtre" window
- * (init all its variables to there default value)
- */
-void callback_FC(UNUSED GtkMenuItem *menuitem,
-                 UNUSED gpointer     user_data)
+void GMPF_init_matrix_window()
 {
-    GET_UI(GtkWidget, window, "FilterCreator");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, button, "ApplyMatrixButton");
     GET_UI(GtkImage, image, "FilterImage");
@@ -1497,6 +1580,18 @@ void callback_FC(UNUSED GtkMenuItem *menuitem,
     { gtk_widget_hide(button); }
 
     gtk_image_set_from_pixbuf(image, pixbuf);
+}
+
+
+/*
+ * Show the "Créateur de filtre" window
+ * (init all its variables to there default value)
+ */
+void callback_FC(UNUSED GtkMenuItem *menuitem,
+                 UNUSED gpointer     user_data)
+{
+    GET_UI(GtkWidget, window, "FilterCreator");
+    GMPF_init_matrix_window();
 
     //show the filter creator windowjust
     gtk_widget_show(window);
@@ -1506,6 +1601,7 @@ void callback_FC(UNUSED GtkMenuItem *menuitem,
 void callback_test_matrix(UNUSED GtkWidget *widget,
                           UNUSED gpointer   user_data)
 {
+    GMPF_init_matrix_window();
     GET_UI(GtkGrid, grid, "MatrixGrid");
     GET_UI(GtkImage, image, "FilterImage");
     GET_UI(GtkSwitch, sw, "MatrixSizeSwitch");
@@ -2253,7 +2349,7 @@ void callback_applyFilter(UNUSED GtkWidget *btn,
                 }
         }
     }
-
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
     Convolute(layer, mat, mat_size);
 }
 
