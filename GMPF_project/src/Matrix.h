@@ -6,11 +6,11 @@
 
 #include "GMPF_Struct.h"
 
-struct Matrix *init_matrix(int rows, int columns);
+struct Matrix *init_matrix(Uint64 rows, Uint64 columns);
 
-double Matrix_IJ(struct Matrix *m, int i, int j);
+double Matrix_IJ(struct Matrix *m, Uint64 i, Uint64 j);
 
-void Matrix_val(struct Matrix *m, int i, int j, double val);
+void Matrix_val(struct Matrix *m, Uint64 i, Uint64 j, double val);
 
 void InitializeMatrixZero(struct Matrix *m);
 

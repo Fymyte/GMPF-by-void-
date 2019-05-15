@@ -2,6 +2,7 @@
 
 @define-color ui_text_color rgb(0, 255, 165);
 @define-color ui_text_color_neutral rgb(255, 255, 255);
+@define-color ui_text_color_inv rgb(0, 0, 0);
 
 @define-color ui_button_color rgb(150, 150, 150);
 @define-color ui_button_hover_color rgb(0, 255, 165);
@@ -175,6 +176,10 @@ window button label {
 /* MENUITEM, TOOLBAR */
 menuitem, toolbar {
     background-color: @ui_window_background;
+}
+
+window menuitem:hover > label {
+    color: @ui_text_color_inv;
 }
 
 window menuitem > label {

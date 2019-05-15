@@ -81,10 +81,10 @@ struct savebuf {
  */
 struct GMPF_Buffer {
     FILE *elmt[BUFFER_SIZE];
-    unsigned long long begin;
-    unsigned long long end;
-    unsigned long long size;
-    unsigned long long pos;
+    Uint16 begin;
+    Uint16 end;
+    Uint16 size;
+    Uint16 pos;
 };
 
 
@@ -99,7 +99,7 @@ struct GMPF_List {
  * (saved propertie)
  */
 struct GMPF_SavedState {
-    int state;
+    bool state;
 };
 
 
@@ -108,7 +108,7 @@ struct GMPF_SavedState {
  * (x and y position properties)
  */
 struct GMPF_Pos {
-    int x, y;
+    int64 x, y;
 };
 
 
@@ -117,7 +117,7 @@ struct GMPF_Pos {
  * (width and height properties)
  */
 struct GMPF_Size {
-    int h, w;
+    int64 h, w;
 };
 
 
@@ -146,7 +146,7 @@ struct GMPF_Scale {
  * (red, green, blue and alpha properties)
  */
 struct GMPF_Pixel {
-    unsigned char R, G, B, A;
+    Uint8 R, G, B, A;
 };
 
 
@@ -167,25 +167,25 @@ struct GMPF_Pixel {
  */
 struct GMPF_Layer {
 
-    char name[51];
-    char *filename;
+    char             name[51];
+    char            *filename;
 
-    GMPF_Pos pos;
-    GMPF_Scale scale_factor;
-    GMPF_Size size;
-    int rotate_angle;
-    char isvisible; // Set to one if it has to be rendered
+    GMPF_Pos         pos;
+    GMPF_Scale       scale_factor;
+    GMPF_Size        size;
+    int16            rotate_angle;
+    bool             isvisible; // Set to one if it has to be rendered
 
-    GdkPixbuf *icon; // The icon displayed in the list of layer
-    GdkPixbuf *image; // The pixbuf associated with the layer->surface
+    GdkPixbuf       *icon; // The icon displayed in the list of layer
+    GdkPixbuf       *image; // The pixbuf associated with the layer->surface
 
-    cairo_t *cr; // The cairo context of the surface attribut
+    cairo_t         *cr; // The cairo context of the surface attribut
 
     cairo_surface_t *surface;
 
-    GMPF_List list;
+    GMPF_List        list;
 
-    GtkGrid *UIIcon;
+    GtkGrid         *UIIcon;
     GtkFlowBoxChild *UIElement;
 };
 
@@ -206,23 +206,23 @@ struct GMPF_Layer {
 
 struct GMPF_LayerMngr {
 
-    GMPF_Size size;
-    GMPF_Pos pos;
-    int nb_layer;
-    GMPF_Tool tool;
-    GMPF_List layer_list;
+    GMPF_Size        size;
+    GMPF_Pos         pos;
+    Uint16           nb_layer;
+    GMPF_Tool        tool;
+    GMPF_List        layer_list;
 
-    char *filename;
+    char            *filename;
 
     cairo_surface_t *surface;
 
-    float brush_size;
-    GMPF_Brush brush;
+    float            brush_size;
+    GMPF_Brush       brush;
 
-    GdkPixbuf *image;
-    GdkPixbuf *display_image;
+    GdkPixbuf       *image;
+    GdkPixbuf       *display_image;
 
-    GtkFlowBox *flowbox;
+    GtkFlowBox      *flowbox;
 };
 
 
@@ -232,8 +232,8 @@ struct GMPF_LayerMngr {
  */
 struct Matrix
 {
-    int rows;
-    int cols;
+    Uint64 rows;
+    Uint64 cols;
     double *mat;
 };
 
@@ -244,8 +244,8 @@ struct Matrix
  */
 struct Img_rgb
 {
-    int rows;
-    int cols;
+    Uint64 rows;
+    Uint64 cols;
 
     struct Matrix *red;
     struct Matrix *green;

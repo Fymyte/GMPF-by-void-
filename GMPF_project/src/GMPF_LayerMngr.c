@@ -173,7 +173,7 @@ char GMPF_selection_copy(GtkFlowBox *flowbox,
     { D_PRINT("No selected surface", NULL); return 1; }
 
     // GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
-    D_PRINT("pos: (%d, %d)", pos.x, pos.y);
+    D_PRINT("pos: (%ld, %ld)", pos.x, pos.y);
 
     cairo_surface_t *surf = GMPF_selection_get_surface(flowbox);
     if (surf)
@@ -264,7 +264,7 @@ char GMPF_selection_delete(GtkFlowBox *flowbox,
 
     GMPF_Size size = *GMPF_selection_get_size(flowbox);
 
-    D_PRINT("pos: (%i, %i), size: %i*%i", pos.x, pos.y, size.w, size.h);
+    D_PRINT("pos: (%li, %li), size: %li*%li", pos.x, pos.y, size.w, size.h);
     cairo_set_source_rgba(layer->cr, 0, 0, 0, 0);
     cairo_set_operator(layer->cr, CAIRO_OPERATOR_SOURCE);
     cairo_rectangle(layer->cr, pos.x, pos.y, size.w/layer->scale_factor.x,
@@ -344,7 +344,7 @@ void GMPF_saved_state_set_is_saved(GtkFlowBox *flowbox,
     GMPF_SavedState *saved_state = GMPF_saved_state_get_saved_state(flowbox);
     if (!state)
     { GMPF_auto_save_project(flowbox); }
-    
+
     saved_state->state = state;
 }
 

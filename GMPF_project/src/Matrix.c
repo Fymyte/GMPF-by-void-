@@ -1,6 +1,6 @@
 #include "Matrix.h"
 
-struct Matrix* init_matrix(int rows, int cols)
+struct Matrix* init_matrix(Uint64 rows, Uint64 cols)
 {
     struct Matrix *m = malloc(sizeof(struct Matrix));
     m -> rows = rows;
@@ -9,12 +9,12 @@ struct Matrix* init_matrix(int rows, int cols)
     return m;
 }
 
-double Matrix_IJ(struct Matrix *m, int i, int j)
+double Matrix_IJ(struct Matrix *m, Uint64 i, Uint64 j)
 {
     return *(m -> mat + i * m -> cols + j);
-}	
+}
 
-void Matrix_val(struct Matrix *m, int i, int j, double val)
+void Matrix_val(struct Matrix *m, Uint64 i, Uint64 j, double val)
 {
     *(m -> mat + i * m -> cols + j) = val;
 }
@@ -22,9 +22,9 @@ void Matrix_val(struct Matrix *m, int i, int j, double val)
 void InitializeMatrixZero(struct Matrix *m)
 {
     //Initialize the matrix with 0
-    for (int i = 0; i < m -> rows; i++)
+    for (Uint64 i = 0; i < m -> rows; i++)
     {
-        for (int j = 0; j < m -> cols; j++)
+        for (Uint64 j = 0; j < m -> cols; j++)
         {
             *(m -> mat + i * m -> cols + j) = 0;
         }
@@ -34,9 +34,9 @@ void InitializeMatrixZero(struct Matrix *m)
 void PrintMatrix(struct Matrix *m)
 {
     //Print the matrix
-	for (int i = 0; i < m -> rows; i++)
+	for (Uint64 i = 0; i < m -> rows; i++)
 	{
-		for (int j = 0; j < m -> cols; j++)
+		for (Uint64 j = 0; j < m -> cols; j++)
 		{
 			printf("%3f ", *(m -> mat + i * m -> cols + j));
 		}

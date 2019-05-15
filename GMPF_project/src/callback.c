@@ -295,6 +295,68 @@ void callback_new(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
 
 
 /*
+ * Test if the string s1 contain s2
+ */
+bool str_contain (const char *s1, const char *s2)
+{
+    size_t i = 0;
+    while (s1[i] != '\0' && s2[i] != '\0')
+    {
+        if ((s1[i] > 'Z'?s1[i]-'a'+'A':s1[i]) != (s2[i] > 'Z'?s2[i]-'a'+'A':s2[i]))
+            return FALSE;
+        i++;
+    }
+
+    return s2[i] == '\0';
+}
+
+
+void callback_reset_search(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_LAYERMNGR(flowbox);
+
+    if (layermngr->layer_list.next != NULL)
+    {
+        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+        while (lay != NULL)
+        {
+            // D_PRINT("%s %s contain %s", lay->name, str_contain(lay->name, n) ? "" : "not", n);
+            gtk_widget_show((GtkWidget*) lay->UIElement);
+
+            if (!lay->list.next) break;
+            lay = container_of(lay->list.next, GMPF_Layer, list);
+        }
+    }
+}
+
+
+void callback_search(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkEntry, entry, "LayerSearchEntry");
+    GET_LAYERMNGR(flowbox);
+
+    const char *n = gtk_entry_get_text(entry);
+    if (layermngr->layer_list.next != NULL)
+    {
+        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+        while (lay != NULL)
+        {
+            // D_PRINT("%s %s contain %s", lay->name, str_contain(lay->name, n) ? "" : "not", n);
+            !str_contain(lay->name, n) ?
+                gtk_widget_hide((GtkWidget *)lay->UIElement) :
+                gtk_widget_show((GtkWidget *)lay->UIElement);
+
+
+            if (!lay->list.next) break;
+            lay = container_of(lay->list.next, GMPF_Layer, list);
+        }
+    }
+}
+
+
+/*
  * Create a new project with the size given by the user in the interface
  * (Clear the previous project if they were one)
  */

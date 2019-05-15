@@ -194,6 +194,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
                 <style>
                   <class name="text"/>
@@ -214,6 +216,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
                 <style>
                   <class name="text"/>
@@ -234,6 +238,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
                 <style>
                   <class name="text"/>
@@ -254,6 +260,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
                 <style>
                   <class name="text"/>
@@ -274,6 +282,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
                 <style>
                   <class name="text"/>
@@ -294,6 +304,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
                 <style>
                   <class name="text"/>
@@ -314,6 +326,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -331,6 +345,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -348,6 +364,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -365,6 +383,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -382,6 +402,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -399,6 +421,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -416,6 +440,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -433,6 +459,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -450,6 +478,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -467,6 +497,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -484,6 +516,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -501,6 +535,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -518,6 +554,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -535,6 +573,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -552,6 +592,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -569,6 +611,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -586,6 +630,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -603,6 +649,8 @@ without any warranty.
                 <property name="width_chars">4</property>
                 <property name="text" translatable="yes">0</property>
                 <property name="xalign">0.5</property>
+                <property name="overwrite_mode">True</property>
+                <property name="caps_lock_warning">False</property>
                 <property name="input_purpose">digits</property>
               </object>
               <packing>
@@ -2121,6 +2169,25 @@ without any warranty.
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
+                      <object class="GtkSearchEntry" id="LayerSearchEntry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="margin_left">5</property>
+                        <property name="margin_right">5</property>
+                        <property name="margin_top">5</property>
+                        <property name="primary_icon_name">edit-find-symbolic</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">False</property>
+                        <signal name="search-changed" handler="callback_search" swapped="no"/>
+                        <signal name="stop-search" handler="callback_reset_search" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkScrolledWindow">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -2159,7 +2226,7 @@ without any warranty.
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="position">0</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                     <child>
@@ -2267,7 +2334,7 @@ without any warranty.
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                     <style>
@@ -2497,10 +2564,8 @@ Samory DIABY</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="double_buffered">False</property>
-            <property name="has_frame">False</property>
             <property name="activates_default">True</property>
             <property name="text" translatable="yes">100</property>
-            <property name="overwrite_mode">True</property>
             <property name="caps_lock_warning">False</property>
             <property name="placeholder_text" translatable="yes">10</property>
             <property name="input_purpose">number</property>
@@ -2523,6 +2588,7 @@ Samory DIABY</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="text" translatable="yes">100</property>
+            <property name="caps_lock_warning">False</property>
             <property name="input_purpose">number</property>
             <property name="adjustment">LayerHeightAdjustment</property>
             <property name="climb_rate">0.01</property>
@@ -2542,6 +2608,7 @@ Samory DIABY</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="text" translatable="yes">0</property>
+            <property name="caps_lock_warning">False</property>
             <property name="adjustment">LayerOffsetXAdjustment</property>
             <style>
               <class name="shadowed"/>
@@ -2558,6 +2625,7 @@ Samory DIABY</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="text" translatable="yes">0</property>
+            <property name="caps_lock_warning">False</property>
             <property name="adjustment">LayerOffsetYAdjustment</property>
             <style>
               <class name="shadowed"/>
@@ -2759,9 +2827,7 @@ Samory DIABY</property>
             <property name="can_focus">True</property>
             <property name="has_focus">True</property>
             <property name="double_buffered">False</property>
-            <property name="has_frame">False</property>
             <property name="activates_default">True</property>
-            <property name="overwrite_mode">True</property>
             <property name="caps_lock_warning">False</property>
             <property name="placeholder_text" translatable="yes">10</property>
             <property name="input_purpose">number</property>
@@ -2784,6 +2850,7 @@ Samory DIABY</property>
           <object class="GtkSpinButton" id="LayerHeightSpinButton">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="has_frame">False</property>
             <property name="input_purpose">number</property>
             <property name="adjustment">LayerHeightAdjustment</property>
             <property name="climb_rate">0.01</property>
@@ -2802,6 +2869,7 @@ Samory DIABY</property>
           <object class="GtkSpinButton" id="LayerOffsetXSpinButton">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="has_frame">False</property>
             <property name="adjustment">LayerOffsetXAdjustment</property>
             <style>
               <class name="shadowed"/>
@@ -2817,6 +2885,7 @@ Samory DIABY</property>
           <object class="GtkSpinButton" id="LayerOffsetYSpinButton">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="has_frame">False</property>
             <property name="adjustment">LayerOffsetYAdjustment</property>
             <style>
               <class name="shadowed"/>
@@ -2937,6 +3006,7 @@ Samory DIABY</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="text" translatable="yes">100</property>
+            <property name="caps_lock_warning">False</property>
             <property name="input_purpose">number</property>
             <property name="adjustment">LayerHeightAdjustment</property>
             <property name="climb_rate">0.01</property>
@@ -2955,10 +3025,8 @@ Samory DIABY</property>
           <object class="GtkSpinButton" id="NewProjectWidthSpinButton">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="has_frame">False</property>
             <property name="activates_default">True</property>
             <property name="text" translatable="yes">100</property>
-            <property name="overwrite_mode">True</property>
             <property name="caps_lock_warning">False</property>
             <property name="placeholder_text" translatable="yes">10</property>
             <property name="input_purpose">number</property>
@@ -3122,6 +3190,8 @@ Samory DIABY</property>
       <object class="GtkGrid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">10</property>
+        <property name="margin_right">10</property>
         <property name="margin_top">10</property>
         <property name="margin_bottom">10</property>
         <property name="column_spacing">10</property>
@@ -3130,10 +3200,8 @@ Samory DIABY</property>
             <property name="width_request">300</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="has_frame">False</property>
             <property name="activates_default">True</property>
             <property name="text" translatable="yes">100</property>
-            <property name="overwrite_mode">True</property>
             <property name="caps_lock_warning">False</property>
             <property name="placeholder_text" translatable="yes">10</property>
             <property name="input_purpose">number</property>
@@ -3186,6 +3254,7 @@ Samory DIABY</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="text" translatable="yes">100</property>
+            <property name="caps_lock_warning">False</property>
             <property name="input_purpose">number</property>
             <property name="adjustment">LayerHeightAdjustment</property>
             <property name="climb_rate">0.01</property>
