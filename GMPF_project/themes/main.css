@@ -47,7 +47,7 @@ menuitem:last-child{
 menuitem:hover {
     box-shadow: none;
     background-image: none;
-    background-color: @ui_button_pressed_color;
+    background-color: @ui_button_hover_color;
     border-width: 0px;
     border-style: hidden;
 }
