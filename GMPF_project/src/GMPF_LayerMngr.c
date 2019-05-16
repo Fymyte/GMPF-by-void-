@@ -542,13 +542,13 @@ GMPF_Layer *layermngr_get_selected_layer(GtkFlowBox *flowbox)
 {
 
     if (flowbox == NULL)
-        return NULL;
+    { PRINTERR("No flowbox"); return NULL; }
 
     GMPF_LayerMngr *layermngr =
         (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
     if (layermngr->nb_layer == 0)
-        return NULL;
+    { PRINTERR("No data stored"); return NULL; }
 
     GMPF_Layer *layer = NULL; // remove NULL when finished
     GList *list = gtk_flow_box_get_selected_children(flowbox);

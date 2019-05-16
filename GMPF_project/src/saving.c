@@ -382,6 +382,9 @@ char loading_layer(GtkFlowBox *flowbox, const char *filename)
         return 1;
     }
 
+    GMPF_Layer *lay = container_of(list_get_last(&layermngr->layer_list), GMPF_Layer, list);
+    GMPF_buffer_add(flowbox, GMPF_ACTION_ADD, lay);
+
     fclose(file);
     return 0;
 }
