@@ -817,6 +817,11 @@ without any warranty.
       <class name="appwindow"/>
     </style>
   </object>
+  <object class="GtkFileFilter" id="ImagesFilters">
+    <mime-types>
+      <mime-type>image/*</mime-type>
+    </mime-types>
+  </object>
   <object class="GtkAdjustment" id="KillColorToleranceAdjustement">
     <property name="upper">100</property>
     <property name="step_increment">1</property>
@@ -1234,8 +1239,8 @@ without any warranty.
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="callback_delete" swapped="no"/>
-                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="Delete" signal="activate"/>
+                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -1714,6 +1719,7 @@ without any warranty.
                         <property name="label" translatable="yes">Changer de thème</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="callback_load_theme" swapped="no"/>
+                        <accelerator key="t" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -2949,16 +2955,16 @@ Samory DIABY</property>
           </packing>
         </child>
         <child>
-          <object class="GtkFileChooserButton" id="LayerImageFilename">
+          <object class="GtkButton" id="LayerFilenameButton">
+            <property name="label" translatable="yes">(Aucun)</property>
             <property name="width_request">300</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="title" translatable="yes"/>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="callback_choose_filename_for_layer" swapped="no"/>
             <style>
-              <class name="shadowed"/>
               <class name="margin-5"/>
-              <class name="border-radius-20"/>
-              <class name="window-background"/>
+              <class name="shadowed"/>
             </style>
           </object>
           <packing>

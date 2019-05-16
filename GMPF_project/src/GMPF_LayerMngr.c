@@ -7,6 +7,124 @@ extern SGlobalData G_user_data;
        (pos->x < 0 || pos->x >= size.w || \
         pos->y < 0 || pos->y >= size.h )
 
+
+/*****************************Project Info Code********************************/
+
+GMPF_ProjectInfo *GMPF_project_info_init(GtkFlowBox *flowbox)
+{
+    GMPF_ProjectInfo *info = malloc (sizeof(GMPF_ProjectInfo));
+    if (!info)
+        return NULL;
+    info->filename = NULL;
+    info->size.w = 0;
+    info->size.h = 0;
+    info->scale.x = 1;
+    info->scale.y = 1;
+    g_object_set_data(G_OBJECT(flowbox), PROJECT_INFO_KEY_NAME, info);
+    return info;
+}
+
+
+void GMPF_project_info_destroy(GtkFlowBox *flowbox)
+{
+    GMPF_ProjectInfo *info = GMPF_project_info_get_project_info(flowbox);
+    if (!info)
+        return;
+    if (info->filename)
+        free(info->filename);
+    free(info);
+    g_object_set_data(G_OBJECT(flowbox), PROJECT_INFO_KEY_NAME, NULL);
+}
+
+
+void GMPF_project_info_reset(GtkFlowBox *flowbox)
+{
+    GMPF_ProjectInfo *info = GMPF_project_info_get_project_info(flowbox);
+    if (!info)
+    { PRINTERR("Unable to get Project Info"); return; }
+
+    if (info->filename)
+        free(info->filename);
+    info->filename = NULL;
+    info->size.w = 0;
+    info->size.h = 0;
+    info->scale.x = 1;
+    info->scale.y = 1;
+}
+
+
+GMPF_ProjectInfo *GMPF_project_info_get_project_info(GtkFlowBox *flowbox)
+{
+    return g_object_get_data(G_OBJECT(flowbox), PROJECT_INFO_KEY_NAME);
+}
+
+
+GMPF_ProjectInfo *GMPF_project_info_set_project_info(GtkFlowBox       *flowbox,
+                                                     GMPF_ProjectInfo *info)
+{
+    GMPF_ProjectInfo *prev_info = GMPF_project_info_get_project_info(flowbox);
+    g_object_set_data(G_OBJECT(flowbox), PROJECT_INFO_KEY_NAME, info);
+    return prev_info;
+}
+
+
+char *GMPF_project_info_get_filename(GtkFlowBox *flowbox)
+{
+    GMPF_ProjectInfo *info = GMPF_project_info_get_project_info(flowbox);
+    if (!info)
+        return NULL;
+    return info->filename;
+}
+
+
+bool GMPF_project_info_set_filename(GtkFlowBox *flowbox, const char *filename)
+{
+    GMPF_ProjectInfo *info = GMPF_project_info_get_project_info(flowbox);
+    if (!info)
+        return TRUE;
+
+    info->filename = realloc(info->filename, sizeof(char) * (strlen(filename) + 1));
+    info->filename = strcpy(info->filename, filename);
+
+    return FALSE;
+}
+
+
+GMPF_Size *GMPF_project_info_get_size(GtkFlowBox *flowbox)
+{
+    GMPF_ProjectInfo *info = GMPF_project_info_get_project_info(flowbox);
+    return info ? &info->size : NULL;
+}
+
+
+bool GMPF_project_info_set_size(GtkFlowBox *flowbox,
+                               GMPF_Size   size)
+{
+    GMPF_ProjectInfo *info = GMPF_project_info_get_project_info(flowbox);
+    if (!info)
+        return TRUE;
+    info->size = size;
+    return FALSE;
+}
+
+
+GMPF_Scale *GMPF_project_info_get_scale(GtkFlowBox *flowbox)
+{
+    GMPF_ProjectInfo *info = GMPF_project_info_get_project_info(flowbox);
+    return info ? &info->scale : NULL;
+}
+
+
+bool GMPF_project_info_set_scale(GtkFlowBox *flowbox,
+                                 GMPF_Scale  scale)
+{
+    GMPF_ProjectInfo *info = GMPF_project_info_get_project_info(flowbox);
+    if (!info)
+        return TRUE;
+    info->scale = scale;
+    return FALSE;
+}
+
 /***************************Selected Surface Code******************************/
 
 /*
@@ -40,6 +158,22 @@ void GMPF_selection_destroy(GtkFlowBox *flowbox)
         cairo_surface_destroy(selection->surface);
     free(selection);
     g_object_set_data(G_OBJECT(flowbox), SELECTION_KEY_NAME, NULL);
+}
+
+
+void GMPF_selection_reset(GtkFlowBox *flowbox)
+{
+    GMPF_Selection *selection = GMPF_selection_get_selection(flowbox);
+    if (!selection)
+        return;
+    while (cairo_surface_get_reference_count(selection->surface))
+        cairo_surface_destroy(selection->surface);
+
+    selection->surface = NULL;
+    selection->size.w = 0;
+    selection->size.h = 0;
+    selection->pos.x = 0;
+    selection->pos.y = 0;
 }
 
 
@@ -344,7 +478,18 @@ void GMPF_saved_state_set_is_saved(GtkFlowBox *flowbox,
     GMPF_SavedState *saved_state = GMPF_saved_state_get_saved_state(flowbox);
     if (!state)
     { GMPF_auto_save_project(flowbox); }
+    else
+    {
+        char *project_filename = GMPF_project_info_get_filename(flowbox);
+        if (!project_filename)
+            return;
 
+        char *filename = malloc(sizeof(char) * (strlen(project_filename) + 2));
+        sprintf(filename, "%s~", project_filename);
+        if (remove (filename))
+        { D_PRINT("Unable to remove file", NULL); }
+        free(filename);
+    }
     saved_state->state = state;
 }
 
@@ -352,23 +497,22 @@ void GMPF_saved_state_set_is_saved(GtkFlowBox *flowbox,
 /*
  * Set the state of the SavedState attached to the flowbox to "state"
  */
-void GMPF_saved_state_set_is_saved_filename(GtkFlowBox *flowbox,
-                                           int         state,
-                                           char       *filename)
-{
-    GMPF_SavedState *saved_state = GMPF_saved_state_get_saved_state(flowbox);
-    if (!state)
-    { GMPF_auto_save_project(flowbox); }
-    else
-    {
-        char *filename2 = malloc(sizeof(char) * (strlen(filename) + 2));
-        sprintf(filename2, "%s~", filename);
-        if (remove (filename2))
-        { D_PRINT("Unable to remove file", NULL); }
-        free(filename2);
-    }
-    saved_state->state = state;
-}
+// void GMPF_saved_state_set_is_saved_filename(GtkFlowBox *flowbox,
+//                                            int         state)
+// {
+//     GMPF_SavedState *saved_state = GMPF_saved_state_get_saved_state(flowbox);
+//     if (!state)
+//     { GMPF_auto_save_project(flowbox); }
+//     else
+//     {
+//         char *filename2 = malloc(sizeof(char) * (strlen(filename) + 2));
+//         sprintf(filename2, "%s~", filename);
+//         if (remove (filename2))
+//         { D_PRINT("Unable to remove file", NULL); }
+//         free(filename2);
+//     }
+//     saved_state->state = state;
+// }
 
 /******************************End of Saved State******************************/
 
@@ -406,13 +550,8 @@ void layermngr_set_to_flowbox(GtkFlowBox     *flowbox,
  */
 void layermngr_initialization(GMPF_LayerMngr *layermngr)
 {
-    layermngr->size.h = 0;
-    layermngr->size.w = 0;
-
     layermngr->pos.x = -1;
     layermngr->pos.y = -1;
-
-    layermngr->filename = NULL;
 
     layermngr->nb_layer = 0;
     list_init(&(layermngr->layer_list));
@@ -421,7 +560,6 @@ void layermngr_initialization(GMPF_LayerMngr *layermngr)
     layermngr->brush = CIRCULAR;
 
     layermngr->image = NULL;
-    layermngr->display_image = NULL;
 
     layermngr->surface = NULL;
 }
@@ -448,8 +586,6 @@ void layermngr_clear(GtkFlowBox *flowbox)
     // clear the images
     if (layermngr->image != NULL)
         g_object_unref(layermngr->image);
-    if (layermngr->display_image != NULL)
-        g_object_unref(layermngr->display_image);
 
     // reset default values
     layermngr_initialization(layermngr);
@@ -548,7 +684,7 @@ GMPF_Layer *layermngr_get_selected_layer(GtkFlowBox *flowbox)
         (GMPF_LayerMngr *) g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME);
 
     if (layermngr->nb_layer == 0)
-    { PRINTERR("No data stored"); return NULL; }
+    {  D_PRINT("No data stored", NULL); return NULL; }
 
     GMPF_Layer *layer = NULL; // remove NULL when finished
     GList *list = gtk_flow_box_get_selected_children(flowbox);

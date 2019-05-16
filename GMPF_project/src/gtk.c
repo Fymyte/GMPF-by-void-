@@ -53,10 +53,12 @@ int GMPF_start()
     // INIT THE WINDOW ELEMENT
     GtkFlowBox *flowbox = NULL;
     flowbox = (GtkFlowBox *) (gtk_builder_get_object(data.builder, "GMPF_flowbox"));
+
     layermngr_create(flowbox);
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     layermngr->brush_size = 4;
 
+    GMPF_project_info_init(flowbox);
     GMPF_saved_state_init(flowbox);
     GMPF_selection_init(flowbox);
     GMPF_buffer_init(flowbox);
@@ -107,6 +109,7 @@ void GMPF_quit (GtkFlowBox *flowbox,
     GMPF_saved_state_destroy(flowbox);
     GMPF_selection_destroy(flowbox);
     GMPF_buffer_destroy(flowbox);
+    GMPF_project_info_destroy(flowbox);
     resetCursor(window);
     gtk_main_quit();
 }

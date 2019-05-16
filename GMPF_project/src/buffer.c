@@ -34,6 +34,17 @@ void GMPF_buffer_destroy(GtkFlowBox *flowbox)
 }
 
 
+void GMPF_buffer_reset(GtkFlowBox *flowbox)
+{
+    GMPF_Buffer *buffer = GMPF_buffer_get_buffer(flowbox);
+
+    if (!buffer)
+    { PRINTERR("Unable to get buffer"); return; }
+
+    buffer_init(buffer);
+}
+
+
 /*
  * Return the Buffer associated with the given flowbox
  * (Return: the Buffer, or NULL if there is no associated Buffer)

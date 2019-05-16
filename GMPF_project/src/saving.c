@@ -91,6 +91,25 @@ char *filename_get_name_of_file(char *filename)
 }
 
 
+char save_project_info(GMPF_ProjectInfo *info, FILE *file)
+{
+    if (fwrite(info, sizeof(GMPF_ProjectInfo), 1, file) != 1)
+        return 1;
+    return 0;
+}
+
+char load_project_info(GtkFlowBox *flowbox, FILE *file)
+{
+    GMPF_ProjectInfo *info = malloc(sizeof(GMPF_ProjectInfo));
+    if (!info) { PRINTERR("Unable to malloc"); return 1; }
+    if (fread(info, sizeof(GMPF_ProjectInfo), 1, file) != 1)
+    { PRINTERR ("Unable to read Project Info in filestream"); return 1; }
+    info->filename = 0;
+    GMPF_project_info_set_project_info(flowbox, info);
+    return 0;
+}
+
+
 /*
  * Save the given LayerMngr in File "file"
  * (Return: 0 if there is no error, else 1)
@@ -117,11 +136,7 @@ char load_layermngr(GtkFlowBox *flowbox, FILE *file)
     list_init(&(layermngr->layer_list));
 
     layermngr->surface = NULL;
-    // NEED TO INIT THE CAIRO SURFACE
-
     layermngr->image = NULL;
-    layermngr->display_image = NULL;
-    layermngr->filename = NULL;
 
     layermngr_set_to_flowbox(flowbox, layermngr);
     return 0;
@@ -240,6 +255,8 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
 {
     // write the file / delete it if it already exists
     //FILE *tmpFile = tmpfile(void);
+    GMPF_ProjectInfo *info = GMPF_project_info_get_project_info(flowbox);
+    if (!info) { PRINTERR("Unable to get Project Info"); return 1; }
 
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     if (layermngr == NULL) { PRINTERR ("Unable to get LayerMngr"); return 1; }
@@ -247,8 +264,15 @@ char save_project(GtkFlowBox *flowbox, const char *filename)
     FILE *file = fopen(filename, "wb"); // write as binary => rb
     if (file == NULL) { PRINTERR ("Unable to open filestream"); return 1; }
 
-    char err = save_layermngr(layermngr, file);
+    char err = save_project_info(info, file);
+    if (err)
+    {
+        if (fclose(file)) { PRINTERR("Unable to close filestream"); }
+        PRINTERR("Unable to save Project Info");
+        return 1;
+    }
 
+    err = save_layermngr(layermngr, file);
     if (err)
     {
         if (fclose(file)) { PRINTERR("Unable to close filestream"); }
@@ -289,10 +313,21 @@ char load_project(GtkFlowBox *flowbox,
     FILE *file = fopen(filename, "rb"); // read as binary => rb
     if (file == NULL) { PRINTERR ("Unable to open filestream"); return 1; }
 
+    GMPF_project_info_destroy(flowbox);
+
     if (g_object_get_data(G_OBJECT(flowbox), LAYERMNGR_KEY_NAME) != NULL)
         layermngr_delete(flowbox);
 
-    char err = load_layermngr(flowbox, file);
+    char err = load_project_info(flowbox, file);
+    if (err)
+    {
+        if (fclose(file)) { PRINTERR ("Unable to close filestream"); }
+        PRINTERR ("Unable to load Project Info");
+        return 1;
+    }
+    GMPF_project_info_set_filename(flowbox, filename);
+
+    err = load_layermngr(flowbox, file);
     if (err)
     {
         if (fclose(file)) { PRINTERR ("Unable to close filestream"); }
@@ -397,6 +432,7 @@ char loading_layer(GtkFlowBox *flowbox, const char *filename)
 int export_cairo_to_png(gchar *filename, GtkFlowBox *flowbox)
 {
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    GMPF_Size size = *GMPF_project_info_get_size(flowbox);
 
     if (layermngr->layer_list.next == NULL)
         return -1; //save failed
@@ -405,7 +441,7 @@ int export_cairo_to_png(gchar *filename, GtkFlowBox *flowbox)
 
 	//create a new surface and context to store all the layer surfaces
 	cairo_surface_t *final_surface =
-		cairo_image_surface_create (CAIRO_FORMAT_ARGB32, layermngr->size.w, layermngr->size.h);
+		cairo_image_surface_create (CAIRO_FORMAT_ARGB32, size.w, size.h);
 	cairo_t *final_context = cairo_create(final_surface);
 
 	//write the surfaces on the new surface

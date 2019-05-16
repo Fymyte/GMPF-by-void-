@@ -20,7 +20,7 @@ char is_file_exist(const char *filename)
  *                 2 for "Confirmer"
  *   NOTES :
  */
-char open_confirm_quit_without_saving_dialog()
+char open_confirm_quit_without_saving_dialog(const char *msg)
 {
     // gtk_file_filter_add_pattern(filter, "*.gmpf~");
     GET_UI(GtkWindow, window, "MainWindow");
@@ -36,26 +36,34 @@ char open_confirm_quit_without_saving_dialog()
                                         ("_Confirmer"), 2,
                                         NULL);
     GtkWidget *content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-    GtkWidget *label = gtk_label_new("Quitter sans sauvegarder ?");
+    if (!msg)
+        msg = "Quitter sans sauvegarder ?\nToute modification non sauvegardé sera perdu!";
+    GtkWidget *label = gtk_label_new(msg);
+    gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
     gtk_container_add(GTK_CONTAINER(content), label);
-    gtk_widget_set_margin_start(label, 10);
-    gtk_widget_set_margin_end(label, 10);
-    gtk_widget_set_margin_top(label, 10);
-    gtk_widget_set_margin_bottom(label, 10);
+    GtkStyleContext *context = gtk_widget_get_style_context(dialog);
+    gtk_style_context_add_class(context,"window-background");
+    context = gtk_widget_get_style_context(content);
+    gtk_style_context_add_class(context,"window-background");
+    gtk_style_context_add_class(context,"margin-10");
+    context = gtk_widget_get_style_context(label);
+    gtk_style_context_add_class(context,"window-background-soft");
+    gtk_style_context_add_class(context,"margin-20");
+    gtk_style_context_add_class(context,"padding-20");
+    gtk_style_context_add_class(context,"border-radius-10");
     gtk_window_set_title(GTK_WINDOW(dialog), "Attention");
     gtk_window_set_deletable(GTK_WINDOW(dialog), FALSE);
-    // gtk_window_set_decorated(GTK_WINDOW(dialog), FALSE);
     gtk_widget_show_all(dialog);
     res = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
     if (res == 2)
     {
-        GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-        if (!layermngr->filename)
+        char *project_filename = GMPF_project_info_get_filename(flowbox);
+        if (!project_filename)
         { return res; }
 
-        char *filename = malloc(sizeof(char) * (strlen(layermngr->filename) + 6));
-        sprintf(filename, "%s~", layermngr->filename);
+        char *filename = malloc(sizeof(char) * (strlen(project_filename) + 6));
+        sprintf(filename, "%s~", project_filename);
         if (remove (filename))
         { D_PRINT("Unable to remove file", NULL); }
         free(filename);
@@ -85,12 +93,19 @@ char open_open_auto_saved_file_dialog()
                                         ("Oui"), 1,
                                         NULL);
     GtkWidget *content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-    GtkWidget *label = gtk_label_new("Nous avons détecter une version plus récente de ce fichier. Voulez-vous la charger ?");
+    GtkWidget *label = gtk_label_new("Nous avons détecter une version plus récente de ce fichier.\nVoulez-vous la charger ?");
+    gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
     gtk_container_add(GTK_CONTAINER(content), label);
-    gtk_widget_set_margin_start(label, 10);
-    gtk_widget_set_margin_end(label, 10);
-    gtk_widget_set_margin_top(label, 10);
-    gtk_widget_set_margin_bottom(label, 10);
+    GtkStyleContext *context = gtk_widget_get_style_context(dialog);
+    gtk_style_context_add_class(context,"window-background");
+    context = gtk_widget_get_style_context(content);
+    gtk_style_context_add_class(context,"window-background");
+    gtk_style_context_add_class(context,"margin-10");
+    context = gtk_widget_get_style_context(label);
+    gtk_style_context_add_class(context,"window-background-soft");
+    gtk_style_context_add_class(context,"margin-20");
+    gtk_style_context_add_class(context,"padding-20");
+    gtk_style_context_add_class(context,"border-radius-10");
     gtk_window_set_title(GTK_WINDOW(dialog), "Attention");
     gtk_window_set_deletable(GTK_WINDOW(dialog), FALSE);
     // gtk_window_set_decorated(GTK_WINDOW(dialog), FALSE);
@@ -201,15 +216,11 @@ void open_new_file(GtkWindow      *window,
     res = gtk_dialog_run (GTK_DIALOG (dialog));
     if (res == GTK_RESPONSE_ACCEPT)
     {
-        char *filename;
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
-        filename = gtk_file_chooser_get_filename (chooser);
+        char *filename = gtk_file_chooser_get_filename(fileChooser);
         gtk_widget_destroy(dialog);
         char *ext = get_extension(filename);
         if (!strcmp(ext, "gmpf"))
         {
-            if (layermngr->filename != NULL)
-                free(layermngr->filename);
             char *tmpfile = malloc(sizeof(char) * (strlen(filename) + 2));
             sprintf(tmpfile, "%s~", filename);
             char open = 0;
@@ -232,14 +243,14 @@ void open_new_file(GtkWindow      *window,
             }
             free(tmpfile);
 
-            layermngr->filename = filename;
-            D_PRINT("filename: %s", layermngr->filename);
-            GMPF_saved_state_set_is_saved_filename(flowbox, 1, filename);
-            int width = layermngr->size.w;
-            int height = layermngr->size.h;
+            GMPF_saved_state_set_is_saved(flowbox, 1);
+            GMPF_Size size = *GMPF_project_info_get_size(flowbox);
+
             char *title = malloc (sizeof(char) * (strlen(filename) + 30));
-            sprintf(title, "GMPF - %s : %d * %d", filename, width, height);
+            sprintf(title, "GMPF - %s : %ld * %ld", filename, size.w, size.h);
             gtk_window_set_title(window, (const char*)title);
+            g_free(title); // Need to free the title of the window ?
+            g_free(filename);
         }
         else
         {
@@ -251,7 +262,6 @@ void open_new_file(GtkWindow      *window,
     {
         gtk_widget_destroy(dialog);
     }
-
 }
 
 
@@ -270,7 +280,7 @@ void callback_open(UNUSED GtkMenuItem *menu,
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     int confirm = 2;
     if (!GMPF_saved_state_get_is_saved(flowbox))
-        confirm = open_confirm_quit_without_saving_dialog();
+        confirm = open_confirm_quit_without_saving_dialog(NULL);
 
     if (confirm == 0)
     { return; }
@@ -375,25 +385,26 @@ void callback_new_project(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
 
     layermngr_clear(flowbox);
 
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    layermngr->size.w = atoi(w);
-    layermngr->size.h = atoi(h);
+    GMPF_Size size = { .w = atoll(w), .h = atoll(h) };
+    GMPF_project_info_set_size(flowbox, size);
+    GMPF_Scale scale = *GMPF_project_info_get_scale(flowbox);
 
     GMPF_Layer *lay = layermngr_add_new_layer(flowbox, NULL);
     layer_set_name(lay, (char*)n);
-    lay->size.w = atoi(w);
-    lay->size.h = atoi(h);
+    lay->size.w = size.w;
+    lay->size.h = size.h;
 
     if (lay->image)
         g_object_unref(lay->image);
+
     while (cairo_surface_get_reference_count(lay->surface) > 0)
         cairo_surface_destroy(lay->surface);
     lay->image = new_pixbuf_standardized(&lay->size);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 0, NULL);
     REFRESH_IMAGE(lay);
 
-    int max_width = layermngr->size.w * lay->scale_factor.x;
-    int max_height = layermngr->size.h * lay->scale_factor.y;
+    int max_width = size.w * scale.x;
+    int max_height = size.h * scale.y;
     gtk_widget_set_size_request(layout, max_width, max_height);
     gtk_widget_set_size_request(da, max_width, max_height);
     gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
@@ -426,17 +437,12 @@ void callback_resize_project(UNUSED GtkWidget *widget, UNUSED gpointer user_data
     const gchar *w = gtk_entry_get_text(width);
     const gchar *h = gtk_entry_get_text(height);
 
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    layermngr->size.w = atoi(w);
-    layermngr->size.h = atoi(h);
+    GMPF_Size size = { .w = atoll(w), .h = atoll(h) };
+    GMPF_project_info_set_size(flowbox, size);
+    GMPF_Scale scale = *GMPF_project_info_get_scale(flowbox);
 
-    GMPF_Layer *lay = NULL;
-
-     if (layermngr->layer_list.next != NULL)
-        lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
-
-    int max_width = layermngr->size.w * (lay ? lay->scale_factor.x : 1);
-    int max_height = layermngr->size.h * (lay ? lay->scale_factor.y : 1);
+    int max_width = size.w * scale.x;
+    int max_height = size.h * scale.y;
     gtk_widget_set_size_request(layout, max_width, max_height);
     gtk_widget_set_size_request(da, max_width, max_height);
     gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
@@ -676,6 +682,8 @@ void callback_adjust_scale(GtkEntry *entry,
     const gchar *s = gtk_entry_get_text (entry);
     float scaleValue = atof(s) / 100;
     GMPF_Size size = adjust_scale (scaleValue, scaleValue, layermngr);
+    GMPF_Scale scale = { .x = scaleValue, .y = scaleValue };
+    GMPF_project_info_set_scale(flowbox, scale);
     int max_width = size.w;
     int max_height = size.h;
 
@@ -763,8 +771,11 @@ void callback_show_layer_window(UNUSED GtkWidget *widget,
     GET_UI(GtkSpinButton, height, "LayerHeightSpinButton");
     GET_UI(GtkSpinButton, offsetX, "LayerOffsetXSpinButton");
     GET_UI(GtkSpinButton, offsetY, "LayerOffsetYSpinButton");
-    GET_UI(GtkFileChooser, filename, "LayerImageFilename");
+    GET_UI(GtkButton, button, "LayerFilenameButton")
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    g_object_set_data(G_OBJECT(flowbox), FILENAME_KEY_NAME, NULL);
+    gtk_button_set_label(button, "(Aucun)");
 
     GET_LAYERMNGR(flowbox);
     if (!layermngr->layer_list.next)
@@ -775,13 +786,50 @@ void callback_show_layer_window(UNUSED GtkWidget *widget,
     }
 
     gtk_entry_set_text(name, "");
-    gtk_spin_button_set_value(width, layermngr->size.w);
-    gtk_spin_button_set_value(height, layermngr->size.h);
+    GMPF_Size size = *GMPF_project_info_get_size(flowbox);
+    gtk_spin_button_set_value(width, size.w);
+    gtk_spin_button_set_value(height, size.h);
     gtk_spin_button_set_value(offsetX, 0);
     gtk_spin_button_set_value(offsetY, 0);
-    gtk_file_chooser_set_filename(filename, NULL);
 
     gtk_widget_show(layer_window);
+}
+
+
+void callback_choose_filename_for_layer(UNUSED GtkWidget *widget,
+                                        UNUSED gpointer user_data)
+{
+    GET_UI(GtkWindow, window, "MainWindow");
+    GET_UI(GObject, flowbox, "GMPF_flowbox");
+    GET_UI(GtkButton, button, "LayerFilenameButton");
+    GtkWidget *dialog;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    gint res;
+
+    dialog = gtk_file_chooser_dialog_new ("Choisir un fichier image",
+                                          window,
+                                          action,
+                                          ("_Annuler"),
+                                          GTK_RESPONSE_CANCEL,
+                                          ("_Ouvrir"),
+                                          GTK_RESPONSE_ACCEPT,
+                                          NULL);
+    GtkFileChooser *fileChooser = GTK_FILE_CHOOSER(dialog);
+    GtkFileFilter *filter = gtk_file_filter_new ();
+    gtk_file_filter_add_mime_type(filter, "image/*");
+    gtk_file_chooser_set_filter(fileChooser, filter);
+
+    res = gtk_dialog_run (GTK_DIALOG (dialog));
+    if (res)
+    {
+        char *filename = gtk_file_chooser_get_filename(fileChooser);
+        char *nfilename = malloc (sizeof(char) * (strlen(filename) + 1));
+        nfilename = strcpy(nfilename, filename);
+        free(filename);
+        gtk_button_set_label(button, filename_get_name_of_file(nfilename));
+        g_object_set_data(flowbox, FILENAME_KEY_NAME, nfilename);
+    }
+    gtk_widget_destroy(dialog);
 }
 
 
@@ -806,23 +854,6 @@ void clear_surface ()
     cairo_paint (cr);
 
     cairo_destroy (cr);
-}
-
-
-/*
- * Create a new surface of the appropriate size to store our scribbles
- */
-gboolean callback_configure_event (UNUSED GtkWidget         *widget,
-                                   UNUSED GdkEventConfigure *event,
-                                   UNUSED gpointer           user_data)
-{
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    if (!layermngr)
-        D_PRINT("unable to get layermngr", NULL);
-
-    layermngr->surface = NULL;
-    return TRUE;
 }
 
 
@@ -1084,6 +1115,8 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    GMPF_Size size = *GMPF_project_info_get_size(flowbox);
+    GMPF_Scale scale = *GMPF_project_info_get_scale(flowbox);
 
     cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_NEAREST);
 
@@ -1091,8 +1124,8 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
     if (layermngr->layer_list.next != NULL)
     {
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
-        int max_width = layermngr->size.w * lay->scale_factor.x;
-        int max_height = layermngr->size.h * lay->scale_factor.y;
+        int max_width = size.w * scale.x;
+        int max_height = size.h * scale.y;
         gtk_widget_set_size_request(layout, max_width, max_height);
         gtk_widget_set_size_request(da, max_width, max_height);
         gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
@@ -1102,8 +1135,8 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
             if (lay->isvisible)
             {
                 cairo_save(cr);
-                cairo_scale(cr, lay->scale_factor.x, lay->scale_factor.y);
-                (cairo_set_source_surface) (cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
+                cairo_scale(cr, scale.x, scale.y);
+                cairo_set_source_surface(cr, lay->surface, (double)lay->pos.x, (double)lay->pos.y);
                 cairo_paint(cr);
                 cairo_restore(cr);
             }
@@ -1111,7 +1144,7 @@ void callback_on_draw_event(UNUSED GtkWidget *widget,
             lay = container_of(lay->list.next, GMPF_Layer, list);
         }
     }
-    GMPF_Size size = *GMPF_selection_get_size(flowbox);
+    size = *GMPF_selection_get_size(flowbox);
     if (size.w > 0 && size.h > 0)
     {
         GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
@@ -1331,7 +1364,6 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget,
     GET_UI(GtkEntry, height, "LayerHeightSpinButton");
     GET_UI(GtkEntry, offsetX, "LayerOffsetXSpinButton");
     GET_UI(GtkEntry, offsetY, "LayerOffsetYSpinButton");
-    GET_UI(GtkFileChooser, filename, "LayerImageFilename");
     GET_UI(GtkWidget, window, "LayerWindow");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
@@ -1340,9 +1372,9 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget,
     const gchar *h = gtk_entry_get_text(height);
     const gchar *x = gtk_entry_get_text(offsetX);
     const gchar *y = gtk_entry_get_text(offsetY);
-    const gchar *f = gtk_file_chooser_get_filename(filename);
-
+    char *f = g_object_get_data(G_OBJECT(flowbox), FILENAME_KEY_NAME);
     GMPF_Layer *lay = layermngr_add_new_layer(flowbox, f);
+    free(f);
     layer_set_name(lay, (char*)n);
     lay->size.w = atoi(w);
     lay->size.h = atoi(h);
@@ -1371,18 +1403,18 @@ void callback_add_custom_layer(UNUSED GtkWidget *widget,
     }
     GMPF_buffer_add(flowbox, GMPF_ACTION_ADD, lay);
 
-
     gtk_widget_hide(window);
 }
 
 
 char GMPF_auto_save_project(GtkFlowBox *flowbox)
 {
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    if (!layermngr->filename)
-    { return 1; }
-    char *filename = malloc (sizeof(char) * (2 + strlen(layermngr->filename)));
-    sprintf(filename, "%s~", layermngr->filename);
+    char *project_filename = GMPF_project_info_get_filename(flowbox);
+    if (check_extension(project_filename, "gmpf"))
+    { return 0; }
+
+    char *filename = malloc (sizeof(char) * (2 + strlen(project_filename)));
+    sprintf(filename, "%s~", project_filename);
     if (save_project(flowbox, filename))
     {
         PRINTERR("Unable to save project");
@@ -1399,12 +1431,13 @@ char GMPF_auto_save_project(GtkFlowBox *flowbox)
 gboolean GMPF_save_project()
 {
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-    if (layermngr->filename == NULL)
+    char *project_filename = GMPF_project_info_get_filename(flowbox);
+    D_PRINT("pname: %s", project_filename);
+    if (!project_filename || check_extension(project_filename, "gmpf"))
         return GMPF_save_under_project();
     else
     {
-        char err = save_project(flowbox, (const char*)layermngr->filename);
+        char err = save_project(flowbox, (const char*)project_filename);
         if (err)
         {
             D_PRINT("Unable to save project", NULL);
@@ -1436,8 +1469,6 @@ gboolean GMPF_save_under_project()
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWindow, window, "MainWindow");
 
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
-
     GtkWidget *dialog;
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
     gint res;
@@ -1465,9 +1496,7 @@ gboolean GMPF_save_under_project()
     if (res == GTK_RESPONSE_ACCEPT)
     {
         char *filename = gtk_file_chooser_get_filename (fileChooser);
-        if (layermngr->filename)
-            free(layermngr->filename);
-        layermngr->filename = filename;
+        GMPF_project_info_set_filename(flowbox, filename);
         gtk_widget_destroy (dialog);
         char err = save_project(flowbox, (const char*)filename);
         if (err)
@@ -1602,19 +1631,21 @@ void load_image_cairo(GtkWindow *window,
     layermngr_clear(flowbox);
     GMPF_Layer *layer = layermngr_add_new_layer(flowbox, filename);
     GMPF_buffer_add(flowbox, GMPF_ACTION_ADD, layer);
+    GMPF_project_info_set_filename(flowbox, filename);
 
     //
-    int width, height;
     layermngr->image  = gdk_pixbuf_new_from_file(filename, &error);
-    width  = gdk_pixbuf_get_width  (layermngr->image);
-    height = gdk_pixbuf_get_height (layermngr->image);
+    int width  = gdk_pixbuf_get_width  (layermngr->image);
+    int height = gdk_pixbuf_get_height (layermngr->image);
+
     char *title = malloc (sizeof(char) * (strlen(filename) + 30));
     sprintf(title, "GMPF - %s : %d * %d", filename, width, height);
     gtk_window_set_title(window, (const char*)title);
+    free(title);
     GMPF_saved_state_set_is_saved(flowbox, 0);
 
-    layermngr->size.w = width;
-    layermngr->size.h = height;
+    GMPF_Size size = { .w = width, .h = height };
+    GMPF_project_info_set_size(flowbox, size);
 
     layermngr->surface = gdk_cairo_surface_create_from_pixbuf(layermngr->image, 0, NULL);
 
@@ -1630,7 +1661,6 @@ void load_image_cairo(GtkWindow *window,
         g_object_unref (layermngr->image);
         layermngr->image = i;
     }
-    layermngr->filename = NULL;
 }
 
 
@@ -1755,6 +1785,10 @@ void callback_test_matrix(UNUSED GtkWidget *widget,
 }
 
 
+/*
+ * Show or hide the cases from matrix in the custom filter window according to
+ * the selected matrix size_t
+ */
 void callback_show_hide_matrix_case(GtkSwitch *sw, UNUSED gpointer user_data)
 {
     char isOn = gtk_switch_get_active(sw);
@@ -1791,7 +1825,6 @@ void callback_show_hide_matrix_case(GtkSwitch *sw, UNUSED gpointer user_data)
     isOn ? gtk_widget_show(w4w3w) : gtk_widget_hide(w4w3w);
     isOn ? gtk_widget_show(w4w4w) : gtk_widget_hide(w4w4w);
 }
-
 
 
 /*
@@ -2451,8 +2484,14 @@ void callback_undo(UNUSED GtkWidget *widget,
     GMPF_Layer *lay = NULL;
     if (layermngr->layer_list.next != NULL)
         lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
-    int max_width = layermngr->size.w * (lay ? lay->scale_factor.x : 1);
-    int max_height = layermngr->size.h * (lay ? lay->scale_factor.y : 1);
+
+    GMPF_Size size = *GMPF_project_info_get_size(flowbox);
+    // if (!size) { return; }
+    GMPF_Scale scale = *GMPF_project_info_get_scale(flowbox);
+    // if (!scale) { return; }
+
+    int max_width = size.w * scale.x;
+    int max_height = size.h * scale.y;
 
     GMPF_buffer_undo(flowbox);
 
@@ -2462,19 +2501,21 @@ void callback_undo(UNUSED GtkWidget *widget,
     gtk_widget_queue_draw(da);
 }
 
+
 void callback_redo(UNUSED GtkWidget *widget,
                    UNUSED gpointer   user_data)
 {
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
 
-    GMPF_Layer *lay = NULL;
-    if (layermngr->layer_list.next != NULL)
-        lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
-    int max_width = layermngr->size.w * (lay ? lay->scale_factor.x : 1);
-    int max_height = layermngr->size.h * (lay ? lay->scale_factor.y : 1);
+    GMPF_Size size = *GMPF_project_info_get_size(flowbox);
+    // if (!size) { return; }
+    GMPF_Scale scale = *GMPF_project_info_get_scale(flowbox);
+    // if (!scale) { return; }
+
+    int max_width = size.w * scale.x;
+    int max_height = size.h * scale.y;
 
     GMPF_buffer_redo(flowbox);
 
@@ -2497,7 +2538,7 @@ void callback_quit(UNUSED GtkWidget *widget,
     int confirm = 2;
 
     if (!GMPF_saved_state_get_is_saved(flowbox))
-        confirm = open_confirm_quit_without_saving_dialog();
+        confirm = open_confirm_quit_without_saving_dialog(NULL);
 
     if (confirm == 0)
         return;
@@ -2523,7 +2564,7 @@ gboolean do_destroy_event(UNUSED GtkWidget *widget,
     GET_UI(GtkWindow, window, "MainWindow");
     int confirm = 2;
     if (!GMPF_saved_state_get_is_saved(flowbox))
-        confirm = open_confirm_quit_without_saving_dialog();
+        confirm = open_confirm_quit_without_saving_dialog(NULL);
 
     if (confirm == 0)
         return TRUE;
@@ -2628,10 +2669,25 @@ void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem,
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
+    if (!layermngr_get_selected_layer(flowbox))
+    { return; }
+
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    int confirm = 2;
+    if (layermngr->layer_list.next && !layermngr->layer_list.next->next)
+    {
+        const char *msg = "Supprimer ce calque ferme le projet.\nVoulez vous continuer ?";
+        confirm = open_confirm_quit_without_saving_dialog(msg);
+    }
+    if (!confirm) { return; }
+    if (confirm == 1) { GMPF_save_project(); }
+
     layermngr_delete_selected_layer(flowbox);
     if (!layermngr->layer_list.next)
     {
+        layermngr_clear(flowbox);
+        GMPF_buffer_reset(flowbox);
+        GMPF_project_info_reset(flowbox);
         gtk_widget_set_size_request(layout, 0, 0);
         gtk_widget_set_size_request(da, 0, 0);
         gtk_layout_set_size((GtkLayout *)layout, 0, 0);
@@ -2639,9 +2695,8 @@ void callback_remove_selected_layer(UNUSED GtkMenuItem *menuitem,
     gtk_widget_queue_draw(da);
 }
 
-    // gtk_file_filter_add_pattern(filter, "*.gmpf~");
+
 void callback_select_brush(GtkWidget *brush, UNUSED gpointer user_data)
-    // gtk_file_filter_add_pattern(filter, "*.gmpf~");
 {
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -2660,6 +2715,7 @@ void callback_select_brush(GtkWidget *brush, UNUSED gpointer user_data)
 
     D_PRINT("brush: %s", gtk_widget_get_name(brush));
 }
+
 
 void callback_show_window(UNUSED GtkMenuItem *menuitem, GtkWindow *window)
 {

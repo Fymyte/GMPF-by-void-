@@ -26,6 +26,7 @@ typedef struct GMPF_Pixel GMPF_Pixel;
 typedef struct GMPF_Layer GMPF_Layer;
 typedef struct GMPF_Selection GMPF_Selection;
 typedef struct GMPF_LayerMngr GMPF_LayerMngr;
+typedef struct GMPF_ProjectInfo GMPF_ProjectInfo;
 
 /*
  * Enumeration of the different tools for the application
@@ -206,13 +207,10 @@ struct GMPF_Layer {
 
 struct GMPF_LayerMngr {
 
-    GMPF_Size        size;
     GMPF_Pos         pos;
     Uint16           nb_layer;
     GMPF_Tool        tool;
     GMPF_List        layer_list;
-
-    char            *filename;
 
     cairo_surface_t *surface;
 
@@ -220,9 +218,16 @@ struct GMPF_LayerMngr {
     GMPF_Brush       brush;
 
     GdkPixbuf       *image;
-    GdkPixbuf       *display_image;
 
     GtkFlowBox      *flowbox;
+};
+
+
+struct GMPF_ProjectInfo {
+
+    char           *filename;
+    GMPF_Size       size;
+    GMPF_Scale      scale;
 };
 
 

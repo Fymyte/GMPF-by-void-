@@ -22,6 +22,8 @@
 #define SAVED_STATE_KEY_NAME "GMPF_saved_state"
 #define SELECTION_KEY_NAME "GMPF_selection"
 #define BUFFER_KEY_NAME "GMPF_buffer"
+#define PROJECT_INFO_KEY_NAME "GMPF_project_info"
+#define FILENAME_KEY_NAME "GMPF_filename"
 
 #define INIT_LAYER_UI(_layer, _image, _grid) \
     GtkWidget *_grid = gtk_grid_new(); \
@@ -59,22 +61,51 @@
     gtk_grid_attach((GtkGrid *)_grid, gtklabel, 1, 1, 1, 1); \
     gtk_grid_attach((GtkGrid *)_grid, button, 0, 1, 1, 1);
 
+/****************************Project Info functions****************************/
+
+GMPF_ProjectInfo *GMPF_project_info_init(GtkFlowBox *flowbox);
+void GMPF_project_info_destroy(GtkFlowBox *flowbox);
+void GMPF_project_info_reset(GtkFlowBox *flowbox);
+
+GMPF_ProjectInfo *GMPF_project_info_get_project_info(GtkFlowBox *flowbox);
+GMPF_ProjectInfo *GMPF_project_info_set_project_info(GtkFlowBox       *flowbox,
+                                                     GMPF_ProjectInfo *info);
+
+char *GMPF_project_info_get_filename(GtkFlowBox *flowbox);
+bool GMPF_project_info_set_filename(GtkFlowBox *flowbox, const char *filename);
+
+GMPF_Size *GMPF_project_info_get_size(GtkFlowBox *flowbox);
+bool GMPF_project_info_set_size(GtkFlowBox *flowbox,
+                               GMPF_Size   size);
+
+GMPF_Scale *GMPF_project_info_get_scale(GtkFlowBox *flowbox);
+bool GMPF_project_info_set_scale(GtkFlowBox *flowbox,
+                               GMPF_Scale   scale);
+
+/************************End of Project Info functions*************************/
+
 /*****************************Selection functions******************************/
 
 GMPF_Selection *GMPF_selection_init(GtkFlowBox *flowbox);
 void GMPF_selection_destroy(GtkFlowBox *flowbox);
+void GMPF_selection_reset(GtkFlowBox *flowbox);
+
 GMPF_Selection *GMPF_selection_get_selection(GtkFlowBox *flowbox);
 GMPF_Selection *GMPF_selection_set_selection(GtkFlowBox     *flowbox,
                                              GMPF_Selection *selection);
+
 cairo_surface_t *GMPF_selection_get_surface(GtkFlowBox *flowbox);
 int GMPF_selection_set_surface(GtkFlowBox      *flowbox,
                                cairo_surface_t *surface);
+
 GMPF_Pos *GMPF_selection_get_pos(GtkFlowBox *flowbox);
 int GMPF_selection_set_pos(GtkFlowBox *flowbox,
                            GMPF_Pos    pos);
+
 GMPF_Size *GMPF_selection_get_size(GtkFlowBox *flowbox);
 int GMPF_selection_set_size(GtkFlowBox *flowbox,
                            GMPF_Size    size);
+
 char GMPF_selection_copy(GtkFlowBox *flowbox,
                          GMPF_Layer *layer,
                          GMPF_Pos    pos);
@@ -94,29 +125,27 @@ char GMPF_selection_delete(GtkFlowBox *flowbox,
 
 GMPF_SavedState *GMPF_saved_state_init(GtkFlowBox *flowbox);
 void GMPF_saved_state_destroy(GtkFlowBox *flowbox);
+
 GMPF_SavedState *GMPF_saved_state_get_saved_state(GtkFlowBox *flowbox);
 int GMPF_saved_state_get_is_saved(GtkFlowBox *flowbox);
 void GMPF_saved_state_set_is_saved(GtkFlowBox *flowbox, int state);
-void GMPF_saved_state_set_is_saved_filename(GtkFlowBox *flowbox,
-                                           int         state,
-                                           char       *filename);
 
 /*************************End of Saved State functions*************************/
 
 /******************************LayerMngr functions*****************************/
 
-void layermngr_create(GtkFlowBox *flowbox); //ENDED
+void layermngr_create(GtkFlowBox *flowbox);
 void layermngr_set_to_flowbox(GtkFlowBox *flowbox, GMPF_LayerMngr *layermngr);
-void layermngr_initialization(GMPF_LayerMngr *layermngr); //ENDED
-void layermngr_clear(GtkFlowBox *flowbox); //ENDED
-void layermngr_delete(GtkFlowBox *flowbox); //ENDED
+void layermngr_initialization(GMPF_LayerMngr *layermngr);
+void layermngr_clear(GtkFlowBox *flowbox);
+void layermngr_delete(GtkFlowBox *flowbox);
 
 void layermngr_move_down_selected_layer(GtkFlowBox *flowbox);
 void layermngr_move_up_selected_layer(GtkFlowBox *flowbox);
 
-GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox); //ENDED
-GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename); //ENDED
-void layermngr_delete_selected_layer(GtkFlowBox *flowbox); //ENDED
+GMPF_Layer * layermngr_get_selected_layer(GtkFlowBox *flowbox);
+GMPF_Layer *layermngr_add_new_layer(GtkFlowBox *flowbox, const char *filename);
+void layermngr_delete_selected_layer(GtkFlowBox *flowbox);
 
 GMPF_LayerMngr *layermngr_get_layermngr(GtkFlowBox *flowbox);
 
@@ -124,8 +153,8 @@ GMPF_LayerMngr *layermngr_get_layermngr(GtkFlowBox *flowbox);
 
 /********************************Layer functions*******************************/
 
-GMPF_Layer * layer_initialization(); //ENDED
-void layer_delete(GMPF_Layer *layer); //ENDED
+GMPF_Layer * layer_initialization();
+void layer_delete(GMPF_Layer *layer);
 void layer_insert_at_pos(GMPF_Layer *layer,
                          GtkFlowBox *flowbox,
                          int         insertpos);

@@ -17,9 +17,14 @@
 @define-color ui_menu_background_color rgb(130, 130, 130);
 
 
-/* WINDOW */
-window, window > grid, menubar {
+/*Window*/
+widow, window > grid, menubar {
     background-color: @ui_window_background;
+}
+
+window > *:selected {
+    background-color: black;
+    /* border:none; */
 }
 
 window > label {
@@ -178,12 +183,12 @@ menuitem, toolbar {
     background-color: @ui_window_background;
 }
 
-window menuitem:hover > label {
+menuitem:hover {
     color: @ui_text_color_inv;
 }
 
-window menuitem > label {
-	color: @ui_text_color;
+menuitem {
+    color: @ui_text_color;
 }
 
 #main_toolbar > * {
@@ -217,8 +222,11 @@ entry {
     color: @ui_text_color;
 }
 
-combobox {
-    border-radius:20px;
+combobox > window {
+    border: none;
+    box-shadow: none;
+    background-color: @ui_window_background_soft;
+    border-radius: 10px;
 }
 
 combobox button:last-child {
@@ -344,8 +352,20 @@ combobox menu {
     padding: 5px;
 }
 
+.padding-20 {
+    padding: 20px;
+}
+
 .margin-5 {
     margin: 5px;
+}
+
+.margin-20 {
+    margin: 20px;
+}
+
+.margin-10 {
+    margin: 10px;
 }
 
 .margin-top-5 {

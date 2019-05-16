@@ -7,6 +7,7 @@
 
 GMPF_Buffer *GMPF_buffer_init(GtkFlowBox *flowbox);
 void GMPF_buffer_destroy(GtkFlowBox *flowbox);
+void GMPF_buffer_reset(GtkFlowBox *flowbox);
 GMPF_Buffer *GMPF_buffer_get_buffer(GtkFlowBox *flowbox);
 GMPF_Buffer *GMPF_buffer_set_buffer(GtkFlowBox  *flowbox,
                                     GMPF_Buffer *buffer);

@@ -1,5 +1,6 @@
 @define-color ui_text_color rgb(200, 200, 200);
 @define-color ui_text_color_netral rgb(255, 255, 255);
+@define-color ui_text_color_inv rgb(255, 75, 255);
 
 @define-color ui_button_color #008000;
 @define-color ui_button_hover_color #005000;
