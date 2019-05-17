@@ -234,6 +234,11 @@ void open_new_file(GtkWindow      *window,
                 err = save_project(flowbox, filename);
                 if (err)
                     D_PRINT("Unable to save project", NULL);
+
+                GMPF_project_info_set_filename(flowbox, filename);
+
+                if (remove(tmpfile))
+                { D_PRINT("Unable to remove file", NULL); }
             }
             else
             {
@@ -1304,6 +1309,60 @@ void GMPF_init_color_killer_window()
 }
 
 
+void GMPF_init_color_swapper_window()
+{
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GET_UI(GtkWidget, button, "ColorSwapperApplyButton");
+    GET_UI(GtkImage, image, "ColorSwapperImage");
+    GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
+    GError *error = NULL;
+
+    GdkPixbuf *pixbuf = layer ? layer->image : gdk_pixbuf_new_from_file_at_size("images/GMPF_white.png",
+                                                         300,
+                                                         300,
+                                                         &error);
+    if (error)
+    { PRINTERR ("Unable to load pixbuf"); return; }
+    if (layer)
+    {
+        gtk_widget_show(button);
+        float ratio1 = layer->size.w / 300;
+        float ratio2 = layer->size.h / 300;
+        int finalh = 300;
+        int finalw = 300;
+        if (ratio1 < ratio2)
+            finalw = layer->size.w / ratio2;
+        else
+            finalh = layer->size.h / ratio1;
+
+        pixbuf = gdk_pixbuf_scale_simple(pixbuf, finalw, finalh,
+                             GDK_INTERP_BILINEAR);
+    }
+    else
+    { gtk_widget_hide(button); }
+
+    gtk_image_set_from_pixbuf(image, pixbuf);
+}
+
+
+void callback_test_color_swapper(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GMPF_init_color_killer_window();
+
+    GET_UI(GtkImage, image, "ColorSwapperImage");
+
+    GdkPixbuf *pixbuf = gtk_image_get_pixbuf(image);
+    GMPF_Layer *layer = layer_initialization();
+    layer->surface = gdk_cairo_surface_create_from_pixbuf(pixbuf, 1, NULL);
+    GMPF_Size size = { .w = gdk_pixbuf_get_width(pixbuf), .h = gdk_pixbuf_get_height(pixbuf) };
+
+    layer->size = size;
+    swap_color(layer);
+    gtk_image_set_from_pixbuf(image, layer->image);
+    layer_delete(layer);
+}
+
+
 void callback_test_color_killer(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
 {
     GMPF_init_color_killer_window();
@@ -1332,6 +1391,30 @@ void callback_show_color_killer_window(UNUSED GtkWidget *widget, UNUSED gpointer
 
     //show the filter creator windowjust
     gtk_widget_show(window);
+}
+
+
+void callback_show_color_swapper_window(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GET_UI(GtkWidget, window, "ColorSwapperWindow");
+    GMPF_init_color_swapper_window();
+
+    //show the filter creator windowjust
+    gtk_widget_show(window);
+}
+
+
+void callback_swap_color(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
+{
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+    swap_color(lay);
+
+    gtk_widget_queue_draw(da);
 }
 
 

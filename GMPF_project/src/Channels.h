@@ -5,5 +5,6 @@
 
 void kill_color(GMPF_Layer *layer,
                 double      tolerance);
+void swap_color(GMPF_Layer *layer);
 
 #endif
