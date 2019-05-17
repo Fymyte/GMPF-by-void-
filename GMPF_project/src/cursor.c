@@ -13,6 +13,7 @@ void pick_color_on_screen(int x,
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
     GET_UI(GtkColorChooser, colorKiller, "ColorKillerChooser");
+    GET_UI(GtkColorChooser, colorSwapper, "ColorSwapperChooser1");
     GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
     if (!lay)
         return;
@@ -28,6 +29,7 @@ void pick_color_on_screen(int x,
     color->alpha = (gdouble)a / 255;
     gtk_color_chooser_set_rgba(colorChooser, color);
     gtk_color_chooser_set_rgba(colorKiller, color);
+    gtk_color_chooser_set_rgba(colorSwapper, color);
     g_free(color);
     g_object_unref(pixbuf);
 }
