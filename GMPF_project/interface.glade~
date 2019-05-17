@@ -129,6 +129,220 @@ without any warranty.
       <class name="appwindow"/>
     </style>
   </object>
+  <object class="GtkWindow" id="ColorSwapperWindow">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Suppression des couleurs</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="skip_pager_hint">True</property>
+    <property name="deletable">False</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Veuillez définir les couleurs à changer</property>
+            <style>
+              <class name="window-background-soft"/>
+              <class name="margin-5"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="ColorSwapperImage">
+            <property name="width_request">320</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <style>
+              <class name="image"/>
+              <class name="margin-top-5"/>
+              <class name="margin-bottom-5"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">10</property>
+            <property name="margin_bottom">10</property>
+            <property name="column_spacing">10</property>
+            <child>
+              <object class="GtkLabel" id="ProjectWidthLabel1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Couleur initiale:</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="description"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Couleur finale:</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="description"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkColorButton" id="ColorSwapperChooser2">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="rgba">rgb(117,80,123)</property>
+                <style>
+                  <class name="colorbutton"/>
+                  <class name="shadowed"/>
+                  <class name="margin-5"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="width_request">450</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_top">5</property>
+                <property name="spacing">5</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label">gtk-cancel</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="callback_hideParent" object="ColorSwapperWindow" swapped="no"/>
+                    <style>
+                      <class name="shadowed"/>
+                      <class name="margin-5"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="ColorSwapperTestButton">
+                    <property name="label" translatable="yes">Tester</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="callback_test_color_swapper" swapped="no"/>
+                    <style>
+                      <class name="shadowed"/>
+                      <class name="margin-5"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="ColorSwapperApplyButton">
+                    <property name="label">gtk-apply</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="callback_hideParent" object="ColorSwapperWindow" swapped="no"/>
+                    <signal name="clicked" handler="callback_swap_color" swapped="no"/>
+                    <style>
+                      <class name="shadowed"/>
+                      <class name="margin-5"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkColorButton" id="ColorSwapperChooser1">
+                <property name="width_request">300</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="rgba">rgb(117,80,123)</property>
+                <style>
+                  <class name="colorbutton"/>
+                  <class name="sadowed"/>
+                  <class name="margin-5"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <style>
+          <class name="bordered-box"/>
+        </style>
+      </object>
+    </child>
+    <style>
+      <class name="appwindow"/>
+    </style>
+  </object>
   <object class="GtkWindow" id="FilterCreator">
     <property name="name">Créateur de filtres</property>
     <property name="can_focus">False</property>
@@ -940,6 +1154,7 @@ without any warranty.
                 <property name="rgba">rgb(117,80,123)</property>
                 <style>
                   <class name="colorbutton"/>
+                  <class name="shadowed"/>
                 </style>
               </object>
               <packing>
@@ -1673,6 +1888,15 @@ without any warranty.
                       </object>
                     </child>
                     <child>
+                      <object class="GtkMenuItem">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Remplacer une couleur</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="callback_show_color_swapper_window" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkMenuItem" id="5">
                         <property name="name">5</property>
                         <property name="visible">True</property>
@@ -2372,12 +2596,13 @@ without any warranty.
   <object class="GtkAboutDialog" id="AboutWindow">
     <property name="name">A Propos</property>
     <property name="can_focus">False</property>
+    <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
     <property name="transient_for">MainWindow</property>
     <property name="program_name">GMPF</property>
     <property name="version">1.2</property>
-    <property name="copyright" translatable="yes">©2019. void*, Inc. Graphic Maestro Photo FormaatTM, GMPFTMand alllogos are registered trademark of void*, Inc. All rights reserved.</property>
-    <property name="website">https://fymyte.github.io/GMPF-by-void-/accueil.html</property>
+    <property name="copyright" translatable="yes">©2019. void*, Inc. Graphic Maestro Photo FormaatTM, GMPFTM and all logos are registered trademark of void*, Inc. All rights reserved.</property>
+    <property name="website">https://fymyte.github.io/GMPF-by-void-/index.html</property>
     <property name="authors">Sabine HU
 Arnaud CASSEZ
 Pierrick GUILLAUME
