@@ -1445,8 +1445,8 @@ without any warranty.
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="callback_delete" swapped="no"/>
-                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="Delete" signal="activate"/>
+                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -2596,12 +2596,13 @@ without any warranty.
   <object class="GtkAboutDialog" id="AboutWindow">
     <property name="name">A Propos</property>
     <property name="can_focus">False</property>
+    <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
     <property name="transient_for">MainWindow</property>
     <property name="program_name">GMPF</property>
     <property name="version">1.2</property>
-    <property name="copyright" translatable="yes">©2019. void*, Inc. Graphic Maestro Photo FormaatTM, GMPFTMand alllogos are registered trademark of void*, Inc. All rights reserved.</property>
-    <property name="website">https://fymyte.github.io/GMPF-by-void-/accueil.html</property>
+    <property name="copyright" translatable="yes">©2019. void*, Inc. Graphic Maestro Photo FormaatTM, GMPFTM and all logos are registered trademark of void*, Inc. All rights reserved.</property>
+    <property name="website">https://fymyte.github.io/GMPF-by-void-/index.html</property>
     <property name="authors">Sabine HU
 Arnaud CASSEZ
 Pierrick GUILLAUME
