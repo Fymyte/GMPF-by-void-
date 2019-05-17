@@ -15,6 +15,7 @@
     .w3-twofift {width: 38%}
     .w3-twreefift {width: 57%}
     .w3-fourfift {width: 76%}
+    .w3-section-5 {margin-top: 5px;margin-bottom: 5px}
 </style>
 <body id="myPage">
 
@@ -116,7 +117,7 @@
 
 <!-- Header Image -->
 <div class="w3-display-container w3-animate-opacity">
-  <img src="images/photography2.png" alt="boat" style="width:100%;min-height:100px;">
+  <img src="images/photography2.png" alt="boat" style="width:100%; min-height:200px;">
   <div class="w3-container w3-display-bottomleft w3-margin-bottom">
     <button onclick="document.getElementById('ProjectDesc').style.display='block'" class="w3-button w3-xlarge w3-theme w3-hover-teal" title="About GMPF">Void *</button>
   </div>
@@ -239,7 +240,7 @@
 
 
 <div id="DownloadMore" class="w3-modal">
-  <div class="w3-modal-content w3-card-4 w3-animate-top w3-mobile w3-row" style="height: 90%; width: 80%">
+  <div class="w3-modal-content w3-card-4 w3-animate-top w3-row w3-hide-small" style="height: 90%; width: 80%">
     <header class="w3-container w3-teal w3-display-container">
       <span onclick="document.getElementById('DownloadMore').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
       <button class="w3-bar-item w3-button w3-fift" onclick="opendl('Synopsis')">Synopsis</button>
@@ -250,87 +251,107 @@
     </header>
     <div id="Synopsis" class="w3-container dlmore" style="height: 90%; width: 100%">
         <object
-          data="Synopsis.pdf"
-          type="application/pdf"
-          width="100%"
-          height="100%">
-          <iframe
-            src="Synopsis.pdf"
-            width="100%"
-            height="100%"
-            style="border: none;">
-            <p>Votre navigateur ne supporte pas la lecture de pdf.
-              <a href="Synopsis.pdf">Télecharger le rapport de soutenance</a>.</p>
-          </iframe>
+        data="Synopsis.pdf"
+        type="application/pdf"
+        width="100%"
+        height="100%">
+        <iframe
+        src="Synopsis.pdf"
+        width="100%"
+        height="100%"
+        style="border: none;">
+        <p>Votre navigateur ne supporte pas la lecture de pdf.
+            <a href="Synopsis.pdf">Télecharger le rapport de soutenance</a>.</p>
+        </iframe>
         </object>
     </div>
     <div id="Cahier" class="w3-container dlmore" style="height: 90%; width: 100%; display: none">
         <object
-          data="Projet_S4_Cahier_des_charges.pdf"
-          type="application/pdf"
-          width="100%"
-          height="100%">
-          <iframe
-            src="Projet_S4_Cahier_des_charges.pdf"
-            width="100%"
-            height="100%"
-            style="border: none;">
-            <p>Votre navigateur ne supporte pas la lecture de pdf.
-              <a href="Projet_S4_Cahier_des_charges.pdf">Télecharger le rapport de soutenance</a>.</p>
-          </iframe>
+        data="Projet_S4_Cahier_des_charges.pdf"
+        type="application/pdf"
+        width="100%"
+        height="100%">
+        <iframe
+        src="Projet_S4_Cahier_des_charges.pdf"
+        width="100%"
+        height="100%"
+        style="border: none;">
+        <p>Votre navigateur ne supporte pas la lecture de pdf.
+            <a href="Projet_S4_Cahier_des_charges.pdf">Télecharger le rapport de soutenance</a>.</p>
+        </iframe>
         </object>
     </div>
     <div id="R1" class="w3-container dlmore" style="height: 90%; width: 100%;display: none">
         <object
-          data="Projet_S4__Rapport_de_soutenance_1.pdf"
-          type="application/pdf"
-          width="100%"
-          height="100%">
-          <iframe
-            src="Projet_S4__Rapport_de_soutenance_1.pdf"
-            width="100%"
-            height="100%"
-            style="border: none;">
-            <p>Votre navigateur ne supporte pas la lecture de pdf.
-              <a href="Projet_S4__Rapport_de_soutenance_1.pdf">Télecharger le rapport de soutenance</a>.</p>
-          </iframe>
+        data="Projet_S4__Rapport_de_soutenance_1.pdf"
+        type="application/pdf"
+        width="100%"
+        height="100%">
+        <iframe
+        src="Projet_S4__Rapport_de_soutenance_1.pdf"
+        width="100%"
+        height="100%"
+        style="border: none;">
+        <p>Votre navigateur ne supporte pas la lecture de pdf.
+            <a href="Projet_S4__Rapport_de_soutenance_1.pdf">Télecharger le rapport de soutenance</a>.</p>
+        </iframe>
         </object>
     </div>
     <div id="R2" class="w3-container dlmore" style="height: 90%; width: 100%; display: none">
         <object
-          data="Projet_S4__Rapport_de_soutenance_2.pdf"
-          type="application/pdf"
-          width="100%"
-          height="100%">
-          <iframe
-            src="Projet_S4__Rapport_de_soutenance_2.pdf"
-            width="100%"
-            height="100%"
-            style="border: none;">
-            <p>Votre navigateur ne supporte pas la lecture de pdf.
-              <a href="Projet_S4__Rapport_de_soutenance_2.pdf">Télecharger le rapport de soutenance</a>.</p>
-          </iframe>
+        data="Projet_S4__Rapport_de_soutenance_2.pdf"
+        type="application/pdf"
+        width="100%"
+        height="100%">
+        <iframe
+        src="Projet_S4__Rapport_de_soutenance_2.pdf"
+        width="100%"
+        height="100%"
+        style="border: none;">
+        <p>Votre navigateur ne supporte pas la lecture de pdf.
+            <a href="Projet_S4__Rapport_de_soutenance_2.pdf">Télecharger le rapport de soutenance</a>.</p>
+        </iframe>
         </object>
     </div>
     <div id="R3" class="w3-container dlmore" style="height: 90%; width: 100%; display: none">
-        <object
-          data="Projet_S4__Rapport_de_soutenance_3.pdf"
-          type="application/pdf"
-          width="100%"
-          height="100%">
-          <iframe
+            <object
+            data="Projet_S4__Rapport_de_soutenance_3.pdf"
+            type="application/pdf"
+            width="100%"
+            height="100%">
+            <iframe
             src="Projet_S4__Rapport_de_soutenance_3.pdf"
             width="100%"
             height="100%"
             style="border: none;">
             <p>Votre navigateur ne supporte pas la lecture de pdf.
-              <a href="Projet_S4__Rapport_de_soutenance_3.pdf">Télecharger le rapport de soutenance</a>.</p>
-          </iframe>
-        </object>
-    </div>
+                <a href="Projet_S4__Rapport_de_soutenance_3.pdf">Télecharger le rapport de soutenance</a>.</p>
+            </iframe>
+            </object>
+        </div>
     <footer class="w3-container w3-teal" style="height: 5%">
       <p></p>
     </footer>
+  </div>
+  <div class="w3-modal-content w3-card-4 w3-animate-top w3-row w3-hide-medium w3-hide-large">
+      <header class="w3-container w3-teal w3-display-container">
+          <span onclick="document.getElementById('DownloadMore').style.display='none'" class="w3-button w3-teal w3-display-topright"><i class="fa fa-remove"></i></span>
+          <div class="w3-hide-large w3-hide-medium">
+              <h4>Documents importants</h4>
+          </div>
+      </header>
+      <div class="w3-hide-large w3-hide-medium">
+          <ul class="w3-ul">
+              <li class=""><a href="Synopsis.pdf" class="w3-button" style="width: 100%;text-align: left">Synopsis</a></li>
+              <li class=""><a href="Projet_S4_Cahier_des_charges.pdf" class="w3-button" style="width: 100%;text-align: left">Cahier des charges</a></li>
+              <li class=""><a href="Projet_S4__Rapport_de_soutenance_1.pdf" class="w3-button" style="width: 100%;text-align: left">Rapport de soutenance 1</a></li>
+              <li class=""><a href="Projet_S4__Rapport_de_soutenance_2.pdf" class="w3-button" style="width: 100%;text-align: left">Rapport de soutenance 2</a></li>
+              <li class=""><a href="Projet_S4__Rapport_de_soutenance_3.pdf" class="w3-button" style="width: 100%;text-align: left">Rapport de soutenance 3</a></li>
+          </ul>
+      </div>
+      <footer class="w3-container w3-teal" style="height: 5%">
+        <p></p>
+      </footer>
   </div>
 </div>
 
