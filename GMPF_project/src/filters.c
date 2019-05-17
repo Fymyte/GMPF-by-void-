@@ -596,6 +596,8 @@ void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size)
                         if(!error)
                         {
                             PRINTERR ("Unable to get pixel");
+                            free_img_rgb(img);
+                            free(mat);
                             return;
                         }
                         r += mat[l + x/2 + k + x/2] * (double)red;
@@ -627,12 +629,12 @@ void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size)
         }
     }
     Img_rgb_to_Image(imgPixbuf, img);
-    cairo_surface_destroy(lay->surface);
+    while (cairo_surface_get_reference_count(lay->surface))
+        cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 1, NULL);
     layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
     free_img_rgb(img);
-    free(mat);
 }
 
 

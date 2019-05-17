@@ -1863,6 +1863,7 @@ void callback_test_matrix(UNUSED GtkWidget *widget,
     GMPF_Size size = { .w = gdk_pixbuf_get_width(pixbuf), .h = gdk_pixbuf_get_height(pixbuf) };
     layer->size = size;
     Convolute(layer, mat, mat_size);
+    free(mat);
     gtk_image_set_from_pixbuf(image, layer->image);
     layer_delete(layer);
 }
@@ -1981,7 +1982,7 @@ void callback_binarize_color_all(UNUSED GtkMenuItem *menuitem,
  * button to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void callback_convolute_f(UNUSED GtkMenuItem *menuitem,
+void callback_convolute_f(GtkMenuItem *menuitem,
                           UNUSED gpointer     user_data)
 {
 
@@ -2021,6 +2022,7 @@ void callback_convolute_f(UNUSED GtkMenuItem *menuitem,
     GMPF_Layer *layer = layermngr_get_selected_layer(flowbox);
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
     Convolute(layer, mat, 3);
+    free(mat);
 }
 
 
@@ -2553,6 +2555,7 @@ void callback_applyFilter(UNUSED GtkWidget *btn,
     }
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, layer);
     Convolute(layer, mat, mat_size);
+    free(mat);
 }
 
 

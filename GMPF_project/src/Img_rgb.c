@@ -17,6 +17,7 @@ void img_rgb_zero(struct Img_rgb *img)
     InitializeMatrixZero(img -> red);
     InitializeMatrixZero(img -> green);
     InitializeMatrixZero(img -> blue);
+    InitializeMatrixZero(img -> alpha);
 }
 
 void free_img_rgb(struct Img_rgb *img)
@@ -24,6 +25,7 @@ void free_img_rgb(struct Img_rgb *img)
     FreeMatrix(img -> red);
     FreeMatrix(img -> green);
     FreeMatrix(img -> blue);
+    FreeMatrix(img -> alpha);
     free(img);
 }
 
@@ -64,7 +66,7 @@ struct Img_rgb *Assemble_2_Img_rgb(struct Img_rgb *img1, struct Img_rgb *img2)
         for (int j = 0; j < height; j++)
         {
             r =(Matrix_IJ(img1->red,i,j) + Matrix_IJ(img2->red,i,j)) / 2;
-            g =(Matrix_IJ(img1->green,i,j) + Matrix_IJ(img2->green,i,j)) / 2; 
+            g =(Matrix_IJ(img1->green,i,j) + Matrix_IJ(img2->green,i,j)) / 2;
             b =(Matrix_IJ(img1->blue,i,j) + Matrix_IJ(img2->blue,i,j)) / 2;
             a =(Matrix_IJ(img1->alpha,i,j) + Matrix_IJ(img2->alpha,i,j));
             Matrix_val(add -> red, i, j, r);
