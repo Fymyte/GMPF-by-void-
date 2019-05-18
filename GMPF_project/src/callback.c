@@ -216,6 +216,7 @@ void open_new_file(GtkWindow      *window,
     res = gtk_dialog_run (GTK_DIALOG (dialog));
     if (res == GTK_RESPONSE_ACCEPT)
     {
+        D_PRINT("accept", NULL);
         char *filename = gtk_file_chooser_get_filename(fileChooser);
         gtk_widget_destroy(dialog);
         char *ext = get_extension(filename);
@@ -388,6 +389,8 @@ void callback_new_project(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
     const gchar *w = gtk_entry_get_text(width);
     const gchar *h = gtk_entry_get_text(height);
 
+    if (!GMPF_save_under_project())
+        return;
     layermngr_clear(flowbox);
 
     GMPF_Size size = { .w = atoll(w), .h = atoll(h) };
@@ -414,7 +417,7 @@ void callback_new_project(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
     gtk_widget_set_size_request(da, max_width, max_height);
     gtk_layout_set_size((GtkLayout *)layout, max_width, max_height);
 
-    GMPF_save_under_project();
+    GMPF_save_project();
 }
 
 
