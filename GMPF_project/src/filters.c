@@ -2,7 +2,15 @@
 
 extern SGlobalData G_user_data;
 
-void filter_for_selection(void(*filter)(GMPF_Layer *), GtkFlowBox *flowbox)
+int check (int width, int height, int i, int j)
+{
+    if (i < 0 || j < 0 || i >= width || j >= height)
+        return 0;
+    return 1;
+}
+
+
+void filter_for_selection_unop(void(*filter)(GMPF_Layer *), GtkFlowBox *flowbox)
 {
     cairo_surface_t *new_surf = GMPF_selection_get_surface(flowbox);
     if (!new_surf)
@@ -24,6 +32,37 @@ void filter_for_selection(void(*filter)(GMPF_Layer *), GtkFlowBox *flowbox)
 
     //filter selection
     filter(selec_lay);
+    //end filter selection
+    GMPF_selection_set_surface(flowbox, selec_lay->surface);
+
+    if (selec_lay->image)
+        g_object_unref(selec_lay->image);
+    free(selec_lay);
+}
+
+
+void filter_for_selection(void(*filter)(GMPF_Pixel *), GtkFlowBox *flowbox)
+{
+    cairo_surface_t *new_surf = GMPF_selection_get_surface(flowbox);
+    if (!new_surf)
+    { PRINTERR("No surface"); return; }
+
+    while (cairo_surface_get_reference_count(new_surf) < 3)
+    { D_PRINT("Reference", NULL); cairo_surface_reference(new_surf); }
+
+    GMPF_Size size = *GMPF_selection_get_size(flowbox);
+    GMPF_Pos pos = *GMPF_selection_get_pos(flowbox);
+
+    GMPF_Layer *selec_lay = layer_initialization();
+    selec_lay->surface = new_surf;
+    selec_lay->size.w = size.w;
+    selec_lay->size.h = size.h;
+
+    selec_lay->pos.x = pos.x;
+    selec_lay->pos.y = pos.y;
+
+    //filter selection
+    pixelFilter(selec_lay, filter);
     //end filter selection
     GMPF_selection_set_surface(flowbox, selec_lay->surface);
 
@@ -74,7 +113,7 @@ void filter_for_selection_color(void (*filter)(GMPF_Layer*,
  * Apply the "filter" function to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*))
+void GMPF_filter_apply_to_selected_layer_unop(void (*filter)(GMPF_Layer*))
 {
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -95,9 +134,33 @@ void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Layer*))
 
 
 /*
+ * Apply the "filter" function to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
+void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Pixel*))
+{
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    GMPF_Layer *lay = layermngr_get_selected_layer(flowbox);
+    if (!lay)
+    {
+        D_PRINT("Unable to get layer", NULL);
+        return;
+    }
+
+    GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+    pixelFilter(lay, filter);
+    GMPF_saved_state_set_is_saved(flowbox, 0);
+
+    gtk_widget_queue_draw(da);
+}
+
+
+/*
  * Apply the "filter" function to all Layer
  */
-void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*))
+void GMPF_filter_apply_to_all_layer_unop(void (*filter)(GMPF_Layer*))
 {
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -110,6 +173,33 @@ void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Layer*))
         {
             GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
             filter(lay);
+
+            if (!lay->list.next) break;
+            lay = container_of(lay->list.next, GMPF_Layer, list);
+        }
+    }
+    GMPF_saved_state_set_is_saved(flowbox, 0);
+
+    gtk_widget_queue_draw(da);
+}
+
+
+/*
+ * Apply the "filter" function to all Layer
+ */
+void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Pixel*))
+{
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
+    if (layermngr->layer_list.next != NULL)
+    {
+        GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
+        while (lay != NULL)
+        {
+            GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
+            pixelFilter(lay, filter);
 
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
@@ -189,325 +279,104 @@ void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*,
 /*
  * Apply "Luminosité+" filter to the given Layer
  */
-void Lightness(GMPF_Layer *lay)
+void Lightness(GMPF_Pixel *p)
 {
-    if (lay->image)
-        g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+    p->r = p->r > 230 ? 255 : p->r + 25;
 
-    GdkPixbuf *imgPixbuf = lay->image;
+    p->g = p->g > 230 ? 255 : p->g + 25;
 
-    guchar red, green, blue, alpha;
+    p->b = p->b > 230 ? 255 : p->b + 25;
 
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-            err(1, "pixbuf get pixels error");
-
-            if (red > 230)
-                red = 255;
-            else
-                red += 25;
-
-            if (green > 230)
-                green = 255;
-            else
-                green += 25;
-
-            if (blue > 230)
-                blue = 255;
-            else
-                blue += 25;
-            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
-        }
-    }
-    cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
-    layer_icon_refresh(lay);
 }
 
 
 /*
  * Apply "Luminosité-" filter to the given Layer
  */
-void Darkness(GMPF_Layer *lay)
+void Darkness(GMPF_Pixel *p)
 {
-    if (lay->image)
-        g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
-    GdkPixbuf *imgPixbuf = lay->image;
+    p->r = p->r < 25 ? 0 : p->r - 25;
 
-    guchar red, green, blue, alpha;
+    p->g = p->g < 25 ? 0 : p->g - 25;
 
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-            err(1, "pixbuf get pixels error");
-
-            if (red < 25)
-                red = 0;
-            else
-                red -= 25;
-
-            if (green < 25)
-                green = 0;
-            else
-                green -= 25;
-
-            if (blue < 25)
-                blue = 0;
-            else
-                blue -= 25;
-            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
-        }
-    }
-    cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
-    layer_icon_refresh(lay);
+    p->b = p->b < 25 ? 0 : p->b - 25;
 }
 
 
 /*
  * Apply "Nuance de gris" filter to the given Layer
  */
-void Greyscale(GMPF_Layer *lay)
+void Greyscale(GMPF_Pixel *p)
 {
-    if (lay->image)
-        g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
-
-    GdkPixbuf *imgPixbuf = lay->image;
-
-    guchar red, green, blue, alpha;
-    guchar grey;
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-                err(1, "pixbuf get pixels error");
-            grey = (red + green + blue)/3;
-            put_pixel(imgPixbuf, i, j, grey, grey, grey, alpha);
-        }
-    }
-    cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
-    layer_icon_refresh(lay);
+    Uint8 grey = (p->r + p->g + p->b) / 3;
+    p->r = p->g = p->b = grey;
 }
 
 
 /*
  * Apply "Negatif" filter to the given Layer
  */
-void Negative(GMPF_Layer *lay)
+void Negative(GMPF_Pixel *p)
 {
-    if (lay->image)
-        g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
-
-    GdkPixbuf *imgPixbuf = lay->image;
-
-    guchar red, green, blue, alpha;
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-            err(1, "pixbuf get pixels error");
-            red = 255 - red;
-            green = 255 - green;
-            blue = 255 - blue;
-            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
-        }
-    }
-    cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
-    layer_icon_refresh(lay);
+    p->r = 255 - p->r;
+    p->g = 255 - p->g;
+    p->b = 255 - p->b;
 }
 
 
-/*
- * Apply "Binarisation" filter to the given Layer
- */
-void Binarize(GMPF_Layer *lay)
+void Binarize (GMPF_Pixel *pixel)
 {
-    if (lay->image)
-        g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
-
-    GdkPixbuf *imgPixbuf = lay->image;
-
-    guchar red, green, blue, alpha, grey;
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-                err(1, "pixbuf get pixels error");
-
-            grey = (red + green + blue) / 3;
-            if (grey > 127)
-                grey = 255;
-            else
-                grey = 0;
-            put_pixel(imgPixbuf, i, j, grey, grey, grey, alpha);
-        }
-    }
-    cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
-    layer_icon_refresh(lay);
-
+    Uint8 grey = (pixel->r + pixel->g + pixel->b) / 3;
+    if (grey > 127)
+        grey = 255;
+    else
+        grey = 0;
+    pixel->r = pixel->g = pixel->b = grey;
 }
 
 
 /*
  * Apply "Binarisation colorée" filter to the given Layer
  */
-void BinarizeColor(GMPF_Layer *lay)
+void BinarizeColor(GMPF_Pixel *p)
 {
-    if (lay->image)
-        g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+    p->r = p->r > 127 ? 255 : 0;
 
-    GdkPixbuf *imgPixbuf = lay->image;
+    p->g = p->g > 127 ? 255 : 0;
 
-    guchar red, green, blue, alpha;
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-                err(1, "pixbuf get pixels error");
-
-            if (red > 127)
-                red = 255;
-            else
-                red = 0;
-
-            if (green > 127)
-                green = 255;
-            else
-                green = 0;
-
-            if (blue > 127)
-                blue = 255;
-            else
-                blue = 0;
-            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
-        }
-    }
-    cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
-    layer_icon_refresh(lay);
+    p->b = p->b > 127 ? 255 : 0;
 }
 
 
 /*
  * Apply "Teinture" filter to the given Layer
  */
-void Tinter(GMPF_Layer *lay)
+void Tinter(GMPF_Pixel *p)
 {
-    if (!lay)
-        return;
-
-    if (lay->image)
-        g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
-
-    GdkPixbuf *imgPixbuf = lay->image;
+    GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
     guchar r, g, b, factor;
     GdkRGBA rgba;
-
-    GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
     gtk_color_chooser_get_rgba (colorChooser, &rgba);
     r = (guchar)(rgba.red * 255);
     g = (guchar)(rgba.green * 255);
     b = (guchar)(rgba.blue * 255);
-    //factor = (guchar)(rgba.alpha * 100);
+
     factor = 50;
 
-    guchar red;
-    guchar green;
-    guchar blue, alpha;
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-            err(1, "pixbuf get pixels error");
-            red = red * (100 - factor) / 100 + r * factor / 100;
-            green = green * (100 - factor) / 100 + g * factor / 100;
-            blue = blue * (100 - factor) / 100 + b * factor / 100;
-            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
-        }
-    }
-    cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
-    layer_icon_refresh(lay);
+    p->r = p->r * (100 - factor) / 100 + r * factor / 100;
+    p->g = p->g * (100 - factor) / 100 + g * factor / 100;
+    p->b = p->b * (100 - factor) / 100 + b * factor / 100;
 }
 
 
 /*
  * Apply "Coloré" filter to the given Layer
  */
-void Colorfull(GMPF_Layer *lay)
+void Colorfull(GMPF_Pixel *p)
 {
-    if (!lay)
-        return;
-
     guchar r, g, b, factor;
     GdkRGBA rgba;
-
-    if (lay->image)
-        g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
-
-    GdkPixbuf *imgPixbuf = lay->image;
 
     GET_UI(GtkColorChooser, colorChooser, "ColorTinter");
     gtk_color_chooser_get_rgba (colorChooser, &rgba);
@@ -516,125 +385,10 @@ void Colorfull(GMPF_Layer *lay)
     b = (guchar)(rgba.blue * 255);
     factor = (guchar)(rgba.alpha * 255);
 
-    guchar red;
-    guchar green;
-    guchar blue, alpha;
+    p->r = p->r * (100 - factor) / 100 + r * factor / 100;
+    p->g = p->g * (100 - factor) / 100 + g * factor / 100;
+    p->b = p->b * (100 - factor) / 100 + b * factor / 100;
 
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-                err(1, "pixbuf get pixels error");
-            red = red * (100 - factor) / 100 + r * factor / 100;
-            green = green * (100 - factor) / 100 + g * factor / 100;
-            blue = blue * (100 - factor) / 100 + b * factor / 100;
-            put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
-        }
-    }
-    cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 1, NULL);
-    layer_icon_refresh(lay);
-
-}
-
-
-int check (int width, int height, int i, int j)
-{
-    if (i < 0 || j < 0 || i >= width || j >= height)
-        return 0;
-    return 1;
-}
-
-
-/*
- * Apply the given convolution matrix to the selected Layer
- * (Do nothing if there is no selected Layer)
- */
-void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size)
-{
-    GET_UI(GtkWidget, da, "drawingArea");
-    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
-
-    if (lay == NULL)
-        return;
-    GMPF_saved_state_set_is_saved(flowbox, 0);
-
-    if (lay->image)
-        g_object_unref(lay->image);
-    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
-
-    GdkPixbuf *imgPixbuf = lay->image;
-
-    double r, g, b, a;
-
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    int x = mat_size;
-    struct Img_rgb *img = init_img_rgb(width, height);
-
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            r = g = b = a = 0;
-            for (int k = -x / 2; k <= x/2; k++)
-            {
-                for(int l = -x / 2; l <= x/2; l++)
-                {
-                    if (check(width, height, i + k, j +l))
-                    {
-                        guchar red, green, blue, alpha;
-                        error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i + k, j + l, &red, &green, &blue, &alpha);
-                        if(!error)
-                        {
-                            PRINTERR ("Unable to get pixel");
-                            free_img_rgb(img);
-                            free(mat);
-                            return;
-                        }
-                        r += mat[l + x/2 + k + x/2] * (double)red;
-                        g += mat[l + x/2 + k + x/2] * (double)green;
-                        b += mat[l + x/2 + k + x/2] * (double)blue;
-                        a = alpha;
-                    }
-                }
-            }
-            if (r > 255)
-                r = 255;
-            else if (r < 0)
-                r = 0;
-
-            if (g > 255)
-                g = 255;
-            else if (g < 0)
-                g = 0;
-
-            if (b > 255)
-                b = 255;
-            else if (b < 0)
-                b = 0;
-
-            Matrix_val(img -> red, i, j, r);
-            Matrix_val(img -> green, i , j, g);
-            Matrix_val(img -> blue, i , j, b);
-            Matrix_val(img -> alpha, i, j, a);
-        }
-    }
-    Img_rgb_to_Image(imgPixbuf, img);
-    while (cairo_surface_get_reference_count(lay->surface))
-        cairo_surface_destroy(lay->surface);
-    lay->surface = gdk_cairo_surface_create_from_pixbuf(imgPixbuf, 1, NULL);
-    layer_icon_refresh(lay);
-    gtk_widget_queue_draw(da);
-    free_img_rgb(img);
 }
 
 
@@ -959,4 +713,250 @@ void Color_balance(GMPF_Layer *lay, guchar r, guchar g, guchar b)
     cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
     layer_icon_refresh(lay);
+}
+
+
+/*
+ * Stucture to store subdivided convolution info
+ */
+struct ConvoluteThread {
+    GdkPixbuf *imgPixbuf;
+    GdkPixbuf*img;
+    double *mat;
+    int mat_size;
+    int height;
+    int width;
+    int width_begin;
+    int width_end;
+};
+
+
+/*
+ * Function called for subdivided image in convolution
+ */
+void *subConvolute(void *arg)
+{
+    struct ConvoluteThread *cvt = (struct ConvoluteThread *) arg;
+    gboolean error = FALSE;
+    int x = cvt->mat_size;
+    double r, g, b, a;
+    for(int i = cvt->width_begin; i < cvt->width_end; i++)
+    {
+        for(int j = 0; j < cvt->height; j++)
+        {
+            r = g = b = a = 0;
+            for (int k = -x / 2; k <= x/2; k++)
+            {
+                for(int l = -x / 2; l <= x/2; l++)
+                {
+                    if (check(cvt->width, cvt->height, i + k, j +l))
+                    {
+                        guchar red, green, blue, alpha;
+                        error = gdkpixbuf_get_colors_by_coordinates(cvt->imgPixbuf, i + k, j + l, &red, &green, &blue, &alpha);
+                        if(!error)
+                        {
+                            PRINTERR ("Unable to get pixel");
+                            // free_img_rgb(cvt->img);
+                            free(cvt->mat);
+                            return NULL;
+                        }
+                        r += cvt->mat[(l + x/2) * x + k + x/2] * (double)red;
+                        g += cvt->mat[(l + x/2) * x + k + x/2] * (double)green;
+                        b += cvt->mat[(l + x/2) * x + k + x/2] * (double)blue;
+                        a = alpha;
+                    }
+                }
+            }
+            if (r > 255)
+                r = 255;
+            else if (r < 0)
+                r = 0;
+
+            if (g > 255)
+                g = 255;
+            else if (g < 0)
+                g = 0;
+
+            if (b > 255)
+                b = 255;
+            else if (b < 0)
+                b = 0;
+
+            put_pixel(cvt->img, i, j, (char)r, (char)g, (char)b, (char)a);
+        }
+    }
+    return NULL;
+}
+
+
+/*
+ * Apply the given convolution matrix to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
+void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size)
+{
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    if (lay == NULL)
+        return;
+    GMPF_saved_state_set_is_saved(flowbox, 0);
+
+    if (lay->image)
+        g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    GdkPixbuf *imgPixbuf = lay->image;
+
+    // double r, g, b, a;
+
+    int width = gdk_pixbuf_get_width(imgPixbuf);
+    int height = gdk_pixbuf_get_height(imgPixbuf);
+    // gboolean error = FALSE;
+
+    int x = mat_size;
+    // struct Img_rgb *img = init_img_rgb(width, height);
+    GMPF_Size size = {.w=width, .h=height };
+    GdkPixbuf *img = new_pixbuf_standardized(&size);
+
+    pthread_t parr[8];
+    struct ConvoluteThread carr[8];
+    int threadwidth = width >> 3;
+    int actualwidth = 0;
+    for (int i = 0; i < 7; i++)
+    {
+        carr[i].imgPixbuf = imgPixbuf;
+        carr[i].img = img;
+        carr[i].mat = mat;
+        carr[i].mat_size = x;
+        carr[i].height = height;
+        carr[i].width_begin = actualwidth;
+        carr[i].width = width;
+        actualwidth += threadwidth;
+        carr[i].width_end = actualwidth;
+        int e = pthread_create(&parr[i], NULL, subConvolute, &carr[i]);
+        if (e)
+        { PRINTERR("Unable to create thread"); }
+    }
+    carr[7].imgPixbuf = imgPixbuf;
+    carr[7].img = img;
+    carr[7].mat = mat;
+    carr[7].mat_size = x;
+    carr[7].height = height;
+    carr[7].width_begin = actualwidth;
+    carr[7].width = width;
+    actualwidth += threadwidth;
+    carr[7].width_end = width;
+    int e = pthread_create(&parr[7], NULL, subConvolute, &carr[7]);
+    if (e)
+    { PRINTERR("Unable to create thread"); }
+
+    for (int i = 0; i < 8; i++)
+    {
+        pthread_join(parr[i], NULL);
+    }
+
+    g_object_unref(imgPixbuf);
+    lay->image = img;
+    while (cairo_surface_get_reference_count(lay->surface))
+        cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(img, 1, NULL);
+    layer_icon_refresh(lay);
+    gtk_widget_queue_draw(da);
+}
+
+
+
+
+/*
+ * Stucture to store subdivided convolution info
+ */
+struct PixelFilterThread {
+    GdkPixbuf *imgPixbuf;
+    void (*filter)(GMPF_Pixel*);
+    int height;
+    int width;
+    int width_begin;
+    int width_end;
+};
+
+
+/*
+ * Function called for subdivided image in convolution
+ */
+void *subPixelFilter(void *arg)
+{
+    struct PixelFilterThread *cvt = (struct PixelFilterThread *) arg;
+    GMPF_Pixel *pixel = (GMPF_Pixel *) gdk_pixbuf_get_pixels(cvt->imgPixbuf);
+
+    for(int i = cvt->width_begin; i < cvt->width_end; i++)
+    {
+        for(int j = 0; j < cvt->height; j++)
+        {
+            cvt->filter(pixel + i + j*cvt->width);
+        }
+    }
+    return NULL;
+}
+
+
+/*
+ * Apply the given convolution matrix to the selected Layer
+ * (Do nothing if there is no selected Layer)
+ */
+void pixelFilter(GMPF_Layer *lay, void (*filter)(GMPF_Pixel*))
+{
+    GET_UI(GtkWidget, da, "drawingArea");
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+
+    if (lay == NULL)
+        return;
+    GMPF_saved_state_set_is_saved(flowbox, 0);
+
+    if (lay->image)
+        g_object_unref(lay->image);
+    lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
+
+    int width = gdk_pixbuf_get_width(lay->image);
+    int height = gdk_pixbuf_get_height(lay->image);
+
+    pthread_t parr[8];
+    struct PixelFilterThread carr[8];
+    int threadwidth = width >> 3;
+    int actualwidth = 0;
+    for (int i = 0; i < 7; i++)
+    {
+        carr[i].imgPixbuf = lay->image;
+        carr[i].filter = filter;
+        carr[i].height = height;
+        carr[i].width_begin = actualwidth;
+        carr[i].width = width;
+        actualwidth += threadwidth;
+        carr[i].width_end = actualwidth;
+        int e = pthread_create(&parr[i], NULL, subPixelFilter, &carr[i]);
+        if (e)
+        { PRINTERR("Unable to create thread"); }
+    }
+    carr[7].imgPixbuf = lay->image;
+    carr[7].filter = filter;
+    carr[7].height = height;
+    carr[7].width_begin = actualwidth;
+    carr[7].width = width;
+    carr[7].width_end = width;
+    int e = pthread_create(&parr[7], NULL, subPixelFilter, &carr[7]);
+    if (e)
+    { PRINTERR("Unable to create thread"); }
+
+    for (int i = 0; i < 8; i++)
+    {
+        pthread_join(parr[i], NULL);
+    }
+
+    // g_object_unref(imgPixbuf);
+    // lay->image = img;
+    while (cairo_surface_get_reference_count(lay->surface))
+        cairo_surface_destroy(lay->surface);
+    lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    layer_icon_refresh(lay);
+    gtk_widget_queue_draw(da);
 }

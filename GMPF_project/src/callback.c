@@ -2242,11 +2242,11 @@ void callback_equalize(UNUSED GtkMenuItem *menuitem,
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     if (layermngr->tool == GMPF_TOOL_SELECTOR)
     {
-        filter_for_selection(Equalize, flowbox);
+        filter_for_selection_unop(Equalize, flowbox);
         gtk_widget_queue_draw(da);
     }
     else
-        GMPF_filter_apply_to_selected_layer(Equalize);
+        GMPF_filter_apply_to_selected_layer_unop(Equalize);
 }
 
 
@@ -2258,8 +2258,8 @@ void callback_equalize_all(UNUSED GtkMenuItem *menuitem,
 {
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
-    GMPF_filter_apply_to_all_layer(Equalize);
-    filter_for_selection(Equalize, flowbox);
+    GMPF_filter_apply_to_all_layer_unop(Equalize);
+    filter_for_selection_unop(Equalize, flowbox);
 }
 
 
@@ -2275,11 +2275,11 @@ void callback_equalize_color(UNUSED GtkMenuItem *menuitem,
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     if (layermngr->tool == GMPF_TOOL_SELECTOR)
     {
-        filter_for_selection(Equalize_color, flowbox);
+        filter_for_selection_unop(Equalize_color, flowbox);
         gtk_widget_queue_draw(da);
     }
     else
-        GMPF_filter_apply_to_selected_layer(Equalize_color);
+        GMPF_filter_apply_to_selected_layer_unop(Equalize_color);
 }
 
 
@@ -2291,8 +2291,8 @@ void callback_equalize_color_all(UNUSED GtkMenuItem *menuitem,
 {
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
-    GMPF_filter_apply_to_all_layer(Equalize_color);
-    filter_for_selection(Equalize_color, flowbox);
+    GMPF_filter_apply_to_all_layer_unop(Equalize_color);
+    filter_for_selection_unop(Equalize_color, flowbox);
 }
 
 
@@ -2308,11 +2308,11 @@ void callback_horizontale(UNUSED GtkMenuItem *menuitem,
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     if (layermngr->tool == GMPF_TOOL_SELECTOR)
     {
-        filter_for_selection(Horizontale, flowbox);
+        filter_for_selection_unop(Horizontale, flowbox);
         gtk_widget_queue_draw(da);
     }
     else
-        GMPF_filter_apply_to_selected_layer(Horizontale);
+        GMPF_filter_apply_to_selected_layer_unop(Horizontale);
 }
 
 
@@ -2325,8 +2325,8 @@ void callback_horizontale_all(UNUSED GtkMenuItem *menuitem,
 
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
-    GMPF_filter_apply_to_all_layer(Horizontale);
-    filter_for_selection(Horizontale, flowbox);
+    GMPF_filter_apply_to_all_layer_unop(Horizontale);
+    filter_for_selection_unop(Horizontale, flowbox);
 }
 
 
@@ -2342,11 +2342,11 @@ void callback_verticale(UNUSED GtkMenuItem *menuitem,
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     if (layermngr->tool == GMPF_TOOL_SELECTOR)
     {
-        filter_for_selection(Verticale, flowbox);
+        filter_for_selection_unop(Verticale, flowbox);
         gtk_widget_queue_draw(da);
     }
     else
-        GMPF_filter_apply_to_selected_layer(Verticale);
+        GMPF_filter_apply_to_selected_layer_unop(Verticale);
 }
 
 
@@ -2358,8 +2358,8 @@ void callback_verticale_all(UNUSED GtkMenuItem *menuitem,
 {
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     GET_UI(GtkWidget, da, "drawingArea");
-    GMPF_filter_apply_to_all_layer(Verticale);
-    filter_for_selection(Verticale, flowbox);
+    GMPF_filter_apply_to_all_layer_unop(Verticale);
+    filter_for_selection_unop(Verticale, flowbox);
 }
 
 
