@@ -147,7 +147,7 @@ struct GMPF_Scale {
  * (red, green, blue and alpha properties)
  */
 struct GMPF_Pixel {
-    Uint8 R, G, B, A;
+    Uint8 r, g, b, a;
 };
 
 
