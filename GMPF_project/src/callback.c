@@ -903,7 +903,7 @@ void draw_brush (GtkWidget *widget,
         if (layermngr->brush == 2)
             rectangular_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,
                 layermngr->brush_size, (float)color.red, (float)color.green,
-                (float)color.blue, (float)color.alpha);
+                (float)color.blue, (float)color.alpha, lay->scale_factor.x, lay->scale_factor.y);
 
         if (layermngr->brush == 3)
             triangle_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,

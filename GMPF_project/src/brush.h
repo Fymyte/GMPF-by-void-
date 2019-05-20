@@ -31,7 +31,9 @@ void rectangular_brush(GtkWidget *widget,
                   float      red,
                   float      green,
                   float      blue,
-                  float      alpha);
+                  float      alpha,
+                  float      scale_x,
+                  float      scale_y);
 void circular_brush(GtkWidget      *widget,
                   cairo_t        *cr,
                   double          x,
