@@ -11,7 +11,9 @@ void square_brush(GtkWidget *widget,
                   float      red,
                   float      green,
                   float      blue,
-                  float      alpha);
+                  float      alpha,
+                  float      scale_x,
+                  float      scale_y);
 void triangle_brush(GtkWidget *widget,
                   cairo_t   *cr,
                   int        x,

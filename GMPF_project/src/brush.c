@@ -24,7 +24,9 @@ void square_brush(GtkWidget *widget,
                   float      red,
                   float      green,
                   float      blue,
-                  float      alpha)
+                  float      alpha,
+                  float      scale_x,
+                  float      scale_y)
 {
     size = size << 1;
     int semi_size = size >> 1;
@@ -33,7 +35,7 @@ void square_brush(GtkWidget *widget,
     cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
     cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE);
     cairo_set_source_rgba (cr, red, green, blue, alpha);
-    cairo_rectangle (cr, nx, ny, size, size);
+    cairo_rectangle (cr, nx / scale_x, ny/scale_y, size/scale_x, size/scale_y);
 
     cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 
@@ -41,7 +43,7 @@ void square_brush(GtkWidget *widget,
     // cairo_destroy (cr);
 
     /* Now invalidate the affected region of the drawing area. */
-    gtk_widget_queue_draw (widget);
+    gtk_widget_queue_draw_area (widget, nx, ny, size * scale_x, size * scale_y);
 }
 
 /*
