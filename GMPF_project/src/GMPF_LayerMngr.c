@@ -977,9 +977,12 @@ void layer_icon_refresh(GMPF_Layer *layer)
 
     if (layer->icon != NULL)
         g_object_unref(layer->icon);
-    layer->icon = gdk_pixbuf_scale_simple(layer->image, finalw, finalh,
-                         GDK_INTERP_BILINEAR);
+    layer->icon = gdk_pixbuf_composite_color_simple(layer->image, finalw, finalh,
+                    GDK_INTERP_BILINEAR, 255, 4, 0xFF323232, 0xFF777777);
+
     gtk_image_set_from_pixbuf(UIImage, layer->icon);
+    D_PRINT("final: %i, %i", finalw, finalh);
+    gtk_widget_set_size_request(GTK_WIDGET(UIImage), finalw, finalh);
 }
 
 /******************************End of Layer Code*******************************/

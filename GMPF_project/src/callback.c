@@ -337,7 +337,6 @@ void callback_reset_search(UNUSED GtkWidget *widget, UNUSED gpointer user_data)
         GMPF_Layer *lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
         while (lay != NULL)
         {
-            // D_PRINT("%s %s contain %s", lay->name, str_contain(lay->name, n) ? "" : "not", n);
             gtk_widget_show((GtkWidget*) lay->UIElement);
 
             if (!lay->list.next) break;
@@ -679,9 +678,10 @@ GMPF_Size adjust_scale(double          scale_x,
  * Callback to adjust the scale value of all Layer from the list of Layer
  * (Refresh the display after scaling)
  */
-void callback_adjust_scale(GtkEntry *entry,
+void callback_adjust_scale(UNUSED GtkWidget *widget,
                            UNUSED gpointer  user_data)
 {
+    GET_UI(GtkEntry, entry, "ScaleEntry");
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -783,7 +783,7 @@ void callback_show_layer_window(UNUSED GtkWidget *widget,
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
     g_object_set_data(G_OBJECT(flowbox), FILENAME_KEY_NAME, NULL);
-    gtk_button_set_label(button, "(Aucun)");
+    gtk_button_set_label(button, "(Aucune)");
 
     GET_LAYERMNGR(flowbox);
     if (!layermngr->layer_list.next)
@@ -1302,8 +1302,8 @@ void GMPF_init_color_killer_window()
         else
             finalh = layer->size.h / ratio1;
 
-        pixbuf = gdk_pixbuf_scale_simple(pixbuf, finalw, finalh,
-                             GDK_INTERP_BILINEAR);
+        pixbuf = gdk_pixbuf_composite_color_simple(pixbuf, finalw, finalh,
+                        GDK_INTERP_BILINEAR, 255, 8, 0xFF323232, 0xFF777777);
     }
     else
     { gtk_widget_hide(button); }
@@ -1338,8 +1338,8 @@ void GMPF_init_color_swapper_window()
         else
             finalh = layer->size.h / ratio1;
 
-        pixbuf = gdk_pixbuf_scale_simple(pixbuf, finalw, finalh,
-                             GDK_INTERP_BILINEAR);
+        pixbuf = gdk_pixbuf_composite_color_simple(pixbuf, finalw, finalh,
+                        GDK_INTERP_BILINEAR, 255, 8, 0xFF323232, 0xFF777777);
     }
     else
     { gtk_widget_hide(button); }
@@ -1775,8 +1775,8 @@ void GMPF_init_matrix_window()
         else
             finalh = layer->size.h / ratio1;
 
-        pixbuf = gdk_pixbuf_scale_simple(pixbuf, finalw, finalh,
-                             GDK_INTERP_BILINEAR);
+        pixbuf = gdk_pixbuf_composite_color_simple(pixbuf, finalw, finalh,
+                        GDK_INTERP_BILINEAR, 255, 8, 0xFF323232, 0xFF777777);
     }
     else
     { gtk_widget_hide(button); }
