@@ -263,28 +263,27 @@ combobox menu {
 
 #RightBox {
     margin-top: 5px;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px;
     border-right-width: 2px;
-    border-left-width: 2px;
+    border-left-width: 2px; */
     border-style: solid;
     border-color: @ui_box_border_color;
 }
 
 #LeftBox {
     margin-top: 5px;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px;
     border-right-width: 2px;
-    border-left-width: 2px;
+    border-left-width: 2px; */
     border-style: solid;
     border-color: @ui_box_border_color;
 }
 
 #MainBox {
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    /* border-top-width: 2px;
+    border-bottom-width: 2px; */
     border-style: solid;
     border-color: @ui_box_border_color;
-    /* padding-top: 5px; */
     margin: 0px;
 }
 

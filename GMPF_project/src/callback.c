@@ -2574,13 +2574,13 @@ void callback_undo(UNUSED GtkWidget *widget,
     if (layermngr->layer_list.next != NULL)
         lay = container_of(layermngr->layer_list.next, GMPF_Layer, list);
 
-    GMPF_Size size = *GMPF_project_info_get_size(flowbox);
-    // if (!size) { return; }
-    GMPF_Scale scale = *GMPF_project_info_get_scale(flowbox);
-    // if (!scale) { return; }
+    GMPF_Size *size = GMPF_project_info_get_size(flowbox);
+    if (!size) { return; }
+    GMPF_Scale *scale = GMPF_project_info_get_scale(flowbox);
+    if (!scale) { return; }
 
-    int max_width = size.w * scale.x;
-    int max_height = size.h * scale.y;
+    int max_width = size->w * scale->x;
+    int max_height = size->h * scale->y;
 
     GMPF_buffer_undo(flowbox);
 
@@ -2598,13 +2598,13 @@ void callback_redo(UNUSED GtkWidget *widget,
     GET_UI(GtkWidget, layout, "DrawingAreaLayout");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
 
-    GMPF_Size size = *GMPF_project_info_get_size(flowbox);
-    // if (!size) { return; }
-    GMPF_Scale scale = *GMPF_project_info_get_scale(flowbox);
-    // if (!scale) { return; }
+    GMPF_Size *size = GMPF_project_info_get_size(flowbox);
+    if (!size) { return; }
+    GMPF_Scale *scale = GMPF_project_info_get_scale(flowbox);
+    if (!scale) { return; }
 
-    int max_width = size.w * scale.x;
-    int max_height = size.h * scale.y;
+    int max_width = size->w * scale->x;
+    int max_height = size->h * scale->y;
 
     GMPF_buffer_redo(flowbox);
 

@@ -209,12 +209,15 @@ char load_layer(GMPF_LayerMngr *layermngr, FILE *file)
         return 1;
     }
 
-    layer->image = gdk_pixbuf_new_from_data (data,
+    GdkPixbuf *newpix = gdk_pixbuf_new_from_data (data,
                            GDK_COLORSPACE_RGB, TRUE, 8,
                            layer->size.w, layer->size.h,
                            layer->size.w << 2,
-                       NULL, NULL);
-
+                           NULL, NULL);
+    layer->image = gdk_pixbuf_copy(newpix);
+    gdk_pixbuf_copy_options(newpix, layer->image);
+    g_object_unref(newpix);
+    free(data);
     layer->surface = gdk_cairo_surface_create_from_pixbuf(layer->image, 0, NULL);
     layer->scale_factor.x = 1;
     layer->scale_factor.y = 1;
