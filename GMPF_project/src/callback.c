@@ -1929,6 +1929,8 @@ void callback_show_hide_matrix_case(GtkSwitch *sw, UNUSED gpointer user_data)
     isOn ? gtk_widget_show(w4w2w) : gtk_widget_hide(w4w2w);
     isOn ? gtk_widget_show(w4w3w) : gtk_widget_hide(w4w3w);
     isOn ? gtk_widget_show(w4w4w) : gtk_widget_hide(w4w4w);
+    gtk_switch_set_active(sw, isOn);
+    gtk_switch_set_state(sw, isOn);
 }
 
 

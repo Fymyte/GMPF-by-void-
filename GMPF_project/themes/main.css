@@ -6,7 +6,7 @@
 
 @define-color ui_button_color rgb(150, 150, 150);
 @define-color ui_button_hover_color rgb(0, 255, 165);
-@define-color ui_button_pressed_color rgb(180, 180, 180);
+@define-color ui_button_pressed_color rgb(0, 200, 100);
 
 @define-color ui_shadow_color rgba(0, 0, 0, 0.19);
 
@@ -252,6 +252,29 @@ combobox menu {
     color: @ui_text_color;
     background-color:transparent;
 }
+
+/**************
+ *   Switch   *
+ **************/
+switch{
+  background-color: @ui_button_pressed_color;
+}
+
+switch slider {
+  background-color: @ui_button_color;
+}
+
+switch:hover slider {
+  background-color: @ui_button_hover_color;
+}
+
+/* switch:disabled slider {
+  background-color: #FAFAFA;
+} */
+
+/* switch:checked:disabled slider {
+  animation: none;
+} */
 
 .VerticalBox {
     background-color: @ui_window_background_soft;

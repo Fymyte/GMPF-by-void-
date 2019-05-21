@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 
+<!-- Generated with glade 3.22.1 
 
 Copyright (C) VOID*
 
@@ -34,6 +34,9 @@ without any warranty.
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkToolbar">
         <property name="width_request">100</property>
@@ -122,9 +125,6 @@ without any warranty.
         </style>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <style>
       <class name="appwindow"/>
     </style>
@@ -139,6 +139,9 @@ without any warranty.
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -352,6 +355,9 @@ without any warranty.
     <property name="type_hint">dialog</property>
     <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -914,7 +920,11 @@ without any warranty.
             <child>
               <object class="GtkSwitch" id="MatrixSizeSwitch">
                 <property name="visible">True</property>
+                <property name="app_paintable">True</property>
                 <property name="can_focus">True</property>
+                <property name="has_focus">True</property>
+                <property name="is_focus">True</property>
+                <property name="can_default">True</property>
                 <property name="active">True</property>
                 <signal name="state-set" handler="callback_show_hide_matrix_case" swapped="no"/>
               </object>
@@ -1044,6 +1054,9 @@ without any warranty.
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -1265,6 +1278,9 @@ without any warranty.
     <signal name="delete-event" handler="do_destroy_event" swapped="no"/>
     <signal name="delete-event" handler="gtk_widget_hide_on_delete" swapped="no"/>
     <signal name="delete-event" handler="gtk_widget_show" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -1442,8 +1458,8 @@ without any warranty.
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="callback_delete" swapped="no"/>
-                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="Delete" signal="activate"/>
+                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -2577,9 +2593,6 @@ without any warranty.
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <style>
       <class name="appwindow"/>
     </style>
@@ -2599,6 +2612,9 @@ Arnaud CASSEZ
 Pierrick GUILLAUME
 Samory DIABY</property>
     <property name="logo">images/GMPF.png</property>
+    <child>
+      <placeholder/>
+    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -2659,6 +2675,9 @@ Samory DIABY</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -2902,9 +2921,6 @@ Samory DIABY</property>
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <style>
       <class name="appwindow"/>
     </style>
@@ -2920,6 +2936,9 @@ Samory DIABY</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -3184,9 +3203,6 @@ Samory DIABY</property>
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <style>
       <class name="appwindow"/>
     </style>
@@ -3201,6 +3217,9 @@ Samory DIABY</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -3378,9 +3397,6 @@ Samory DIABY</property>
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <style>
       <class name="appwindow"/>
     </style>
@@ -3395,6 +3411,9 @@ Samory DIABY</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
