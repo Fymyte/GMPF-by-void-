@@ -35,7 +35,7 @@ void square_brush(GtkWidget *widget,
     cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
     cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE);
     cairo_set_source_rgba (cr, red, green, blue, alpha);
-    cairo_rectangle (cr, nx / scale_x, ny/scale_y, size / scale_x, size / scale_y);
+    cairo_rectangle (cr, nx / scale_x, ny/scale_y, size, size);
 
     cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 
@@ -80,7 +80,7 @@ void rectangular_brush(GtkWidget *widget,
     cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
     cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE);
     cairo_set_source_rgba (cr, red, green, blue, alpha);
-    cairo_rectangle (cr, nx / scale_x, ny / scale_y, size / scale_x , (size/2) / scale_y);
+    cairo_rectangle (cr, nx / scale_x, ny / scale_y, size, (size/2));
 
     cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
 
