@@ -204,8 +204,8 @@ menuitem {
 .image {
     padding: 5px;
     border-radius: 5px;
-    background-color: @ui_window_background;
-    box-shadow: 0 2px 4px 0 @ui_shadow_color, 0 3px 10px 0 @ui_shadow_color;
+    /* background-color: @ui_window_background; */
+    /* box-shadow: 0 2px 4px 0 @ui_shadow_color, 0 3px 10px 0 @ui_shadow_color; */
 }
 
 /* COMBOBOX & ENTRY */

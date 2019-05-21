@@ -721,7 +721,7 @@ void Color_balance(GMPF_Layer *lay, guchar r, guchar g, guchar b)
  */
 struct ConvoluteThread {
     GdkPixbuf *imgPixbuf;
-    GdkPixbuf*img;
+    GdkPixbuf *img;
     double *mat;
     int mat_size;
     int height;
@@ -737,33 +737,33 @@ struct ConvoluteThread {
 void *subConvolute(void *arg)
 {
     struct ConvoluteThread *cvt = (struct ConvoluteThread *) arg;
-    gboolean error = FALSE;
+
+    GMPF_Pixel *imgPixbufPixels = (GMPF_Pixel *) gdk_pixbuf_get_pixels(cvt->imgPixbuf);
+    GMPF_Pixel *imgPixels = (GMPF_Pixel *) gdk_pixbuf_get_pixels(cvt->img);
+    GMPF_Pixel *actualPixel;
+
     int x = cvt->mat_size;
-    double r, g, b, a;
+    int sx = x >> 1;
+    double r, g, b;
+    char a;
     for(int i = cvt->width_begin; i < cvt->width_end; i++)
     {
+
         for(int j = 0; j < cvt->height; j++)
         {
-            r = g = b = a = 0;
-            for (int k = -x / 2; k <= x/2; k++)
+            a = (imgPixbufPixels + i + j*cvt->width)->a;
+            r = g = b = 0;
+
+            for (int k = -sx; k <= sx; k++)
             {
-                for(int l = -x / 2; l <= x/2; l++)
+                for(int l = -sx; l <= sx; l++)
                 {
-                    if (check(cvt->width, cvt->height, i + k, j +l))
+                    guchar red, green, blue, alpha;
+                    if(gdkpixbuf_get_colors_by_coordinates(cvt->imgPixbuf, i + k, j + l, &red, &green, &blue, &alpha))
                     {
-                        guchar red, green, blue, alpha;
-                        error = gdkpixbuf_get_colors_by_coordinates(cvt->imgPixbuf, i + k, j + l, &red, &green, &blue, &alpha);
-                        if(!error)
-                        {
-                            PRINTERR ("Unable to get pixel");
-                            // free_img_rgb(cvt->img);
-                            free(cvt->mat);
-                            return NULL;
-                        }
-                        r += cvt->mat[(l + x/2) * x + k + x/2] * (double)red;
-                        g += cvt->mat[(l + x/2) * x + k + x/2] * (double)green;
-                        b += cvt->mat[(l + x/2) * x + k + x/2] * (double)blue;
-                        a = alpha;
+                        r += cvt->mat[(l + sx) * x + k + sx] * (double)red;
+                        g += cvt->mat[(l + sx) * x + k + sx] * (double)green;
+                        b += cvt->mat[(l + sx) * x + k + sx] * (double)blue;
                     }
                 }
             }
@@ -782,7 +782,11 @@ void *subConvolute(void *arg)
             else if (b < 0)
                 b = 0;
 
-            put_pixel(cvt->img, i, j, (char)r, (char)g, (char)b, (char)a);
+            actualPixel = imgPixels + i + j*cvt->width;
+            actualPixel->r = (char) r;
+            actualPixel->g = (char) g;
+            actualPixel->b = (char) b;
+            actualPixel->a = a;
         }
     }
     return NULL;
