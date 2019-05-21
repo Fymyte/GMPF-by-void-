@@ -8,7 +8,10 @@ EXEC=GMPF.out
 SRC= $(wildcard src/*.c)
 OBJ= $(SRC:.c=.o)
 
-all: GMPF.out
+.PHONY: clean clean_save all
+
+all:
+	@$(MAKE) GMPF.out -j 8 --no-print-directory
 
 GMPF.out: $(OBJ)
 	@$(CC) -o $@ $^ $(LDFLAGS) $(LDLIBS)
@@ -17,7 +20,6 @@ GMPF.out: $(OBJ)
 %.o: %.c
 	@$(CC) -o $@ -c $< $(CFLAGS)
 
-.PHONY: clean clean_save
 
 clean:
 	@rm -rf $(OBJ) $(EXEC)
