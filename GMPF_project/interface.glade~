@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 
+<!-- Generated with glade 3.22.1 
 
 Copyright (C) VOID*
 
@@ -34,6 +34,9 @@ without any warranty.
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkToolbar">
         <property name="width_request">100</property>
@@ -122,9 +125,6 @@ without any warranty.
         </style>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <style>
       <class name="appwindow"/>
     </style>
@@ -139,6 +139,9 @@ without any warranty.
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -169,14 +172,14 @@ without any warranty.
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <style>
+              <class name="image"/>
               <class name="margin-top-5"/>
               <class name="margin-bottom-5"/>
-              <class name="image"/>
             </style>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -352,6 +355,9 @@ without any warranty.
     <property name="type_hint">dialog</property>
     <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -1045,6 +1051,9 @@ without any warranty.
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
     <child>
+      <placeholder/>
+    </child>
+    <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -1260,11 +1269,14 @@ without any warranty.
     <property name="can_focus">False</property>
     <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
     <property name="title" translatable="yes">GMPF</property>
-    <property name="icon">images/GMPF.png</property>
+    <property name="icon">images/GMPF.ico</property>
     <property name="has_resize_grip">True</property>
     <signal name="delete-event" handler="do_destroy_event" swapped="no"/>
     <signal name="delete-event" handler="gtk_widget_hide_on_delete" swapped="no"/>
     <signal name="delete-event" handler="gtk_widget_show" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -1442,8 +1454,8 @@ without any warranty.
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="callback_delete" swapped="no"/>
-                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                         <accelerator key="Delete" signal="activate"/>
+                        <accelerator key="w" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -1595,7 +1607,7 @@ without any warranty.
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="tooltip_text" translatable="yes">Egalisation en couleurs.</property>
-                                <property name="label" translatable="yes">Egalisation couleur</property>
+                                <property name="label" translatable="yes">Egalisation colorée</property>
                                 <signal name="activate" handler="callback_equalize_color_all" swapped="no"/>
                               </object>
                             </child>
@@ -1671,98 +1683,40 @@ without any warranty.
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkMenuItem" id="Colorfull">
+                              <object class="GtkMenuItem" id="Tinter">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Accentuation des couleurs</property>
+                                <property name="label" translatable="yes">Tinter</property>
                                 <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_colorfull" swapped="no"/>
+                                <signal name="activate" handler="callback_tinter" swapped="no"/>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkMenuItem" id="Binarize">
+                              <object class="GtkMenuItem" id="Vert">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="tooltip_text" translatable="yes">Binarise to black and white </property>
-                                <property name="label" translatable="yes">Binarisation</property>
+                                <property name="label" translatable="yes">Vert</property>
                                 <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_binarize" swapped="no"/>
+                                <signal name="activate" handler="callback_green" swapped="no"/>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkMenuItem" id="BinarizeColor">
+                              <object class="GtkMenuItem" id="Grayscale">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Binarisation couleur</property>
+                                <property name="tooltip_text" translatable="yes">Grey filter</property>
+                                <property name="label" translatable="yes">Niveaux de gris</property>
                                 <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_binarize_color" swapped="no"/>
+                                <signal name="activate" handler="callback_grey" swapped="no"/>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkMenuItem" id="Bords">
+                              <object class="GtkMenuItem" id="Negatif">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="tooltip_text" translatable="yes">Mets les bords en évidence</property>
-                                <property name="label" translatable="yes">Bords</property>
+                                <property name="label" translatable="yes">Negatif</property>
                                 <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_convolute_f" swapped="no"/>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkMenuItem" id="Warm">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Chaud</property>
-                                <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_warm" swapped="no"/>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkMenuItem" id="EqualizeGrayscale">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="tooltip_text" translatable="yes">Egalisation en niveau de gris.</property>
-                                <property name="label" translatable="yes">Egalisation</property>
-                                <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_equalize" swapped="no"/>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkMenuItem" id="EqualizeColor">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="tooltip_text" translatable="yes">Egalisation en couleurs.</property>
-                                <property name="label" translatable="yes">Egalisation couleur</property>
-                                <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_equalize_color" swapped="no"/>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkMenuItem" id="Epine">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Epine</property>
-                                <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_convolute_f" swapped="no"/>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkMenuItem" id="Blur">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="tooltip_text" translatable="yes">Ajoute du flou à l'image</property>
-                                <property name="label" translatable="yes">Flou</property>
-                                <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_convolute_f" swapped="no"/>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkMenuItem" id="Cold">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Froid</property>
-                                <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_cold" swapped="no"/>
+                                <signal name="activate" handler="callback_negative" swapped="no"/>
                               </object>
                             </child>
                             <child>
@@ -1784,40 +1738,98 @@ without any warranty.
                               </object>
                             </child>
                             <child>
-                              <object class="GtkMenuItem" id="Negatif">
+                              <object class="GtkMenuItem" id="Blur">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Negatif</property>
+                                <property name="tooltip_text" translatable="yes">Ajoute du flou à l'image</property>
+                                <property name="label" translatable="yes">Flou</property>
                                 <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_negative" swapped="no"/>
+                                <signal name="activate" handler="callback_convolute_f" swapped="no"/>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkMenuItem" id="Grayscale">
+                              <object class="GtkMenuItem" id="EqualizeColor">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="tooltip_text" translatable="yes">Grey filter</property>
-                                <property name="label" translatable="yes">Niveaux de gris</property>
+                                <property name="tooltip_text" translatable="yes">Egalisation en couleurs.</property>
+                                <property name="label" translatable="yes">Egalisation colorée</property>
                                 <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_grey" swapped="no"/>
+                                <signal name="activate" handler="callback_equalize_color" swapped="no"/>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkMenuItem" id="Tinter">
+                              <object class="GtkMenuItem" id="EqualizeGrayscale">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Teinture</property>
+                                <property name="tooltip_text" translatable="yes">Egalisation en niveau de gris.</property>
+                                <property name="label" translatable="yes">Egalisation</property>
                                 <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_tinter" swapped="no"/>
+                                <signal name="activate" handler="callback_equalize" swapped="no"/>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkMenuItem" id="Vert">
+                              <object class="GtkMenuItem" id="Epine">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Vert</property>
+                                <property name="label" translatable="yes">Epine</property>
                                 <property name="use_underline">True</property>
-                                <signal name="activate" handler="callback_green" swapped="no"/>
+                                <signal name="activate" handler="callback_convolute_f" swapped="no"/>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkMenuItem" id="Colorfull">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Accentuation des couleurs</property>
+                                <property name="use_underline">True</property>
+                                <signal name="activate" handler="callback_colorfull" swapped="no"/>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkMenuItem" id="Cold">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Froid</property>
+                                <property name="use_underline">True</property>
+                                <signal name="activate" handler="callback_cold" swapped="no"/>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkMenuItem" id="Warm">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Chaud</property>
+                                <property name="use_underline">True</property>
+                                <signal name="activate" handler="callback_warm" swapped="no"/>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkMenuItem" id="Bords">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="tooltip_text" translatable="yes">Mets les bords en évidence</property>
+                                <property name="label" translatable="yes">Bords</property>
+                                <property name="use_underline">True</property>
+                                <signal name="activate" handler="callback_convolute_f" swapped="no"/>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkMenuItem" id="BinarizeColor">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Binarisation couleur</property>
+                                <property name="use_underline">True</property>
+                                <signal name="activate" handler="callback_binarize_color" swapped="no"/>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkMenuItem" id="Binarize">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="tooltip_text" translatable="yes">Binarise to black and white </property>
+                                <property name="label" translatable="yes">Binarisation</property>
+                                <property name="use_underline">True</property>
+                                <signal name="activate" handler="callback_binarize" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -2093,11 +2105,9 @@ without any warranty.
               </packing>
             </child>
             <child>
-              <object class="GtkComboBoxText" id="ScaleComboBox">
-                <property name="width_request">230</property>
+              <object class="GtkComboBoxText" id="ComboBo">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_right">5</property>
                 <property name="resize_mode">immediate</property>
                 <property name="active">1</property>
                 <property name="has_entry">True</property>
@@ -2109,8 +2119,6 @@ without any warranty.
                   <item translatable="yes">500</item>
                   <item translatable="yes">800</item>
                 </items>
-                <signal name="popdown" handler="callback_adjust_scale" swapped="no"/>
-                <signal name="popup" handler="callback_adjust_scale" swapped="no"/>
                 <child internal-child="entry">
                   <object class="GtkEntry" id="ScaleEntry">
                     <property name="visible">True</property>
@@ -2132,7 +2140,6 @@ without any warranty.
                 <style>
                   <class name="shadowedbutton"/>
                   <class name="border-radius-20"/>
-                  <class name="margin-right-5"/>
                 </style>
               </object>
               <packing>
@@ -2429,6 +2436,8 @@ without any warranty.
                                 <property name="can_focus">False</property>
                                 <property name="valign">start</property>
                                 <property name="max_children_per_line">1</property>
+                                <property name="selection_mode">multiple</property>
+                                <property name="activate_on_single_click">False</property>
                                 <signal name="selected-children-changed" handler="callback_adjust_rotate_value" swapped="no"/>
                                 <style>
                                   <class name="layer"/>
@@ -2588,9 +2597,6 @@ without any warranty.
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <style>
       <class name="appwindow"/>
     </style>
@@ -2610,6 +2616,9 @@ Arnaud CASSEZ
 Pierrick GUILLAUME
 Samory DIABY</property>
     <property name="logo">images/GMPF.png</property>
+    <child>
+      <placeholder/>
+    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -2670,6 +2679,9 @@ Samory DIABY</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -2913,9 +2925,6 @@ Samory DIABY</property>
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <style>
       <class name="appwindow"/>
     </style>
@@ -2931,6 +2940,9 @@ Samory DIABY</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
     <signal name="delete-event" handler="callback_hideWidget" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -3171,7 +3183,7 @@ Samory DIABY</property>
         </child>
         <child>
           <object class="GtkButton" id="LayerFilenameButton">
-            <property name="label" translatable="yes">(Aucune)</property>
+            <property name="label" translatable="yes">(Aucun)</property>
             <property name="width_request">300</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -3188,28 +3200,12 @@ Samory DIABY</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_left">5</property>
-            <property name="label" translatable="yes">Image:</property>
-            <property name="xalign">0</property>
-            <style>
-              <class name="description"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">5</property>
-          </packing>
+          <placeholder/>
         </child>
         <child>
           <placeholder/>
         </child>
       </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
     </child>
     <style>
       <class name="appwindow"/>
@@ -3225,6 +3221,9 @@ Samory DIABY</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -3402,9 +3401,6 @@ Samory DIABY</property>
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <style>
       <class name="appwindow"/>
     </style>
@@ -3419,6 +3415,9 @@ Samory DIABY</property>
     <property name="type_hint">dialog</property>
     <property name="skip_pager_hint">True</property>
     <property name="deletable">False</property>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
