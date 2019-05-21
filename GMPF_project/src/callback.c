@@ -37,7 +37,7 @@ char open_confirm_quit_without_saving_dialog(const char *msg)
                                         NULL);
     GtkWidget *content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
     if (!msg)
-        msg = "Quitter sans sauvegarder ?\nToute modification non sauvegardé sera perdu!";
+        msg = "Quitter sans sauvegarder ?\nToutes les modifications non sauvegardées seront perdues!";
     GtkWidget *label = gtk_label_new(msg);
     gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
     gtk_container_add(GTK_CONTAINER(content), label);
