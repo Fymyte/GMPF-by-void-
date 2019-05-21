@@ -746,6 +746,7 @@ void *subConvolute(void *arg)
     int sx = x >> 1;
     double r, g, b;
     char a;
+    size_t tmp;
     for(int i = cvt->width_begin; i < cvt->width_end; i++)
     {
 
@@ -754,33 +755,25 @@ void *subConvolute(void *arg)
             a = (imgPixbufPixels + i + j*cvt->width)->a;
             r = g = b = 0;
 
-            for (int k = -sx; k <= sx; k++)
+            for (int k = 0; k <= x; k++)
             {
-                for(int l = -sx; l <= sx; l++)
+                for(int l = 0; l <= x; l++)
                 {
-                    guchar red, green, blue, alpha;
-                    if(gdkpixbuf_get_colors_by_coordinates(cvt->imgPixbuf, i + k, j + l, &red, &green, &blue, &alpha))
+                    if(i > sx && j > sx && i < cvt->width - sx && j < cvt->height - sx)
                     {
-                        r += cvt->mat[(l + sx) * x + k + sx] * (double)red;
-                        g += cvt->mat[(l + sx) * x + k + sx] * (double)green;
-                        b += cvt->mat[(l + sx) * x + k + sx] * (double)blue;
+                        actualPixel = imgPixbufPixels + (i + k - sx) + (j + l - sx)*cvt->width;
+                        tmp = l * x + k;
+
+                        r += cvt->mat[tmp] * (double)actualPixel->r;
+                        g += cvt->mat[tmp] * (double)actualPixel->g;
+                        b += cvt->mat[tmp] * (double)actualPixel->b;
                     }
                 }
             }
-            if (r > 255)
-                r = 255;
-            else if (r < 0)
-                r = 0;
 
-            if (g > 255)
-                g = 255;
-            else if (g < 0)
-                g = 0;
-
-            if (b > 255)
-                b = 255;
-            else if (b < 0)
-                b = 0;
+            if (r > 255) { r = 255; } else if (r < 0) { r = 0; }
+            if (g > 255) { g = 255; } else if (g < 0) { g = 0; }
+            if (b > 255) { b = 255; } else if (b < 0) { b = 0; }
 
             actualPixel = imgPixels + i + j*cvt->width;
             actualPixel->r = (char) r;
@@ -827,7 +820,7 @@ void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size)
     struct ConvoluteThread carr[8];
     int threadwidth = width >> 3;
     int actualwidth = 0;
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 8; i++)
     {
         carr[i].imgPixbuf = imgPixbuf;
         carr[i].img = img;
