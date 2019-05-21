@@ -1,7 +1,7 @@
 # Makefile for GMPF
 
 CC=clang
-CFLAGS=-Wall -Wextra -std=c99  `pkg-config --cflags gtk+-3.0` -o3
+CFLAGS=-Wall -Wextra -std=c99  `pkg-config --cflags gtk+-3.0` -O3
 LDLIBS= `pkg-config --libs gtk+-3.0` `pkg-config --libs gmodule-2.0`
 LDFLAGS=
 EXEC=GMPF.out

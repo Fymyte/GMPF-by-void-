@@ -362,11 +362,11 @@ void Tinter(GMPF_Pixel *p)
     g = (guchar)(rgba.green * 255);
     b = (guchar)(rgba.blue * 255);
 
-    factor = 50;
+    factor = (guchar)(rgba.alpha * 255);// = 128;
 
-    p->r = p->r * (100 - factor) / 100 + r * factor / 100;
-    p->g = p->g * (100 - factor) / 100 + g * factor / 100;
-    p->b = p->b * (100 - factor) / 100 + b * factor / 100;
+    p->r = (p->r * (256 - factor) >> 8) + (r * factor >> 8);
+    p->g = (p->g * (256 - factor) >> 8) + (g * factor >> 8);
+    p->b = (p->b * (256 - factor) >> 8) + (b * factor >> 8);
 }
 
 
@@ -755,15 +755,14 @@ void *subConvolute(void *arg)
             a = (imgPixbufPixels + i + j*cvt->width)->a;
             r = g = b = 0;
 
-            for (int k = 0; k <= x; k++)
+            for (int k = -sx; k <= sx; k++)
             {
-                for(int l = 0; l <= x; l++)
+                for(int l = -sx; l <= sx; l++)
                 {
                     if(i > sx && j > sx && i < cvt->width - sx && j < cvt->height - sx)
                     {
-                        actualPixel = imgPixbufPixels + (i + k - sx) + (j + l - sx)*cvt->width;
-                        tmp = l * x + k;
-
+                        actualPixel = imgPixbufPixels + (i + k) + (j + l)*cvt->width;
+                        tmp = (l + sx) * x + k + sx;
                         r += cvt->mat[tmp] * (double)actualPixel->r;
                         g += cvt->mat[tmp] * (double)actualPixel->g;
                         b += cvt->mat[tmp] * (double)actualPixel->b;
@@ -820,7 +819,7 @@ void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size)
     struct ConvoluteThread carr[8];
     int threadwidth = width >> 3;
     int actualwidth = 0;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 7; i++)
     {
         carr[i].imgPixbuf = imgPixbuf;
         carr[i].img = img;
@@ -842,7 +841,6 @@ void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size)
     carr[7].height = height;
     carr[7].width_begin = actualwidth;
     carr[7].width = width;
-    actualwidth += threadwidth;
     carr[7].width_end = width;
     int e = pthread_create(&parr[7], NULL, subConvolute, &carr[7]);
     if (e)
