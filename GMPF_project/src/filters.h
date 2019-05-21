@@ -52,6 +52,6 @@ void Horizontale(GMPF_Layer *lay);
 
 void Color_balance(GMPF_Layer *lay, guchar r, guchar g, guchar b);
 
-void pixelFilter(GMPF_Layer *lay, void (*filter)(GMPF_Pixel*));
+void pixelFilter(GMPF_Layer *lay, GMPF_Size *size, void (*filter)(GMPF_Pixel*));
 
 #endif

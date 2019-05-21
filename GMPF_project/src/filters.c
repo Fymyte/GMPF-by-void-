@@ -1,5 +1,9 @@
 #include "filters.h"
 
+#define GMPF_NB_THREAD 8
+#define GMPF_LT_THREAD (GMPF_NB_THREAD - 1)
+
+
 extern SGlobalData G_user_data;
 
 int check (int width, int height, int i, int j)
@@ -62,7 +66,7 @@ void filter_for_selection(void(*filter)(GMPF_Pixel *), GtkFlowBox *flowbox)
     selec_lay->pos.y = pos.y;
 
     //filter selection
-    pixelFilter(selec_lay, filter);
+    pixelFilter(selec_lay, &selec_lay->size, filter);
     //end filter selection
     GMPF_selection_set_surface(flowbox, selec_lay->surface);
 
@@ -149,8 +153,10 @@ void GMPF_filter_apply_to_selected_layer(void (*filter)(GMPF_Pixel*))
         return;
     }
 
+    GMPF_Size size = {.w=gdk_pixbuf_get_width(lay->image), .h=gdk_pixbuf_get_height(lay->image)};
+
     GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
-    pixelFilter(lay, filter);
+    pixelFilter(lay, &size, filter);
     GMPF_saved_state_set_is_saved(flowbox, 0);
 
     gtk_widget_queue_draw(da);
@@ -191,6 +197,7 @@ void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Pixel*))
 {
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
+    GMPF_Size size;
 
     GMPF_LayerMngr *layermngr = layermngr_get_layermngr(flowbox);
     if (layermngr->layer_list.next != NULL)
@@ -199,7 +206,9 @@ void GMPF_filter_apply_to_all_layer(void (*filter)(GMPF_Pixel*))
         while (lay != NULL)
         {
             GMPF_buffer_add(flowbox, GMPF_ACTION_MODIF_IMAGE, lay);
-            pixelFilter(lay, filter);
+            size.w = gdk_pixbuf_get_width(lay->image);
+            size.h = gdk_pixbuf_get_height(lay->image);
+            pixelFilter(lay, &size,  filter);
 
             if (!lay->list.next) break;
             lay = container_of(lay->list.next, GMPF_Layer, list);
@@ -282,11 +291,8 @@ void GMPF_filter_apply_to_all_layer_color(void (*filter)(GMPF_Layer*,
 void Lightness(GMPF_Pixel *p)
 {
     p->r = p->r > 230 ? 255 : p->r + 25;
-
     p->g = p->g > 230 ? 255 : p->g + 25;
-
     p->b = p->b > 230 ? 255 : p->b + 25;
-
 }
 
 
@@ -295,11 +301,8 @@ void Lightness(GMPF_Pixel *p)
  */
 void Darkness(GMPF_Pixel *p)
 {
-
     p->r = p->r < 25 ? 0 : p->r - 25;
-
     p->g = p->g < 25 ? 0 : p->g - 25;
-
     p->b = p->b < 25 ? 0 : p->b - 25;
 }
 
@@ -342,9 +345,7 @@ void Binarize (GMPF_Pixel *pixel)
 void BinarizeColor(GMPF_Pixel *p)
 {
     p->r = p->r > 127 ? 255 : 0;
-
     p->g = p->g > 127 ? 255 : 0;
-
     p->b = p->b > 127 ? 255 : 0;
 }
 
@@ -471,6 +472,36 @@ void Equalize(GMPF_Layer *lay)
 }
 
 
+struct MirrorThread {
+    GMPF_Pixel *imgPixels;
+    int width;
+    int height;
+    int min;
+    int max;
+};
+
+
+void *subVertical(void *arg)
+{
+    struct MirrorThread *mt = (struct MirrorThread *)arg;
+    Uint32 *a, *b;
+
+    for(int i = mt->min; i < mt->max; i++)
+    {
+        for(int j = 0; j < mt->height; j++)
+        {
+            a = (Uint32*) mt->imgPixels + i + j*mt->width;
+            b = (Uint32*) mt->imgPixels + (mt->width - i - 1) + j*mt->width;
+
+            *a ^= *b;
+            *b ^= *a;
+            *a ^= *b;
+        }
+    }
+
+    return NULL;
+}
+
 /*
  * Apply "Mirroir verticale" filter to the given Layer
  */
@@ -480,35 +511,66 @@ void Verticale(GMPF_Layer *lay)
         g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
-    GdkPixbuf *imgPixbuf = lay->image;
+    GMPF_Pixel *imgPixels = (GMPF_Pixel *) gdk_pixbuf_get_pixels(lay->image);
 
-    guchar red, green, blue, alpha;
+    int width = gdk_pixbuf_get_width(lay->image);
+    int height = gdk_pixbuf_get_height(lay->image);
+    int swidth = width >> 1;
 
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    struct Img_rgb *img = init_img_rgb(width, height);
-
-    for(int i = 0; i < width; i++)
+    pthread_t parr[GMPF_NB_THREAD];
+    struct MirrorThread carr[GMPF_NB_THREAD];
+    int threadwidth = swidth / GMPF_NB_THREAD;
+    int actualwidth = 0;
+    for (int i = 0; i < GMPF_LT_THREAD; i++)
     {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-                err(1, "pixbuf get pixels error");
-			Matrix_val(img -> red, width - i - 1, j, (double)red);
-            Matrix_val(img -> green, width - i - 1, j, (double)green);
-            Matrix_val(img -> blue, width - i - 1, j, (double)blue);
-            Matrix_val(img -> alpha, width - i - 1, j, (double)alpha);
-            //put_pixel(imgPixbuf, i, j, red, green, blue, alpha);
-        }
+        carr[i].imgPixels = imgPixels;
+        carr[i].width = width;
+        carr[i].height = height;
+        carr[i].min = actualwidth;
+        actualwidth += threadwidth;
+        carr[i].max = actualwidth;
+        if (pthread_create(&parr[i], NULL, subVertical, &carr[i]))
+        { PRINTERR("Unable to create thread"); }
     }
-    Img_rgb_to_Image(imgPixbuf, img);
-    cairo_surface_destroy(lay->surface);
+    carr[GMPF_LT_THREAD].imgPixels = imgPixels;
+    carr[GMPF_LT_THREAD].width = width;
+    carr[GMPF_LT_THREAD].height = height;
+    carr[GMPF_LT_THREAD].min = actualwidth;
+    carr[GMPF_LT_THREAD].max = swidth;
+    if (pthread_create(&parr[GMPF_LT_THREAD], NULL, subVertical, &carr[GMPF_LT_THREAD]))
+    { PRINTERR("Unable to create thread"); }
+
+    for (int i = 0; i < GMPF_NB_THREAD; i++)
+    {
+        pthread_join(parr[i], NULL);
+    }
+
+    while (cairo_surface_get_reference_count(lay->surface))
+        cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
     layer_icon_refresh(lay);
-    free_img_rgb(img);
+}
+
+
+void *subHorizontal(void *arg)
+{
+    struct MirrorThread *mt = (struct MirrorThread *)arg;
+    Uint32 *a, *b;
+
+    for(int i = 0; i < mt->width; i++)
+    {
+        for(int j = mt->min; j < mt->max; j++)
+        {
+            a = (Uint32*) mt->imgPixels + i + j*mt->width;
+            b = (Uint32*) mt->imgPixels + i + (mt->height - j - 1)*mt->width;
+
+            *a ^= *b;
+            *b ^= *a;
+            *a ^= *b;
+        }
+    }
+
+    return NULL;
 }
 
 
@@ -521,34 +583,45 @@ void Horizontale(GMPF_Layer *lay)
         g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
-    GdkPixbuf *imgPixbuf = lay->image;
+    GMPF_Pixel *imgPixels = (GMPF_Pixel *) gdk_pixbuf_get_pixels(lay->image);
 
-    guchar red, green, blue, alpha;
+    int width = gdk_pixbuf_get_width(lay->image);
+    int height = gdk_pixbuf_get_height(lay->image);
+    int sheight = height >> 1;
 
-    int width = gdk_pixbuf_get_width(imgPixbuf);
-    int height = gdk_pixbuf_get_height(imgPixbuf);
-    gboolean error = FALSE;
-
-    struct Img_rgb *img = init_img_rgb(width, height);
-
-    for(int i = 0; i < width; i++)
+    pthread_t parr[GMPF_NB_THREAD];
+    struct MirrorThread carr[GMPF_NB_THREAD];
+    // int threadwidth = swidth / GMPF_NB_THREAD;
+    int threadheight = sheight / GMPF_NB_THREAD;
+    int actualheight = 0;
+    for (int i = 0; i < GMPF_LT_THREAD; i++)
     {
-        for(int j = 0; j < height; j++)
-        {
-            error = gdkpixbuf_get_colors_by_coordinates(imgPixbuf, i, j, &red, &green, &blue, &alpha);
-            if(!error)
-                err(1, "pixbuf get pixels error");
-			Matrix_val(img -> red, i, height - j - 1, (double)red);
-            Matrix_val(img -> green, i , height - j - 1, (double)green);
-            Matrix_val(img -> blue, i, height - j - 1, (double)blue);
-            Matrix_val(img -> alpha, i, height - j - 1, (double)alpha);
-	}
+        carr[i].imgPixels = imgPixels;
+        carr[i].width = width;
+        carr[i].height = height;
+        carr[i].min = actualheight;
+        actualheight += threadheight;
+        carr[i].max = actualheight;
+        if (pthread_create(&parr[i], NULL, subHorizontal, &carr[i]))
+        { PRINTERR("Unable to create thread"); }
     }
-    Img_rgb_to_Image(imgPixbuf, img);
-    cairo_surface_destroy(lay->surface);
+    carr[GMPF_LT_THREAD].imgPixels = imgPixels;
+    carr[GMPF_LT_THREAD].width = width;
+    carr[GMPF_LT_THREAD].height = height;
+    carr[GMPF_LT_THREAD].min = actualheight;
+    carr[GMPF_LT_THREAD].max = sheight;
+    if (pthread_create(&parr[GMPF_LT_THREAD], NULL, subHorizontal, &carr[GMPF_LT_THREAD]))
+    { PRINTERR("Unable to create thread"); }
+
+    for (int i = 0; i < GMPF_NB_THREAD; i++)
+    {
+        pthread_join(parr[i], NULL);
+    }
+
+    while (cairo_surface_get_reference_count(lay->surface))
+        cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
     layer_icon_refresh(lay);
-    free_img_rgb(img);
 }
 
 
@@ -815,11 +888,11 @@ void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size)
     GMPF_Size size = {.w=width, .h=height };
     GdkPixbuf *img = new_pixbuf_standardized(&size);
 
-    pthread_t parr[8];
-    struct ConvoluteThread carr[8];
-    int threadwidth = width >> 3;
+    pthread_t parr[GMPF_NB_THREAD];
+    struct ConvoluteThread carr[GMPF_NB_THREAD];
+    int threadwidth = width / GMPF_NB_THREAD;
     int actualwidth = 0;
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < GMPF_LT_THREAD; i++)
     {
         carr[i].imgPixbuf = imgPixbuf;
         carr[i].img = img;
@@ -830,23 +903,21 @@ void Convolute(GMPF_Layer *lay, double *mat, size_t mat_size)
         carr[i].width = width;
         actualwidth += threadwidth;
         carr[i].width_end = actualwidth;
-        int e = pthread_create(&parr[i], NULL, subConvolute, &carr[i]);
-        if (e)
+        if (pthread_create(&parr[i], NULL, subConvolute, &carr[i]))
         { PRINTERR("Unable to create thread"); }
     }
-    carr[7].imgPixbuf = imgPixbuf;
-    carr[7].img = img;
-    carr[7].mat = mat;
-    carr[7].mat_size = x;
-    carr[7].height = height;
-    carr[7].width_begin = actualwidth;
-    carr[7].width = width;
-    carr[7].width_end = width;
-    int e = pthread_create(&parr[7], NULL, subConvolute, &carr[7]);
-    if (e)
+    carr[GMPF_LT_THREAD].imgPixbuf = imgPixbuf;
+    carr[GMPF_LT_THREAD].img = img;
+    carr[GMPF_LT_THREAD].mat = mat;
+    carr[GMPF_LT_THREAD].mat_size = x;
+    carr[GMPF_LT_THREAD].height = height;
+    carr[GMPF_LT_THREAD].width_begin = actualwidth;
+    carr[GMPF_LT_THREAD].width = width;
+    carr[GMPF_LT_THREAD].width_end = width;
+    if (pthread_create(&parr[GMPF_LT_THREAD], NULL, subConvolute, &carr[GMPF_LT_THREAD]))
     { PRINTERR("Unable to create thread"); }
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < GMPF_NB_THREAD; i++)
     {
         pthread_join(parr[i], NULL);
     }
@@ -899,7 +970,7 @@ void *subPixelFilter(void *arg)
  * Apply the given convolution matrix to the selected Layer
  * (Do nothing if there is no selected Layer)
  */
-void pixelFilter(GMPF_Layer *lay, void (*filter)(GMPF_Pixel*))
+void pixelFilter(GMPF_Layer *lay, GMPF_Size *size, void (*filter)(GMPF_Pixel*))
 {
     GET_UI(GtkWidget, da, "drawingArea");
     GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
@@ -912,37 +983,32 @@ void pixelFilter(GMPF_Layer *lay, void (*filter)(GMPF_Pixel*))
         g_object_unref(lay->image);
     lay->image = gdk_pixbuf_get_from_surface(lay->surface, 0, 0, lay->size.w, lay->size.h);
 
-    int width = gdk_pixbuf_get_width(lay->image);
-    int height = gdk_pixbuf_get_height(lay->image);
-
-    pthread_t parr[8];
-    struct PixelFilterThread carr[8];
-    int threadwidth = width >> 3;
+    pthread_t parr[GMPF_NB_THREAD];
+    struct PixelFilterThread carr[GMPF_NB_THREAD];
+    int threadwidth = size->w / GMPF_NB_THREAD;
     int actualwidth = 0;
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < GMPF_LT_THREAD; i++)
     {
         carr[i].imgPixbuf = lay->image;
         carr[i].filter = filter;
-        carr[i].height = height;
+        carr[i].height = size->h;
         carr[i].width_begin = actualwidth;
-        carr[i].width = width;
+        carr[i].width = size->w;
         actualwidth += threadwidth;
         carr[i].width_end = actualwidth;
-        int e = pthread_create(&parr[i], NULL, subPixelFilter, &carr[i]);
-        if (e)
+        if (pthread_create(&parr[i], NULL, subPixelFilter, &carr[i]))
         { PRINTERR("Unable to create thread"); }
     }
-    carr[7].imgPixbuf = lay->image;
-    carr[7].filter = filter;
-    carr[7].height = height;
-    carr[7].width_begin = actualwidth;
-    carr[7].width = width;
-    carr[7].width_end = width;
-    int e = pthread_create(&parr[7], NULL, subPixelFilter, &carr[7]);
-    if (e)
+    carr[GMPF_LT_THREAD].imgPixbuf = lay->image;
+    carr[GMPF_LT_THREAD].filter = filter;
+    carr[GMPF_LT_THREAD].height = size->h;
+    carr[GMPF_LT_THREAD].width_begin = actualwidth;
+    carr[GMPF_LT_THREAD].width = size->w;
+    carr[GMPF_LT_THREAD].width_end = size->w;
+    if (pthread_create(&parr[GMPF_LT_THREAD], NULL, subPixelFilter, &carr[GMPF_LT_THREAD]))
     { PRINTERR("Unable to create thread"); }
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < GMPF_NB_THREAD; i++)
     {
         pthread_join(parr[i], NULL);
     }
