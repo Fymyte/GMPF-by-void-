@@ -43,7 +43,7 @@ void square_brush(GtkWidget *widget,
     // cairo_destroy (cr);
 
     /* Now invalidate the affected region of the drawing area. */
-    gtk_widget_queue_draw_area (widget, nx, ny, size * scale_x, size * scale_y);
+    gtk_widget_queue_draw (widget);
 }
 
 /*
@@ -88,7 +88,7 @@ void rectangular_brush(GtkWidget *widget,
     // cairo_destroy (cr);
 
     /* Now invalidate the affected region of the drawing area. */
-    gtk_widget_queue_draw_area (widget, nx, ny, size * scale_x , (size/2) * scale_y);
+    gtk_widget_queue_draw (widget);
 }
 
 void triangle_brush(GtkWidget *widget,
@@ -137,8 +137,6 @@ void circular_brush(GtkWidget      *widget,
                     cairo_t        *cr,
                     double          x,
                     double          y,
-                    double          rx,
-                    double          ry,
                     double          radius,
                     float           red,
                     float           green,
@@ -187,8 +185,7 @@ void circular_brush(GtkWidget      *widget,
     layermngr->pos.x = x;
     layermngr->pos.y = y;
 
-    gtk_widget_queue_draw_area (widget, refreshx - 10 + rx, refreshy - 10 + ry,
-            width * scale_x + 20, height * scale_y + 20);
+    gtk_widget_queue_draw(widget);
 }
 
 

@@ -100,21 +100,21 @@ void callback_setCursor()
       }
 
       //square
-      if (layermngr->brush == 1)
+      else if (layermngr->brush == 1)
       {
           cairo_set_line_width(cr, 1);
           cairo_rectangle(cr, 0, 0, size*2.0, size*2.0);
       }
 
       //rectangle
-      if (layermngr->brush == 2)
+      else if (layermngr->brush == 2)
       {
           cairo_set_line_width(cr, 1);
           cairo_rectangle(cr, 0, 0, size*2.0, size);
       }
 
       //triangle
-      if (layermngr->brush == 3)
+      else if (layermngr->brush == 3)
       {
           cairo_set_line_width(cr, 1);
           cairo_move_to(cr, size, 0);

@@ -891,10 +891,13 @@ void draw_brush (GtkWidget *widget,
 
         //begin brush zone
         if (layermngr->brush == 0)
-            circular_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,lay->pos.x, lay->pos.y, layermngr->brush_size,
+        {
+            circular_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y, layermngr->brush_size,
                 (float)color.red, (float)color.green, (float)color.blue,
                 (float)color.alpha, lay->scale_factor.x, lay->scale_factor.y,
                 layermngr);
+            D_PRINT("pos: (%li, %li)", lay->pos.x, lay->pos.y);
+        }
         if (layermngr->brush == 1)
             square_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,
                 layermngr->brush_size, (float)color.red, (float)color.green,
@@ -936,9 +939,11 @@ void draw_rubber (GtkWidget *widget,
         //begin brush zone
         //circular
         if (layermngr->brush == 0)
-            circular_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y,lay->pos.x, lay->pos.y, layermngr->brush_size,
+        {
+            circular_brush(widget, lay->cr, x - lay->pos.x, y - lay->pos.y, layermngr->brush_size,
                 0, 0, 0, 0, lay->scale_factor.x, lay->scale_factor.y,
                 layermngr);
+        }
 
         //square
         if (layermngr->brush == 1)
