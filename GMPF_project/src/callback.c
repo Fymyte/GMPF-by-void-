@@ -1760,7 +1760,7 @@ void load_image_cairo(GtkWindow *window,
 
     if(error)
     {
-        printf("Error : %s", error->message);
+        D_PRINT("Error : %s", error->message);
         g_error_free(error);
     }
 

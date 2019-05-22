@@ -159,7 +159,7 @@ void resizeCursor(int size)
     pixbuf = gdk_pixbuf_new_from_file("penta00.gif", &error);
     if(error)
     {
-        printf("Error : %s\n", error->message);
+        D_PRINT("Error : %s\n", error->message);
         g_error_free(error);
     }
     GET_UI(GtkWindow, window, "MainWindow");

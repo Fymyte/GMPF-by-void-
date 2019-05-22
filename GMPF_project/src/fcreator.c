@@ -26,7 +26,7 @@ void Save_filter()
 
     if (fd == -1)
     {
-        printf("file creation failed\n");
+        PRINTERR("file creation failed\n");
         return;
     }
     //écrire le nom des fonctions
@@ -37,7 +37,7 @@ void Save_filter()
     {
         if(write(fd, "Grey\n", 5) == -1)
         {
-            printf("write fail\n");
+            PRINTERR("write fail\n");
             return;
         }
     }
@@ -46,7 +46,7 @@ void Save_filter()
     {
         if(write(fd, "Binarize\n", 9) == -1)
         {
-            printf("write fail\n");
+            PRINTERR("write fail\n");
             return;
         }
     }
@@ -55,7 +55,7 @@ void Save_filter()
     {
         if(write(fd, "Blur\n", 5) == -1)
         {
-            printf("write fail\n");
+            PRINTERR("write fail\n");
             return;
         }
     }
@@ -64,7 +64,7 @@ void Save_filter()
     {
         if(write(fd, "Colorfull\n", 10) == -1)
         {
-            printf("write fail\n");
+            PRINTERR("write fail\n");
             return;
         }
     }
@@ -73,7 +73,7 @@ void Save_filter()
     {
         if(write(fd, "Binarize color\n", 15) == -1)
         {
-            printf("write fail\n");
+            PRINTERR("write fail\n");
             return;
         }
     }
@@ -82,7 +82,7 @@ void Save_filter()
     {
         if(write(fd, "Tinter\n", 15) == -1)
         {
-            printf("write fail\n");
+            PRINTERR("write fail\n");
             return;
         }
     }
@@ -94,19 +94,19 @@ void Save_filter()
 
     if (write(fd, savedColor, len) == -1)
     {
-        printf("write fail\n");
+        PRINTERR("write fail\n");
         return;
     }
 
     //close the filebt
     if(close(fd) == -1)
     {
-        printf("close fail\n");
+        PRINTERR("close fail\n");
         return;
     }
     g_free(filter_1);
     g_free(filter_2);
-    printf("Filter save done \n");
+    D_PRINT("Filter save done \n", NULL);
 }
 
 
@@ -124,7 +124,7 @@ void Apply_user_filter(gchar *filename)
 
     if (filter == NULL)
     {
-        printf("file open fail\n");
+        PRINTERR("file open fail\n");
         return;
     }
 
@@ -154,9 +154,9 @@ void Apply_user_filter(gchar *filename)
 
     if (fclose(filter) == -1)
     {
-        printf("file close fail\n");
+        PRINTERR("file close fail\n");
         return;
     }
-    printf("user filter applied\n");
+    D_PRINT("user filter applied\n", NULL);
     free(save);
 }

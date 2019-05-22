@@ -51,7 +51,7 @@ void filter_for_selection(void(*filter)(GMPF_Pixel *), GtkFlowBox *flowbox)
     if (!new_surf)
     { PRINTERR("No surface"); return; }
 
-    while (cairo_surface_get_reference_count(new_surf) < 3)
+    while (cairo_surface_get_reference_count(new_surf) < 5)
     { D_PRINT("Reference", NULL); cairo_surface_reference(new_surf); }
 
     GMPF_Size size = *GMPF_selection_get_size(flowbox);
@@ -69,6 +69,9 @@ void filter_for_selection(void(*filter)(GMPF_Pixel *), GtkFlowBox *flowbox)
     pixelFilter(selec_lay, &selec_lay->size, filter);
     //end filter selection
     GMPF_selection_set_surface(flowbox, selec_lay->surface);
+    while (cairo_surface_get_reference_count(selec_lay->surface) < 5)
+    { cairo_surface_reference(selec_lay->surface); }
+    selec_lay->surface = NULL;
 
     if (selec_lay->image)
         g_object_unref(selec_lay->image);
@@ -1018,6 +1021,8 @@ void pixelFilter(GMPF_Layer *lay, GMPF_Size *size, void (*filter)(GMPF_Pixel*))
     while (cairo_surface_get_reference_count(lay->surface))
         cairo_surface_destroy(lay->surface);
     lay->surface = gdk_cairo_surface_create_from_pixbuf(lay->image, 1, NULL);
+    while (cairo_surface_get_reference_count(lay->surface) < 5)
+    { cairo_surface_reference(lay->surface); }
     layer_icon_refresh(lay);
     gtk_widget_queue_draw(da);
 }

@@ -7,7 +7,7 @@
 
 
 /****************************DEBUG ZONE****************************************/
-#define GMPF_DEBUG
+// #define GMPF_DEBUG
 
 #ifdef GMPF_DEBUG
     #define D_PRINT(_fmt, ...) \
