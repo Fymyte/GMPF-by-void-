@@ -84,8 +84,9 @@ void callback_setCursor()
 
       layermngr = layermngr_get_layermngr(flowbox);
       size = layermngr->brush_size;
+      GMPF_Scale scale = *GMPF_project_info_get_scale(flowbox);
       cairo_surface_t *cairo_cursor =
-            cairo_image_surface_create (CAIRO_FORMAT_ARGB32, size * 2.0, size * 2.0);
+            cairo_image_surface_create (CAIRO_FORMAT_ARGB32, size * 2.0 * scale.x, size * 2.0 * scale.y);
       cr = cairo_create(cairo_cursor);
 
       //create the new cursor
@@ -95,38 +96,42 @@ void callback_setCursor()
       //circle
       if (layermngr->brush == 0)
       {
-          cairo_set_line_width(cr, 0.5);
-          cairo_arc (cr, size, size, size, 0.0, G_PI * 2.0);
+          cairo_set_line_width(cr, 1);
+          cairo_arc (cr, size*scale.x, size*scale.y, size*scale.x, 0.0, G_PI * 2.0);
       }
 
       //square
       else if (layermngr->brush == 1)
       {
           cairo_set_line_width(cr, 1);
-          cairo_rectangle(cr, 0, 0, size*2.0, size*2.0);
+          cairo_rectangle(cr, 0, 0, size*2.0*scale.x, size*2.0*scale.y);
       }
 
       //rectangle
       else if (layermngr->brush == 2)
       {
           cairo_set_line_width(cr, 1);
-          cairo_rectangle(cr, 0, 0, size*2.0, size);
+          cairo_rectangle(cr, 0, 0, size*2.0*scale.x, size*scale.y);
       }
 
       //triangle
       else if (layermngr->brush == 3)
       {
           cairo_set_line_width(cr, 1);
-          cairo_move_to(cr, size, 0);
-          cairo_line_to(cr, 0, size*2.0);
-          cairo_line_to(cr, size*2.0, size*2.0);
+          cairo_move_to(cr, size*scale.x, 0);
+          cairo_line_to(cr, 0, size*2.0*scale.y);
+          cairo_line_to(cr, size*2.0*scale.x, size*2.0*scale.y);
           cairo_close_path (cr);
       }
 
       cairo_set_source_rgba (cr, 0, 0, 0, 1);
       cairo_stroke (cr);
       cairo_cursor = cairo_get_target(cr);
-      cursor = gdk_cursor_new_from_surface (display, cairo_cursor, size, size);
+
+      if (layermngr->brush == 0)
+        cursor = gdk_cursor_new_from_surface (display, cairo_cursor, size*scale.x, size*scale.y);
+      else
+        cursor = gdk_cursor_new_from_surface (display, cairo_cursor, size, size);
 
       cairo_surface_destroy(cairo_cursor);
       cairo_destroy(cr);

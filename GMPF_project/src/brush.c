@@ -101,6 +101,7 @@ void triangle_brush(GtkWidget *widget,
                   float      blue,
                   float      alpha)
 {
+    GET_UI(GtkFlowBox, flowbox, "GMPF_flowbox");
     size = size << 1;
     int semi_size = size >> 1;
     int nx = x - semi_size;
@@ -108,12 +109,13 @@ void triangle_brush(GtkWidget *widget,
 
     cairo_set_line_join(cr, CAIRO_LINE_JOIN_MITER);
     cairo_set_line_cap(cr, CAIRO_LINE_CAP_SQUARE);
+    GMPF_Scale scale = *GMPF_project_info_get_scale(flowbox);
 
 
     cairo_set_line_width(cr, 1);
-    cairo_move_to(cr, x, ny);
-    cairo_line_to(cr, nx, ny + size);
-    cairo_line_to(cr, nx + size, y + semi_size);
+    cairo_move_to(cr, x/scale.x, ny/scale.y);
+    cairo_line_to(cr, nx*scale.x, (ny*scale.y + size));
+    cairo_line_to(cr, (nx*scale.x + size), (y*scale.y + semi_size));
     cairo_close_path (cr);
 
     cairo_set_source_rgba (cr, red, green, blue, alpha);
