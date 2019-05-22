@@ -7,6 +7,7 @@
 @define-color ui_button_color rgb(150, 150, 150);
 @define-color ui_button_hover_color rgb(0, 255, 165);
 @define-color ui_button_pressed_color rgb(0, 200, 100);
+@define-color ui_button_selected_color rgb(165, 165, 165);
 
 @define-color ui_shadow_color rgba(0, 0, 0, 0.19);
 
@@ -171,7 +172,7 @@ toolbar separator {
 
 #flow *:selected {
     margin-top: 5px;
-    background-color: @ui_button_pressed_color;
+    background-color: @ui_button_selected_color;
 }
 
 window button label {
